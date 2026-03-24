@@ -74,18 +74,18 @@
         <div id="heroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-500" style="background-image:linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1600&q=80')"></div>
         <div class="relative z-10 mx-auto flex min-h-[540px] max-w-7xl flex-col justify-end gap-5 px-4 py-8 sm:min-h-[620px] sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
             <div class="max-w-3xl text-white">
-                <h1 class="mb-3 text-4xl font-extrabold leading-[1.03] tracking-tight sm:text-5xl lg:text-6xl">Renovez, Economisez, Valorisez votre maison</h1>
-                <p class="mb-5 text-lg text-slate-100 sm:text-xl">Expert en renovation energetique en Bourgogne. Nous vous accompagnons de l'etude a la realisation.</p>
+                <h1 id="heroTitle" class="mb-3 text-4xl font-extrabold leading-[1.03] tracking-tight sm:text-5xl lg:text-6xl">Travaux de toiture durables et performants</h1>
+                <p id="heroSubtitle" class="mb-5 text-lg text-slate-100 sm:text-xl">Protection, etancheite et renovation complete de votre toiture pour valoriser votre maison.</p>
                 <div class="flex flex-wrap gap-3">
-                    <a href="#devis" class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-sky-500">Devis gratuit</a>
-                    <a href="#devis" class="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:-translate-y-0.5 hover:bg-yellow-300">Etre rappele</a>
+                    <a id="heroPrimaryCta" href="#devis" class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-sky-500">Devis toiture</a>
+                    <a id="heroSecondaryCta" href="#devis" class="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:-translate-y-0.5 hover:bg-yellow-300">Nous contacter</a>
                 </div>
             </div>
 
             <div id="heroThumbs" class="flex w-full gap-2 pb-1 lg:w-auto">
-                <button class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 border-brand-blue bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="1" style="background-image:url('https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=600&q=80')" aria-label="Image hero 1"></button>
-                <button class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 border-transparent bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="2" style="background-image:url('https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=600&q=80')" aria-label="Image hero 2"></button>
-                <button class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 border-transparent bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="3" style="background-image:url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=600&q=80')" aria-label="Image hero 3"></button>
+                <button class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 border-brand-blue bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="1" style="background-image:url('https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=600&q=80')" aria-label="Slider travaux de toiture"></button>
+                <button class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 border-transparent bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="2" style="background-image:url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=600&q=80')" aria-label="Slider simulateur de devis"></button>
+                <button class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 border-transparent bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="3" style="background-image:url('https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80')" aria-label="Slider photovoltaique"></button>
             </div>
         </div>
     </section>
@@ -246,19 +246,67 @@
             }
 
             const hero = document.getElementById('heroBg');
+            const heroTitle = document.getElementById('heroTitle');
+            const heroSubtitle = document.getElementById('heroSubtitle');
+            const heroPrimaryCta = document.getElementById('heroPrimaryCta');
+            const heroSecondaryCta = document.getElementById('heroSecondaryCta');
             const thumbs = Array.from(document.querySelectorAll('.hero-thumb'));
-            const backgrounds = {
-                1: "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1600&q=80')",
-                2: "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1600&q=80')",
-                3: "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1600&q=80')"
+            const slides = {
+                1: {
+                    bg: "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1600&q=80')",
+                    title: "Travaux de toiture durables et performants",
+                    subtitle: "Protection, etancheite et renovation complete de votre toiture pour valoriser votre maison.",
+                    primaryText: "Devis toiture",
+                    primaryHref: "#devis",
+                    secondaryText: "Nous contacter",
+                    secondaryHref: "#devis"
+                },
+                2: {
+                    bg: "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80')",
+                    title: "Simulateur de devis renovation en 1 minute",
+                    subtitle: "Entrez votre adresse et obtenez rapidement une estimation claire pour votre projet.",
+                    primaryText: "Lancer le simulateur",
+                    primaryHref: "#address",
+                    secondaryText: "Parler a un conseiller",
+                    secondaryHref: "#devis"
+                },
+                3: {
+                    bg: "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1600&q=80')",
+                    title: "Photovoltaique: produisez votre propre energie",
+                    subtitle: "Installez des panneaux solaires performants et reduisez durablement vos factures.",
+                    primaryText: "Etude photovoltaique",
+                    primaryHref: "#services",
+                    secondaryText: "Nous contacter",
+                    secondaryHref: "#devis"
+                }
             };
+
+            const applySlide = (slideId) => {
+                const slide = slides[slideId];
+                if (!slide || !hero) {
+                    return;
+                }
+                hero.style.backgroundImage = slide.bg;
+                if (heroTitle) heroTitle.textContent = slide.title;
+                if (heroSubtitle) heroSubtitle.textContent = slide.subtitle;
+                if (heroPrimaryCta) {
+                    heroPrimaryCta.textContent = slide.primaryText;
+                    heroPrimaryCta.setAttribute('href', slide.primaryHref);
+                }
+                if (heroSecondaryCta) {
+                    heroSecondaryCta.textContent = slide.secondaryText;
+                    heroSecondaryCta.setAttribute('href', slide.secondaryHref);
+                }
+            };
+
             thumbs.forEach((thumb) => {
                 thumb.addEventListener('click', () => {
-                    hero.style.backgroundImage = backgrounds[thumb.dataset.bg];
+                    applySlide(thumb.dataset.bg);
                     thumbs.forEach((t) => t.classList.remove('border-brand-blue'));
                     thumb.classList.add('border-brand-blue');
                 });
             });
+            applySlide('1');
 
             const range = document.getElementById('baRange');
             const afterLayer = document.getElementById('afterLayer');
