@@ -76,12 +76,6 @@
             background-position: center;
         }
 
-        .devis-simulator-bg {
-            background-image: linear-gradient(145deg, rgba(47, 66, 81, 0.72) 0%, rgba(47, 66, 81, 0.65) 35%, rgba(30, 41, 59, 0.78) 100%), url('/nous/simulateur.png');
-            background-size: cover;
-            background-position: center;
-        }
-
         .aides-renov-hero-bg {
             background-image: linear-gradient(120deg, rgba(47, 66, 81, 0.92) 0%, rgba(30, 58, 95, 0.88) 45%, rgba(15, 23, 42, 0.9) 100%), url('https://images.unsplash.com/photo-1565538810643-b5bdb714032a?auto=format&fit=crop&w=2000&q=80');
             background-size: cover;
@@ -283,7 +277,7 @@
         </div>
     </section>
 
-    <section class="border-b border-yellow-300 bg-[#FADF70] py-8 sm:py-10">
+    <section id="simulateur-devis" class="scroll-mt-28 border-b border-yellow-300 bg-[#FADF70] py-8 sm:py-10">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <form class="grid gap-3 rounded-2xl border-2 border-white bg-white p-4 shadow-soft ring-2 ring-white/70 sm:grid-cols-[1fr_auto] sm:items-end sm:gap-4 sm:p-5">
                 <div>
@@ -501,29 +495,29 @@
     </section>
 
     <section id="agences" class="scroll-mt-24 bg-slate-50/70 py-16 sm:py-20">
-        <div class="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[.95fr_1.05fr] lg:items-start lg:px-8">
-            <div>
+        <div class="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:items-stretch lg:px-8">
+            <div class="flex h-full min-h-0 flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
                 <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Nos</span> agences</h2>
                 <p class="mb-6 text-base text-slate-600 sm:text-lg">Retrouvez nos 2 agences principales et les départements mis en avant sur la carte.</p>
                 <div class="space-y-3">
-                    <article class="rounded-xl border border-slate-200 bg-white p-4">
-                        <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Département 71</p>
+                    <article class="rounded-xl border border-slate-200 bg-slate-50/80 p-4">
+                        <p class="text-xs font-extrabold tracking-wide text-brand-blue">DÉPARTEMENT 71</p>
                         <h3 class="text-lg font-extrabold text-brand-dark">Agence Chalon-sur-Saône</h3>
                         <p class="text-sm text-slate-600">6 rue Pierre de Coubertin, 71100 Chalon-sur-Saône</p>
                         <p class="mt-1 text-sm font-semibold text-brand-dark">Tél. : 03 85 41 98 86</p>
                     </article>
-                    <article class="rounded-xl border border-slate-200 bg-white p-4">
-                        <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Département 22 — Bretagne</p>
+                    <article class="rounded-xl border border-slate-200 bg-slate-50/80 p-4">
+                        <p class="text-xs font-extrabold tracking-wide text-brand-blue">DÉPARTEMENT 22 — BRETAGNE</p>
                         <h3 class="text-lg font-extrabold text-brand-dark">Agence Bretagne</h3>
                         <p class="text-sm text-slate-600">ZA de Mikez — 22540 Pédernec</p>
                         <p class="mt-1 text-sm font-semibold text-brand-dark">Tél. : 02 96 40 07 55</p>
                     </article>
                 </div>
 
-                <a id="franchise" href="#devis" class="group relative mt-6 block scroll-mt-28 overflow-hidden rounded-xl border border-slate-200 shadow-soft">
+                <a id="franchise" href="#devis" class="group relative mt-6 block shrink-0 scroll-mt-28 overflow-hidden rounded-xl border border-slate-200 shadow-soft lg:mt-auto">
                     <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1200&q=80')"></div>
                     <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-5 py-5 sm:px-6 sm:py-6">
-                        <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Réseau Normes</p>
+                        <p class="text-xs font-extrabold tracking-wide text-brand-yellow">RÉSEAU NORMES</p>
                         <h3 class="text-xl font-extrabold text-white sm:text-2xl">Devenir franchisé</h3>
                         <p class="mt-1 max-w-2xl text-sm text-slate-200 sm:text-base">Rejoignez notre réseau et développez votre agence avec un accompagnement complet — contactez-nous pour en discuter.</p>
                         <span class="mt-4 inline-flex rounded-lg bg-brand-blue px-4 py-2.5 text-xs font-extrabold text-white transition group-hover:bg-sky-500 sm:text-sm">Demander une présentation / devenir franchisé</span>
@@ -531,10 +525,10 @@
                 </a>
             </div>
 
-            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
-                <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Carte</span> des implantations</h2>
-                <div id="agencyMap" class="min-h-[380px] rounded-xl border border-slate-200"></div>
-                <div class="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
+            <div class="flex h-full min-h-0 flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
+                <h2 class="mb-3 shrink-0 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Carte</span> des implantations</h2>
+                <div id="agencyMap" class="min-h-[280px] flex-1 rounded-xl border border-slate-200 sm:min-h-[320px] lg:min-h-0"></div>
+                <div class="mt-3 flex shrink-0 flex-wrap gap-2 text-xs font-semibold">
                     <span class="inline-flex items-center gap-1 rounded-full bg-brand-blue/20 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-blue"></span>Région Bretagne</span>
                     <span class="inline-flex items-center gap-1 rounded-full bg-brand-yellow/70 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-yellow"></span>Départements 71 &amp; 21</span>
                 </div>
@@ -659,16 +653,12 @@
     <section id="devis" class="scroll-mt-24 bg-brand-dark py-16 text-white sm:py-20">
         <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:items-start lg:gap-12 lg:px-8">
             <div class="flex flex-col gap-8">
-                <div class="devis-simulator-bg relative overflow-hidden rounded-2xl border border-white/20 shadow-2xl ring-1 ring-white/10">
-                    <div class="relative z-[1] p-6 sm:p-8">
-                        <div class="max-w-lg">
-                            <h2 class="mb-4 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-brand-yellow">Vous avez</span> <span class="text-white">un projet de rénovation ?</span></h2>
-                            <p class="text-xl font-bold text-white sm:text-2xl">Estimation personnalisée &amp; rappel d'un conseiller</p>
-                            <p class="mt-3 text-sm leading-relaxed text-slate-200 sm:text-base">Visualisez les grandes lignes de votre projet (toiture, surfaces, état du bien) — un interlocuteur vous rappelle pour affiner chiffrage et aides.</p>
-                            <p class="mt-2 text-sm text-slate-300">Réponse sous 48h en général — sans engagement.</p>
-                            <a href="#formulaire-contact" class="mt-5 inline-flex rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-lg transition hover:bg-yellow-300 lg:hidden">Remplir le formulaire</a>
-                        </div>
-                    </div>
+                <div class="max-w-lg">
+                    <h2 class="mb-4 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-brand-yellow">Vous avez</span> <span class="text-white">un projet de rénovation ?</span></h2>
+                    <p class="text-xl font-bold text-white sm:text-2xl">Estimation personnalisée &amp; rappel d'un conseiller</p>
+                    <p class="mt-3 text-sm leading-relaxed text-slate-200 sm:text-base">Visualisez les grandes lignes de votre projet (toiture, surfaces, état du bien) — un interlocuteur vous rappelle pour affiner chiffrage et aides.</p>
+                    <p class="mt-2 text-sm text-slate-300">Réponse sous 48h en général — sans engagement.</p>
+                    <a href="#formulaire-contact" class="mt-5 inline-flex rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-lg transition hover:bg-yellow-300 lg:hidden">Remplir le formulaire</a>
                 </div>
                 <div class="space-y-4 rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-sm sm:p-6">
                     <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Contact agences</p>
@@ -701,6 +691,16 @@
                         </div>
                     </div>
                     <p class="text-xs text-slate-400">Horaires : du lundi au vendredi, sur rendez-vous — réponse sous 48h en général.</p>
+                </div>
+
+                <div class="rounded-2xl border border-white/20 bg-white/10 p-5 sm:p-6">
+                    <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Simulateur de devis</p>
+                    <p class="mt-2 text-base font-semibold text-white sm:text-lg">Estimez les grandes lignes avec votre adresse</p>
+                    <p class="mt-2 text-sm leading-relaxed text-slate-300">Accédez au bandeau simulateur : saisissez votre adresse pour lancer une première analyse ; un conseiller peut ensuite affiner avec vous.</p>
+                    <div class="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                        <a href="#simulateur-devis" class="inline-flex items-center justify-center rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-md transition hover:bg-yellow-300">Lancer le simulateur</a>
+                        <a href="#formulaire-contact" class="inline-flex items-center justify-center rounded-xl border-2 border-white/40 bg-transparent px-5 py-3 text-sm font-extrabold text-white transition hover:border-white hover:bg-white/10">Passer au formulaire</a>
+                    </div>
                 </div>
             </div>
 
@@ -847,13 +847,9 @@
                     <h3 class="mt-8 text-xs font-bold uppercase tracking-wider text-brand-yellow">Siège social</h3>
                     <p class="mt-2 text-sm font-semibold">Normes et Rénovation</p>
                     <p class="mt-1 text-sm leading-relaxed text-slate-300">6 rue Pierre de Coubertin<br>71100 Chalon-sur-Saône</p>
-                    <dl class="mt-5 space-y-2 border-t border-white/15 pt-5 text-xs text-slate-400">
-                        <div><dt class="inline text-slate-500">Représentant légal ·</dt> <dd class="inline text-slate-300">Conformément aux statuts.</dd></div>
-                        <div><dt class="text-slate-500">RCS</dt> <dd class="font-mono text-slate-200">Chalon-sur-Saône — 900&nbsp;571&nbsp;696&nbsp;00013</dd></div>
-                        <div><dt class="text-slate-500">SIREN</dt> <dd class="font-mono text-slate-200">900&nbsp;571&nbsp;696</dd></div>
-                        <div><dt class="text-slate-500">SIRET (siège)</dt> <dd class="font-mono text-slate-200">900&nbsp;571&nbsp;696&nbsp;00013</dd></div>
-                        <div><dt class="text-slate-500">TVA</dt> <dd class="font-mono text-slate-200">FR96&nbsp;900&nbsp;571&nbsp;696</dd></div>
-                    </dl>
+                    <p class="mt-5 border-t border-white/15 pt-5 text-xs leading-relaxed text-slate-400">
+                        Représentant légal · Conformément aux statuts · RCS Chalon-sur-Saône — 900&nbsp;571&nbsp;696&nbsp;00013 · SIREN 900&nbsp;571&nbsp;696 · SIRET (siège) 900&nbsp;571&nbsp;696&nbsp;00013 · TVA FR96&nbsp;900&nbsp;571&nbsp;696
+                    </p>
                 </div>
                 <div class="lg:col-span-3">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-brand-yellow">Contact</h3>
@@ -861,20 +857,6 @@
                     <a href="tel:+33385419886" class="text-base font-bold text-brand-blue transition hover:text-white">03&nbsp;85&nbsp;41&nbsp;98&nbsp;86</a>
                     <p class="mt-4 text-sm text-slate-300">E-mail</p>
                     <a href="mailto:bourgogne-agence@normesrenovation.fr" class="break-all text-sm text-white underline-offset-2 transition hover:text-brand-yellow hover:underline">bourgogne-agence@normesrenovation.fr</a>
-
-                    <h3 class="mt-10 text-xs font-bold uppercase tracking-wider text-brand-yellow">Nos agences</h3>
-                    <div class="mt-3 space-y-5 text-sm">
-                        <div>
-                            <p class="font-semibold text-white">Chalon-sur-Saône (71)</p>
-                            <p class="mt-1 text-slate-300">6 rue Pierre de Coubertin<br>71100 Chalon-sur-Saône</p>
-                            <a href="tel:+33385419886" class="mt-1 inline-block font-semibold text-brand-blue transition hover:text-white">03&nbsp;85&nbsp;41&nbsp;98&nbsp;86</a>
-                        </div>
-                        <div class="border-t border-white/10 pt-5">
-                            <p class="font-semibold text-white">Bretagne (22)</p>
-                            <p class="mt-1 text-slate-300">ZA de Mikez<br>22540 Pédernec</p>
-                            <a href="tel:+33296400755" class="mt-1 inline-block font-semibold text-brand-blue transition hover:text-white">02&nbsp;96&nbsp;40&nbsp;07&nbsp;55</a>
-                        </div>
-                    </div>
                 </div>
                 <div class="lg:col-span-2">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-brand-yellow">Liens rapides</h3>
@@ -1256,6 +1238,13 @@
                             map.fitBounds(bounds.pad(-0.03));
                         }
                         map.setMaxBounds(bounds.pad(0.2));
+                        requestAnimationFrame(() => {
+                            map.invalidateSize();
+                            const b = regionsLayer.getBounds();
+                            if (b.isValid()) {
+                                map.fitBounds(b.pad(-0.03));
+                            }
+                        });
                     })
                     .catch(() => {
                         // Keep map container rendered if remote geojson fails.
