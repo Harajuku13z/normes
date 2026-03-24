@@ -228,7 +228,7 @@
                         <p class="mt-1 text-sm font-semibold text-brand-dark">Tel: 02 96 40 07 55</p>
                     </article>
                 </div>
-                <a href="#franchise" class="group relative mt-5 block overflow-hidden rounded-xl border border-slate-200 shadow-soft">
+                <a href="#franchise" class="group relative mt-5 hidden overflow-hidden rounded-xl border border-slate-200 shadow-soft lg:block">
                     <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1200&q=80')"></div>
                     <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Reseau Normes</p>
@@ -246,6 +246,14 @@
                     <span class="inline-flex items-center gap-1 rounded-full bg-brand-yellow/70 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-yellow"></span>Departements 71 & 21</span>
                 </div>
             </div>
+            <a href="#franchise" class="group relative block overflow-hidden rounded-xl border border-slate-200 shadow-soft lg:hidden">
+                <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1200&q=80')"></div>
+                <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-4 py-4">
+                    <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Reseau Normes</p>
+                    <h3 class="text-lg font-extrabold text-white">Devenir franchiser</h3>
+                    <p class="mt-1 text-xs text-slate-200">Rejoignez notre reseau et developpez votre agence avec un accompagnement complet.</p>
+                </div>
+            </a>
         </div>
     </section>
 
