@@ -3,8 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Normes & Renovation - Rénovation énergétique en Bourgogne</title>
-    <meta name="description" content="Normes & Renovation accompagne vos projets de rénovation énergétique, thermique et électrique en Bourgogne. Devis gratuit, entreprise certifiée RGE.">
+    <title>Normes &amp; Rénovation — Rénovation énergétique en Bourgogne</title>
+    <meta name="description" content="Normes &amp; Rénovation accompagne vos projets de rénovation énergétique, thermique et électrique en Bourgogne. Devis gratuit, entreprise certifiée RGE.">
+    @php
+        $metaPageUrl = url('/');
+        $metaTitle = 'Normes & Rénovation — Rénovation énergétique en Bourgogne';
+        $metaDescription = 'Devis gratuit, entreprise certifiée RGE en Bourgogne. Rénovation énergétique, thermique, électrique et toiture — accompagnement complet.';
+        $metaImage = asset('logo.png');
+    @endphp
+    <link rel="canonical" href="{{ $metaPageUrl }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $metaTitle }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $metaImage }}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ $metaPageUrl }}">
+    <meta property="og:title" content="{{ $metaTitle }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:image" content="{{ $metaImage }}">
+    <meta property="og:image:alt" content="Normes &amp; Rénovation — logo">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:site_name" content="Normes &amp; Rénovation">
+    <meta name="theme-color" content="#2F4251">
     <link rel="icon" type="image/png" href="/iconne.png">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -289,12 +309,13 @@
         </div>
     </section>
 
-    <aside class="fixed bottom-4 left-4 z-40 rounded-xl border border-brand-blue/30 bg-white px-3 py-2 shadow-soft xl:hidden">
-        <a href="https://share.google/14Nu70a8PfwWT4P4p" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2">
-            <img src="/iconne.png" alt="Icone Normes & Renovation" class="h-7 w-7 rounded-full border border-brand-blue/40 bg-white object-cover">
-            <div>
-                <p class="text-[11px] font-extrabold leading-none text-brand-dark">5.0/5 Avis Google</p>
-                <p class="text-[10px] leading-none text-yellow-500">★★★★★ <span class="text-slate-600">+100 avis</span></p>
+    <aside class="fixed bottom-4 left-1/2 z-40 w-[min(100%,20.5rem)] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border-2 border-brand-blue/40 bg-white p-4 shadow-lg ring-1 ring-slate-200/90 sm:left-4 sm:max-w-none sm:translate-x-0 xl:hidden" aria-label="Avis Google">
+        <a href="https://share.google/14Nu70a8PfwWT4P4p" target="_blank" rel="noopener noreferrer" class="flex min-h-[3.25rem] items-center gap-3">
+            <img src="/logo.png" alt="Normes &amp; Rénovation" class="h-12 w-12 shrink-0 rounded-xl border border-brand-blue/25 bg-white object-contain p-0.5" width="48" height="48" decoding="async">
+            <div class="min-w-0 flex-1 text-left">
+                <p class="text-sm font-extrabold leading-tight text-brand-dark">5.0/5 — Avis Google</p>
+                <p class="mt-1 text-xs leading-tight text-yellow-500">★★★★★ <span class="font-semibold text-slate-600">+100 avis</span></p>
+                <p class="mt-0.5 text-[11px] font-semibold text-brand-blue">Voir les avis →</p>
             </div>
         </a>
     </aside>
