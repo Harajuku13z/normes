@@ -812,25 +812,22 @@
         </div>
     </section>
 
-    <section class="partners-marquee border-y border-white/10 bg-neutral-950 py-9 text-white" aria-label="Partenaires et labels">
-        <p class="mx-auto max-w-7xl px-4 text-center text-[11px] font-extrabold uppercase tracking-[0.28em] text-slate-500 sm:px-6 lg:px-8">Nos partenaires &amp; certifications</p>
-        <div class="relative mt-6 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
+    @php
+        $partnerLogoFiles = ['Calque 2.png', 'Calque 3.png', 'Calque 4.png', 'Calque 5.png', 'Calque 6.png', 'Calque 7.png', 'Calque 8.png', 'Calque 9.png'];
+    @endphp
+    <section class="partners-marquee border-y border-slate-200 bg-white py-10" aria-label="Nos partenaires">
+        <p class="mx-auto max-w-7xl px-4 text-center text-[11px] font-extrabold uppercase tracking-[0.28em] text-brand-dark/55 sm:px-6 lg:px-8">Nos partenaires</p>
+        <div class="relative mt-7 overflow-hidden bg-white [mask-image:linear-gradient(to_right,transparent,rgba(0,0,0,1)_10%,rgba(0,0,0,1)_90%,transparent)]">
             <div class="partners-marquee-track">
-                <div class="flex shrink-0 items-center gap-x-14 gap-y-6 px-8 sm:gap-x-20">
-                    <img src="/logo.png" alt="Normes et Rénovation" class="h-9 w-auto object-contain opacity-80 grayscale invert sm:h-11" width="160" height="44">
-                    <img src="/nous/rge.png" alt="RGE Qualibat" class="h-10 w-auto max-w-[130px] object-contain opacity-80 grayscale invert sm:h-12" width="130" height="48">
-                    <img src="/nous/rge ventilation_.png" alt="RGE Ventilation" class="h-10 w-auto max-w-[130px] object-contain opacity-80 grayscale invert sm:h-12" width="130" height="48">
-                    <img src="/nous/ECO.png" alt="Éco-responsable" class="h-10 w-auto max-w-[100px] object-contain opacity-80 grayscale invert sm:h-12" width="100" height="48">
-                    <img src="/iconne.png" alt="Normes et Rénovation" class="h-10 w-10 rounded-full object-cover opacity-80 grayscale invert ring-2 ring-white/20 sm:h-12 sm:w-12" width="48" height="48">
-                    <img src="/nous/ma prime.png" alt="MaPrimeRénov'" class="h-9 w-auto max-w-[120px] object-contain opacity-80 grayscale invert sm:h-11" width="120" height="40">
+                <div class="flex shrink-0 items-center gap-x-12 px-6 sm:gap-x-16 sm:px-8">
+                    @foreach ($partnerLogoFiles as $file)
+                        <img src="{{ asset('partenaire/'.$file) }}" alt="Logo partenaire" class="h-11 w-auto max-w-[9rem] shrink-0 object-contain opacity-90 transition duration-200 hover:opacity-100 sm:h-14 sm:max-w-[11rem]" width="180" height="56" loading="lazy" decoding="async">
+                    @endforeach
                 </div>
-                <div class="flex shrink-0 items-center gap-x-14 gap-y-6 px-8 sm:gap-x-20" aria-hidden="true">
-                    <img src="/logo.png" alt="" class="h-9 w-auto object-contain opacity-80 grayscale invert sm:h-11" width="160" height="44">
-                    <img src="/nous/rge.png" alt="" class="h-10 w-auto max-w-[130px] object-contain opacity-80 grayscale invert sm:h-12" width="130" height="48">
-                    <img src="/nous/rge ventilation_.png" alt="" class="h-10 w-auto max-w-[130px] object-contain opacity-80 grayscale invert sm:h-12" width="130" height="48">
-                    <img src="/nous/ECO.png" alt="" class="h-10 w-auto max-w-[100px] object-contain opacity-80 grayscale invert sm:h-12" width="100" height="48">
-                    <img src="/iconne.png" alt="" class="h-10 w-10 rounded-full object-cover opacity-80 grayscale invert ring-2 ring-white/20 sm:h-12 sm:w-12" width="48" height="48">
-                    <img src="/nous/ma prime.png" alt="" class="h-9 w-auto max-w-[120px] object-contain opacity-80 grayscale invert sm:h-11" width="120" height="40">
+                <div class="flex shrink-0 items-center gap-x-12 px-6 sm:gap-x-16 sm:px-8" aria-hidden="true">
+                    @foreach ($partnerLogoFiles as $file)
+                        <img src="{{ asset('partenaire/'.$file) }}" alt="" class="h-11 w-auto max-w-[9rem] shrink-0 object-contain opacity-90 sm:h-14 sm:max-w-[11rem]" width="180" height="56" loading="lazy" decoding="async">
+                    @endforeach
                 </div>
             </div>
         </div>
