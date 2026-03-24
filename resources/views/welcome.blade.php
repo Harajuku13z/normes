@@ -252,9 +252,15 @@
     <section class="bg-slate-50/70 py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
-                <article class="rounded-2xl border border-slate-100 bg-white p-6 shadow-soft sm:p-8">
+                <article class="rounded-2xl border border-brand-blue/20 bg-gradient-to-br from-white to-sky-50/40 p-6 shadow-soft sm:p-8">
                     <p class="text-xs font-bold uppercase tracking-widest text-brand-blue">A propos de nous</p>
-                    <p class="mt-3 text-base leading-relaxed text-slate-700">Nous sommes certifies RGE, engages dans le respect de l'environnement et fiers de soutenir la production francaise.</p>
+                    <h3 class="mt-2 text-2xl font-extrabold text-brand-dark sm:text-3xl">Normes & Renovation, partenaire de confiance</h3>
+                    <p class="mt-3 text-base leading-relaxed text-slate-700">Nous sommes certifies RGE, engages dans le respect de l'environnement et fiers de soutenir la production francaise. Nous accompagnons chaque client avec des solutions fiables, performantes et durables.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="rounded-full bg-brand-blue/10 px-3 py-1 text-xs font-bold text-brand-blue">Certifie RGE</span>
+                        <span class="rounded-full bg-brand-yellow/50 px-3 py-1 text-xs font-bold text-brand-dark">Respect de l'environnement</span>
+                        <span class="rounded-full bg-brand-dark/10 px-3 py-1 text-xs font-bold text-brand-dark">Production francaise</span>
+                    </div>
                     <div class="mt-6 grid gap-4 sm:grid-cols-2">
                         <div>
                             <p class="text-xs font-bold uppercase text-brand-dark">Adresse</p>
@@ -281,6 +287,9 @@
                         <p><span class="font-bold text-brand-dark">Horaires:</span> Lun a Ven 9:00 a 18:30</p>
                     </div>
                 </article>
+            </div>
+            <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-soft sm:p-3">
+                <img src="/nous/equipe.jpeg" alt="Equipe Normes & Renovation" class="h-[240px] w-full rounded-xl object-cover sm:h-[320px] lg:h-[420px]">
             </div>
         </div>
     </section>
