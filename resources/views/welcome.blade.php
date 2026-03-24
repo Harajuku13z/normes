@@ -516,7 +516,7 @@
             const serviceCtas = Array.from(document.querySelectorAll('#serviceGrid .service-card a'));
             serviceCtas.forEach((link) => {
                 link.className = 'mt-4 inline-flex w-fit items-center gap-1 text-sm font-extrabold text-brand-blue transition hover:text-brand-dark';
-                link.innerHTML = 'En savoir plus <span aria-hidden="true">↗</span>';
+                link.innerHTML = 'En savoir plus <span aria-hidden="true">→</span>';
             });
 
             const mapContainer = document.getElementById('agencyMap');
