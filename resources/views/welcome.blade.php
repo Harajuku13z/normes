@@ -218,6 +218,10 @@
             <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
                 <h3 class="mb-4 text-xl font-extrabold text-brand-dark">Carte des implantations</h3>
                 <div id="agencyMap" class="min-h-[380px] rounded-xl border border-slate-200"></div>
+                <div class="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
+                    <span class="inline-flex items-center gap-1 rounded-full bg-brand-blue/20 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-blue"></span>Region Bretagne</span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-brand-yellow/70 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-yellow"></span>Departements 71 & 21</span>
+                </div>
             </div>
         </div>
     </section>
@@ -553,9 +557,29 @@
                     return !code.startsWith('97') && code !== '976';
                 };
 
+                const fetchGeoJsonWithFallback = async (urls) => {
+                    for (const url of urls) {
+                        try {
+                            const response = await fetch(url);
+                            if (response.ok) {
+                                return await response.json();
+                            }
+                        } catch (error) {
+                            // Try next source.
+                        }
+                    }
+                    throw new Error('GeoJSON loading failed');
+                };
+
                 Promise.all([
-                    fetch('https://france-geojson.gregoiredavid.fr/repo/regions.geojson').then((response) => response.json()),
-                    fetch('https://france-geojson.gregoiredavid.fr/repo/departements.geojson').then((response) => response.json())
+                    fetchGeoJsonWithFallback([
+                        'https://france-geojson.gregoiredavid.fr/repo/regions.geojson',
+                        'https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions.geojson'
+                    ]),
+                    fetchGeoJsonWithFallback([
+                        'https://france-geojson.gregoiredavid.fr/repo/departements.geojson',
+                        'https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements.geojson'
+                    ])
                 ])
                     .then(([regionsGeoJson, departementsGeoJson]) => {
                         const regionsLayer = L.geoJSON(regionsGeoJson, {
@@ -575,7 +599,7 @@
                                     color: '#cbd5e1',
                                     weight: 1,
                                     fillColor: '#f1f5f9',
-                                    fillOpacity: 0.85
+                                    fillOpacity: 0.9
                                 };
                             }
                         }).addTo(map);
@@ -596,8 +620,8 @@
                                 return {
                                     color: '#94a3b8',
                                     weight: 0.9,
-                                    fillColor: 'transparent',
-                                    fillOpacity: 0
+                                    fillColor: '#e2e8f0',
+                                    fillOpacity: 0.15
                                 };
                             },
                             onEachFeature: (feature, layer) => {
