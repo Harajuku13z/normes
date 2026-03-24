@@ -624,11 +624,35 @@
     </section>
 
     <section class="bg-brand-dark py-14 text-white sm:py-20">
-        <div class="mx-auto grid max-w-7xl gap-5 px-4 text-center sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">
-            <article><strong class="block text-4xl font-extrabold text-brand-yellow">+1000</strong><span class="text-sm sm:text-base">chantiers realises</span></article>
-            <article><strong class="block text-4xl font-extrabold text-brand-yellow">98%</strong><span class="text-sm sm:text-base">satisfaction client</span></article>
-            <article><strong class="block text-4xl font-extrabold text-brand-yellow">48h</strong><span class="text-sm sm:text-base">prise en charge rapide</span></article>
-            <article><strong class="block text-4xl font-extrabold text-brand-yellow">100%</strong><span class="text-sm sm:text-base">devis gratuit</span></article>
+        <div class="mx-auto grid max-w-7xl gap-4 px-4 sm:grid-cols-2 sm:gap-5 sm:px-6 lg:grid-cols-4 lg:gap-6 lg:px-8">
+            <article class="flex flex-col items-center rounded-xl border border-white/10 bg-white/[0.06] px-4 py-7 text-center sm:py-8">
+                <span class="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-blue/25 text-brand-yellow ring-1 ring-white/10" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </span>
+                <strong class="text-4xl font-extrabold text-brand-yellow">+1000</strong>
+                <span class="mt-1 text-sm text-slate-200 sm:text-base">Chantiers réalisés</span>
+            </article>
+            <article class="flex flex-col items-center rounded-xl border border-white/10 bg-white/[0.06] px-4 py-7 text-center sm:py-8">
+                <span class="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-blue/25 text-brand-yellow ring-1 ring-white/10" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                </span>
+                <strong class="text-4xl font-extrabold text-brand-yellow">98%</strong>
+                <span class="mt-1 text-sm text-slate-200 sm:text-base">Satisfaction client</span>
+            </article>
+            <article class="flex flex-col items-center rounded-xl border border-white/10 bg-white/[0.06] px-4 py-7 text-center sm:py-8">
+                <span class="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-blue/25 text-brand-yellow ring-1 ring-white/10" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </span>
+                <strong class="text-4xl font-extrabold text-brand-yellow">48h</strong>
+                <span class="mt-1 text-sm text-slate-200 sm:text-base">Prise en charge rapide</span>
+            </article>
+            <article class="flex flex-col items-center rounded-xl border border-white/10 bg-white/[0.06] px-4 py-7 text-center sm:py-8">
+                <span class="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-blue/25 text-brand-yellow ring-1 ring-white/10" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                </span>
+                <strong class="text-4xl font-extrabold text-brand-yellow">100%</strong>
+                <span class="mt-1 text-sm text-slate-200 sm:text-base">Devis gratuit</span>
+            </article>
         </div>
     </section>
 
@@ -645,16 +669,16 @@
     </section>
 
     <section id="devis" class="scroll-mt-24 bg-brand-dark py-16 text-white sm:py-20">
-        <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:items-start lg:gap-12 lg:px-8">
-            <div class="flex flex-col gap-8">
-                <div class="max-w-lg">
+        <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:items-stretch lg:gap-12 lg:px-8">
+            <div class="flex min-h-0 flex-col gap-8 lg:h-full lg:min-h-0">
+                <div class="max-w-lg shrink-0">
                     <h2 class="mb-4 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-brand-yellow">Vous avez</span> <span class="text-white">un projet de rénovation ?</span></h2>
                     <p class="text-xl font-bold text-white sm:text-2xl">Estimation personnalisée &amp; rappel d'un conseiller</p>
                     <p class="mt-3 text-sm leading-relaxed text-slate-200 sm:text-base">Visualisez les grandes lignes de votre projet (toiture, surfaces, état du bien) — un interlocuteur vous rappelle pour affiner chiffrage et aides.</p>
                     <p class="mt-2 text-sm text-slate-300">Réponse sous 48h en général — sans engagement.</p>
                     <a href="#formulaire-contact" class="mt-5 inline-flex rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-lg transition hover:bg-yellow-300 lg:hidden">Remplir le formulaire</a>
                 </div>
-                <div class="space-y-4 rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-sm sm:p-6">
+                <div class="shrink-0 space-y-4 rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-sm sm:p-6">
                     <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Contact agences</p>
                     <div class="space-y-3 text-sm sm:text-base">
                         <div class="flex gap-3">
@@ -687,7 +711,9 @@
                     <p class="text-xs text-slate-400">Horaires : du lundi au vendredi, sur rendez-vous — réponse sous 48h en général.</p>
                 </div>
 
-                <div class="rounded-2xl border border-white/20 bg-white/10 p-5 sm:p-6">
+                <div class="hidden min-h-0 lg:block lg:flex-1" aria-hidden="true"></div>
+
+                <div class="rounded-2xl border border-white/20 bg-white/10 p-5 sm:p-6 lg:shrink-0">
                     <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Simulateur de devis</p>
                     <p class="mt-2 text-base font-semibold text-white sm:text-lg">Estimez les grandes lignes avec votre adresse</p>
                     <p class="mt-2 text-sm leading-relaxed text-slate-300">Accédez au bandeau simulateur : saisissez votre adresse pour lancer une première analyse ; un conseiller peut ensuite affiner avec vous.</p>
@@ -698,12 +724,12 @@
                 </div>
             </div>
 
-            <div id="formulaire-contact" class="scroll-mt-28 rounded-2xl border border-slate-200/90 bg-white p-5 text-brand-dark shadow-xl sm:p-7">
-                    <div class="mb-5 border-b border-slate-100 pb-4">
+            <div id="formulaire-contact" class="flex h-full min-h-0 scroll-mt-28 flex-col rounded-2xl border border-slate-200/90 bg-white p-5 text-brand-dark shadow-xl sm:p-7">
+                    <div class="mb-5 shrink-0 border-b border-slate-100 pb-4">
                         <h3 class="text-xl font-extrabold text-brand-dark">Formulaire de contact</h3>
                         <p class="mt-1 text-sm text-slate-600">Indiquez vos coordonnées et votre projet pour être rappelé(e) et recevoir une base de devis.</p>
                     </div>
-                    <form class="text-brand-dark" action="#" method="post">
+                    <form class="flex flex-1 flex-col text-brand-dark" action="#" method="post">
                 @csrf
                 <p class="mb-4 text-sm font-semibold text-slate-600">Ces informations nous permettent de préparer un devis pertinent.</p>
                 <div class="grid gap-3 sm:grid-cols-2">
