@@ -311,52 +311,58 @@
 
     <section class="bg-slate-50/70 py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Pourquoi</span> nous ?</h2>
-            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft">
-                    <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/10 text-xl text-brand-blue">🛠️</div>
-                    <h3 class="mb-2 text-lg font-extrabold text-brand-dark">Expertise technique</h3>
-                    <p class="text-sm text-slate-600">Des equipes qualifiees et des conseils adaptes a votre maison.</p>
+            <h2 class="mb-2 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">Pourquoi</span> nous ?</h2>
+            <p class="mb-8 max-w-2xl text-base text-slate-600 sm:text-lg">Des engagements concrets, visibles en un coup d'œil.</p>
+            <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                <article class="group relative flex flex-col overflow-hidden rounded-2xl border-2 border-brand-blue/35 bg-gradient-to-br from-brand-blue/20 via-white to-white p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-brand-blue/60 hover:shadow-lg">
+                    <div class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-brand-blue/15 transition group-hover:bg-brand-blue/25"></div>
+                    <div class="relative mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-blue text-2xl shadow-md shadow-brand-blue/25">🛠️</div>
+                    <h3 class="relative mb-2 text-lg font-extrabold text-brand-dark">Expertise technique</h3>
+                    <p class="relative text-sm leading-relaxed text-slate-700 sm:text-base">Des equipes qualifiees et des conseils adaptes a votre maison.</p>
                 </article>
-                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft">
-                    <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/10 text-xl text-brand-blue">✅</div>
-                    <h3 class="mb-2 text-lg font-extrabold text-brand-dark">Entreprise certifiee RGE</h3>
-                    <p class="text-sm text-slate-600">Un accompagnement conforme aux normes et aides en vigueur.</p>
+                <article class="group relative flex flex-col overflow-hidden rounded-2xl border-2 border-brand-yellow/50 bg-gradient-to-br from-brand-yellow/25 via-white to-amber-50/40 p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-brand-yellow hover:shadow-lg">
+                    <div class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-brand-yellow/20 transition group-hover:bg-brand-yellow/35"></div>
+                    <div class="relative mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-dark text-2xl text-brand-yellow shadow-md">✅</div>
+                    <h3 class="relative mb-2 text-lg font-extrabold text-brand-dark">Entreprise certifiee RGE</h3>
+                    <p class="relative text-sm leading-relaxed text-slate-700 sm:text-base">Un accompagnement conforme aux normes et aides en vigueur.</p>
                 </article>
-                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft">
-                    <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/10 text-xl text-brand-blue">🌿</div>
-                    <h3 class="mb-2 text-lg font-extrabold text-brand-dark">Solutions durables</h3>
-                    <p class="text-sm text-slate-600">Des choix techniques performants pour un impact long terme.</p>
+                <article class="group relative flex flex-col overflow-hidden rounded-2xl border-2 border-brand-dark/25 bg-gradient-to-br from-brand-dark/10 via-white to-emerald-50/30 p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-brand-dark/45 hover:shadow-lg">
+                    <div class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-emerald-500/10 transition group-hover:bg-emerald-500/15"></div>
+                    <div class="relative mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-dark text-2xl text-white shadow-md">🌿</div>
+                    <h3 class="relative mb-2 text-lg font-extrabold text-brand-dark">Solutions durables</h3>
+                    <p class="relative text-sm leading-relaxed text-slate-700 sm:text-base">Des choix techniques performants pour un impact long terme.</p>
                 </article>
-                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft">
-                    <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/10 text-xl text-brand-blue">🤝</div>
-                    <h3 class="mb-2 text-lg font-extrabold text-brand-dark">Accompagnement complet</h3>
-                    <p class="text-sm text-slate-600">Un interlocuteur unique du devis jusqu'a la fin de chantier.</p>
+                <article class="group relative flex flex-col overflow-hidden rounded-2xl border-2 border-brand-blue/25 bg-gradient-to-br from-brand-yellow/15 via-white to-brand-blue/15 p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-brand-dark/30 hover:shadow-lg">
+                    <div class="pointer-events-none absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand-blue via-brand-yellow to-brand-dark"></div>
+                    <div class="relative mb-4 mt-1 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-blue to-sky-500 text-2xl text-white shadow-md">🤝</div>
+                    <h3 class="relative mb-2 text-lg font-extrabold text-brand-dark">Accompagnement complet</h3>
+                    <p class="relative text-sm leading-relaxed text-slate-700 sm:text-base">Un interlocuteur unique du devis jusqu'a la fin de chantier.</p>
                 </article>
             </div>
 
-            <div class="mt-10 rounded-2xl border border-slate-100 bg-white p-6 shadow-soft sm:p-8">
-                <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Processus</span> de prise en charge</h2>
-                <div class="mt-6 space-y-6 border-l-2 border-brand-blue/30 pl-5">
-                    <article class="relative">
-                        <span class="absolute -left-[30px] top-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-blue text-xs font-extrabold text-white">1</span>
+            <div class="mt-12 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 shadow-soft sm:p-8">
+                <h2 class="mb-2 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">Processus</span> de prise en charge</h2>
+                <p class="mb-8 max-w-3xl text-base text-slate-600 sm:text-lg">Quatre etapes claires, de l'estimation de vos aides au suivi de chantier.</p>
+                <div class="grid gap-5 md:grid-cols-2">
+                    <article class="relative flex flex-col rounded-2xl border-l-4 border-brand-blue bg-gradient-to-r from-brand-blue/12 to-white p-5 pl-6 shadow-sm transition hover:shadow-md sm:p-6">
+                        <span class="mb-3 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-blue text-sm font-black text-white shadow-md shadow-brand-blue/30">1</span>
                         <h4 class="text-lg font-extrabold text-brand-dark">Calcul de Primes et Devis precis</h4>
-                        <p class="mt-1 text-sm text-slate-600">Nous nous occupons de tout le calcul de vos primes, des CEE (Certificats d'Economies d'Energie) et des differentes options de financement disponibles. Profitez de travaux couverts jusqu'a 90 % sans avance de frais.</p>
+                        <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">Nous nous occupons de tout le calcul de vos primes, des CEE (Certificats d'Economies d'Energie) et des differentes options de financement disponibles. Profitez de travaux couverts jusqu'a 90 % sans avance de frais.</p>
                     </article>
-                    <article class="relative">
-                        <span class="absolute -left-[30px] top-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-blue text-xs font-extrabold text-white">2</span>
+                    <article class="relative flex flex-col rounded-2xl border-l-4 border-brand-yellow bg-gradient-to-r from-brand-yellow/20 to-white p-5 pl-6 shadow-sm transition hover:shadow-md sm:p-6">
+                        <span class="mb-3 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-dark text-sm font-black text-brand-yellow shadow-md">2</span>
                         <h4 class="text-lg font-extrabold text-brand-dark">Solutions de Financement</h4>
-                        <p class="mt-1 text-sm text-slate-600">Nous proposons des solutions de financement adaptees grace a nos partenaires, pour vous aider a gerer le cout parfois eleve des travaux de renovation.</p>
+                        <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">Nous proposons des solutions de financement adaptees grace a nos partenaires, pour vous aider a gerer le cout parfois eleve des travaux de renovation.</p>
                     </article>
-                    <article class="relative">
-                        <span class="absolute -left-[30px] top-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-blue text-xs font-extrabold text-white">3</span>
+                    <article class="relative flex flex-col rounded-2xl border-l-4 border-brand-dark bg-gradient-to-r from-brand-dark/12 to-white p-5 pl-6 shadow-sm transition hover:shadow-md sm:p-6">
+                        <span class="mb-3 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-dark text-sm font-black text-white shadow-md">3</span>
                         <h4 class="text-lg font-extrabold text-brand-dark">Analyse Personnalisee</h4>
-                        <p class="mt-1 text-sm text-slate-600">Un technicien qualifie se deplace gratuitement pour realiser un diagnostic approfondi et personnalise de vos besoins.</p>
+                        <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">Un technicien qualifie se deplace gratuitement pour realiser un diagnostic approfondi et personnalise de vos besoins.</p>
                     </article>
-                    <article class="relative">
-                        <span class="absolute -left-[30px] top-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-blue text-xs font-extrabold text-white">4</span>
+                    <article class="relative flex flex-col rounded-2xl border-l-4 border-sky-500 bg-gradient-to-r from-sky-500/10 via-brand-blue/8 to-white p-5 pl-6 shadow-sm transition hover:shadow-md sm:p-6">
+                        <span class="mb-3 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-blue to-sky-600 text-sm font-black text-white shadow-md">4</span>
                         <h4 class="text-lg font-extrabold text-brand-dark">Suivi et Assistance Continus</h4>
-                        <p class="mt-1 text-sm text-slate-600">De la premiere consultation a la finalisation des travaux, nous vous accompagnons a chaque etape. Vous beneficiez d'un suivi regulier et d'une assistance dediee pour garantir que vos travaux se deroulent en toute serenite.</p>
+                        <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">De la premiere consultation a la finalisation des travaux, nous vous accompagnons a chaque etape. Vous beneficiez d'un suivi regulier et d'une assistance dediee pour garantir que vos travaux se deroulent en toute serenite.</p>
                     </article>
                 </div>
             </div>
