@@ -110,20 +110,23 @@
     </section>
 
     <aside class="fixed bottom-4 left-4 z-40 rounded-xl border border-brand-blue/30 bg-white px-3 py-2 shadow-soft xl:hidden">
-        <div class="flex items-center gap-2">
-            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-blue text-xs font-extrabold text-white">G</span>
+        <a href="https://share.google/14Nu70a8PfwWT4P4p" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2">
+            <img src="/iconne.png" alt="Icone Normes & Renovation" class="h-7 w-7 rounded-full border border-brand-blue/40 bg-white object-cover">
             <div>
                 <p class="text-[11px] font-extrabold leading-none text-brand-dark">5.0/5 Avis Google</p>
                 <p class="text-[10px] leading-none text-yellow-500">★★★★★ <span class="text-slate-600">+100 avis</span></p>
             </div>
-        </div>
+        </a>
     </aside>
 
-    <aside class="fixed left-0 top-1/2 z-40 hidden w-28 -translate-y-1/2 rounded-r-2xl bg-gradient-to-b from-brand-blue to-brand-dark p-4 text-white shadow-soft xl:block" style="animation: avisFloat 4s ease-in-out infinite;">
-        <p class="text-[11px] font-bold uppercase tracking-wider text-white/80">Google</p>
-        <div class="mt-2 text-2xl font-extrabold">5.0/5</div>
-        <div class="text-xs text-brand-yellow">★★★★★</div>
-        <p class="mt-2 text-[11px] leading-tight text-white/90">Plus de 100 avis clients</p>
+    <aside class="fixed left-0 top-1/2 z-40 hidden w-32 -translate-y-1/2 rounded-r-2xl bg-gradient-to-b from-brand-blue to-brand-dark px-4 py-6 text-white shadow-soft xl:block" style="animation: avisFloat 4s ease-in-out infinite;">
+        <a href="https://share.google/14Nu70a8PfwWT4P4p" target="_blank" rel="noopener noreferrer" class="block">
+            <img src="/iconne.png" alt="Icone Normes & Renovation" class="h-10 w-10 rounded-full border border-white/50 bg-white object-cover">
+            <p class="mt-3 text-[11px] font-bold uppercase tracking-wider text-white/80">Avis Google</p>
+            <div class="mt-2 text-3xl font-extrabold">5.0/5</div>
+            <div class="text-sm text-brand-yellow">★★★★★</div>
+            <p class="mt-3 text-[12px] leading-tight text-white/90">Plus de 100 avis clients</p>
+        </a>
     </aside>
 
     <section id="services" class="bg-slate-50/70 py-16 sm:py-20">
