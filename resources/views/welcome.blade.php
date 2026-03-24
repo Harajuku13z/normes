@@ -28,6 +28,12 @@
             },
         };
     </script>
+    <style>
+        @keyframes avisFloat {
+            0%, 100% { transform: translateY(-50%); }
+            50% { transform: translateY(calc(-50% - 6px)); }
+        }
+    </style>
 </head>
 <body class="bg-white font-sans text-brand-dark antialiased">
     <header class="sticky top-0 z-50 border-b border-slate-100 bg-white/95 backdrop-blur-md">
@@ -102,11 +108,21 @@
         </div>
     </section>
 
-    <aside class="fixed left-3 top-1/2 z-40 hidden -translate-y-1/2 rounded-2xl border border-slate-200 bg-white p-3 shadow-soft xl:block">
-        <p class="text-xs font-bold uppercase tracking-wide text-slate-500">Google</p>
-        <div class="mt-1 text-lg font-extrabold text-brand-dark">5.0/5</div>
-        <div class="text-xs text-yellow-500">★★★★★</div>
-        <p class="mt-1 max-w-[130px] text-xs text-slate-600">Avis sur plus de 100 clients</p>
+    <aside class="fixed bottom-4 left-4 z-40 rounded-xl border border-brand-blue/30 bg-white px-3 py-2 shadow-soft xl:hidden">
+        <div class="flex items-center gap-2">
+            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-brand-blue text-xs font-extrabold text-white">G</span>
+            <div>
+                <p class="text-[11px] font-extrabold leading-none text-brand-dark">5.0/5 Avis Google</p>
+                <p class="text-[10px] leading-none text-yellow-500">★★★★★ <span class="text-slate-600">+100 avis</span></p>
+            </div>
+        </div>
+    </aside>
+
+    <aside class="fixed left-0 top-1/2 z-40 hidden w-28 -translate-y-1/2 rounded-r-2xl bg-gradient-to-b from-brand-blue to-brand-dark p-4 text-white shadow-soft xl:block" style="animation: avisFloat 4s ease-in-out infinite;">
+        <p class="text-[11px] font-bold uppercase tracking-wider text-white/80">Google</p>
+        <div class="mt-2 text-2xl font-extrabold">5.0/5</div>
+        <div class="text-xs text-brand-yellow">★★★★★</div>
+        <p class="mt-2 text-[11px] leading-tight text-white/90">Plus de 100 avis clients</p>
     </aside>
 
     <section id="services" class="bg-slate-50/70 py-16 sm:py-20">
@@ -286,7 +302,11 @@
         </div>
     </footer>
 
-    <a href="tel:+33385419886" class="fixed bottom-4 right-4 z-50 inline-flex rounded-full bg-brand-blue px-4 py-3 text-sm font-bold text-white shadow-soft transition hover:bg-sky-500 lg:hidden">Appeler maintenant</a>
+    <a href="tel:+33385419886" class="fixed bottom-4 right-4 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-brand-blue text-white shadow-soft transition hover:scale-105 hover:bg-brand-dark lg:hidden animate-pulse" aria-label="Appeler">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5.25a2.25 2.25 0 012.25-2.25h2.1a2.25 2.25 0 012.214 1.848l.42 2.52a2.25 2.25 0 01-1.184 2.355l-1.34.67a16.521 16.521 0 006.246 6.246l.67-1.34a2.25 2.25 0 012.355-1.184l2.52.42A2.25 2.25 0 0121 16.65v2.1A2.25 2.25 0 0118.75 21h-.75C9.716 21 3 14.284 3 6v-.75z" />
+        </svg>
+    </a>
 
     <script>
         (function () {
