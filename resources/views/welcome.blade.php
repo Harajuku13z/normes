@@ -140,15 +140,71 @@
 
     <section id="realisations" class="py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 class="mb-3 text-3xl font-extrabold sm:text-4xl">Avant / Apres</h2>
-            <p class="mb-8 text-base text-slate-600 sm:text-lg">Des resultats visibles immediatement avec un comparateur interactif.</p>
-            <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft">
-                <div class="relative h-[300px] bg-slate-200 sm:h-[380px] lg:h-[440px]">
-                    <div class="absolute inset-0 bg-cover bg-center" style="background-image:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=80')"></div>
-                    <div id="afterLayer" class="absolute inset-0 bg-cover bg-center" style="clip-path: inset(0 0 0 50%); background-image:url('https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1400&q=80')"></div>
+            <div class="grid gap-6 lg:grid-cols-[1.2fr_.8fr] lg:items-start">
+                <div>
+                    <h2 class="mb-3 text-3xl font-extrabold sm:text-4xl">Avant / Apres</h2>
+                    <p class="mb-5 text-base text-slate-600 sm:text-lg">Comparez plusieurs chantiers et voyez l'impact concret de nos renovations.</p>
+                    <div class="mb-4 flex flex-wrap gap-2">
+                        <button type="button" data-ba-case="1" class="ba-case-btn rounded-full bg-brand-dark px-4 py-2 text-xs font-bold uppercase tracking-wide text-white sm:text-sm">Toiture</button>
+                        <button type="button" data-ba-case="2" class="ba-case-btn rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Facade</button>
+                        <button type="button" data-ba-case="3" class="ba-case-btn rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Isolation</button>
+                    </div>
+                    <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft">
+                        <div class="relative h-[300px] bg-slate-200 sm:h-[380px] lg:h-[440px]">
+                            <div id="beforeLayer" class="absolute inset-0 bg-cover bg-center" style="background-image:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=80')"></div>
+                            <div id="afterLayer" class="absolute inset-0 bg-cover bg-center" style="clip-path: inset(0 0 0 50%); background-image:url('https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1400&q=80')"></div>
+                        </div>
+                        <input id="baRange" type="range" min="0" max="100" value="50" class="w-full accent-brand-blue">
+                        <div class="flex items-center justify-between bg-slate-50 px-4 py-3 text-xs font-bold uppercase tracking-wide text-slate-600 sm:text-sm"><span>Avant</span><span>Apres</span></div>
+                    </div>
                 </div>
-                <input id="baRange" type="range" min="0" max="100" value="50" class="w-full accent-brand-blue">
-                <div class="flex items-center justify-between bg-slate-50 px-4 py-3 text-xs font-bold uppercase tracking-wide text-slate-600 sm:text-sm"><span>Avant</span><span>Apres</span></div>
+
+                <aside class="rounded-2xl border border-slate-100 bg-white p-6 shadow-soft">
+                    <h3 class="mb-3 text-2xl font-extrabold text-brand-dark">A propos de Normes & Renovation</h3>
+                    <p class="mb-4 text-sm leading-relaxed text-slate-600 sm:text-base">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables.</p>
+                    <ul class="mb-5 space-y-2 text-sm text-slate-700">
+                        <li>• Entreprise certifiee et orientee qualite</li>
+                        <li>• Accompagnement complet de l'etude a la livraison</li>
+                        <li>• Solutions performantes pour valoriser votre bien</li>
+                    </ul>
+                    <a href="#franchise" class="inline-flex rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white transition hover:bg-brand-dark">Aller dans A propos</a>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <section id="agences" class="bg-slate-50/70 py-16 sm:py-20">
+        <div class="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[.95fr_1.05fr] lg:items-start lg:px-8">
+            <div>
+                <h2 class="mb-3 text-3xl font-extrabold sm:text-4xl">Nos agences</h2>
+                <p class="mb-6 text-base text-slate-600 sm:text-lg">Retrouvez nos implantations principales en Bourgogne et en Bretagne.</p>
+                <div class="space-y-3">
+                    <article class="rounded-xl border border-slate-200 bg-white p-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Departement 71</p>
+                        <h3 class="text-lg font-extrabold text-brand-dark">Chalon-sur-Saone</h3>
+                        <p class="text-sm text-slate-600">6 rue Pierre de Coubertin, 71100 Chalon-sur-Saone</p>
+                    </article>
+                    <article class="rounded-xl border border-slate-200 bg-white p-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Departement 21</p>
+                        <h3 class="text-lg font-extrabold text-brand-dark">Agence Cote-d'Or</h3>
+                        <p class="text-sm text-slate-600">Interventions rapides a Dijon et dans tout le 21.</p>
+                    </article>
+                    <article class="rounded-xl border border-slate-200 bg-white p-4">
+                        <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Bretagne</p>
+                        <h3 class="text-lg font-extrabold text-brand-dark">Agence Bretagne</h3>
+                        <p class="text-sm text-slate-600">Couverture regionale pour vos travaux de renovation energetique.</p>
+                    </article>
+                </div>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
+                <h3 class="mb-4 text-xl font-extrabold text-brand-dark">Carte des implantations</h3>
+                <div class="relative min-h-[380px] rounded-xl bg-slate-100 p-4">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/France_location_map-Regions_and_departements-2016.svg/640px-France_location_map-Regions_and_departements-2016.svg.png" alt="Carte de France avec agences" class="h-full w-full rounded-lg object-cover">
+                    <span class="absolute left-[53%] top-[46%] inline-flex -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-blue px-3 py-1 text-xs font-extrabold text-white shadow">71</span>
+                    <span class="absolute left-[51%] top-[42%] inline-flex -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-dark px-3 py-1 text-xs font-extrabold text-white shadow">21</span>
+                    <span class="absolute left-[23%] top-[33%] inline-flex -translate-x-1/2 -translate-y-1/2 rounded-full bg-brand-yellow px-3 py-1 text-xs font-extrabold text-brand-dark shadow">Bretagne</span>
+                </div>
             </div>
         </div>
     </section>
@@ -309,12 +365,49 @@
             applySlide('1');
 
             const range = document.getElementById('baRange');
+            const beforeLayer = document.getElementById('beforeLayer');
             const afterLayer = document.getElementById('afterLayer');
             if (range && afterLayer) {
                 range.addEventListener('input', () => {
                     afterLayer.style.clipPath = `inset(0 0 0 ${Number(range.value)}%)`;
                 });
             }
+
+            const baCases = {
+                1: {
+                    before: "url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=80')",
+                    after: "url('https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1400&q=80')"
+                },
+                2: {
+                    before: "url('https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1400&q=80')",
+                    after: "url('https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1400&q=80')"
+                },
+                3: {
+                    before: "url('https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1400&q=80')",
+                    after: "url('https://images.unsplash.com/photo-1581094271901-8022df4466f9?auto=format&fit=crop&w=1400&q=80')"
+                }
+            };
+            const baCaseButtons = Array.from(document.querySelectorAll('.ba-case-btn'));
+            const applyBeforeAfterCase = (caseId) => {
+                const selectedCase = baCases[caseId];
+                if (!selectedCase || !beforeLayer || !afterLayer) {
+                    return;
+                }
+                beforeLayer.style.backgroundImage = selectedCase.before;
+                afterLayer.style.backgroundImage = selectedCase.after;
+            };
+            baCaseButtons.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    baCaseButtons.forEach((item) => {
+                        item.classList.remove('bg-brand-dark', 'text-white', 'border-brand-dark');
+                        item.classList.add('bg-white', 'text-slate-700', 'border-slate-300');
+                    });
+                    btn.classList.remove('bg-white', 'text-slate-700', 'border-slate-300');
+                    btn.classList.add('bg-brand-dark', 'text-white', 'border-brand-dark');
+                    applyBeforeAfterCase(btn.dataset.baCase);
+                });
+            });
+            applyBeforeAfterCase('1');
 
             const filterButtons = Array.from(document.querySelectorAll('.service-filter'));
             const serviceCards = Array.from(document.querySelectorAll('.service-card'));
