@@ -547,7 +547,7 @@
 
             <div class="flex h-full min-h-0 flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
                 <h2 class="mb-3 shrink-0 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Carte</span> des implantations</h2>
-                <div id="agencyMap" class="min-h-[280px] flex-1 rounded-xl border border-slate-200 sm:min-h-[320px] lg:min-h-0"></div>
+                <div id="agencyMap" class="min-h-[400px] flex-1 rounded-xl border border-slate-200 sm:min-h-[440px] lg:min-h-0"></div>
                 <div class="mt-3 flex shrink-0 flex-wrap gap-2 text-xs font-semibold">
                     <span class="inline-flex items-center gap-1 rounded-full bg-brand-blue/20 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-blue"></span>Région Bretagne</span>
                     <span class="inline-flex items-center gap-1 rounded-full bg-brand-yellow/70 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-yellow"></span>Départements 71 &amp; 21</span>
