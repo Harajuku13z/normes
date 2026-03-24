@@ -187,7 +187,19 @@
                         <li>• Accompagnement complet de l'etude a la livraison</li>
                         <li>• Solutions performantes pour valoriser votre bien</li>
                     </ul>
-                    <a href="#franchise" class="inline-flex rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white transition hover:bg-brand-dark">Aller dans A propos</a>
+                    <div class="mb-5 flex flex-wrap gap-2">
+                        <span class="inline-flex items-center gap-2 rounded-full bg-brand-blue/10 px-3 py-1 text-xs font-extrabold text-brand-dark">
+                            <span class="grid h-5 w-5 place-items-center rounded-full bg-brand-blue text-[10px] text-white">RGE</span>
+                            Logo RGE
+                        </span>
+                        <span class="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1 text-xs font-extrabold text-green-700">
+                            <span aria-hidden="true">🌿</span>
+                            Eco-responsable
+                        </span>
+                    </div>
+                    <div class="overflow-hidden rounded-xl border border-slate-200">
+                        <img src="/nous/equipe.jpeg" alt="Equipe Normes & Renovation" class="h-48 w-full object-cover sm:h-56">
+                    </div>
                 </aside>
             </div>
         </div>
@@ -222,78 +234,6 @@
                     <span class="inline-flex items-center gap-1 rounded-full bg-brand-blue/20 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-blue"></span>Region Bretagne</span>
                     <span class="inline-flex items-center gap-1 rounded-full bg-brand-yellow/70 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-yellow"></span>Departements 71 & 21</span>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-16 sm:py-20">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="rounded-2xl border border-slate-100 bg-white p-6 shadow-soft sm:p-8">
-                <p class="text-xs font-bold uppercase tracking-widest text-brand-blue">Notre equipe</p>
-                <h2 class="mt-2 text-3xl font-extrabold text-brand-dark sm:text-4xl">Une equipe dediee pour des resultats exceptionnels</h2>
-                <div class="mt-6 grid gap-4 sm:grid-cols-2">
-                    <article class="rounded-xl bg-slate-50 p-4">
-                        <h3 class="mb-2 text-lg font-bold text-brand-dark">Garantie travaux</h3>
-                        <p class="text-sm text-slate-600">Profitez de notre garantie sur les travaux realises pour avancer en toute serenite.</p>
-                    </article>
-                    <article class="rounded-xl bg-slate-50 p-4">
-                        <h3 class="mb-2 text-lg font-bold text-brand-dark">Prise en charge complete</h3>
-                        <p class="text-sm text-slate-600">Nous nous occupons de tout pour vous simplifier la vie, de l'etude au suivi chantier.</p>
-                    </article>
-                    <article class="rounded-xl bg-slate-50 p-4">
-                        <h3 class="mb-2 text-lg font-bold text-brand-dark">Techniciens qualifies</h3>
-                        <p class="text-sm text-slate-600">Tous nos techniciens sont qualifies et formes en continu aux meilleures pratiques.</p>
-                    </article>
-                    <article class="rounded-xl bg-slate-50 p-4">
-                        <h3 class="mb-2 text-lg font-bold text-brand-dark">Engagement qualite</h3>
-                        <p class="text-sm text-slate-600">Une equipe experimentee, orientee resultats et satisfaction client sur chaque projet.</p>
-                    </article>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="bg-slate-50/70 py-16 sm:py-20">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="grid gap-6 lg:grid-cols-[1.1fr_.9fr]">
-                <article class="rounded-2xl border border-brand-blue/20 bg-gradient-to-br from-white to-sky-50/40 p-6 shadow-soft sm:p-8">
-                    <p class="text-xs font-bold uppercase tracking-widest text-brand-blue">A propos de nous</p>
-                    <h3 class="mt-2 text-2xl font-extrabold text-brand-dark sm:text-3xl">Normes & Renovation, partenaire de confiance</h3>
-                    <p class="mt-3 text-base leading-relaxed text-slate-700">Nous sommes certifies RGE, engages dans le respect de l'environnement et fiers de soutenir la production francaise. Nous accompagnons chaque client avec des solutions fiables, performantes et durables.</p>
-                    <div class="mt-4 flex flex-wrap gap-2">
-                        <span class="rounded-full bg-brand-blue/10 px-3 py-1 text-xs font-bold text-brand-blue">Certifie RGE</span>
-                        <span class="rounded-full bg-brand-yellow/50 px-3 py-1 text-xs font-bold text-brand-dark">Respect de l'environnement</span>
-                        <span class="rounded-full bg-brand-dark/10 px-3 py-1 text-xs font-bold text-brand-dark">Production francaise</span>
-                    </div>
-                    <div class="mt-6 grid gap-4 sm:grid-cols-2">
-                        <div>
-                            <p class="text-xs font-bold uppercase text-brand-dark">Adresse</p>
-                            <p class="mt-1 text-sm text-slate-600">6 rue Pierre de Coubertin, 71100 Chalon sur Saone</p>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold uppercase text-brand-dark">Email</p>
-                            <p class="mt-1 text-sm text-slate-600">bourgogne-agence@normesrenovation.fr</p>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold uppercase text-brand-dark">Mobile</p>
-                            <p class="mt-1 text-sm text-slate-600">+33 03 85 41 98 86</p>
-                        </div>
-                    </div>
-                </article>
-                <article class="rounded-2xl border border-slate-100 bg-white p-6 shadow-soft sm:p-8">
-                    <p class="text-xs font-bold uppercase tracking-widest text-brand-blue">Agence de Bretagne</p>
-                    <h3 class="mt-2 text-xl font-extrabold text-brand-dark">Guide complet sur l'hydrofuge de toiture et isolation avec un couvreur a Pedernec</h3>
-                    <p class="mt-2 text-sm font-semibold text-slate-500">Decembre 2, 2025</p>
-                    <div class="mt-5 space-y-2 text-sm text-slate-600">
-                        <p><span class="font-bold text-brand-dark">Contact:</span> 02 96 40 07 55</p>
-                        <p><span class="font-bold text-brand-dark">Adresse:</span> ZA de Mikez - 22540 Pedernec</p>
-                        <p><span class="font-bold text-brand-dark">Email:</span> administratif@normesrenovation22.fr</p>
-                        <p><span class="font-bold text-brand-dark">Horaires:</span> Lun a Ven 9:00 a 18:30</p>
-                    </div>
-                </article>
-            </div>
-            <div class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-soft sm:p-3">
-                <img src="/nous/equipe.jpeg" alt="Equipe Normes & Renovation" class="h-[240px] w-full rounded-xl object-cover sm:h-[320px] lg:h-[420px]">
             </div>
         </div>
     </section>
