@@ -458,14 +458,45 @@
                 }
             };
 
+            let currentHeroSlide = 1;
+            let heroAutoplay = null;
+            const setHeroSlide = (slideId) => {
+                currentHeroSlide = Number(slideId);
+                applySlide(String(currentHeroSlide));
+                thumbs.forEach((t) => t.classList.remove('border-brand-blue'));
+                const activeThumb = thumbs.find((t) => Number(t.dataset.bg) === currentHeroSlide);
+                if (activeThumb) {
+                    activeThumb.classList.add('border-brand-blue');
+                }
+            };
+            const startHeroAutoplay = () => {
+                if (heroAutoplay) {
+                    return;
+                }
+                heroAutoplay = setInterval(() => {
+                    const nextSlide = currentHeroSlide >= 3 ? 1 : currentHeroSlide + 1;
+                    setHeroSlide(nextSlide);
+                }, 4500);
+            };
+            const stopHeroAutoplay = () => {
+                if (heroAutoplay) {
+                    clearInterval(heroAutoplay);
+                    heroAutoplay = null;
+                }
+            };
+
             thumbs.forEach((thumb) => {
                 thumb.addEventListener('click', () => {
-                    applySlide(thumb.dataset.bg);
-                    thumbs.forEach((t) => t.classList.remove('border-brand-blue'));
-                    thumb.classList.add('border-brand-blue');
+                    setHeroSlide(thumb.dataset.bg);
                 });
             });
-            applySlide('1');
+            const heroSection = document.getElementById('top');
+            if (heroSection) {
+                heroSection.addEventListener('mouseenter', stopHeroAutoplay);
+                heroSection.addEventListener('mouseleave', startHeroAutoplay);
+            }
+            setHeroSlide(1);
+            startHeroAutoplay();
 
             const range = document.getElementById('baRange');
             const beforeLayer = document.getElementById('beforeLayer');
