@@ -231,29 +231,29 @@
                     </div>
                 </div>
 
-                <aside class="flex min-h-0 flex-col rounded-2xl border border-slate-100 bg-white p-6 shadow-soft lg:min-h-[560px]">
-                    <h2 class="mb-3 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-dark">A propos de</span> <span class="text-brand-blue">Normes & Renovation</span></h2>
-                    <p class="mb-5 text-base leading-relaxed text-slate-600 sm:text-lg">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables. Nous sommes certifies RGE, engages dans le respect de l'environnement et nous privilegions des materiaux de qualite pour des renovations performantes et responsables.</p>
-                    <ul class="mb-5 space-y-2 text-base text-slate-700">
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Profitez de notre garantie sur les travaux realises</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Nous nous occupons de tout pour vous simplifier la vie</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Tous nos Techniciens sont qualifies & formes en continus</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Entreprise certifiee et orientee qualite</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Accompagnement complet de l'etude a la livraison</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Solutions performantes pour valoriser votre bien</span></li>
+                <aside class="flex min-h-0 flex-col rounded-2xl border border-white/25 bg-brand-blue p-6 shadow-soft lg:min-h-[560px]">
+                    <h2 class="mb-3 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-brand-yellow">A propos de</span> <span class="text-brand-dark">Normes & Renovation</span></h2>
+                    <p class="mb-5 text-base leading-relaxed text-white sm:text-lg">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables. Nous sommes certifies RGE, engages dans le respect de l'environnement et nous privilegions des materiaux de qualite pour des renovations performantes et responsables.</p>
+                    <ul class="mb-5 space-y-2 text-base text-white">
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Profitez de notre garantie sur les travaux realises</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Nous nous occupons de tout pour vous simplifier la vie</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Tous nos Techniciens sont qualifies & formes en continus</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Entreprise certifiee et orientee qualite</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Accompagnement complet de l'etude a la livraison</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Solutions performantes pour valoriser votre bien</span></li>
                     </ul>
                     <div class="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                        <div class="rounded-xl border border-slate-200 bg-white p-2">
+                        <div class="rounded-xl border border-white/30 bg-white p-2 shadow-sm">
                             <img src="/nous/rge.png" alt="Logo RGE Qualibat" class="h-20 w-full rounded-lg object-contain sm:h-24">
                         </div>
-                        <div class="rounded-xl border border-slate-200 bg-white p-2">
+                        <div class="rounded-xl border border-white/30 bg-white p-2 shadow-sm">
                             <img src="/nous/rge ventilation_.png" alt="Logo RGE Ventilation" class="h-20 w-full rounded-lg object-contain sm:h-24">
                         </div>
-                        <div class="rounded-xl border border-slate-200 bg-white p-2">
+                        <div class="rounded-xl border border-white/30 bg-white p-2 shadow-sm">
                             <img src="/nous/ECO.png" alt="Logo Eco Responsable" class="h-20 w-full rounded-lg object-contain sm:h-24">
                         </div>
                     </div>
-                    <div class="mt-auto overflow-hidden rounded-xl border border-slate-200">
+                    <div class="mt-auto overflow-hidden rounded-xl border border-white/30 shadow-sm">
                         <img src="/nous/equipe.jpeg" alt="Equipe Normes & Renovation" class="h-48 w-full object-cover sm:h-56">
                     </div>
                 </aside>
