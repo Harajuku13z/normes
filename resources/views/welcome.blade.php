@@ -467,24 +467,36 @@
                     </div>
                 </div>
 
-                <aside id="a-propos" class="flex min-h-0 scroll-mt-28 flex-col lg:min-h-[560px] lg:flex-row">
-                    <div class="flex flex-1 flex-col justify-center bg-white px-6 py-10 text-brand-dark sm:px-8 sm:py-12">
-                        <h2 class="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-                            <span class="text-brand-blue">À propos de</span>
-                            <span class="mt-2 block text-brand-dark">Normes &amp; Rénovation</span>
-                        </h2>
-                        <p class="mt-6 text-base leading-relaxed text-slate-700 sm:text-lg">Normes &amp; Rénovation accompagne les particuliers et professionnels dans leurs projets de rénovation énergétique, thermique et électrique. Notre équipe combine expertise technique, suivi de chantier et conseils sur mesure pour des résultats fiables et durables. Nous sommes certifiés RGE, engagés dans le respect de l'environnement et nous privilégions des matériaux de qualité pour des rénovations performantes et responsables.</p>
+                <aside id="a-propos" class="flex min-h-0 scroll-mt-28 flex-col rounded-2xl border border-white/25 bg-brand-blue p-6 shadow-soft lg:min-h-[560px]">
+                    <h2 class="mb-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+                        <span class="text-white">À propos de</span>
+                        <span class="mt-1 block sm:mt-2 sm:inline sm:pl-2">
+                            <span class="rounded-xl bg-brand-dark px-3 py-1 text-white shadow-md ring-2 ring-white/25 sm:inline-block">Normes &amp; Rénovation</span>
+                        </span>
+                    </h2>
+                    <p class="mb-5 text-base leading-relaxed text-white sm:text-lg">Normes &amp; Rénovation accompagne les particuliers et professionnels dans leurs projets de rénovation énergétique, thermique et électrique. Notre équipe combine expertise technique, suivi de chantier et conseils sur mesure pour des résultats fiables et durables. Nous sommes certifiés RGE, engagés dans le respect de l'environnement et nous privilégions des matériaux de qualité pour des rénovations performantes et responsables.</p>
+                    <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-yellow">Nos engagements</p>
+                    <ul class="mb-5 space-y-2 text-base text-white">
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Garantie sur les travaux réalisés</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Nous nous occupons de tout pour vous simplifier la vie</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Techniciens qualifiés et formés en continu</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Entreprise certifiée et orientée qualité</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Accompagnement complet de l'étude à la livraison</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Solutions performantes pour valoriser votre bien</span></li>
+                    </ul>
+                    <div class="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                        <div class="rounded-xl border border-white/30 bg-white p-2 shadow-sm">
+                            <img src="/nous/rge.png" alt="Logo RGE Qualibat" class="h-20 w-full rounded-lg object-contain sm:h-24">
+                        </div>
+                        <div class="rounded-xl border border-white/30 bg-white p-2 shadow-sm">
+                            <img src="/nous/rge ventilation_.png" alt="Logo RGE Ventilation" class="h-20 w-full rounded-lg object-contain sm:h-24">
+                        </div>
+                        <div class="rounded-xl border border-white/30 bg-white p-2 shadow-sm">
+                            <img src="/nous/ECO.png" alt="Logo Eco Responsable" class="h-20 w-full rounded-lg object-contain sm:h-24">
+                        </div>
                     </div>
-                    <div class="flex flex-1 flex-col justify-center bg-brand-dark px-6 py-10 text-white sm:px-8 sm:py-12">
-                        <p class="text-xs font-bold uppercase tracking-wider text-brand-yellow">Nos engagements</p>
-                        <ul class="mt-4 space-y-3 text-base leading-snug text-slate-200">
-                            <li class="flex gap-2"><span class="font-bold text-brand-yellow">·</span><span>Garantie sur les travaux réalisés</span></li>
-                            <li class="flex gap-2"><span class="font-bold text-brand-yellow">·</span><span>Nous nous occupons de tout pour vous simplifier la vie</span></li>
-                            <li class="flex gap-2"><span class="font-bold text-brand-yellow">·</span><span>Techniciens qualifiés et formés en continu</span></li>
-                            <li class="flex gap-2"><span class="font-bold text-brand-yellow">·</span><span>Entreprise certifiée et orientée qualité</span></li>
-                            <li class="flex gap-2"><span class="font-bold text-brand-yellow">·</span><span>Accompagnement complet de l'étude à la livraison</span></li>
-                            <li class="flex gap-2"><span class="font-bold text-brand-yellow">·</span><span>Solutions performantes pour valoriser votre bien</span></li>
-                        </ul>
+                    <div class="mt-auto overflow-hidden rounded-xl border border-white/30 shadow-sm">
+                        <img src="/nous/equipe.jpeg" alt="Équipe Normes &amp; Rénovation" class="h-48 w-full object-cover sm:h-56">
                     </div>
                 </aside>
             </div>
