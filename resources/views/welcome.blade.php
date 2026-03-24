@@ -521,48 +521,74 @@
 
             const mapContainer = document.getElementById('agencyMap');
             if (mapContainer && typeof L !== 'undefined') {
-                const map = L.map('agencyMap', { scrollWheelZoom: false }).setView([47.0, 2.5], 6);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 18,
-                    attribution: '&copy; OpenStreetMap contributors'
-                }).addTo(map);
+                const map = L.map('agencyMap', {
+                    scrollWheelZoom: false,
+                    zoomControl: false,
+                    attributionControl: false
+                }).setView([46.8, 2.2], 6);
 
                 const locations = [
                     { name: 'Agence 71 - Chalon-sur-Saone', coords: [46.781, 4.853], tag: '71' },
                     { name: 'Agence Bretagne - Pedernec', coords: [48.595, -3.286], tag: '22' }
                 ];
 
-                locations.forEach((location) => {
-                    L.circleMarker(location.coords, {
-                        radius: 8,
-                        color: '#2F4251',
-                        weight: 2,
-                        fillColor: '#60B4F9',
-                        fillOpacity: 0.95
-                    })
-                        .addTo(map)
-                        .bindPopup(`<strong>${location.name}</strong><br>${location.tag}`);
-                });
+                const basePane = map.createPane('regionsPane');
+                basePane.style.zIndex = 300;
+                const depPane = map.createPane('departementsPane');
+                depPane.style.zIndex = 400;
+                const markerPane = map.createPane('markersPane');
+                markerPane.style.zIndex = 500;
 
-                fetch('https://france-geojson.gregoiredavid.fr/repo/departements.geojson')
-                    .then((response) => response.json())
-                    .then((geojson) => {
-                        L.geoJSON(geojson, {
+                const isMetropolitan = (feature) => {
+                    const code = feature?.properties?.code || '';
+                    return !code.startsWith('97') && code !== '976';
+                };
+
+                Promise.all([
+                    fetch('https://france-geojson.gregoiredavid.fr/repo/regions.geojson').then((response) => response.json()),
+                    fetch('https://france-geojson.gregoiredavid.fr/repo/departements.geojson').then((response) => response.json())
+                ])
+                    .then(([regionsGeoJson, departementsGeoJson]) => {
+                        const regionsLayer = L.geoJSON(regionsGeoJson, {
+                            pane: 'regionsPane',
+                            filter: isMetropolitan,
                             style: (feature) => {
-                                const code = feature?.properties?.code;
-                                if (code === '71' || code === '22') {
+                                const regionName = feature?.properties?.nom || '';
+                                if (regionName === 'Bretagne') {
                                     return {
                                         color: '#2F4251',
-                                        weight: 2.2,
+                                        weight: 1.8,
+                                        fillColor: '#60B4F9',
+                                        fillOpacity: 0.45
+                                    };
+                                }
+                                return {
+                                    color: '#cbd5e1',
+                                    weight: 1,
+                                    fillColor: '#f1f5f9',
+                                    fillOpacity: 0.85
+                                };
+                            }
+                        }).addTo(map);
+
+                        const departementsLayer = L.geoJSON(departementsGeoJson, {
+                            pane: 'departementsPane',
+                            filter: isMetropolitan,
+                            style: (feature) => {
+                                const code = feature?.properties?.code || '';
+                                if (code === '71' || code === '21') {
+                                    return {
+                                        color: '#2F4251',
+                                        weight: 2.4,
                                         fillColor: '#FADF70',
-                                        fillOpacity: 0.8
+                                        fillOpacity: 0.95
                                     };
                                 }
                                 return {
                                     color: '#94a3b8',
-                                    weight: 1,
-                                    fillColor: '#e2e8f0',
-                                    fillOpacity: 0.35
+                                    weight: 0.9,
+                                    fillColor: 'transparent',
+                                    fillOpacity: 0
                                 };
                             },
                             onEachFeature: (feature, layer) => {
@@ -571,9 +597,28 @@
                                 layer.bindPopup(`<strong>${depName}</strong> (${depCode})`);
                             }
                         }).addTo(map);
+
+                        locations.forEach((location) => {
+                            L.circleMarker(location.coords, {
+                                pane: 'markersPane',
+                                radius: 8,
+                                color: '#2F4251',
+                                weight: 2,
+                                fillColor: '#60B4F9',
+                                fillOpacity: 0.95
+                            })
+                                .addTo(map)
+                                .bindPopup(`<strong>${location.name}</strong><br>${location.tag}`);
+                        });
+
+                        const bounds = regionsLayer.getBounds();
+                        if (bounds.isValid()) {
+                            map.fitBounds(bounds.pad(-0.03));
+                        }
+                        map.setMaxBounds(bounds.pad(0.2));
                     })
                     .catch(() => {
-                        // Keep base map and markers if geojson cannot be loaded.
+                        // Keep map container rendered if remote geojson fails.
                     });
             }
         })();
