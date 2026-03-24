@@ -92,7 +92,7 @@
 
     <section class="border-b border-yellow-300 bg-[#FADF70] py-8 sm:py-10">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <form class="grid gap-3 rounded-2xl border-2 border-brand-blue bg-[#FADF70] p-4 shadow-soft ring-2 ring-brand-dark/15 sm:grid-cols-[1fr_auto] sm:items-end sm:gap-4 sm:p-5">
+            <form class="grid gap-3 rounded-2xl border-2 border-white bg-white p-4 shadow-soft ring-2 ring-white/70 sm:grid-cols-[1fr_auto] sm:items-end sm:gap-4 sm:p-5">
                 <div>
                     <label for="address" class="mb-2 block text-sm font-extrabold text-brand-dark">Entrez votre adresse (simulateur)</label>
                     <input id="address" type="text" placeholder="Ex: 6 rue Pierre de Coubertin, Chalon-sur-Saone" class="w-full rounded-xl border-2 border-brand-blue bg-white px-4 py-3 text-sm text-brand-dark outline-none transition placeholder:text-slate-500 focus:border-brand-dark">
