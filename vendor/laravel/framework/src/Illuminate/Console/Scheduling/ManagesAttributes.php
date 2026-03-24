@@ -49,13 +49,6 @@ trait ManagesAttributes
     public $evenInMaintenanceMode = false;
 
     /**
-     * Indicates if the command should run even when the scheduler is paused.
-     *
-     * @var bool
-     */
-    public $evenWhenPaused = false;
-
-    /**
      * Indicates if the command should not overlap itself.
      *
      * @var bool
@@ -98,7 +91,7 @@ trait ManagesAttributes
     protected $rejects = [];
 
     /**
-     * The human-readable description of the event.
+     * The human readable description of the event.
      *
      * @var string|null
      */
@@ -120,7 +113,7 @@ trait ManagesAttributes
     /**
      * Limit the environments the command should run in.
      *
-     * @param  mixed  $environments
+     * @param  array|mixed  $environments
      * @return $this
      */
     public function environments($environments)
@@ -138,18 +131,6 @@ trait ManagesAttributes
     public function evenInMaintenanceMode()
     {
         $this->evenInMaintenanceMode = true;
-
-        return $this;
-    }
-
-    /**
-     * State that the command should run even when the scheduler is paused.
-     *
-     * @return $this
-     */
-    public function evenWhenPaused()
-    {
-        $this->evenWhenPaused = true;
 
         return $this;
     }
