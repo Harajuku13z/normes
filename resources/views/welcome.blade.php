@@ -201,9 +201,9 @@
 
     <section id="realisations" class="py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="grid gap-6 lg:grid-cols-[1.2fr_.8fr] lg:items-stretch">
+            <div class="grid gap-6 lg:grid-cols-2 lg:items-stretch">
                 <div class="flex min-h-0 flex-col lg:min-h-[560px]">
-                    <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Avant</span> / Apres</h2>
+                    <h2 class="mb-3 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">Avant</span> / Apres</h2>
                     <p class="mb-5 text-base text-slate-600 sm:text-lg">Comparez plusieurs chantiers et voyez l'impact concret de nos renovations.</p>
                     <div class="mb-4 flex flex-wrap gap-2">
                         <button type="button" data-ba-case="1" class="ba-case-btn rounded-full bg-brand-dark px-4 py-2 text-xs font-bold uppercase tracking-wide text-white sm:text-sm">Toiture</button>
@@ -232,9 +232,9 @@
                 </div>
 
                 <aside class="flex min-h-0 flex-col rounded-2xl border border-slate-100 bg-white p-6 shadow-soft lg:min-h-[560px]">
-                    <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-dark">A propos de</span> <span class="text-brand-blue">Normes & Renovation</span></h2>
-                    <p class="mb-4 text-sm leading-relaxed text-slate-600 sm:text-base">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables. Nous sommes certifies RGE, engages dans le respect de l'environnement et nous privilegions des materiaux de qualite pour des renovations performantes et responsables.</p>
-                    <ul class="mb-5 space-y-2 text-sm text-slate-700">
+                    <h2 class="mb-3 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-dark">A propos de</span> <span class="text-brand-blue">Normes & Renovation</span></h2>
+                    <p class="mb-5 text-base leading-relaxed text-slate-600 sm:text-lg">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables. Nous sommes certifies RGE, engages dans le respect de l'environnement et nous privilegions des materiaux de qualite pour des renovations performantes et responsables.</p>
+                    <ul class="mb-5 space-y-2 text-base text-slate-700">
                         <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Profitez de notre garantie sur les travaux realises</span></li>
                         <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Nous nous occupons de tout pour vous simplifier la vie</span></li>
                         <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Tous nos Techniciens sont qualifies & formes en continus</span></li>
