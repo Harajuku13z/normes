@@ -166,7 +166,7 @@
     <section id="realisations" class="py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="grid gap-6 lg:grid-cols-[1.2fr_.8fr] lg:items-stretch">
-                <div>
+                <div class="flex h-full flex-col">
                     <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Avant</span> / Apres</h2>
                     <p class="mb-5 text-base text-slate-600 sm:text-lg">Comparez plusieurs chantiers et voyez l'impact concret de nos renovations.</p>
                     <div class="mb-4 flex flex-wrap gap-2">
@@ -181,6 +181,9 @@
                         </div>
                         <input id="baRange" type="range" min="0" max="100" value="50" class="w-full accent-brand-blue">
                         <div class="flex items-center justify-between bg-slate-50 px-4 py-3 text-xs font-bold uppercase tracking-wide text-slate-600 sm:text-sm"><span>Avant</span><span>Apres</span></div>
+                    </div>
+                    <div class="mt-6 flex justify-center lg:justify-start">
+                        <a href="#realisations" class="inline-flex rounded-xl bg-brand-blue px-6 py-3 text-sm font-extrabold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-brand-dark">Voir toutes nos realisations</a>
                     </div>
                 </div>
 
@@ -210,9 +213,6 @@
                         <img src="/nous/equipe.jpeg" alt="Equipe Normes & Renovation" class="h-48 w-full object-cover sm:h-56">
                     </div>
                 </aside>
-            </div>
-            <div class="mt-6 flex justify-center lg:justify-start">
-                <a href="#realisations" class="inline-flex rounded-xl bg-brand-blue px-6 py-3 text-sm font-extrabold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-brand-dark">Voir toutes nos realisations</a>
             </div>
         </div>
     </section>
