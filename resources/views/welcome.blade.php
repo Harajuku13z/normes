@@ -269,10 +269,52 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <h2 class="mb-8 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Pourquoi</span> nous ?</h2>
             <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                <article class="rounded-xl border border-slate-100 bg-white p-5"><h3 class="mb-2 font-bold">Expertise technique</h3><p class="text-sm text-slate-600">Des equipes qualifiees et des conseils adaptes a votre maison.</p></article>
-                <article class="rounded-xl border border-slate-100 bg-white p-5"><h3 class="mb-2 font-bold">Entreprise certifiee RGE</h3><p class="text-sm text-slate-600">Un accompagnement conforme aux normes et aides en vigueur.</p></article>
-                <article class="rounded-xl border border-slate-100 bg-white p-5"><h3 class="mb-2 font-bold">Solutions durables</h3><p class="text-sm text-slate-600">Des choix techniques performants pour un impact long terme.</p></article>
-                <article class="rounded-xl border border-slate-100 bg-white p-5"><h3 class="mb-2 font-bold">Accompagnement complet</h3><p class="text-sm text-slate-600">Un interlocuteur unique du devis jusqu'a la fin de chantier.</p></article>
+                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft">
+                    <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/10 text-xl text-brand-blue">🛠️</div>
+                    <h3 class="mb-2 text-lg font-extrabold text-brand-dark">Expertise technique</h3>
+                    <p class="text-sm text-slate-600">Des equipes qualifiees et des conseils adaptes a votre maison.</p>
+                </article>
+                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft">
+                    <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/10 text-xl text-brand-blue">✅</div>
+                    <h3 class="mb-2 text-lg font-extrabold text-brand-dark">Entreprise certifiee RGE</h3>
+                    <p class="text-sm text-slate-600">Un accompagnement conforme aux normes et aides en vigueur.</p>
+                </article>
+                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft">
+                    <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/10 text-xl text-brand-blue">🌿</div>
+                    <h3 class="mb-2 text-lg font-extrabold text-brand-dark">Solutions durables</h3>
+                    <p class="text-sm text-slate-600">Des choix techniques performants pour un impact long terme.</p>
+                </article>
+                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft">
+                    <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/10 text-xl text-brand-blue">🤝</div>
+                    <h3 class="mb-2 text-lg font-extrabold text-brand-dark">Accompagnement complet</h3>
+                    <p class="text-sm text-slate-600">Un interlocuteur unique du devis jusqu'a la fin de chantier.</p>
+                </article>
+            </div>
+
+            <div class="mt-10 rounded-2xl border border-slate-100 bg-white p-6 shadow-soft sm:p-8">
+                <h3 class="text-3xl font-extrabold text-brand-dark sm:text-4xl"><span class="text-brand-blue">Processus</span> de prise en charge</h3>
+                <div class="mt-6 space-y-6 border-l-2 border-brand-blue/30 pl-5">
+                    <article class="relative">
+                        <span class="absolute -left-[30px] top-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-blue text-xs font-extrabold text-white">1</span>
+                        <h4 class="text-lg font-extrabold text-brand-dark">Calcul de Primes et Devis precis</h4>
+                        <p class="mt-1 text-sm text-slate-600">Nous nous occupons de tout le calcul de vos primes, des CEE (Certificats d'Economies d'Energie) et des differentes options de financement disponibles. Profitez de travaux couverts jusqu'a 90 % sans avance de frais.</p>
+                    </article>
+                    <article class="relative">
+                        <span class="absolute -left-[30px] top-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-blue text-xs font-extrabold text-white">2</span>
+                        <h4 class="text-lg font-extrabold text-brand-dark">Solutions de Financement</h4>
+                        <p class="mt-1 text-sm text-slate-600">Nous proposons des solutions de financement adaptees grace a nos partenaires, pour vous aider a gerer le cout parfois eleve des travaux de renovation.</p>
+                    </article>
+                    <article class="relative">
+                        <span class="absolute -left-[30px] top-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-blue text-xs font-extrabold text-white">3</span>
+                        <h4 class="text-lg font-extrabold text-brand-dark">Analyse Personnalisee</h4>
+                        <p class="mt-1 text-sm text-slate-600">Un technicien qualifie se deplace gratuitement pour realiser un diagnostic approfondi et personnalise de vos besoins.</p>
+                    </article>
+                    <article class="relative">
+                        <span class="absolute -left-[30px] top-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-blue text-xs font-extrabold text-white">4</span>
+                        <h4 class="text-lg font-extrabold text-brand-dark">Suivi et Assistance Continus</h4>
+                        <p class="mt-1 text-sm text-slate-600">De la premiere consultation a la finalisation des travaux, nous vous accompagnons a chaque etape. Vous beneficiez d'un suivi regulier et d'une assistance dediee pour garantir que vos travaux se deroulent en toute serenite.</p>
+                    </article>
+                </div>
             </div>
         </div>
     </section>
