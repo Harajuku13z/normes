@@ -7,7 +7,6 @@
     <link rel="icon" type="image/png" href="/iconne.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --brand: #60b4f9;
@@ -20,7 +19,7 @@
         * { box-sizing: border-box; }
         body {
             margin: 0;
-            font-family: "Manrope", Arial, sans-serif;
+            font-family: "Google Sans", "Product Sans", "Manrope", Arial, sans-serif;
             color: var(--text);
             background: var(--bg);
         }
@@ -66,7 +65,7 @@
             text-decoration: none;
             color: var(--text);
             font-weight: 600;
-            font-size: 15px;
+            font-size: 17px;
             transition: color .2s ease;
         }
         .menu a:hover {
@@ -273,7 +272,7 @@
                             <div class="slide-copy">
                                 <h1 class="slide-title">Accompagnement professionnel</h1>
                                 <p class="slide-subtitle">Des solutions sur mesure pour faire grandir votre entreprise sereinement.</p>
-                                <a class="slide-btn" href="#">Nous contacter</a>
+                                <a class="slide-btn" href="#">Simulateur de devis</a>
                             </div>
                         </div>
                     </div>
@@ -284,7 +283,7 @@
                             <div class="slide-copy">
                                 <h2 class="slide-title">Expertise et performance</h2>
                                 <p class="slide-subtitle">Une equipe engagee pour des resultats mesurables sur tous vos projets.</p>
-                                <a class="slide-btn" href="#">Nous contacter</a>
+                                <a class="slide-btn" href="#">Nous contact</a>
                             </div>
                         </div>
                     </div>
@@ -295,7 +294,7 @@
                             <div class="slide-copy">
                                 <h2 class="slide-title">Presence nationale</h2>
                                 <p class="slide-subtitle">Nos agences franchise vous accompagnent au plus pres de vos besoins.</p>
-                                <a class="slide-btn" href="#">Nous contacter</a>
+                                <a class="slide-btn" href="#">Devenir franchiser</a>
                             </div>
                         </div>
                     </div>
