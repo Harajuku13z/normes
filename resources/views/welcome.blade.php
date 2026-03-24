@@ -136,7 +136,7 @@
 
     <section id="services" class="bg-slate-50/70 py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 class="mb-3 text-3xl font-extrabold leading-tight sm:text-4xl">Nos services de renovation</h2>
+            <h2 class="mb-3 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">Nos services</span> de renovation</h2>
             <p class="mb-6 max-w-3xl text-base text-slate-600 sm:text-lg">Choisissez une categorie et affichez uniquement les services concernes.</p>
             <div id="serviceFilters" class="mb-6 flex flex-wrap gap-2">
                 <button type="button" data-filter="all" class="service-filter rounded-full bg-brand-dark px-4 py-2 text-xs font-bold uppercase tracking-wide text-white sm:text-sm">Tous</button>
@@ -167,7 +167,7 @@
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="grid gap-6 lg:grid-cols-[1.2fr_.8fr] lg:items-stretch">
                 <div>
-                    <h2 class="mb-3 text-3xl font-extrabold sm:text-4xl">Avant / Apres</h2>
+                    <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Avant</span> / Apres</h2>
                     <p class="mb-5 text-base text-slate-600 sm:text-lg">Comparez plusieurs chantiers et voyez l'impact concret de nos renovations.</p>
                     <div class="mb-4 flex flex-wrap gap-2">
                         <button type="button" data-ba-case="1" class="ba-case-btn rounded-full bg-brand-dark px-4 py-2 text-xs font-bold uppercase tracking-wide text-white sm:text-sm">Toiture</button>
@@ -185,15 +185,15 @@
                 </div>
 
                 <aside class="flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-6 shadow-soft">
-                    <h3 class="mb-3 text-2xl font-extrabold text-brand-dark">A propos de Normes & Renovation</h3>
+                    <h3 class="mb-3 text-3xl font-extrabold text-brand-dark"><span class="text-brand-dark">A propos de</span> <span class="text-brand-blue">Normes & Renovation</span></h3>
                     <p class="mb-4 text-sm leading-relaxed text-slate-600 sm:text-base">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables.</p>
                     <ul class="mb-5 space-y-2 text-sm text-slate-700">
-                        <li>• Profitez de notre garantie sur les travaux realises</li>
-                        <li>• Nous nous occupons de tout pour vous simplifier la vie</li>
-                        <li>• Tous nos Techniciens sont qualifies & formes en continus</li>
-                        <li>• Entreprise certifiee et orientee qualite</li>
-                        <li>• Accompagnement complet de l'etude a la livraison</li>
-                        <li>• Solutions performantes pour valoriser votre bien</li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Profitez de notre garantie sur les travaux realises</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Nous nous occupons de tout pour vous simplifier la vie</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Tous nos Techniciens sont qualifies & formes en continus</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Entreprise certifiee et orientee qualite</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Accompagnement complet de l'etude a la livraison</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Solutions performantes pour valoriser votre bien</span></li>
                     </ul>
                     <div class="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
                         <div class="rounded-xl border border-slate-200 bg-white p-2">
@@ -217,7 +217,7 @@
     <section id="agences" class="bg-slate-50/70 py-16 sm:py-20">
         <div class="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[.95fr_1.05fr] lg:items-start lg:px-8">
             <div>
-                <h2 class="mb-3 text-3xl font-extrabold sm:text-4xl">Nos agences</h2>
+                <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Nos</span> agences</h2>
                 <p class="mb-6 text-base text-slate-600 sm:text-lg">Retrouvez nos 2 agences principales et les departements mis en avant sur la carte.</p>
                 <div class="space-y-3">
                     <article class="rounded-xl border border-slate-200 bg-white p-4">
@@ -244,7 +244,7 @@
             </div>
 
             <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
-                <h3 class="mb-4 text-xl font-extrabold text-brand-dark">Carte des implantations</h3>
+                <h3 class="mb-4 text-2xl font-extrabold text-brand-dark"><span class="text-brand-blue">Carte</span> des implantations</h3>
                 <div id="agencyMap" class="min-h-[380px] rounded-xl border border-slate-200"></div>
                 <div class="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
                     <span class="inline-flex items-center gap-1 rounded-full bg-brand-blue/20 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-blue"></span>Region Bretagne</span>
@@ -264,7 +264,7 @@
 
     <section class="bg-slate-50/70 py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 class="mb-8 text-3xl font-extrabold sm:text-4xl">Pourquoi nous ?</h2>
+            <h2 class="mb-8 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Pourquoi</span> nous ?</h2>
             <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 <article class="rounded-xl border border-slate-100 bg-white p-5"><h3 class="mb-2 font-bold">Expertise technique</h3><p class="text-sm text-slate-600">Des equipes qualifiees et des conseils adaptes a votre maison.</p></article>
                 <article class="rounded-xl border border-slate-100 bg-white p-5"><h3 class="mb-2 font-bold">Entreprise certifiee RGE</h3><p class="text-sm text-slate-600">Un accompagnement conforme aux normes et aides en vigueur.</p></article>
@@ -285,7 +285,7 @@
 
     <section class="py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 class="mb-3 text-3xl font-extrabold sm:text-4xl">Avis clients</h2>
+            <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Avis</span> clients</h2>
             <p class="mb-8 text-base text-slate-600 sm:text-lg">Ils nous font confiance pour leurs travaux de renovation.</p>
             <div class="grid gap-4 lg:grid-cols-3">
                 <article class="rounded-xl border border-slate-100 bg-white p-5 shadow-soft"><div class="mb-2 text-yellow-500">★★★★★</div><p class="mb-3 text-slate-600">Equipe serieuse, chantier propre et tres bon resultat.</p><b class="text-sm">Claire M.</b></article>
@@ -298,7 +298,7 @@
     <section id="devis" class="bg-brand-dark py-16 text-white sm:py-20">
         <div class="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[1.15fr_.85fr] lg:items-center lg:px-8">
             <div>
-                <h2 class="mb-3 text-3xl font-extrabold leading-tight sm:text-4xl">Vous avez un projet de renovation ?</h2>
+                <h2 class="mb-3 text-4xl font-extrabold leading-tight text-white sm:text-5xl"><span class="text-brand-yellow">Vous avez</span> un projet de renovation ?</h2>
                 <p class="text-slate-200">Simulez votre besoin et recevez rapidement un accompagnement personnalise.</p>
             </div>
             <form class="rounded-2xl bg-white p-5 text-brand-dark sm:p-6">
@@ -321,7 +321,7 @@
 
     <section id="franchise" class="bg-slate-50/70 py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 class="mb-8 text-3xl font-extrabold sm:text-4xl">Bonus</h2>
+            <h2 class="mb-8 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Bonus</span></h2>
             <div class="grid gap-4 lg:grid-cols-3">
                 <article class="rounded-xl border border-slate-100 bg-white p-5"><h3 class="mb-2 text-xl font-bold">Simulateur de devis</h3><p class="text-slate-600">Un parcours simple pour qualifier rapidement votre projet.</p></article>
                 <article class="rounded-xl border border-slate-100 bg-white p-5"><h3 class="mb-2 text-xl font-bold">Page realisations</h3><p class="text-slate-600">Mise en avant des chantiers avant/apres pour rassurer.</p></article>
