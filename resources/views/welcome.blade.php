@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NORMES - Accueil</title>
     <link rel="icon" type="image/png" href="/iconne.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --brand: #60b4f9;
@@ -17,7 +20,7 @@
         * { box-sizing: border-box; }
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: "Inter", Arial, sans-serif;
             color: var(--text);
             background: var(--bg);
         }
@@ -29,9 +32,13 @@
         .topbar {
             background: var(--white);
             border-bottom: 1px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            backdrop-filter: blur(8px);
         }
         .topbar-inner {
-            min-height: 86px;
+            min-height: 88px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -45,7 +52,7 @@
             font-size: 20px;
         }
         .logo img {
-            height: 58px;
+            height: 54px;
             width: auto;
             display: block;
         }
@@ -60,17 +67,24 @@
             color: var(--text);
             font-weight: 600;
             font-size: 15px;
+            transition: color .2s ease;
+        }
+        .menu a:hover {
+            color: var(--brand);
         }
         .menu .contact-btn {
-            border: 2px solid var(--brand);
-            color: var(--brand);
-            padding: 10px 16px;
-            border-radius: 8px;
+            border: 0;
+            color: var(--text);
+            padding: 11px 18px;
+            border-radius: 999px;
+            background: linear-gradient(120deg, var(--brand), var(--accent));
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(96, 180, 249, 0.35);
         }
         .socials {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
         .social-icon {
             width: 34px;
@@ -82,6 +96,11 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            box-shadow: 0 8px 18px rgba(47, 66, 81, 0.25);
+            transition: transform .2s ease;
+        }
+        .social-icon:hover {
+            transform: translateY(-2px);
         }
         .social-icon.facebook {
             background: #60b4f9;
@@ -90,15 +109,15 @@
             background: #2f4251;
         }
 
-        .hero {
-            padding: 26px 0 36px;
-        }
+        .hero { padding: 0; }
         .hero-shell {
             width: 100%;
         }
         .slider {
             position: relative;
-            height: 600px;
+            height: calc(100vh - 88px);
+            min-height: 540px;
+            max-height: 760px;
             overflow: hidden;
             background: #dbe4f0;
         }
@@ -122,7 +141,7 @@
             z-index: 2;
             left: 0;
             right: 0;
-            bottom: 32px;
+            bottom: 38px;
         }
         .slide-content {
             display: flex;
@@ -132,45 +151,56 @@
         }
         .slide-copy {
             color: #fff;
-            max-width: 520px;
+            max-width: 650px;
         }
         .slide-title {
             margin: 0 0 8px;
-            font-size: 34px;
-            line-height: 1.2;
+            font-size: clamp(32px, 4.2vw, 56px);
+            line-height: 1.1;
+            font-weight: 800;
+            letter-spacing: -0.02em;
         }
         .slide-subtitle {
             margin: 0 0 16px;
             color: #e5e7eb;
-            line-height: 1.5;
+            line-height: 1.6;
+            font-size: 18px;
+            max-width: 560px;
         }
         .slide-btn {
             display: inline-block;
             background: var(--brand);
             color: var(--text);
-            padding: 10px 16px;
-            border-radius: 8px;
+            padding: 12px 20px;
+            border-radius: 999px;
             text-decoration: none;
             font-weight: 700;
+            box-shadow: 0 10px 20px rgba(96, 180, 249, 0.35);
+            transition: transform .2s ease, box-shadow .2s ease;
         }
         .slide-btn:hover {
             background: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 14px 26px rgba(250, 223, 112, 0.35);
         }
         .thumbs {
-            display: grid;
+            display: flex;
+            flex-direction: row;
             gap: 12px;
-            width: 110px;
+            width: auto;
         }
         .thumb {
-            width: 110px;
-            height: 90px;
-            border-radius: 12px;
+            width: 122px;
+            height: 86px;
+            border-radius: 14px;
             background-size: cover;
             background-position: center;
             border: 2px solid transparent;
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.22);
+            transition: transform .22s ease, border-color .22s ease;
         }
         .thumb::after {
             content: "";
@@ -180,19 +210,23 @@
         }
         .thumb.active {
             border-color: var(--brand);
+            transform: translateY(-4px);
         }
         .thumb.active::after {
             background: rgba(0, 0, 0, .05);
         }
         @media (max-width: 980px) {
-            .slider { height: 500px; }
+            .slider {
+                height: calc(100vh - 88px);
+                min-height: 520px;
+            }
             .slide-content-wrap { bottom: 20px; }
-            .slide-content { flex-direction: column; align-items: flex-start; }
-            .slide-title { font-size: 28px; }
-            .thumbs { display: flex; width: 100%; }
+            .slide-content { flex-direction: column; align-items: flex-start; gap: 14px; }
+            .slide-subtitle { font-size: 16px; }
+            .thumbs { width: 100%; }
             .thumb {
                 width: calc((100% - 24px) / 3);
-                min-width: 90px;
+                min-width: 88px;
             }
         }
     </style>
@@ -228,11 +262,6 @@
                                 <p class="slide-subtitle">Des solutions sur mesure pour faire grandir votre entreprise sereinement.</p>
                                 <a class="slide-btn" href="#">Nous contacter</a>
                             </div>
-                            <aside class="thumbs" id="thumbs">
-                                <button class="thumb active" data-target="0" style="background-image:url('https://picsum.photos/400/300?random=21');" aria-label="Slide 1"></button>
-                                <button class="thumb" data-target="1" style="background-image:url('https://picsum.photos/400/300?random=22');" aria-label="Slide 2"></button>
-                                <button class="thumb" data-target="2" style="background-image:url('https://picsum.photos/400/300?random=23');" aria-label="Slide 3"></button>
-                            </aside>
                         </div>
                     </div>
                 </article>
@@ -244,7 +273,6 @@
                                 <p class="slide-subtitle">Une equipe engagee pour des resultats mesurables sur tous vos projets.</p>
                                 <a class="slide-btn" href="#">Nous contacter</a>
                             </div>
-                            <aside class="thumbs" aria-hidden="true"></aside>
                         </div>
                     </div>
                 </article>
@@ -256,10 +284,18 @@
                                 <p class="slide-subtitle">Nos agences franchise vous accompagnent au plus pres de vos besoins.</p>
                                 <a class="slide-btn" href="#">Nous contacter</a>
                             </div>
-                            <aside class="thumbs" aria-hidden="true"></aside>
                         </div>
                     </div>
                 </article>
+                <div class="slide-content-wrap">
+                    <div class="container" style="display:flex; justify-content:flex-end;">
+                        <aside class="thumbs" id="thumbs">
+                            <button class="thumb active" data-target="0" style="background-image:url('https://picsum.photos/400/300?random=21');" aria-label="Slide 1"></button>
+                            <button class="thumb" data-target="1" style="background-image:url('https://picsum.photos/400/300?random=22');" aria-label="Slide 2"></button>
+                            <button class="thumb" data-target="2" style="background-image:url('https://picsum.photos/400/300?random=23');" aria-label="Slide 3"></button>
+                        </aside>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
