@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="/iconne.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --brand: #60b4f9;
@@ -20,7 +20,7 @@
         * { box-sizing: border-box; }
         body {
             margin: 0;
-            font-family: "Inter", Arial, sans-serif;
+            font-family: "Manrope", Arial, sans-serif;
             color: var(--text);
             background: var(--bg);
         }
@@ -74,12 +74,18 @@
         }
         .menu .contact-btn {
             border: 0;
-            color: var(--text);
-            padding: 11px 18px;
-            border-radius: 999px;
-            background: linear-gradient(120deg, var(--brand), var(--accent));
+            color: #ffffff;
+            padding: 11px 20px;
+            border-radius: 10px;
+            background: var(--brand);
             font-weight: 700;
             box-shadow: 0 10px 25px rgba(96, 180, 249, 0.35);
+            transition: background-color .2s ease, color .2s ease, transform .2s ease;
+        }
+        .menu .contact-btn:hover {
+            background: var(--accent);
+            color: var(--text);
+            transform: translateY(-1px);
         }
         .socials {
             display: flex;
@@ -95,12 +101,17 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
+            font-weight: 800;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.65);
             box-shadow: 0 8px 18px rgba(47, 66, 81, 0.25);
-            transition: transform .2s ease;
+            transition: transform .2s ease, background-color .2s ease, color .2s ease;
         }
         .social-icon:hover {
             transform: translateY(-2px);
+            background: var(--accent);
+            color: var(--text);
+            border-color: var(--accent);
         }
         .social-icon.facebook {
             background: #60b4f9;
@@ -115,9 +126,9 @@
         }
         .slider {
             position: relative;
-            height: calc(100vh - 88px);
-            min-height: 540px;
-            max-height: 760px;
+            height: calc(72vh - 44px);
+            min-height: 430px;
+            max-height: 620px;
             overflow: hidden;
             background: #dbe4f0;
         }
@@ -170,9 +181,9 @@
         .slide-btn {
             display: inline-block;
             background: var(--brand);
-            color: var(--text);
+            color: #ffffff;
             padding: 12px 20px;
-            border-radius: 999px;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 700;
             box-shadow: 0 10px 20px rgba(96, 180, 249, 0.35);
@@ -180,7 +191,8 @@
         }
         .slide-btn:hover {
             background: var(--accent);
-            transform: translateY(-2px);
+            color: var(--text);
+            transform: translateY(-1px);
             box-shadow: 0 14px 26px rgba(250, 223, 112, 0.35);
         }
         .thumbs {
@@ -217,8 +229,8 @@
         }
         @media (max-width: 980px) {
             .slider {
-                height: calc(100vh - 88px);
-                min-height: 520px;
+                height: 470px;
+                min-height: 470px;
             }
             .slide-content-wrap { bottom: 20px; }
             .slide-content { flex-direction: column; align-items: flex-start; gap: 14px; }
@@ -239,12 +251,13 @@
             </div>
 
             <nav class="menu">
-                <a href="#">Accueil</a>
-                <a href="#">Nos services</a>
-                <a href="#">Agences franchise</a>
+                <a href="#">Acceuil</a>
+                <a href="#">nos services</a>
+                <a href="#">agences</a>
+                <a href="#">nos realisation</a>
                 <a class="contact-btn" href="#">Nous contacter</a>
                 <div class="socials">
-                    <a class="social-icon facebook" href="#" aria-label="Facebook">f</a>
+                    <a class="social-icon facebook" href="#" aria-label="Facebook">F</a>
                     <a class="social-icon linkedin" href="#" aria-label="LinkedIn">in</a>
                 </div>
             </nav>
