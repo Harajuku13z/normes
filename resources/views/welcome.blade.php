@@ -331,97 +331,97 @@
             </div>
             <div id="serviceGrid" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1632759145351-1d592ac9b238?auto=format&fit=crop&w=1000&q=80" alt="Toiture et couverture" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/toiture et couverture.jpeg') }}" alt="Toiture et couverture" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
-                        <h3 class="mb-2 text-lg font-bold leading-snug">🏠 Toiture &amp; Couverture</h3>
+                        <h3 class="mb-2 text-lg font-bold leading-snug">Toiture &amp; couverture</h3>
                         <p class="text-sm text-slate-600">Nettoyage, reparation et remplacement de toiture pour proteger durablement votre maison.</p>
                         <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
                     </div>
                 </article>
                 <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?auto=format&fit=crop&w=1000&q=80" alt="Nettoyage et demoussage de toiture" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/Nettoyage & Demoussage de Toiture.jpeg') }}" alt="Nettoyage et démoussage de toiture" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
-                        <h3 class="mb-2 text-lg font-bold leading-snug">💧 Nettoyage &amp; Demoussage de Toiture</h3>
+                        <h3 class="mb-2 text-lg font-bold leading-snug">Nettoyage &amp; démoussage de toiture</h3>
                         <p class="text-sm text-slate-600">Elimination des mousses et lichens pour prolonger la duree de vie de votre toit.</p>
                         <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
                     </div>
                 </article>
                 <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1000&q=80" alt="Traitement hydrofuge toiture" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/Traitement Hydrofuge (Incolore ou Colore).png') }}" alt="Traitement hydrofuge toiture" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
-                        <h3 class="mb-2 text-lg font-bold leading-snug">🛡️ Traitement Hydrofuge (Incolore ou Colore)</h3>
+                        <h3 class="mb-2 text-lg font-bold leading-snug">Traitement hydrofuge (incolore ou coloré)</h3>
                         <p class="text-sm text-slate-600">Protection impermeable de votre toiture contre l'humidite et les infiltrations.</p>
                         <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
                     </div>
                 </article>
                 <article data-category="facade" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1000&q=80" alt="Renovation de facade" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/Rénovation de Façade.jpeg') }}" alt="Rénovation de façade" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
-                        <h3 class="mb-2 text-lg font-bold leading-snug">🧱 Rénovation de Façade</h3>
+                        <h3 class="mb-2 text-lg font-bold leading-snug">Rénovation de façade</h3>
                         <p class="text-sm text-slate-600">Nettoyage, peinture et protection pour redonner vie a votre habitation.</p>
                         <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
                     </div>
                 </article>
                 <article data-category="isolation" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1581094271901-8022df4466f9?auto=format&fit=crop&w=1000&q=80" alt="Isolation thermique" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/Isolation Thermique.jpeg') }}" alt="Isolation thermique" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
-                        <h3 class="mb-2 text-lg font-bold leading-snug">🌡️ Isolation Thermique</h3>
+                        <h3 class="mb-2 text-lg font-bold leading-snug">Isolation thermique</h3>
                         <p class="text-sm text-slate-600">Isolation des combles, rampants et planchers pour reduire les pertes de chaleur jusqu'a 30&nbsp;%.</p>
                         <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
                     </div>
                 </article>
                 <article data-category="air" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1000&q=80" alt="Ventilation VMC VMI" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/Ventilation (VMC : VMI).jpg') }}" alt="Ventilation VMC / VMI" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
-                        <h3 class="mb-2 text-lg font-bold leading-snug">💨 Ventilation (VMC / VMI)</h3>
+                        <h3 class="mb-2 text-lg font-bold leading-snug">Ventilation (VMC / VMI)</h3>
                         <p class="text-sm text-slate-600">Systemes de ventilation pour ameliorer la qualite de l'air et reduire l'humidite.</p>
                         <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
                     </div>
                 </article>
                 <article data-category="electricite" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=1000&q=80" alt="Mise aux normes electriques" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/Mise aux Normes Électriques.jpg') }}" alt="Mise aux normes électriques" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
-                        <h3 class="mb-2 text-lg font-bold leading-snug">⚡ Mise aux Normes Électriques</h3>
+                        <h3 class="mb-2 text-lg font-bold leading-snug">Mise aux normes électriques</h3>
                         <p class="text-sm text-slate-600">Securisation de votre installation electrique pour proteger votre maison et votre famille.</p>
                         <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
                     </div>
                 </article>
                 <article data-category="energie" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1000&q=80" alt="Installation photovoltaique" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/Installation Photovoltaïque.jpg') }}" alt="Installation photovoltaïque" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
-                        <h3 class="mb-2 text-lg font-bold leading-snug">☀️ Installation Photovoltaïque</h3>
+                        <h3 class="mb-2 text-lg font-bold leading-snug">Installation photovoltaïque</h3>
                         <p class="text-sm text-slate-600">Production d'electricite solaire pour reduire vos factures et gagner en autonomie.</p>
                         <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
                     </div>
                 </article>
                 <article data-category="air" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1000&q=80" alt="Climatisation" class="h-44 w-full object-cover">
+                    <img src="{{ asset("services/Climatisation & Confort d'Été.jpg") }}" alt="Climatisation et confort d'été" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
-                        <h3 class="mb-2 text-lg font-bold leading-snug">❄️ Climatisation &amp; Confort d'Été</h3>
+                        <h3 class="mb-2 text-lg font-bold leading-snug">Climatisation &amp; confort d'été</h3>
                         <p class="text-sm text-slate-600">Installation de systemes mono, bi ou tri split pour un interieur frais et agreable.</p>
                         <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
                     </div>
                 </article>
                 <article data-category="traitement" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80" alt="Traitement de l'humidite" class="h-44 w-full object-cover">
+                    <img src="{{ asset("services/Traitement de l'Humidité.webp") }}" alt="Traitement de l'humidité" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
-                        <h3 class="mb-2 text-lg font-bold leading-snug">💧 Traitement de l'Humidité</h3>
+                        <h3 class="mb-2 text-lg font-bold leading-snug">Traitement de l'humidité</h3>
                         <p class="text-sm text-slate-600">Solutions contre l'humidite (diagnostic, inverseur de polarite, traitement murs).</p>
                         <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
                     </div>
                 </article>
                 <article data-category="traitement" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1542013936713-aab4c61c3875?auto=format&fit=crop&w=1000&q=80" alt="Adoucisseur d'eau" class="h-44 w-full object-cover">
+                    <img src="{{ asset("services/Installation d'Adoucisseur d'Eau.jpeg") }}" alt="Installation d'adoucisseur d'eau" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
-                        <h3 class="mb-2 text-lg font-bold leading-snug">🚿 Installation d'Adoucisseur d'Eau</h3>
+                        <h3 class="mb-2 text-lg font-bold leading-snug">Installation d'adoucisseur d'eau</h3>
                         <p class="text-sm text-slate-600">Reduction du calcaire pour proteger vos equipements et ameliorer votre confort.</p>
                         <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
                     </div>
                 </article>
                 <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80" alt="Traitement de charpente" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/Traitement de Charpente.webp') }}" alt="Traitement de charpente" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
-                        <h3 class="mb-2 text-lg font-bold leading-snug">🪵 Traitement de Charpente</h3>
+                        <h3 class="mb-2 text-lg font-bold leading-snug">Traitement de charpente</h3>
                         <p class="text-sm text-slate-600">Traitement preventif et curatif contre les insectes et champignons.</p>
                         <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
                     </div>
@@ -467,35 +467,24 @@
                     </div>
                 </div>
 
-                <aside id="a-propos" class="flex min-h-0 scroll-mt-28 flex-col rounded-2xl border border-white/25 bg-brand-blue p-6 shadow-soft lg:min-h-[560px]">
-                    <h2 class="mb-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-                        <span class="text-white">À propos de</span>
-                        <span class="mt-1 block sm:mt-2 sm:inline sm:pl-2">
-                            <span class="rounded-xl bg-brand-dark px-3 py-1 text-white shadow-md ring-2 ring-white/25 sm:inline-block">Normes &amp; Rénovation</span>
-                        </span>
-                    </h2>
-                    <p class="mb-5 text-base leading-relaxed text-white sm:text-lg">Normes &amp; Rénovation accompagne les particuliers et professionnels dans leurs projets de rénovation énergétique, thermique et électrique. Notre équipe combine expertise technique, suivi de chantier et conseils sur mesure pour des résultats fiables et durables. Nous sommes certifiés RGE, engagés dans le respect de l'environnement et nous privilégions des matériaux de qualité pour des rénovations performantes et responsables.</p>
-                    <ul class="mb-5 space-y-2 text-base text-white">
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Profitez de notre garantie sur les travaux realises</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Nous nous occupons de tout pour vous simplifier la vie</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Tous nos Techniciens sont qualifies & formes en continus</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Entreprise certifiee et orientee qualite</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Accompagnement complet de l'etude a la livraison</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Solutions performantes pour valoriser votre bien</span></li>
-                    </ul>
-                    <div class="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                        <div class="rounded-xl border border-white/30 bg-white p-2 shadow-sm">
-                            <img src="/nous/rge.png" alt="Logo RGE Qualibat" class="h-20 w-full rounded-lg object-contain sm:h-24">
-                        </div>
-                        <div class="rounded-xl border border-white/30 bg-white p-2 shadow-sm">
-                            <img src="/nous/rge ventilation_.png" alt="Logo RGE Ventilation" class="h-20 w-full rounded-lg object-contain sm:h-24">
-                        </div>
-                        <div class="rounded-xl border border-white/30 bg-white p-2 shadow-sm">
-                            <img src="/nous/ECO.png" alt="Logo Eco Responsable" class="h-20 w-full rounded-lg object-contain sm:h-24">
-                        </div>
+                <aside id="a-propos" class="flex min-h-0 scroll-mt-28 flex-col lg:min-h-[560px] lg:flex-row">
+                    <div class="flex flex-1 flex-col justify-center bg-white px-6 py-10 text-brand-dark sm:px-8 sm:py-12">
+                        <h2 class="text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+                            <span class="text-brand-blue">À propos de</span>
+                            <span class="mt-2 block text-brand-dark">Normes &amp; Rénovation</span>
+                        </h2>
+                        <p class="mt-6 text-base leading-relaxed text-slate-700 sm:text-lg">Normes &amp; Rénovation accompagne les particuliers et professionnels dans leurs projets de rénovation énergétique, thermique et électrique. Notre équipe combine expertise technique, suivi de chantier et conseils sur mesure pour des résultats fiables et durables. Nous sommes certifiés RGE, engagés dans le respect de l'environnement et nous privilégions des matériaux de qualité pour des rénovations performantes et responsables.</p>
                     </div>
-                    <div class="mt-auto overflow-hidden rounded-xl border border-white/30 shadow-sm">
-                        <img src="/nous/equipe.jpeg" alt="Equipe Normes & Renovation" class="h-48 w-full object-cover sm:h-56">
+                    <div class="flex flex-1 flex-col justify-center bg-brand-dark px-6 py-10 text-white sm:px-8 sm:py-12">
+                        <p class="text-xs font-bold uppercase tracking-wider text-brand-yellow">Nos engagements</p>
+                        <ul class="mt-4 space-y-3 text-base leading-snug text-slate-200">
+                            <li class="flex gap-2"><span class="font-bold text-brand-yellow">·</span><span>Garantie sur les travaux réalisés</span></li>
+                            <li class="flex gap-2"><span class="font-bold text-brand-yellow">·</span><span>Nous nous occupons de tout pour vous simplifier la vie</span></li>
+                            <li class="flex gap-2"><span class="font-bold text-brand-yellow">·</span><span>Techniciens qualifiés et formés en continu</span></li>
+                            <li class="flex gap-2"><span class="font-bold text-brand-yellow">·</span><span>Entreprise certifiée et orientée qualité</span></li>
+                            <li class="flex gap-2"><span class="font-bold text-brand-yellow">·</span><span>Accompagnement complet de l'étude à la livraison</span></li>
+                            <li class="flex gap-2"><span class="font-bold text-brand-yellow">·</span><span>Solutions performantes pour valoriser votre bien</span></li>
+                        </ul>
                     </div>
                 </aside>
             </div>
