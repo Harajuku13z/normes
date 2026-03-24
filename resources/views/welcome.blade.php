@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NORMES - Accueil</title>
+    <link rel="icon" type="image/png" href="/iconne.png">
     <style>
         :root {
             --brand: #0f4c81;
@@ -42,16 +43,10 @@
             font-weight: bold;
             font-size: 20px;
         }
-        .logo-mark {
-            width: 42px;
-            height: 42px;
-            border-radius: 8px;
-            background: var(--brand);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
+        .logo img {
+            height: 58px;
+            width: auto;
+            display: block;
         }
         .menu {
             display: flex;
@@ -92,14 +87,9 @@
         .hero {
             padding: 26px 0 36px;
         }
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 18px;
-        }
         .slider {
             position: relative;
-            height: 460px;
+            height: 560px;
             border-radius: 14px;
             overflow: hidden;
             background: #dbe4f0;
@@ -123,7 +113,7 @@
             position: absolute;
             z-index: 2;
             left: 36px;
-            bottom: 36px;
+            bottom: 132px;
             color: #fff;
             max-width: 520px;
         }
@@ -147,11 +137,16 @@
             font-weight: 700;
         }
         .thumbs {
-            display: grid;
+            position: absolute;
+            z-index: 3;
+            left: 26px;
+            bottom: 24px;
+            display: flex;
             gap: 12px;
         }
         .thumb {
-            height: 145px;
+            width: 120px;
+            height: 85px;
             border-radius: 12px;
             background-size: cover;
             background-position: center;
@@ -173,9 +168,23 @@
             background: rgba(0, 0, 0, .05);
         }
         @media (max-width: 980px) {
-            .hero-grid { grid-template-columns: 1fr; }
-            .thumbs { grid-template-columns: repeat(3, 1fr); }
-            .thumb { height: 115px; }
+            .slider { height: 500px; }
+            .slide-content {
+                left: 24px;
+                right: 24px;
+                bottom: 132px;
+            }
+            .slide-title { font-size: 28px; }
+            .thumbs {
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+                justify-content: flex-start;
+            }
+            .thumb {
+                width: calc((100% - 24px) / 3);
+                min-width: 90px;
+            }
         }
     </style>
 </head>
@@ -183,8 +192,7 @@
     <header class="topbar">
         <div class="container topbar-inner">
             <div class="logo">
-                <div class="logo-mark">N</div>
-                <span>NORMES Entreprise</span>
+                <img src="/logo.png" alt="Normes Rénovation">
             </div>
 
             <nav class="menu">
@@ -201,7 +209,7 @@
     </header>
 
     <section class="hero">
-        <div class="container hero-grid">
+        <div class="container">
             <div class="slider" id="main-slider">
                 <article class="slide active" data-index="0" style="background-image:url('https://picsum.photos/1200/700?random=21');">
                     <div class="slide-content">
@@ -224,13 +232,13 @@
                         <a class="slide-btn" href="#">Nous contacter</a>
                     </div>
                 </article>
-            </div>
 
-            <aside class="thumbs" id="thumbs">
-                <button class="thumb active" data-target="0" style="background-image:url('https://picsum.photos/400/300?random=21');" aria-label="Slide 1"></button>
-                <button class="thumb" data-target="1" style="background-image:url('https://picsum.photos/400/300?random=22');" aria-label="Slide 2"></button>
-                <button class="thumb" data-target="2" style="background-image:url('https://picsum.photos/400/300?random=23');" aria-label="Slide 3"></button>
-            </aside>
+                <aside class="thumbs" id="thumbs">
+                    <button class="thumb active" data-target="0" style="background-image:url('https://picsum.photos/400/300?random=21');" aria-label="Slide 1"></button>
+                    <button class="thumb" data-target="1" style="background-image:url('https://picsum.photos/400/300?random=22');" aria-label="Slide 2"></button>
+                    <button class="thumb" data-target="2" style="background-image:url('https://picsum.photos/400/300?random=23');" aria-label="Slide 3"></button>
+                </aside>
+            </div>
         </div>
     </section>
 
