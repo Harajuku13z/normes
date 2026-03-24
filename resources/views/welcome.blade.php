@@ -206,7 +206,6 @@
                             <img src="/nous/ECO.png" alt="Logo Eco Responsable" class="h-20 w-full rounded-lg object-contain sm:h-24">
                         </div>
                     </div>
-                    <p class="mb-5 text-xs font-semibold uppercase tracking-wide text-brand-dark">Certifications: Logo RGE Qualibat - Logo RGE Ventilation - Engagement eco-responsable</p>
                     <div class="mt-auto overflow-hidden rounded-xl border border-slate-200">
                         <img src="/nous/equipe.jpeg" alt="Equipe Normes & Renovation" class="h-48 w-full object-cover sm:h-56">
                     </div>
