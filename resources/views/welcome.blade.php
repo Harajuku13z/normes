@@ -7,10 +7,11 @@
     <link rel="icon" type="image/png" href="/iconne.png">
     <style>
         :root {
-            --brand: #0f4c81;
-            --text: #1f2937;
-            --muted: #6b7280;
-            --bg: #f3f6fb;
+            --brand: #60b4f9;
+            --text: #2f4251;
+            --muted: #2f4251;
+            --bg: #ffffff;
+            --accent: #fadf70;
             --white: #ffffff;
         }
         * { box-sizing: border-box; }
@@ -75,22 +76,29 @@
             width: 34px;
             height: 34px;
             border-radius: 50%;
-            background: #eef2ff;
-            color: var(--brand);
+            color: #ffffff;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
         }
+        .social-icon.facebook {
+            background: #60b4f9;
+        }
+        .social-icon.linkedin {
+            background: #2f4251;
+        }
 
         .hero {
             padding: 26px 0 36px;
         }
+        .hero-shell {
+            width: 100%;
+        }
         .slider {
             position: relative;
-            height: 560px;
-            border-radius: 14px;
+            height: 600px;
             overflow: hidden;
             background: #dbe4f0;
         }
@@ -106,14 +114,23 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(to right, rgba(0, 0, 0, .62), rgba(0, 0, 0, .2));
+            background: linear-gradient(to right, rgba(47, 66, 81, .70), rgba(47, 66, 81, .28));
         }
         .slide.active { opacity: 1; }
-        .slide-content {
+        .slide-content-wrap {
             position: absolute;
             z-index: 2;
-            left: 36px;
-            bottom: 132px;
+            left: 0;
+            right: 0;
+            bottom: 32px;
+        }
+        .slide-content {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 24px;
+        }
+        .slide-copy {
             color: #fff;
             max-width: 520px;
         }
@@ -129,24 +146,24 @@
         }
         .slide-btn {
             display: inline-block;
-            background: #fff;
-            color: #111827;
+            background: var(--brand);
+            color: var(--text);
             padding: 10px 16px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 700;
         }
+        .slide-btn:hover {
+            background: var(--accent);
+        }
         .thumbs {
-            position: absolute;
-            z-index: 3;
-            left: 26px;
-            bottom: 24px;
-            display: flex;
+            display: grid;
             gap: 12px;
+            width: 110px;
         }
         .thumb {
-            width: 120px;
-            height: 85px;
+            width: 110px;
+            height: 90px;
             border-radius: 12px;
             background-size: cover;
             background-position: center;
@@ -169,18 +186,10 @@
         }
         @media (max-width: 980px) {
             .slider { height: 500px; }
-            .slide-content {
-                left: 24px;
-                right: 24px;
-                bottom: 132px;
-            }
+            .slide-content-wrap { bottom: 20px; }
+            .slide-content { flex-direction: column; align-items: flex-start; }
             .slide-title { font-size: 28px; }
-            .thumbs {
-                left: 16px;
-                right: 16px;
-                bottom: 16px;
-                justify-content: flex-start;
-            }
+            .thumbs { display: flex; width: 100%; }
             .thumb {
                 width: calc((100% - 24px) / 3);
                 min-width: 90px;
@@ -201,43 +210,56 @@
                 <a href="#">Agences franchise</a>
                 <a class="contact-btn" href="#">Nous contacter</a>
                 <div class="socials">
-                    <a class="social-icon" href="#" aria-label="Facebook">f</a>
-                    <a class="social-icon" href="#" aria-label="LinkedIn">in</a>
+                    <a class="social-icon facebook" href="#" aria-label="Facebook">f</a>
+                    <a class="social-icon linkedin" href="#" aria-label="LinkedIn">in</a>
                 </div>
             </nav>
         </div>
     </header>
 
     <section class="hero">
-        <div class="container">
+        <div class="hero-shell">
             <div class="slider" id="main-slider">
                 <article class="slide active" data-index="0" style="background-image:url('https://picsum.photos/1200/700?random=21');">
-                    <div class="slide-content">
-                        <h1 class="slide-title">Accompagnement professionnel</h1>
-                        <p class="slide-subtitle">Des solutions sur mesure pour faire grandir votre entreprise sereinement.</p>
-                        <a class="slide-btn" href="#">Nous contacter</a>
+                    <div class="slide-content-wrap">
+                        <div class="container slide-content">
+                            <div class="slide-copy">
+                                <h1 class="slide-title">Accompagnement professionnel</h1>
+                                <p class="slide-subtitle">Des solutions sur mesure pour faire grandir votre entreprise sereinement.</p>
+                                <a class="slide-btn" href="#">Nous contacter</a>
+                            </div>
+                            <aside class="thumbs" id="thumbs">
+                                <button class="thumb active" data-target="0" style="background-image:url('https://picsum.photos/400/300?random=21');" aria-label="Slide 1"></button>
+                                <button class="thumb" data-target="1" style="background-image:url('https://picsum.photos/400/300?random=22');" aria-label="Slide 2"></button>
+                                <button class="thumb" data-target="2" style="background-image:url('https://picsum.photos/400/300?random=23');" aria-label="Slide 3"></button>
+                            </aside>
+                        </div>
                     </div>
                 </article>
                 <article class="slide" data-index="1" style="background-image:url('https://picsum.photos/1200/700?random=22');">
-                    <div class="slide-content">
-                        <h2 class="slide-title">Expertise et performance</h2>
-                        <p class="slide-subtitle">Une equipe engagee pour des resultats mesurables sur tous vos projets.</p>
-                        <a class="slide-btn" href="#">Nous contacter</a>
+                    <div class="slide-content-wrap">
+                        <div class="container slide-content">
+                            <div class="slide-copy">
+                                <h2 class="slide-title">Expertise et performance</h2>
+                                <p class="slide-subtitle">Une equipe engagee pour des resultats mesurables sur tous vos projets.</p>
+                                <a class="slide-btn" href="#">Nous contacter</a>
+                            </div>
+                            <aside class="thumbs" aria-hidden="true"></aside>
+                        </div>
                     </div>
                 </article>
                 <article class="slide" data-index="2" style="background-image:url('https://picsum.photos/1200/700?random=23');">
-                    <div class="slide-content">
-                        <h2 class="slide-title">Presence nationale</h2>
-                        <p class="slide-subtitle">Nos agences franchise vous accompagnent au plus pres de vos besoins.</p>
-                        <a class="slide-btn" href="#">Nous contacter</a>
+                    <div class="slide-content-wrap">
+                        <div class="container slide-content">
+                            <div class="slide-copy">
+                                <h2 class="slide-title">Presence nationale</h2>
+                                <p class="slide-subtitle">Nos agences franchise vous accompagnent au plus pres de vos besoins.</p>
+                                <a class="slide-btn" href="#">Nous contacter</a>
+                            </div>
+                            <aside class="thumbs" aria-hidden="true"></aside>
+                        </div>
                     </div>
                 </article>
-
-                <aside class="thumbs" id="thumbs">
-                    <button class="thumb active" data-target="0" style="background-image:url('https://picsum.photos/400/300?random=21');" aria-label="Slide 1"></button>
-                    <button class="thumb" data-target="1" style="background-image:url('https://picsum.photos/400/300?random=22');" aria-label="Slide 2"></button>
-                    <button class="thumb" data-target="2" style="background-image:url('https://picsum.photos/400/300?random=23');" aria-label="Slide 3"></button>
-                </aside>
             </div>
         </div>
     </section>
