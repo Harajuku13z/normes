@@ -538,89 +538,83 @@
 
     <section class="bg-slate-50/70 py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 class="mb-2 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">Pourquoi</span> nous ?</h2>
-            <p class="mb-8 max-w-2xl text-base text-slate-600 sm:text-lg">Des engagements concrets, visibles en un coup d'œil.</p>
-            <div class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                <article class="group relative flex flex-col overflow-hidden rounded-2xl border-2 border-brand-blue/35 bg-gradient-to-br from-brand-blue/20 via-white to-white p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-brand-blue/60 hover:shadow-lg">
-                    <div class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-brand-blue/15 transition group-hover:bg-brand-blue/25"></div>
-                    <div class="relative mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-blue text-2xl shadow-md shadow-brand-blue/25">🛠️</div>
-                    <h3 class="relative mb-2 text-lg font-extrabold text-brand-dark">Expertise technique</h3>
-                    <p class="relative text-sm leading-relaxed text-slate-700 sm:text-base">Des equipes qualifiees et des conseils adaptes a votre maison.</p>
+            <div class="mb-10 max-w-2xl">
+                <h2 class="text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">Pourquoi</span> nous ?</h2>
+                <p class="mt-3 text-base text-slate-600 sm:text-lg">Des engagements concrets, visibles en un coup d'œil.</p>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <article class="rounded-xl border border-slate-200/90 bg-white p-6 shadow-sm ring-1 ring-slate-100/90 transition hover:shadow-md hover:ring-brand-blue/15">
+                    <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-blue/12 text-2xl" aria-hidden="true">🛠️</div>
+                    <h3 class="text-base font-extrabold text-brand-dark">Expertise technique</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-slate-600">Des équipes qualifiées et des conseils adaptés à votre maison.</p>
                 </article>
-                <article class="group relative flex flex-col overflow-hidden rounded-2xl border-2 border-brand-yellow/50 bg-gradient-to-br from-brand-yellow/25 via-white to-amber-50/40 p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-brand-yellow hover:shadow-lg">
-                    <div class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-brand-yellow/20 transition group-hover:bg-brand-yellow/35"></div>
-                    <div class="relative mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-dark text-2xl text-brand-yellow shadow-md">✅</div>
-                    <h3 class="relative mb-2 text-lg font-extrabold text-brand-dark">Entreprise certifiee RGE</h3>
-                    <p class="relative text-sm leading-relaxed text-slate-700 sm:text-base">Un accompagnement conforme aux normes et aides en vigueur.</p>
+                <article class="rounded-xl border border-slate-200/90 bg-white p-6 shadow-sm ring-1 ring-slate-100/90 transition hover:shadow-md hover:ring-brand-yellow/25">
+                    <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-yellow/20 text-2xl" aria-hidden="true">✅</div>
+                    <h3 class="text-base font-extrabold text-brand-dark">Entreprise certifiée RGE</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-slate-600">Un accompagnement conforme aux normes et aux aides en vigueur.</p>
                 </article>
-                <article class="group relative flex flex-col overflow-hidden rounded-2xl border-2 border-brand-dark/25 bg-gradient-to-br from-brand-dark/10 via-white to-emerald-50/30 p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-brand-dark/45 hover:shadow-lg">
-                    <div class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-emerald-500/10 transition group-hover:bg-emerald-500/15"></div>
-                    <div class="relative mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-dark text-2xl text-white shadow-md">🌿</div>
-                    <h3 class="relative mb-2 text-lg font-extrabold text-brand-dark">Solutions durables</h3>
-                    <p class="relative text-sm leading-relaxed text-slate-700 sm:text-base">Des choix techniques performants pour un impact long terme.</p>
+                <article class="rounded-xl border border-slate-200/90 bg-white p-6 shadow-sm ring-1 ring-slate-100/90 transition hover:shadow-md hover:ring-emerald-500/20">
+                    <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-2xl" aria-hidden="true">🌿</div>
+                    <h3 class="text-base font-extrabold text-brand-dark">Solutions durables</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-slate-600">Des choix techniques performants pour un impact long terme.</p>
                 </article>
-                <article class="group relative flex flex-col overflow-hidden rounded-2xl border-2 border-brand-blue/25 bg-gradient-to-br from-brand-yellow/15 via-white to-brand-blue/15 p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-brand-dark/30 hover:shadow-lg">
-                    <div class="pointer-events-none absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand-blue via-brand-yellow to-brand-dark"></div>
-                    <div class="relative mb-4 mt-1 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-blue to-sky-500 text-2xl text-white shadow-md">🤝</div>
-                    <h3 class="relative mb-2 text-lg font-extrabold text-brand-dark">Accompagnement complet</h3>
-                    <p class="relative text-sm leading-relaxed text-slate-700 sm:text-base">Un interlocuteur unique du devis jusqu'a la fin de chantier.</p>
+                <article class="rounded-xl border border-slate-200/90 bg-white p-6 shadow-sm ring-1 ring-slate-100/90 transition hover:shadow-md hover:ring-sky-400/25 sm:col-span-2 lg:col-span-1">
+                    <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand-blue/90 to-sky-500 text-2xl text-white shadow-sm" aria-hidden="true">🤝</div>
+                    <h3 class="text-base font-extrabold text-brand-dark">Accompagnement complet</h3>
+                    <p class="mt-2 text-sm leading-relaxed text-slate-600">Un interlocuteur unique du devis jusqu'à la fin de chantier.</p>
                 </article>
             </div>
 
-            <div class="mt-12 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 shadow-soft sm:p-8">
-                <h2 class="mb-2 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">Processus</span> de prise en charge</h2>
-                <p class="mb-2 max-w-3xl text-base text-slate-600 sm:text-lg">Quatre etapes claires, de l'estimation de vos aides au suivi de chantier.</p>
-                <p class="mb-8 text-sm text-slate-500 lg:hidden">Faites defiler horizontalement pour voir les etapes.</p>
+            <div class="mt-14 overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-soft">
+                <div class="border-b border-slate-100 px-5 py-8 sm:px-8 sm:py-10">
+                    <h2 class="text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl lg:text-5xl"><span class="text-brand-blue">Processus</span> de prise en charge</h2>
+                    <p class="mt-3 max-w-3xl text-base text-slate-600 sm:text-lg">Quatre étapes claires, de l'estimation de vos aides au suivi de chantier.</p>
+                </div>
 
-                <div class="relative">
-                    <div class="pointer-events-none absolute left-0 right-0 top-7 hidden h-0.5 bg-gradient-to-r from-brand-blue via-brand-dark/40 to-brand-blue lg:block" aria-hidden="true"></div>
-                    <ol class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] lg:grid lg:snap-none lg:grid-cols-4 lg:gap-6 lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:hidden">
-                        <li class="min-w-[85vw] snap-center rounded-2xl border border-slate-200 bg-slate-50/80 p-5 sm:min-w-[320px] lg:min-w-0 lg:border-0 lg:bg-transparent lg:p-0 lg:pt-2 lg:text-center">
-                            <span class="relative z-[1] mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-blue text-base font-black text-white shadow-md shadow-brand-blue/30 lg:mx-auto">1</span>
-                            <h4 class="text-lg font-extrabold text-brand-dark">Calcul de Primes et Devis precis</h4>
-                            <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">Nous nous occupons de tout le calcul de vos primes, des CEE (Certificats d'Economies d'Energie) et des differentes options de financement disponibles. Profitez de travaux couverts jusqu'a 90 % sans avance de frais.</p>
+                <div class="relative px-5 py-6 sm:px-8 sm:py-8">
+                    <div class="pointer-events-none absolute left-0 right-0 top-[2.25rem] hidden h-px bg-gradient-to-r from-transparent via-brand-blue/35 to-transparent lg:block" aria-hidden="true"></div>
+                    <ol class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+                        <li class="relative rounded-xl border border-slate-100 bg-slate-50/60 p-5 lg:border-slate-100/80 lg:bg-white lg:p-6 lg:text-center lg:shadow-sm">
+                            <span class="mb-4 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-blue text-sm font-black text-white shadow-md shadow-brand-blue/25 lg:mx-auto">1</span>
+                            <h4 class="text-base font-extrabold text-brand-dark sm:text-lg">Calcul de primes et devis précis</h4>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-600">Nous nous occupons du calcul de vos primes, des CEE (certificats d'économies d'énergie) et des options de financement. Travaux couverts jusqu'à 90&nbsp;% sans avance de frais dans les cas éligibles.</p>
                         </li>
-                        <li class="min-w-[85vw] snap-center rounded-2xl border border-slate-200 bg-slate-50/80 p-5 sm:min-w-[320px] lg:min-w-0 lg:border-0 lg:bg-transparent lg:p-0 lg:pt-2 lg:text-center">
-                            <span class="relative z-[1] mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-dark text-base font-black text-brand-yellow shadow-md lg:mx-auto">2</span>
-                            <h4 class="text-lg font-extrabold text-brand-dark">Solutions de Financement</h4>
-                            <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">Nous proposons des solutions de financement adaptees grace a nos partenaires, pour vous aider a gerer le cout parfois eleve des travaux de renovation.</p>
+                        <li class="relative rounded-xl border border-slate-100 bg-slate-50/60 p-5 lg:border-slate-100/80 lg:bg-white lg:p-6 lg:text-center lg:shadow-sm">
+                            <span class="mb-4 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-dark text-sm font-black text-brand-yellow shadow-md lg:mx-auto">2</span>
+                            <h4 class="text-base font-extrabold text-brand-dark sm:text-lg">Solutions de financement</h4>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-600">Des solutions adaptées avec nos partenaires pour financer le coût des travaux de rénovation.</p>
                         </li>
-                        <li class="min-w-[85vw] snap-center rounded-2xl border border-slate-200 bg-slate-50/80 p-5 sm:min-w-[320px] lg:min-w-0 lg:border-0 lg:bg-transparent lg:p-0 lg:pt-2 lg:text-center">
-                            <span class="relative z-[1] mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-dark text-base font-black text-white shadow-md lg:mx-auto">3</span>
-                            <h4 class="text-lg font-extrabold text-brand-dark">Analyse Personnalisee</h4>
-                            <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">Un technicien qualifie se deplace gratuitement pour realiser un diagnostic approfondi et personnalise de vos besoins.</p>
+                        <li class="relative rounded-xl border border-slate-100 bg-slate-50/60 p-5 lg:border-slate-100/80 lg:bg-white lg:p-6 lg:text-center lg:shadow-sm">
+                            <span class="mb-4 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-dark text-sm font-black text-white shadow-md lg:mx-auto">3</span>
+                            <h4 class="text-base font-extrabold text-brand-dark sm:text-lg">Analyse personnalisée</h4>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-600">Un technicien qualifié se déplace gratuitement pour un diagnostic approfondi de vos besoins.</p>
                         </li>
-                        <li class="min-w-[85vw] snap-center rounded-2xl border border-slate-200 bg-slate-50/80 p-5 sm:min-w-[320px] lg:min-w-0 lg:border-0 lg:bg-transparent lg:p-0 lg:pt-2 lg:text-center">
-                            <span class="relative z-[1] mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-sky-600 text-base font-black text-white shadow-md lg:mx-auto">4</span>
-                            <h4 class="text-lg font-extrabold text-brand-dark">Suivi et Assistance Continus</h4>
-                            <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">De la premiere consultation a la finalisation des travaux, nous vous accompagnons a chaque etape. Vous beneficiez d'un suivi regulier et d'une assistance dediee pour garantir que vos travaux se deroulent en toute serenite.</p>
+                        <li class="relative rounded-xl border border-slate-100 bg-slate-50/60 p-5 sm:col-span-2 lg:col-span-1 lg:border-slate-100/80 lg:bg-white lg:p-6 lg:text-center lg:shadow-sm">
+                            <span class="mb-4 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-sky-600 text-sm font-black text-white shadow-md lg:mx-auto">4</span>
+                            <h4 class="text-base font-extrabold text-brand-dark sm:text-lg">Suivi et assistance continus</h4>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-600">De la première consultation à la fin des travaux : suivi régulier et assistance pour une exécution sereine.</p>
                         </li>
                     </ol>
                 </div>
 
-                <div class="aides-renov-hero-bg relative mt-10 overflow-hidden rounded-3xl border border-slate-200/60 shadow-2xl ring-1 ring-black/5">
-                    <div class="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand-blue/25 blur-3xl"></div>
-                    <div class="pointer-events-none absolute -bottom-24 -left-16 h-72 w-72 rounded-full bg-brand-yellow/15 blur-3xl"></div>
-                    <div class="relative z-[1] grid gap-8 p-6 sm:p-8 lg:grid-cols-12 lg:items-center lg:gap-10 lg:p-10">
+                <div class="aides-renov-hero-bg border-t border-slate-200/80">
+                    <div class="relative z-[1] grid gap-8 p-6 sm:p-8 lg:grid-cols-12 lg:items-center lg:gap-12 lg:p-10">
                         <div class="flex justify-center lg:col-span-4 lg:justify-start">
-                            <div class="relative w-full max-w-[340px]">
-                                <div class="absolute -inset-1 rounded-[1.35rem] bg-gradient-to-br from-brand-yellow/80 via-white/40 to-brand-blue/50 opacity-90 blur-[2px]"></div>
-                                <div class="relative rounded-3xl bg-white p-6 shadow-[0_20px_50px_rgba(0,0,0,0.35)] ring-2 ring-white/80 sm:p-8">
-                                    <div class="flex min-h-[140px] items-center justify-center rounded-2xl bg-gradient-to-b from-slate-50 to-white p-4 ring-1 ring-slate-200/80">
-                                        <img src="/nous/ma prime.png" alt="Programme MaPrimeRénov' — Mieux chez moi, mieux pour la planète" width="520" height="200" class="h-auto max-h-36 w-full object-contain object-center sm:max-h-40">
-                                    </div>
-                                    <p class="mt-4 text-center text-[11px] font-bold uppercase tracking-wider text-brand-dark/70">MaPrimeRénov' · dispositif national</p>
-                                    <p class="mt-1 text-center text-xs text-slate-500">Accompagnement dossier &amp; cumul avec les CEE</p>
+                            <div class="w-full max-w-[320px] rounded-2xl border border-white/25 bg-white/95 p-5 shadow-lg ring-1 ring-slate-200/60 sm:p-6">
+                                <div class="flex min-h-[120px] items-center justify-center rounded-xl bg-slate-50 p-3 ring-1 ring-slate-100">
+                                    <img src="/nous/ma prime.png" alt="Programme MaPrimeRénov' — Mieux chez moi, mieux pour la planète" width="520" height="200" class="h-auto max-h-32 w-full object-contain object-center sm:max-h-36" loading="lazy" decoding="async">
                                 </div>
+                                <p class="mt-4 text-center text-[11px] font-bold uppercase tracking-wider text-brand-dark/75">MaPrimeRénov' · dispositif national</p>
+                                <p class="mt-1 text-center text-xs text-slate-600">Accompagnement dossier &amp; cumul avec les CEE</p>
                             </div>
                         </div>
                         <div class="lg:col-span-8">
                             <p class="text-[11px] font-extrabold uppercase tracking-[0.22em] text-brand-yellow">Aides à la rénovation</p>
                             <h3 class="mt-3 text-2xl font-extrabold leading-tight text-white sm:text-3xl lg:text-4xl">On vous accompagne pour vos aides MaPrimeRénov' et CEE</h3>
                             <p class="mt-4 max-w-3xl text-base leading-relaxed text-slate-100 sm:text-lg">Notre équipe vous aide à comprendre vos droits, à monter les dossiers <strong class="font-semibold text-white">MaPrimeRénov'</strong> et à valoriser les <strong class="font-semibold text-white">certificats d'économies d'énergie (CEE)</strong> éligibles sur votre projet. Nous optimisons le cumul des dispositifs pour limiter votre reste à charge et sécuriser vos travaux.</p>
-                            <div class="mt-6 flex flex-wrap items-center gap-4">
-                                <a href="#devis" class="inline-flex rounded-xl bg-brand-yellow px-6 py-3.5 text-sm font-extrabold text-brand-dark shadow-lg transition hover:bg-yellow-300">Demander un accompagnement</a>
-                                <span class="text-xs text-slate-300">RGE · Devis gratuit · Réponse rapide</span>
+                            <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+                                <a href="#devis" class="inline-flex justify-center rounded-xl bg-brand-yellow px-6 py-3.5 text-sm font-extrabold text-brand-dark shadow-lg transition hover:bg-yellow-300">Demander un accompagnement</a>
+                                <span class="text-center text-xs text-slate-300 sm:text-left">RGE · Devis gratuit · Réponse rapide</span>
                             </div>
                         </div>
                     </div>
