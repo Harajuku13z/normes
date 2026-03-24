@@ -35,6 +35,26 @@
             50% { transform: translateY(calc(-50% - 6px)); }
         }
 
+        @keyframes navCtaPulse {
+            0%, 100% {
+                box-shadow: 0 4px 18px rgba(96, 180, 249, 0.42), 0 0 0 0 rgba(96, 180, 249, 0.35);
+            }
+            50% {
+                box-shadow: 0 6px 26px rgba(96, 180, 249, 0.55), 0 0 0 8px rgba(96, 180, 249, 0);
+            }
+        }
+
+        .nav-cta-contact {
+            animation: navCtaPulse 2.8s ease-in-out infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .nav-cta-contact {
+                animation: none;
+                box-shadow: 0 4px 18px rgba(96, 180, 249, 0.4);
+            }
+        }
+
         #agencyMap {
             position: relative;
             z-index: 1;
@@ -48,12 +68,13 @@
                 <img src="/logo.png" alt="Normes & Renovation" class="h-12 w-auto sm:h-14">
             </a>
 
-            <nav class="hidden items-center gap-6 lg:flex">
+            <nav class="hidden items-center gap-5 lg:flex xl:gap-6">
                 <a href="#top" class="text-[17px] font-semibold transition hover:text-brand-blue">Acceuil</a>
                 <a href="#services" class="text-[17px] font-semibold transition hover:text-brand-blue">nos services</a>
-                <a href="#franchise" class="text-[17px] font-semibold transition hover:text-brand-blue">agences</a>
+                <a href="#agences" class="text-[17px] font-semibold transition hover:text-brand-blue">agences</a>
                 <a href="#realisations" class="text-[17px] font-semibold transition hover:text-brand-blue">nos realisation</a>
-                <a href="#devis" class="rounded-xl bg-brand-blue px-5 py-2.5 text-sm font-bold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-sky-500">Nous contacter</a>
+                <a href="#conseils" class="text-[17px] font-semibold transition hover:text-brand-blue">Astuces & blog</a>
+                <a href="#devis" class="nav-cta-contact relative rounded-xl bg-brand-blue px-5 py-2.5 text-sm font-extrabold text-white ring-2 ring-white/20 transition hover:-translate-y-0.5 hover:bg-sky-500 hover:ring-brand-yellow/40">Nous contacter</a>
                 <ul class="ml-2 flex list-none items-center gap-3 border-l border-slate-200 pl-4" aria-label="Réseaux sociaux">
                     <li>
                         <a href="#" aria-label="Facebook" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1877F2] text-white shadow-soft transition hover:opacity-90 hover:ring-2 hover:ring-[#1877F2]/35 hover:ring-offset-2">
@@ -95,9 +116,10 @@
             <div class="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3 sm:px-6">
                 <a href="#top" class="rounded-lg px-3 py-2 font-semibold hover:bg-slate-50">Acceuil</a>
                 <a href="#services" class="rounded-lg px-3 py-2 font-semibold hover:bg-slate-50">nos services</a>
-                <a href="#franchise" class="rounded-lg px-3 py-2 font-semibold hover:bg-slate-50">agences</a>
+                <a href="#agences" class="rounded-lg px-3 py-2 font-semibold hover:bg-slate-50">agences</a>
                 <a href="#realisations" class="rounded-lg px-3 py-2 font-semibold hover:bg-slate-50">nos realisation</a>
-                <a href="#devis" class="mt-2 inline-flex w-full items-center justify-center rounded-xl bg-brand-blue px-4 py-3 text-sm font-extrabold text-white shadow-soft">Nous contacter</a>
+                <a href="#conseils" class="rounded-lg px-3 py-2 font-semibold hover:bg-slate-50">Astuces & blog</a>
+                <a href="#devis" class="nav-cta-contact mt-2 inline-flex w-full items-center justify-center rounded-xl bg-brand-blue px-4 py-3.5 text-sm font-extrabold text-white ring-2 ring-brand-blue/30 transition hover:bg-sky-500">Nous contacter</a>
                 <div class="mt-4 flex flex-col items-center gap-2 border-t border-slate-100 pt-4 sm:items-start">
                     <p class="text-center text-xs font-bold uppercase tracking-wide text-slate-500 sm:text-left">Suivez-nous</p>
                     <ul class="flex list-none items-center justify-center gap-4 sm:justify-start" aria-label="Réseaux sociaux">
@@ -188,28 +210,114 @@
     <section id="services" class="bg-slate-50/70 py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <h2 class="mb-3 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">Nos services</span> de renovation</h2>
-            <p class="mb-6 max-w-3xl text-base text-slate-600 sm:text-lg">Choisissez une categorie et affichez uniquement les services concernes.</p>
+            <p class="mb-6 max-w-3xl text-base text-slate-600 sm:text-lg">Douze expertises pour votre maison. Filtrez par type de travaux pour afficher les prestations correspondantes.</p>
             <div id="serviceFilters" class="mb-6 flex flex-wrap gap-2">
-                <button type="button" data-filter="all" class="service-filter rounded-full bg-brand-dark px-4 py-2 text-xs font-bold uppercase tracking-wide text-white sm:text-sm">Tous</button>
+                <button type="button" data-filter="all" class="service-filter rounded-full border border-brand-dark bg-brand-dark px-4 py-2 text-xs font-bold uppercase tracking-wide text-white sm:text-sm">Tous</button>
                 <button type="button" data-filter="toiture" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Toiture</button>
+                <button type="button" data-filter="facade" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Facade</button>
                 <button type="button" data-filter="isolation" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Isolation</button>
+                <button type="button" data-filter="air" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Ventilation & climatisation</button>
                 <button type="button" data-filter="electricite" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Electricite</button>
-                <button type="button" data-filter="energie" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Energie</button>
-                <button type="button" data-filter="air" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Air & confort</button>
+                <button type="button" data-filter="energie" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Solaire</button>
+                <button type="button" data-filter="traitement" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Humidite & eau</button>
             </div>
             <div id="serviceGrid" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1632759145351-1d592ac9b238?auto=format&fit=crop&w=1000&q=80" alt="Toiture couverture" class="h-44 w-full object-cover"><div class="flex h-full flex-col p-5"><h3 class="mb-2 text-lg font-bold">Toiture & couverture</h3><p class="text-sm text-slate-600">Renovation de toiture, etancheite et protection durable de votre maison.</p><a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a></div></article>
-                <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?auto=format&fit=crop&w=1000&q=80" alt="Zinguerie" class="h-44 w-full object-cover"><div class="flex h-full flex-col p-5"><h3 class="mb-2 text-lg font-bold">Zinguerie</h3><p class="text-sm text-slate-600">Gestion des eaux pluviales, gouttieres et finitions toiture haute qualite.</p><a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a></div></article>
-                <article data-category="isolation" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1581094271901-8022df4466f9?auto=format&fit=crop&w=1000&q=80" alt="Isolation thermique" class="h-44 w-full object-cover"><div class="flex h-full flex-col p-5"><h3 class="mb-2 text-lg font-bold">Isolation thermique</h3><p class="text-sm text-slate-600">Isolation des combles, murs et planchers pour limiter les pertes d'energie.</p><a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a></div></article>
-                <article data-category="isolation" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1000&q=80" alt="Ravalement facade" class="h-44 w-full object-cover"><div class="flex h-full flex-col p-5"><h3 class="mb-2 text-lg font-bold">Facade & ravalement</h3><p class="text-sm text-slate-600">Traitements et finitions facade pour proteger et valoriser votre bien.</p><a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a></div></article>
-                <article data-category="isolation air" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80" alt="Traitement humidite" class="h-44 w-full object-cover"><div class="flex h-full flex-col p-5"><h3 class="mb-2 text-lg font-bold">Traitement de l'humidite</h3><p class="text-sm text-slate-600">Solutions anti-humidite pour un habitat sain, durable et confortable.</p><a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a></div></article>
-                <article data-category="air" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1000&q=80" alt="Ventilation" class="h-44 w-full object-cover"><div class="flex h-full flex-col p-5"><h3 class="mb-2 text-lg font-bold">Ventilation</h3><p class="text-sm text-slate-600">VMC simple et double flux pour une qualite d'air optimale au quotidien.</p><a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a></div></article>
-                <article data-category="electricite" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=1000&q=80" alt="Electricite" class="h-44 w-full object-cover"><div class="flex h-full flex-col p-5"><h3 class="mb-2 text-lg font-bold">Mise aux normes electriques</h3><p class="text-sm text-slate-600">Securisation complete du reseau electrique selon les normes en vigueur.</p><a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a></div></article>
-                <article data-category="electricite energie" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=1000&q=80" alt="Photovoltaique" class="h-44 w-full object-cover"><div class="flex h-full flex-col p-5"><h3 class="mb-2 text-lg font-bold">Photovoltaique</h3><p class="text-sm text-slate-600">Panneaux solaires pour produire votre electricite et reduire vos factures.</p><a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a></div></article>
-                <article data-category="air energie" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1000&q=80" alt="Pompe a chaleur" class="h-44 w-full object-cover"><div class="flex h-full flex-col p-5"><h3 class="mb-2 text-lg font-bold">Pompe a chaleur</h3><p class="text-sm text-slate-600">Performance energetique elevee pour chauffer et rafraichir votre maison.</p><a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a></div></article>
-                <article data-category="air" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1000&q=80" alt="Climatisation" class="h-44 w-full object-cover"><div class="flex h-full flex-col p-5"><h3 class="mb-2 text-lg font-bold">Climatisation</h3><p class="text-sm text-slate-600">Confort ete/hiver avec systemes de climatisation economes et silencieux.</p><a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a></div></article>
-                <article data-category="isolation toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1523419409543-a5e549c1f4f5?auto=format&fit=crop&w=1000&q=80" alt="Isolation combles" class="h-44 w-full object-cover"><div class="flex h-full flex-col p-5"><h3 class="mb-2 text-lg font-bold">Isolation des combles</h3><p class="text-sm text-slate-600">L'un des leviers les plus efficaces pour baisser vos depenses energetiques.</p><a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a></div></article>
-                <article data-category="electricite energie" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1584277261846-c6a1672ed979?auto=format&fit=crop&w=1000&q=80" alt="Borne de recharge" class="h-44 w-full object-cover"><div class="flex h-full flex-col p-5"><h3 class="mb-2 text-lg font-bold">Borne de recharge</h3><p class="text-sm text-slate-600">Installation de bornes pour vehicules electriques a domicile ou en entreprise.</p><a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a></div></article>
+                <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
+                    <img src="https://images.unsplash.com/photo-1632759145351-1d592ac9b238?auto=format&fit=crop&w=1000&q=80" alt="Toiture et couverture" class="h-44 w-full object-cover">
+                    <div class="flex h-full flex-col p-5">
+                        <h3 class="mb-2 text-lg font-bold leading-snug">🏠 Toiture &amp; Couverture</h3>
+                        <p class="text-sm text-slate-600">Nettoyage, reparation et remplacement de toiture pour proteger durablement votre maison.</p>
+                        <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
+                    </div>
+                </article>
+                <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
+                    <img src="https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?auto=format&fit=crop&w=1000&q=80" alt="Nettoyage et demoussage de toiture" class="h-44 w-full object-cover">
+                    <div class="flex h-full flex-col p-5">
+                        <h3 class="mb-2 text-lg font-bold leading-snug">💧 Nettoyage &amp; Demoussage de Toiture</h3>
+                        <p class="text-sm text-slate-600">Elimination des mousses et lichens pour prolonger la duree de vie de votre toit.</p>
+                        <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
+                    </div>
+                </article>
+                <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
+                    <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1000&q=80" alt="Traitement hydrofuge toiture" class="h-44 w-full object-cover">
+                    <div class="flex h-full flex-col p-5">
+                        <h3 class="mb-2 text-lg font-bold leading-snug">🛡️ Traitement Hydrofuge (Incolore ou Colore)</h3>
+                        <p class="text-sm text-slate-600">Protection impermeable de votre toiture contre l'humidite et les infiltrations.</p>
+                        <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
+                    </div>
+                </article>
+                <article data-category="facade" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
+                    <img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1000&q=80" alt="Renovation de facade" class="h-44 w-full object-cover">
+                    <div class="flex h-full flex-col p-5">
+                        <h3 class="mb-2 text-lg font-bold leading-snug">🧱 Rénovation de Façade</h3>
+                        <p class="text-sm text-slate-600">Nettoyage, peinture et protection pour redonner vie a votre habitation.</p>
+                        <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
+                    </div>
+                </article>
+                <article data-category="isolation" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
+                    <img src="https://images.unsplash.com/photo-1581094271901-8022df4466f9?auto=format&fit=crop&w=1000&q=80" alt="Isolation thermique" class="h-44 w-full object-cover">
+                    <div class="flex h-full flex-col p-5">
+                        <h3 class="mb-2 text-lg font-bold leading-snug">🌡️ Isolation Thermique</h3>
+                        <p class="text-sm text-slate-600">Isolation des combles, rampants et planchers pour reduire les pertes de chaleur jusqu'a 30&nbsp;%.</p>
+                        <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
+                    </div>
+                </article>
+                <article data-category="air" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
+                    <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1000&q=80" alt="Ventilation VMC VMI" class="h-44 w-full object-cover">
+                    <div class="flex h-full flex-col p-5">
+                        <h3 class="mb-2 text-lg font-bold leading-snug">💨 Ventilation (VMC / VMI)</h3>
+                        <p class="text-sm text-slate-600">Systemes de ventilation pour ameliorer la qualite de l'air et reduire l'humidite.</p>
+                        <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
+                    </div>
+                </article>
+                <article data-category="electricite" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
+                    <img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=1000&q=80" alt="Mise aux normes electriques" class="h-44 w-full object-cover">
+                    <div class="flex h-full flex-col p-5">
+                        <h3 class="mb-2 text-lg font-bold leading-snug">⚡ Mise aux Normes Électriques</h3>
+                        <p class="text-sm text-slate-600">Securisation de votre installation electrique pour proteger votre maison et votre famille.</p>
+                        <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
+                    </div>
+                </article>
+                <article data-category="energie" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
+                    <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1000&q=80" alt="Installation photovoltaique" class="h-44 w-full object-cover">
+                    <div class="flex h-full flex-col p-5">
+                        <h3 class="mb-2 text-lg font-bold leading-snug">☀️ Installation Photovoltaïque</h3>
+                        <p class="text-sm text-slate-600">Production d'electricite solaire pour reduire vos factures et gagner en autonomie.</p>
+                        <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
+                    </div>
+                </article>
+                <article data-category="air" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
+                    <img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1000&q=80" alt="Climatisation" class="h-44 w-full object-cover">
+                    <div class="flex h-full flex-col p-5">
+                        <h3 class="mb-2 text-lg font-bold leading-snug">❄️ Climatisation &amp; Confort d'Été</h3>
+                        <p class="text-sm text-slate-600">Installation de systemes mono, bi ou tri split pour un interieur frais et agreable.</p>
+                        <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
+                    </div>
+                </article>
+                <article data-category="traitement" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
+                    <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80" alt="Traitement de l'humidite" class="h-44 w-full object-cover">
+                    <div class="flex h-full flex-col p-5">
+                        <h3 class="mb-2 text-lg font-bold leading-snug">💧 Traitement de l'Humidité</h3>
+                        <p class="text-sm text-slate-600">Solutions contre l'humidite (diagnostic, inverseur de polarite, traitement murs).</p>
+                        <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
+                    </div>
+                </article>
+                <article data-category="traitement" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
+                    <img src="https://images.unsplash.com/photo-1542013936713-aab4c61c3875?auto=format&fit=crop&w=1000&q=80" alt="Adoucisseur d'eau" class="h-44 w-full object-cover">
+                    <div class="flex h-full flex-col p-5">
+                        <h3 class="mb-2 text-lg font-bold leading-snug">🚿 Installation d'Adoucisseur d'Eau</h3>
+                        <p class="text-sm text-slate-600">Reduction du calcaire pour proteger vos equipements et ameliorer votre confort.</p>
+                        <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
+                    </div>
+                </article>
+                <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
+                    <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80" alt="Traitement de charpente" class="h-44 w-full object-cover">
+                    <div class="flex h-full flex-col p-5">
+                        <h3 class="mb-2 text-lg font-bold leading-snug">🪵 Traitement de Charpente</h3>
+                        <p class="text-sm text-slate-600">Traitement preventif et curatif contre les insectes et champignons.</p>
+                        <a href="#devis" class="mt-4 inline-flex w-fit rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition hover:bg-brand-dark sm:text-sm">En savoir plus</a>
+                    </div>
+                </article>
             </div>
         </div>
     </section>
@@ -277,7 +385,7 @@
         </div>
     </section>
 
-    <section id="agences" class="bg-slate-50/70 py-16 sm:py-20">
+    <section id="agences" class="scroll-mt-24 bg-slate-50/70 py-16 sm:py-20">
         <div class="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[.95fr_1.05fr] lg:items-start lg:px-8">
             <div>
                 <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Nos</span> agences</h2>
@@ -296,7 +404,7 @@
                         <p class="mt-1 text-sm font-semibold text-brand-dark">Tel: 02 96 40 07 55</p>
                     </article>
                 </div>
-                <a href="#franchise" class="group relative mt-5 hidden overflow-hidden rounded-xl border border-slate-200 shadow-soft lg:block">
+                <a href="#devis" class="group relative mt-5 hidden overflow-hidden rounded-xl border border-slate-200 shadow-soft lg:block">
                     <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1200&q=80')"></div>
                     <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-4 py-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Reseau Normes</p>
@@ -314,7 +422,7 @@
                     <span class="inline-flex items-center gap-1 rounded-full bg-brand-yellow/70 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-yellow"></span>Departements 71 & 21</span>
                 </div>
             </div>
-            <a href="#franchise" class="group relative block overflow-hidden rounded-xl border border-slate-200 shadow-soft lg:hidden">
+            <a href="#devis" class="group relative block overflow-hidden rounded-xl border border-slate-200 shadow-soft lg:hidden">
                 <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1200&q=80')"></div>
                 <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-4 py-4">
                     <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Reseau Normes</p>
@@ -425,68 +533,217 @@
         </div>
     </section>
 
-    <section id="devis" class="bg-brand-dark py-16 text-white sm:py-20">
-        <div class="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[1.15fr_.85fr] lg:items-center lg:px-8">
-            <div>
-                <h2 class="mb-3 text-4xl font-extrabold leading-tight text-white sm:text-5xl"><span class="text-brand-yellow">Vous avez</span> un projet de renovation ?</h2>
-                <p class="text-slate-200">Simulez votre besoin et recevez rapidement un accompagnement personnalise.</p>
+    <section id="devis" class="scroll-mt-24 bg-brand-dark py-16 text-white sm:py-20">
+        <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_1.05fr] lg:items-start lg:gap-12 lg:px-8">
+            <div class="space-y-6">
+                <div>
+                    <h2 class="mb-3 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-brand-yellow">Vous avez</span> un projet de renovation ?</h2>
+                    <p class="max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg">Decrivez votre besoin : nous vous recontactons rapidement avec un accompagnement personnalise, vos options d'aides et une premiere base pour votre devis.</p>
+                </div>
+                <div class="space-y-4 rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-sm sm:p-6">
+                    <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Nous contacter</p>
+                    <div class="space-y-3 text-sm sm:text-base">
+                        <div class="flex gap-3">
+                            <span class="mt-0.5 shrink-0 text-brand-blue" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </span>
+                            <div>
+                                <p class="font-semibold text-white">Agence Chalon-sur-Saone</p>
+                                <p class="text-slate-300">6 rue Pierre de Coubertin<br>71100 Chalon-sur-Saone</p>
+                                <a href="tel:+33385419886" class="mt-1 inline-block font-extrabold text-brand-yellow transition hover:text-white">03 85 41 98 86</a>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 border-t border-white/10 pt-3">
+                            <span class="mt-0.5 shrink-0 text-brand-blue" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </span>
+                            <div>
+                                <p class="font-semibold text-white">Agence Bretagne</p>
+                                <p class="text-slate-300">ZA de Mikez<br>22540 Pedernec</p>
+                                <a href="tel:+33296400755" class="mt-1 inline-block font-extrabold text-brand-yellow transition hover:text-white">02 96 40 07 55</a>
+                            </div>
+                        </div>
+                        <div class="border-t border-white/10 pt-3">
+                            <a href="mailto:bourgogne-agence@normesrenovation.fr" class="inline-flex items-center gap-2 font-semibold text-white transition hover:text-brand-yellow">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-brand-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                                bourgogne-agence@normesrenovation.fr
+                            </a>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400">Horaires : du lundi au vendredi, sur rendez-vous — reponse sous 48h en general.</p>
+                </div>
             </div>
-            <form class="rounded-2xl bg-white p-5 text-brand-dark sm:p-6">
-                <label for="name" class="mb-1 block text-sm font-semibold">Nom</label>
-                <input id="name" type="text" class="mb-3 w-full rounded-lg border border-slate-200 px-3 py-2.5">
-                <label for="phone" class="mb-1 block text-sm font-semibold">Telephone</label>
-                <input id="phone" type="tel" class="mb-3 w-full rounded-lg border border-slate-200 px-3 py-2.5">
-                <label for="project" class="mb-1 block text-sm font-semibold">Projet</label>
-                <select id="project" class="mb-4 w-full rounded-lg border border-slate-200 px-3 py-2.5">
-                    <option>Isolation</option>
-                    <option>Toiture</option>
-                    <option>Electricite</option>
-                    <option>Photovoltaique</option>
-                    <option>Climatisation</option>
-                </select>
-                <button type="button" class="w-full rounded-xl bg-brand-yellow px-4 py-3 text-sm font-extrabold text-brand-dark transition hover:bg-yellow-300">Recevoir mon devis gratuit</button>
+            <form class="rounded-2xl border border-slate-200/80 bg-white p-5 text-brand-dark shadow-soft sm:p-7" action="#" method="post">
+                @csrf
+                <p class="mb-4 text-sm font-semibold text-slate-600">Formulaire de contact — champs complements pour mieux qualifier votre projet.</p>
+                <div class="grid gap-3 sm:grid-cols-2">
+                    <div class="sm:col-span-1">
+                        <label for="devisPrenom" class="mb-1 block text-sm font-semibold">Prenom</label>
+                        <input id="devisPrenom" name="prenom" type="text" autocomplete="given-name" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                    </div>
+                    <div class="sm:col-span-1">
+                        <label for="devisNom" class="mb-1 block text-sm font-semibold">Nom</label>
+                        <input id="devisNom" name="nom" type="text" autocomplete="family-name" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                    </div>
+                </div>
+                <div class="mt-3 grid gap-3 sm:grid-cols-2">
+                    <div>
+                        <label for="devisEmail" class="mb-1 block text-sm font-semibold">Email</label>
+                        <input id="devisEmail" name="email" type="email" autocomplete="email" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                    </div>
+                    <div>
+                        <label for="devisPhone" class="mb-1 block text-sm font-semibold">Telephone</label>
+                        <input id="devisPhone" name="telephone" type="tel" autocomplete="tel" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                    </div>
+                </div>
+                <div class="mt-3 grid gap-3 sm:grid-cols-3">
+                    <div class="sm:col-span-1">
+                        <label for="devisCp" class="mb-1 block text-sm font-semibold">Code postal</label>
+                        <input id="devisCp" name="code_postal" type="text" inputmode="numeric" maxlength="10" autocomplete="postal-code" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label for="devisVille" class="mb-1 block text-sm font-semibold">Ville</label>
+                        <input id="devisVille" name="ville" type="text" autocomplete="address-level2" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <label for="devisBien" class="mb-1 block text-sm font-semibold">Type de bien</label>
+                    <select id="devisBien" name="type_bien" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                        <option value="">Selectionnez</option>
+                        <option value="maison">Maison</option>
+                        <option value="appartement">Appartement</option>
+                        <option value="local">Local professionnel</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+                <div class="mt-3">
+                    <label for="devisProject" class="mb-1 block text-sm font-semibold">Nature du projet</label>
+                    <select id="devisProject" name="projet" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                        <option value="toiture_couverture">Toiture &amp; couverture</option>
+                        <option value="demoussage">Nettoyage &amp; demoussage de toiture</option>
+                        <option value="hydrofuge">Traitement hydrofuge</option>
+                        <option value="facade">Renovation de facade</option>
+                        <option value="isolation">Isolation thermique</option>
+                        <option value="vmc">Ventilation (VMC / VMI)</option>
+                        <option value="electricite">Mise aux normes electriques</option>
+                        <option value="solaire">Installation photovoltaique</option>
+                        <option value="clim">Climatisation &amp; confort d'ete</option>
+                        <option value="humidite">Traitement de l'humidite</option>
+                        <option value="adoucisseur">Adoucisseur d'eau</option>
+                        <option value="charpente">Traitement de charpente</option>
+                        <option value="multiple">Plusieurs travaux</option>
+                        <option value="conseil">Je souhaite etre conseille(e)</option>
+                    </select>
+                </div>
+                <div class="mt-3">
+                    <label for="devisMessage" class="mb-1 block text-sm font-semibold">Message et precisions</label>
+                    <textarea id="devisMessage" name="message" rows="4" placeholder="Surface approximative, urgence, questions sur MaPrimeRénov ou CEE..." class="w-full resize-y rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25"></textarea>
+                </div>
+                <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start">
+                    <label class="flex cursor-pointer gap-2 text-xs text-slate-600 sm:max-w-lg">
+                        <input type="checkbox" name="rgpd" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-brand-blue focus:ring-brand-blue">
+                        <span>J'accepte que mes informations soient utilisees pour me recontacter concernant ma demande (voir les engagements RGPD de l'entreprise).</span>
+                    </label>
+                </div>
+                <button type="submit" class="mt-5 w-full rounded-xl bg-brand-yellow px-4 py-3.5 text-sm font-extrabold text-brand-dark shadow-soft transition hover:bg-yellow-300 sm:text-base">Envoyer ma demande — devis gratuit</button>
+                <p class="mt-3 text-center text-xs text-slate-500">Sans engagement. Un conseiller vous rappelle pour affiner votre projet.</p>
             </form>
         </div>
     </section>
 
-    <section id="franchise" class="bg-slate-50/70 py-16 sm:py-20">
+    <section id="conseils" class="bg-slate-50/70 py-16 sm:py-20 scroll-mt-24">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Bonus</span></h2>
-            <div class="grid gap-4 lg:grid-cols-3">
-                <article class="rounded-xl border border-slate-100 bg-white p-5"><h3 class="mb-2 text-xl font-bold">Simulateur de devis</h3><p class="text-slate-600">Un parcours simple pour qualifier rapidement votre projet.</p></article>
-                <article class="rounded-xl border border-slate-100 bg-white p-5"><h3 class="mb-2 text-xl font-bold">Page realisations</h3><p class="text-slate-600">Mise en avant des chantiers avant/apres pour rassurer.</p></article>
-                <article class="rounded-xl border border-slate-100 bg-white p-5"><h3 class="mb-2 text-xl font-bold">Blog SEO 2026</h3><p class="text-slate-600">Contenus sur les aides, l'isolation et les economies d'energie.</p></article>
+            <h2 class="mb-2 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">Astuces</span> & blog</h2>
+            <p class="mb-8 max-w-2xl text-base text-slate-600 sm:text-lg">Conseils pratiques pour preparer vos travaux, mieux comprendre les aides et entretenir votre logement durablement.</p>
+            <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                <article class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:border-brand-blue/30">
+                    <p class="mb-2 text-xs font-bold uppercase tracking-wide text-brand-blue">Isolation</p>
+                    <h3 class="mb-2 text-xl font-extrabold text-brand-dark">Combles perdus ou amenages : par ou commencer ?</h3>
+                    <p class="flex-1 text-sm leading-relaxed text-slate-600">Les bonnes questions sur l'epaisseur, la ventilation et l'humidite avant de signer un devis d'isolation.</p>
+                    <a href="#devis" class="mt-4 inline-flex text-sm font-bold text-brand-blue transition hover:text-brand-dark">Demander un avis technique →</a>
+                </article>
+                <article class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:border-brand-blue/30">
+                    <p class="mb-2 text-xs font-bold uppercase tracking-wide text-brand-blue">Aides</p>
+                    <h3 class="mb-2 text-xl font-extrabold text-brand-dark">MaPrimeRénov' & CEE : cumul et dossier sans prise de tete</h3>
+                    <p class="flex-1 text-sm leading-relaxed text-slate-600">Ce qui change souvent, les pieces a anticiper et comment une entreprise RGE vous aide a securiser vos droits.</p>
+                    <a href="#devis" class="mt-4 inline-flex text-sm font-bold text-brand-blue transition hover:text-brand-dark">Parler a un conseiller →</a>
+                </article>
+                <article class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:border-brand-blue/30 md:col-span-2 lg:col-span-1">
+                    <p class="mb-2 text-xs font-bold uppercase tracking-wide text-brand-blue">Entretien</p>
+                    <h3 class="mb-2 text-xl font-extrabold text-brand-dark">Toiture : signes qui doivent declencher un controle</h3>
+                    <p class="flex-1 text-sm leading-relaxed text-slate-600">Tuiles, zinguerie, isolation — reperer tot les traces d'infiltration limite les grosses reparations.</p>
+                    <a href="#realisations" class="mt-4 inline-flex text-sm font-bold text-brand-blue transition hover:text-brand-dark">Voir nos chantiers →</a>
+                </article>
             </div>
         </div>
     </section>
 
-    <footer class="border-t-4 border-brand-blue bg-brand-dark py-10 text-white">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 class="mb-2 text-4xl font-extrabold text-white sm:text-5xl">Normes & Renovation</h2>
-            <p class="text-slate-300">6 rue Pierre de Coubertin, 71100 Chalon-sur-Saone</p>
-            <p class="text-slate-300">03 85 41 98 86</p>
-            <p class="text-slate-300">bourgogne-agence@normesrenovation.fr</p>
-            <div class="mt-5 flex flex-wrap items-center gap-2">
-                <a href="#" aria-label="Facebook" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1877F2] text-white shadow-soft transition hover:opacity-90">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                </a>
-                <a href="#" aria-label="LinkedIn" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#0A66C2] text-white shadow-soft transition hover:opacity-90">
-                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                </a>
-                <a href="#" aria-label="Instagram" class="inline-flex h-10 w-10 items-center justify-center rounded-full shadow-soft ring-2 ring-white/25 transition hover:opacity-90">
-                    <svg class="h-10 w-10" viewBox="0 0 24 24" aria-hidden="true">
-                        <defs>
-                            <linearGradient id="instaGradFooter" x1="0%" y1="100%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#FFDC80"/>
-                                <stop offset="25%" stop-color="#F77737"/>
-                                <stop offset="50%" stop-color="#FD1D1D"/>
-                                <stop offset="75%" stop-color="#E1306C"/>
-                                <stop offset="100%" stop-color="#C13584"/>
-                            </linearGradient>
-                        </defs>
-                        <path fill="url(#instaGradFooter)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.27.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.354 2.618 6.78 6.979 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                    </svg>
-                </a>
+    <footer class="border-t-4 border-brand-blue bg-brand-dark text-white">
+        <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
+            <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+                <div class="lg:col-span-4">
+                    <a href="#top" class="inline-block text-2xl font-extrabold tracking-tight text-white transition hover:text-brand-yellow">Normes &amp; Renovation</a>
+                    <p class="mt-4 max-w-sm text-sm leading-relaxed text-slate-300">Renovation energetique et technique en Bourgogne et Bretagne. Entreprise certifiee <strong class="font-semibold text-white">RGE</strong>, accompagnement personnalise des aides a la livraison.</p>
+                    <p class="mt-4 text-xs text-slate-400">SIRET et references : sur demande — devis gratuits, sans engagement.</p>
+                </div>
+                <div class="lg:col-span-3">
+                    <h3 class="mb-4 text-sm font-extrabold uppercase tracking-wide text-brand-yellow">Nos agences</h3>
+                    <div class="space-y-5 text-sm">
+                        <div>
+                            <p class="font-semibold text-white">Chalon-sur-Saone (71)</p>
+                            <p class="mt-1 text-slate-300">6 rue Pierre de Coubertin<br>71100 Chalon-sur-Saone</p>
+                            <a href="tel:+33385419886" class="mt-1 inline-block font-bold text-brand-blue transition hover:text-white">03 85 41 98 86</a>
+                        </div>
+                        <div class="border-t border-white/10 pt-5">
+                            <p class="font-semibold text-white">Bretagne (22)</p>
+                            <p class="mt-1 text-slate-300">ZA de Mikez<br>22540 Pedernec</p>
+                            <a href="tel:+33296400755" class="mt-1 inline-block font-bold text-brand-blue transition hover:text-white">02 96 40 07 55</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-2">
+                    <h3 class="mb-4 text-sm font-extrabold uppercase tracking-wide text-brand-yellow">Liens rapides</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#services" class="text-slate-300 transition hover:text-white">Nos services</a></li>
+                        <li><a href="#realisations" class="text-slate-300 transition hover:text-white">Realisations</a></li>
+                        <li><a href="#agences" class="text-slate-300 transition hover:text-white">Agences & carte</a></li>
+                        <li><a href="#conseils" class="text-slate-300 transition hover:text-white">Astuces & blog</a></li>
+                        <li><a href="#devis" class="font-semibold text-brand-blue transition hover:text-white">Contact / devis</a></li>
+                    </ul>
+                </div>
+                <div class="lg:col-span-3">
+                    <h3 class="mb-4 text-sm font-extrabold uppercase tracking-wide text-brand-yellow">Contact & reseaux</h3>
+                    <p class="text-sm text-slate-300">
+                        <a href="mailto:bourgogne-agence@normesrenovation.fr" class="break-all font-medium text-white transition hover:text-brand-yellow">bourgogne-agence@normesrenovation.fr</a>
+                    </p>
+                    <p class="mt-4 text-xs leading-relaxed text-slate-400">Lundi au vendredi sur rendez-vous. Pour l'urgence, appelez l'agence la plus proche.</p>
+                    <div class="mt-5 flex flex-wrap items-center gap-2">
+                        <a href="#" aria-label="Facebook Normes & Renovation" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1877F2] text-white shadow-soft transition hover:opacity-90">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </a>
+                        <a href="#" aria-label="LinkedIn Normes & Renovation" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#0A66C2] text-white shadow-soft transition hover:opacity-90">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                        </a>
+                        <a href="#" aria-label="Instagram Normes & Renovation" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-soft ring-2 ring-white/20 transition hover:opacity-90">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
+                                <defs>
+                                    <linearGradient id="instaGradFooter" x1="0%" y1="100%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#FFDC80"/>
+                                        <stop offset="25%" stop-color="#F77737"/>
+                                        <stop offset="50%" stop-color="#FD1D1D"/>
+                                        <stop offset="75%" stop-color="#E1306C"/>
+                                        <stop offset="100%" stop-color="#C13584"/>
+                                    </linearGradient>
+                                </defs>
+                                <path fill="url(#instaGradFooter)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.27.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.354 2.618 6.78 6.979 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-10 flex flex-col gap-4 border-t border-white/10 pt-8 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+                <p>&copy; <span id="footerYear"></span> Normes &amp; Renovation. Tous droits reserves.</p>
+                <p class="sm:text-right">Entreprise RGE — Renovation energetique — <a href="#devis" class="text-slate-300 underline-offset-2 transition hover:text-white hover:underline">Contact</a></p>
             </div>
         </div>
     </footer>
@@ -499,6 +756,10 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
+        (function () {
+            const y = document.getElementById('footerYear');
+            if (y) y.textContent = String(new Date().getFullYear());
+        })();
         (function () {
             const menuBtn = document.getElementById('menuBtn');
             const mobileMenu = document.getElementById('mobileMenu');
@@ -529,11 +790,11 @@
                 },
                 2: {
                     bg: "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80')",
-                    title: "Simulateur de devis renovation en 1 minute",
-                    subtitle: "Entrez votre adresse et obtenez rapidement une estimation claire pour votre projet.",
-                    primaryText: "Lancer le simulateur",
-                    primaryHref: "#address",
-                    secondaryText: "Parler a un conseiller",
+                    title: "Besoin d'un devis clair pour votre projet ?",
+                    subtitle: "Expliquez-nous vos travaux : nos equipes vous repondent et vous orientent sur les aides et le financement.",
+                    primaryText: "Demander un devis gratuit",
+                    primaryHref: "#devis",
+                    secondaryText: "Nous contacter",
                     secondaryHref: "#devis"
                 },
                 3: {
