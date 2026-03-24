@@ -331,7 +331,7 @@
             </div>
             <div id="serviceGrid" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="{{ asset('services/toiture et couverture.jpeg') }}" alt="Toiture et couverture" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/toiture-couverture.jpeg') }}" alt="Toiture et couverture" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
                         <h3 class="mb-2 text-lg font-bold leading-snug">Toiture &amp; couverture</h3>
                         <p class="text-sm text-slate-600">Nettoyage, reparation et remplacement de toiture pour proteger durablement votre maison.</p>
@@ -339,7 +339,7 @@
                     </div>
                 </article>
                 <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="{{ asset('services/Nettoyage & Demoussage de Toiture.jpeg') }}" alt="Nettoyage et démoussage de toiture" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/nettoyage-demoussage-toiture.jpeg') }}" alt="Nettoyage et démoussage de toiture" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
                         <h3 class="mb-2 text-lg font-bold leading-snug">Nettoyage &amp; démoussage de toiture</h3>
                         <p class="text-sm text-slate-600">Elimination des mousses et lichens pour prolonger la duree de vie de votre toit.</p>
@@ -347,7 +347,7 @@
                     </div>
                 </article>
                 <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="{{ asset('services/Traitement Hydrofuge (Incolore ou Colore).png') }}" alt="Traitement hydrofuge toiture" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/traitement-hydrofuge.png') }}" alt="Traitement hydrofuge toiture" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
                         <h3 class="mb-2 text-lg font-bold leading-snug">Traitement hydrofuge (incolore ou coloré)</h3>
                         <p class="text-sm text-slate-600">Protection impermeable de votre toiture contre l'humidite et les infiltrations.</p>
@@ -355,7 +355,7 @@
                     </div>
                 </article>
                 <article data-category="facade" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="{{ asset('services/Rénovation de Façade.jpeg') }}" alt="Rénovation de façade" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/renovation-facade.jpeg') }}" alt="Rénovation de façade" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
                         <h3 class="mb-2 text-lg font-bold leading-snug">Rénovation de façade</h3>
                         <p class="text-sm text-slate-600">Nettoyage, peinture et protection pour redonner vie a votre habitation.</p>
@@ -363,7 +363,7 @@
                     </div>
                 </article>
                 <article data-category="isolation" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="{{ asset('services/Isolation Thermique.jpeg') }}" alt="Isolation thermique" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/isolation-thermique.jpeg') }}" alt="Isolation thermique" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
                         <h3 class="mb-2 text-lg font-bold leading-snug">Isolation thermique</h3>
                         <p class="text-sm text-slate-600">Isolation des combles, rampants et planchers pour reduire les pertes de chaleur jusqu'a 30&nbsp;%.</p>
@@ -371,7 +371,7 @@
                     </div>
                 </article>
                 <article data-category="air" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="{{ asset('services/Ventilation (VMC : VMI).jpg') }}" alt="Ventilation VMC / VMI" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/ventilation-vmc-vmi.jpg') }}" alt="Ventilation VMC / VMI" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
                         <h3 class="mb-2 text-lg font-bold leading-snug">Ventilation (VMC / VMI)</h3>
                         <p class="text-sm text-slate-600">Systemes de ventilation pour ameliorer la qualite de l'air et reduire l'humidite.</p>
@@ -379,7 +379,7 @@
                     </div>
                 </article>
                 <article data-category="electricite" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="{{ asset('services/Mise aux Normes Électriques.jpg') }}" alt="Mise aux normes électriques" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/mise-normes-electriques.jpg') }}" alt="Mise aux normes électriques" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
                         <h3 class="mb-2 text-lg font-bold leading-snug">Mise aux normes électriques</h3>
                         <p class="text-sm text-slate-600">Securisation de votre installation electrique pour proteger votre maison et votre famille.</p>
@@ -387,7 +387,7 @@
                     </div>
                 </article>
                 <article data-category="energie" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="{{ asset('services/Installation Photovoltaïque.jpg') }}" alt="Installation photovoltaïque" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/installation-photovoltaique.jpg') }}" alt="Installation photovoltaïque" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
                         <h3 class="mb-2 text-lg font-bold leading-snug">Installation photovoltaïque</h3>
                         <p class="text-sm text-slate-600">Production d'electricite solaire pour reduire vos factures et gagner en autonomie.</p>
@@ -395,7 +395,7 @@
                     </div>
                 </article>
                 <article data-category="air" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="{{ asset("services/Climatisation & Confort d'Été.jpg") }}" alt="Climatisation et confort d'été" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/climatisation-ete.jpg') }}" alt="Climatisation et confort d'été" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
                         <h3 class="mb-2 text-lg font-bold leading-snug">Climatisation &amp; confort d'été</h3>
                         <p class="text-sm text-slate-600">Installation de systemes mono, bi ou tri split pour un interieur frais et agreable.</p>
@@ -403,7 +403,7 @@
                     </div>
                 </article>
                 <article data-category="traitement" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="{{ asset("services/Traitement de l'Humidité.webp") }}" alt="Traitement de l'humidité" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/traitement-humidite.webp') }}" alt="Traitement de l'humidité" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
                         <h3 class="mb-2 text-lg font-bold leading-snug">Traitement de l'humidité</h3>
                         <p class="text-sm text-slate-600">Solutions contre l'humidite (diagnostic, inverseur de polarite, traitement murs).</p>
@@ -411,7 +411,7 @@
                     </div>
                 </article>
                 <article data-category="traitement" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="{{ asset("services/Installation d'Adoucisseur d'Eau.jpeg") }}" alt="Installation d'adoucisseur d'eau" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/installation-adoucisseur-eau.jpeg') }}" alt="Installation d'adoucisseur d'eau" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
                         <h3 class="mb-2 text-lg font-bold leading-snug">Installation d'adoucisseur d'eau</h3>
                         <p class="text-sm text-slate-600">Reduction du calcaire pour proteger vos equipements et ameliorer votre confort.</p>
@@ -419,7 +419,7 @@
                     </div>
                 </article>
                 <article data-category="toiture" class="service-card flex h-full flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1">
-                    <img src="{{ asset('services/Traitement de Charpente.webp') }}" alt="Traitement de charpente" class="h-44 w-full object-cover">
+                    <img src="{{ asset('services/traitement-charpente.webp') }}" alt="Traitement de charpente" class="h-44 w-full object-cover">
                     <div class="flex h-full flex-col p-5">
                         <h3 class="mb-2 text-lg font-bold leading-snug">Traitement de charpente</h3>
                         <p class="text-sm text-slate-600">Traitement preventif et curatif contre les insectes et champignons.</p>
@@ -468,11 +468,8 @@
                 </div>
 
                 <aside id="a-propos" class="flex min-h-0 scroll-mt-28 flex-col rounded-2xl border border-white/25 bg-brand-blue p-6 shadow-soft lg:min-h-[560px]">
-                    <h2 class="mb-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-                        <span class="text-white">À propos de</span>
-                        <span class="mt-1 block sm:mt-2 sm:inline sm:pl-2">
-                            <span class="rounded-xl bg-brand-dark px-3 py-1 text-white shadow-md ring-2 ring-white/25 sm:inline-block">Normes &amp; Rénovation</span>
-                        </span>
+                    <h2 class="mb-4 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
+                        À propos de Normes &amp; Rénovation
                     </h2>
                     <p class="mb-5 text-base leading-relaxed text-white sm:text-lg">Normes &amp; Rénovation accompagne les particuliers et professionnels dans leurs projets de rénovation énergétique, thermique et électrique. Notre équipe combine expertise technique, suivi de chantier et conseils sur mesure pour des résultats fiables et durables. Nous sommes certifiés RGE, engagés dans le respect de l'environnement et nous privilégions des matériaux de qualité pour des rénovations performantes et responsables.</p>
                     <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-yellow">Nos engagements</p>
@@ -507,41 +504,41 @@
         <div class="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[.95fr_1.05fr] lg:items-start lg:px-8">
             <div>
                 <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Nos</span> agences</h2>
-                <p class="mb-6 text-base text-slate-600 sm:text-lg">Retrouvez nos 2 agences principales et les departements mis en avant sur la carte.</p>
+                <p class="mb-6 text-base text-slate-600 sm:text-lg">Retrouvez nos 2 agences principales et les départements mis en avant sur la carte.</p>
                 <div class="space-y-3">
                     <article class="rounded-xl border border-slate-200 bg-white p-4">
-                        <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Departement 71</p>
-                        <h3 class="text-lg font-extrabold text-brand-dark">Agence Chalon-sur-Saone</h3>
-                        <p class="text-sm text-slate-600">6 rue Pierre de Coubertin, 71100 Chalon-sur-Saone</p>
-                        <p class="mt-1 text-sm font-semibold text-brand-dark">Tel: 03 85 41 98 86</p>
+                        <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Département 71</p>
+                        <h3 class="text-lg font-extrabold text-brand-dark">Agence Chalon-sur-Saône</h3>
+                        <p class="text-sm text-slate-600">6 rue Pierre de Coubertin, 71100 Chalon-sur-Saône</p>
+                        <p class="mt-1 text-sm font-semibold text-brand-dark">Tél. : 03 85 41 98 86</p>
                     </article>
                     <article class="rounded-xl border border-slate-200 bg-white p-4">
-                        <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Departement 22 - Bretagne</p>
+                        <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Département 22 — Bretagne</p>
                         <h3 class="text-lg font-extrabold text-brand-dark">Agence Bretagne</h3>
-                        <p class="text-sm text-slate-600">ZA de Mikez - 22540 Pedernec</p>
-                        <p class="mt-1 text-sm font-semibold text-brand-dark">Tel: 02 96 40 07 55</p>
+                        <p class="text-sm text-slate-600">ZA de Mikez — 22540 Pédernec</p>
+                        <p class="mt-1 text-sm font-semibold text-brand-dark">Tél. : 02 96 40 07 55</p>
                     </article>
                 </div>
+
+                <a id="franchise" href="#devis" class="group relative mt-6 block scroll-mt-28 overflow-hidden rounded-xl border border-slate-200 shadow-soft">
+                    <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1200&q=80')"></div>
+                    <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-5 py-5 sm:px-6 sm:py-6">
+                        <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Réseau Normes</p>
+                        <h3 class="text-xl font-extrabold text-white sm:text-2xl">Devenir franchisé</h3>
+                        <p class="mt-1 max-w-2xl text-sm text-slate-200 sm:text-base">Rejoignez notre réseau et développez votre agence avec un accompagnement complet — contactez-nous pour en discuter.</p>
+                        <span class="mt-4 inline-flex rounded-lg bg-brand-blue px-4 py-2.5 text-xs font-extrabold text-white transition group-hover:bg-sky-500 sm:text-sm">Demander une présentation / devenir franchisé</span>
+                    </div>
+                </a>
             </div>
 
             <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
                 <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Carte</span> des implantations</h2>
                 <div id="agencyMap" class="min-h-[380px] rounded-xl border border-slate-200"></div>
                 <div class="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
-                    <span class="inline-flex items-center gap-1 rounded-full bg-brand-blue/20 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-blue"></span>Region Bretagne</span>
-                    <span class="inline-flex items-center gap-1 rounded-full bg-brand-yellow/70 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-yellow"></span>Departements 71 & 21</span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-brand-blue/20 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-blue"></span>Région Bretagne</span>
+                    <span class="inline-flex items-center gap-1 rounded-full bg-brand-yellow/70 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-yellow"></span>Départements 71 &amp; 21</span>
                 </div>
             </div>
-
-            <a id="franchise" href="#devis" class="group relative col-span-full mt-2 block scroll-mt-28 overflow-hidden rounded-xl border border-slate-200 shadow-soft lg:mt-0">
-                <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1200&q=80')"></div>
-                <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-5 py-5 sm:px-6 sm:py-6">
-                    <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Reseau Normes</p>
-                    <h3 class="text-xl font-extrabold text-white sm:text-2xl">Devenir franchisé</h3>
-                    <p class="mt-1 max-w-2xl text-sm text-slate-200 sm:text-base">Rejoignez notre reseau et developpez votre agence avec un accompagnement complet — contactez-nous pour en discuter.</p>
-                    <span class="mt-4 inline-flex rounded-lg bg-brand-blue px-4 py-2.5 text-xs font-extrabold text-white transition group-hover:bg-sky-500 sm:text-sm">Demander une presentation</span>
-                </div>
-            </a>
         </div>
     </section>
 
@@ -661,35 +658,28 @@
 
     <section id="devis" class="scroll-mt-24 bg-brand-dark py-16 text-white sm:py-20">
         <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:items-start lg:gap-12 lg:px-8">
-            <div>
+            <div class="flex flex-col gap-8">
                 <div class="devis-simulator-bg relative overflow-hidden rounded-2xl border border-white/20 shadow-2xl ring-1 ring-white/10">
                     <div class="relative z-[1] p-6 sm:p-8">
                         <div class="max-w-lg">
-                            <p class="text-[11px] font-extrabold uppercase tracking-[0.26em] text-brand-yellow sm:text-xs">Simulateur de devis</p>
-                            <p class="mt-3 text-xl font-bold text-white sm:text-2xl">Estimation personnalisée &amp; rappel d'un conseiller</p>
-                            <p class="mt-2 text-sm leading-relaxed text-slate-200 sm:text-base">Visualisez les grandes lignes de votre projet (toiture, surfaces, état du bien) — un interlocuteur vous rappelle pour affiner chiffrage et aides.</p>
+                            <h2 class="mb-4 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-brand-yellow">Vous avez</span> <span class="text-white">un projet de rénovation ?</span></h2>
+                            <p class="text-xl font-bold text-white sm:text-2xl">Estimation personnalisée &amp; rappel d'un conseiller</p>
+                            <p class="mt-3 text-sm leading-relaxed text-slate-200 sm:text-base">Visualisez les grandes lignes de votre projet (toiture, surfaces, état du bien) — un interlocuteur vous rappelle pour affiner chiffrage et aides.</p>
                             <p class="mt-2 text-sm text-slate-300">Réponse sous 48h en général — sans engagement.</p>
-                            <a href="#formulaire-contact" class="mt-5 inline-flex rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-lg transition hover:bg-yellow-300">Passer au formulaire de contact</a>
+                            <a href="#formulaire-contact" class="mt-5 inline-flex rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-lg transition hover:bg-yellow-300 lg:hidden">Remplir le formulaire</a>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="flex flex-col gap-8">
-                <div class="space-y-6">
-                <div>
-                    <h2 class="mb-3 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-brand-yellow">Vous avez</span> <span class="text-white">un projet de rénovation ?</span></h2>
-                    <p class="max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg">Décrivez votre besoin : nous vous recontactons rapidement avec un accompagnement personnalisé, vos options d'aides et une première base pour votre devis.</p>
-                </div>
                 <div class="space-y-4 rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-sm sm:p-6">
-                    <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Nous contacter</p>
+                    <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Contact agences</p>
                     <div class="space-y-3 text-sm sm:text-base">
                         <div class="flex gap-3">
                             <span class="mt-0.5 shrink-0 text-brand-blue" aria-hidden="true">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             </span>
                             <div>
-                                <p class="font-semibold text-white">Agence Chalon-sur-Saone</p>
-                                <p class="text-slate-300">6 rue Pierre de Coubertin<br>71100 Chalon-sur-Saone</p>
+                                <p class="font-semibold text-white">Agence Chalon-sur-Saône</p>
+                                <p class="text-slate-300">6 rue Pierre de Coubertin<br>71100 Chalon-sur-Saône</p>
                                 <a href="tel:+33385419886" class="mt-1 inline-block font-extrabold text-brand-yellow transition hover:text-white">03 85 41 98 86</a>
                             </div>
                         </div>
@@ -699,7 +689,7 @@
                             </span>
                             <div>
                                 <p class="font-semibold text-white">Agence Bretagne</p>
-                                <p class="text-slate-300">ZA de Mikez<br>22540 Pedernec</p>
+                                <p class="text-slate-300">ZA de Mikez<br>22540 Pédernec</p>
                                 <a href="tel:+33296400755" class="mt-1 inline-block font-extrabold text-brand-yellow transition hover:text-white">02 96 40 07 55</a>
                             </div>
                         </div>
@@ -710,14 +700,14 @@
                             </a>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-400">Horaires : du lundi au vendredi, sur rendez-vous — reponse sous 48h en general.</p>
+                    <p class="text-xs text-slate-400">Horaires : du lundi au vendredi, sur rendez-vous — réponse sous 48h en général.</p>
                 </div>
-                </div>
+            </div>
 
-                <div id="formulaire-contact" class="scroll-mt-28 rounded-2xl border border-slate-200/90 bg-white p-5 text-brand-dark shadow-xl sm:p-7">
+            <div id="formulaire-contact" class="scroll-mt-28 rounded-2xl border border-slate-200/90 bg-white p-5 text-brand-dark shadow-xl sm:p-7">
                     <div class="mb-5 border-b border-slate-100 pb-4">
                         <h3 class="text-xl font-extrabold text-brand-dark">Formulaire de contact</h3>
-                        <p class="mt-1 text-sm text-slate-600">Bloc à part du simulateur visuel : transmettez vos coordonnées et votre projet pour être rappelé(e) et recevoir une base de devis.</p>
+                        <p class="mt-1 text-sm text-slate-600">Indiquez vos coordonnées et votre projet pour être rappelé(e) et recevoir une base de devis.</p>
                     </div>
                     <form class="text-brand-dark" action="#" method="post">
                 @csrf
@@ -794,7 +784,6 @@
                 <button type="submit" class="mt-5 w-full rounded-xl bg-brand-yellow px-4 py-3.5 text-sm font-extrabold text-brand-dark shadow-soft transition hover:bg-yellow-300 sm:text-base">Envoyer ma demande — devis gratuit</button>
                 <p class="mt-3 text-center text-xs text-slate-500">Sans engagement. Un conseiller vous rappelle pour affiner votre projet.</p>
                     </form>
-                </div>
             </div>
         </div>
     </section>
