@@ -258,7 +258,7 @@
     </header>
 
     <section id="top" class="relative min-h-[540px] overflow-hidden sm:min-h-[620px]">
-        <div id="heroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-500" style="background-image:linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1600&q=80')"></div>
+        <div id="heroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-500" style="background-image:linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('{{ asset('slide/toiture.png') }}')"></div>
         <div class="relative z-10 mx-auto flex min-h-[540px] max-w-7xl flex-col justify-end gap-5 px-4 py-8 sm:min-h-[620px] sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
             <div class="max-w-3xl text-white">
                 <h1 id="heroTitle" class="mb-3 text-4xl font-extrabold leading-[1.03] tracking-tight sm:text-5xl lg:text-6xl">Travaux de toiture durables et performants</h1>
@@ -270,9 +270,9 @@
             </div>
 
             <div id="heroThumbs" class="flex w-full gap-2 pb-1 lg:w-auto">
-                <button class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 border-brand-blue bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="1" style="background-image:url('https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=600&q=80')" aria-label="Slider travaux de toiture"></button>
-                <button class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 border-transparent bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="2" style="background-image:url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=600&q=80')" aria-label="Slider simulateur de devis"></button>
-                <button class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 border-transparent bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="3" style="background-image:url('https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=600&q=80')" aria-label="Slider photovoltaique"></button>
+                <button class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 border-brand-blue bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="1" style="background-image:url('{{ asset('slide/toiture.png') }}')" aria-label="Slider travaux de toiture"></button>
+                <button class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 border-transparent bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="2" style="background-image:url('{{ asset('slide/smulateur.png') }}')" aria-label="Slider simulateur de devis"></button>
+                <button class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 border-transparent bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="3" style="background-image:url('{{ asset('slide/solaire.png') }}')" aria-label="Slider photovoltaïque"></button>
             </div>
         </div>
     </section>
@@ -987,7 +987,7 @@
             const thumbs = Array.from(document.querySelectorAll('.hero-thumb'));
             const slides = {
                 1: {
-                    bg: "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1600&q=80')",
+                    bg: "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('{{ asset('slide/toiture.png') }}')",
                     title: "Travaux de toiture durables et performants",
                     subtitle: "Protection, etancheite et renovation complete de votre toiture pour valoriser votre maison.",
                     primaryText: "Devis toiture",
@@ -996,7 +996,7 @@
                     secondaryHref: "#devis"
                 },
                 2: {
-                    bg: "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=1600&q=80')",
+                    bg: "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('{{ asset('slide/smulateur.png') }}')",
                     title: "Besoin d'un devis clair pour votre projet ?",
                     subtitle: "Expliquez-nous vos travaux : nos equipes vous repondent et vous orientent sur les aides et le financement.",
                     primaryText: "Demander un devis gratuit",
@@ -1005,7 +1005,7 @@
                     secondaryHref: "#devis"
                 },
                 3: {
-                    bg: "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1600&q=80')",
+                    bg: "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('{{ asset('slide/solaire.png') }}')",
                     title: "Photovoltaique: produisez votre propre energie",
                     subtitle: "Installez des panneaux solaires performants et reduisez durablement vos factures.",
                     primaryText: "Etude photovoltaique",
