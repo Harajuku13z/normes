@@ -90,19 +90,50 @@
         </div>
     </section>
 
+    <section class="border-b border-slate-100 bg-white py-8 sm:py-10">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <form class="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-soft sm:grid-cols-[1fr_auto] sm:items-end sm:gap-4 sm:p-5">
+                <div>
+                    <label for="address" class="mb-2 block text-sm font-bold text-brand-dark">Entrez votre adresse (simulateur)</label>
+                    <input id="address" type="text" placeholder="Ex: 6 rue Pierre de Coubertin, Chalon-sur-Saone" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-brand-dark outline-none transition focus:border-brand-blue">
+                </div>
+                <button type="button" class="rounded-xl bg-brand-blue px-6 py-3 text-sm font-extrabold text-white transition hover:bg-sky-500">Lancer le simulateur</button>
+            </form>
+        </div>
+    </section>
+
+    <aside class="fixed left-3 top-1/2 z-40 hidden -translate-y-1/2 rounded-2xl border border-slate-200 bg-white p-3 shadow-soft xl:block">
+        <p class="text-xs font-bold uppercase tracking-wide text-slate-500">Google</p>
+        <div class="mt-1 text-lg font-extrabold text-brand-dark">5.0/5</div>
+        <div class="text-xs text-yellow-500">★★★★★</div>
+        <p class="mt-1 max-w-[130px] text-xs text-slate-600">Avis sur plus de 100 clients</p>
+    </aside>
+
     <section id="services" class="bg-slate-50/70 py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <h2 class="mb-3 text-3xl font-extrabold leading-tight sm:text-4xl">Nos services de renovation</h2>
-            <p class="mb-8 max-w-3xl text-base text-slate-600 sm:text-lg">Des prestations completes pour améliorer le confort thermique, les performances et la valeur de votre bien.</p>
-            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft transition hover:-translate-y-1"><div class="mb-3 grid h-11 w-11 place-items-center rounded-xl bg-sky-100 text-xl text-brand-blue">🏠</div><h3 class="mb-1 text-lg font-bold">Toiture & couverture</h3><p class="text-sm text-slate-600">Protection durable et etancheite optimisee de votre habitat.</p></article>
-                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft transition hover:-translate-y-1"><div class="mb-3 grid h-11 w-11 place-items-center rounded-xl bg-sky-100 text-xl text-brand-blue">🧱</div><h3 class="mb-1 text-lg font-bold">Isolation thermique</h3><p class="text-sm text-slate-600">Confort hiver/ete et reduction de vos depenses energetiques.</p></article>
-                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft transition hover:-translate-y-1"><div class="mb-3 grid h-11 w-11 place-items-center rounded-xl bg-sky-100 text-xl text-brand-blue">🧰</div><h3 class="mb-1 text-lg font-bold">Façade & ravalement</h3><p class="text-sm text-slate-600">Valorisation esthetique et protection longue duree.</p></article>
-                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft transition hover:-translate-y-1"><div class="mb-3 grid h-11 w-11 place-items-center rounded-xl bg-sky-100 text-xl text-brand-blue">💧</div><h3 class="mb-1 text-lg font-bold">Traitement humidite</h3><p class="text-sm text-slate-600">Solutions durables contre infiltrations et moisissures.</p></article>
-                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft transition hover:-translate-y-1"><div class="mb-3 grid h-11 w-11 place-items-center rounded-xl bg-sky-100 text-xl text-brand-blue">🌬️</div><h3 class="mb-1 text-lg font-bold">Ventilation</h3><p class="text-sm text-slate-600">Air sain et qualite de vie amelioree au quotidien.</p></article>
-                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft transition hover:-translate-y-1"><div class="mb-3 grid h-11 w-11 place-items-center rounded-xl bg-sky-100 text-xl text-brand-blue">⚡</div><h3 class="mb-1 text-lg font-bold">Electricite</h3><p class="text-sm text-slate-600">Mise en securite et modernisation des installations.</p></article>
-                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft transition hover:-translate-y-1"><div class="mb-3 grid h-11 w-11 place-items-center rounded-xl bg-sky-100 text-xl text-brand-blue">☀️</div><h3 class="mb-1 text-lg font-bold">Photovoltaique</h3><p class="text-sm text-slate-600">Production locale d'electricite et autonomie energetique.</p></article>
-                <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft transition hover:-translate-y-1"><div class="mb-3 grid h-11 w-11 place-items-center rounded-xl bg-sky-100 text-xl text-brand-blue">❄️</div><h3 class="mb-1 text-lg font-bold">Climatisation</h3><p class="text-sm text-slate-600">Confort thermique performant toute l'annee.</p></article>
+            <p class="mb-6 max-w-3xl text-base text-slate-600 sm:text-lg">Choisissez une categorie et affichez uniquement les services concernes.</p>
+            <div id="serviceFilters" class="mb-6 flex flex-wrap gap-2">
+                <button type="button" data-filter="all" class="service-filter rounded-full bg-brand-dark px-4 py-2 text-xs font-bold uppercase tracking-wide text-white sm:text-sm">Tous</button>
+                <button type="button" data-filter="toiture" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Toiture</button>
+                <button type="button" data-filter="isolation" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Isolation</button>
+                <button type="button" data-filter="electricite" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Electricite</button>
+                <button type="button" data-filter="energie" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Energie</button>
+                <button type="button" data-filter="air" class="service-filter rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Air & confort</button>
+            </div>
+            <div id="serviceGrid" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                <article data-category="toiture" class="service-card overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1632759145351-1d592ac9b238?auto=format&fit=crop&w=1000&q=80" alt="Toiture couverture" class="h-44 w-full object-cover"><div class="p-5"><h3 class="mb-2 text-lg font-bold">Toiture & couverture</h3><p class="text-sm text-slate-600">Renovation de toiture, etancheite et protection durable de votre maison.</p></div></article>
+                <article data-category="toiture" class="service-card overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1628744448840-55bdb2497bd4?auto=format&fit=crop&w=1000&q=80" alt="Zinguerie" class="h-44 w-full object-cover"><div class="p-5"><h3 class="mb-2 text-lg font-bold">Zinguerie</h3><p class="text-sm text-slate-600">Gestion des eaux pluviales, gouttieres et finitions toiture haute qualite.</p></div></article>
+                <article data-category="isolation" class="service-card overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1581094271901-8022df4466f9?auto=format&fit=crop&w=1000&q=80" alt="Isolation thermique" class="h-44 w-full object-cover"><div class="p-5"><h3 class="mb-2 text-lg font-bold">Isolation thermique</h3><p class="text-sm text-slate-600">Isolation des combles, murs et planchers pour limiter les pertes d'energie.</p></div></article>
+                <article data-category="isolation" class="service-card overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1000&q=80" alt="Ravalement facade" class="h-44 w-full object-cover"><div class="p-5"><h3 class="mb-2 text-lg font-bold">Facade & ravalement</h3><p class="text-sm text-slate-600">Traitements et finitions facade pour proteger et valoriser votre bien.</p></div></article>
+                <article data-category="isolation air" class="service-card overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1000&q=80" alt="Traitement humidite" class="h-44 w-full object-cover"><div class="p-5"><h3 class="mb-2 text-lg font-bold">Traitement de l'humidite</h3><p class="text-sm text-slate-600">Solutions anti-humidite pour un habitat sain, durable et confortable.</p></div></article>
+                <article data-category="air" class="service-card overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1000&q=80" alt="Ventilation" class="h-44 w-full object-cover"><div class="p-5"><h3 class="mb-2 text-lg font-bold">Ventilation</h3><p class="text-sm text-slate-600">VMC simple et double flux pour une qualite d'air optimale au quotidien.</p></div></article>
+                <article data-category="electricite" class="service-card overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=1000&q=80" alt="Electricite" class="h-44 w-full object-cover"><div class="p-5"><h3 class="mb-2 text-lg font-bold">Mise aux normes electriques</h3><p class="text-sm text-slate-600">Securisation complete du reseau electrique selon les normes en vigueur.</p></div></article>
+                <article data-category="electricite energie" class="service-card overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1466611653911-95081537e5b7?auto=format&fit=crop&w=1000&q=80" alt="Photovoltaique" class="h-44 w-full object-cover"><div class="p-5"><h3 class="mb-2 text-lg font-bold">Photovoltaique</h3><p class="text-sm text-slate-600">Panneaux solaires pour produire votre electricite et reduire vos factures.</p></div></article>
+                <article data-category="air energie" class="service-card overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1000&q=80" alt="Pompe a chaleur" class="h-44 w-full object-cover"><div class="p-5"><h3 class="mb-2 text-lg font-bold">Pompe a chaleur</h3><p class="text-sm text-slate-600">Performance energetique elevee pour chauffer et rafraichir votre maison.</p></div></article>
+                <article data-category="air" class="service-card overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1000&q=80" alt="Climatisation" class="h-44 w-full object-cover"><div class="p-5"><h3 class="mb-2 text-lg font-bold">Climatisation</h3><p class="text-sm text-slate-600">Confort ete/hiver avec systemes de climatisation economes et silencieux.</p></div></article>
+                <article data-category="isolation toiture" class="service-card overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1523419409543-a5e549c1f4f5?auto=format&fit=crop&w=1000&q=80" alt="Isolation combles" class="h-44 w-full object-cover"><div class="p-5"><h3 class="mb-2 text-lg font-bold">Isolation des combles</h3><p class="text-sm text-slate-600">L'un des leviers les plus efficaces pour baisser vos depenses energetiques.</p></div></article>
+                <article data-category="electricite energie" class="service-card overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft transition hover:-translate-y-1"><img src="https://images.unsplash.com/photo-1584277261846-c6a1672ed979?auto=format&fit=crop&w=1000&q=80" alt="Borne de recharge" class="h-44 w-full object-cover"><div class="p-5"><h3 class="mb-2 text-lg font-bold">Borne de recharge</h3><p class="text-sm text-slate-600">Installation de bornes pour vehicules electriques a domicile ou en entreprise.</p></div></article>
             </div>
         </div>
     </section>
@@ -234,6 +265,29 @@
             if (range && afterLayer) {
                 range.addEventListener('input', () => {
                     afterLayer.style.clipPath = `inset(0 0 0 ${Number(range.value)}%)`;
+                });
+            }
+
+            const filterButtons = Array.from(document.querySelectorAll('.service-filter'));
+            const serviceCards = Array.from(document.querySelectorAll('.service-card'));
+            if (filterButtons.length && serviceCards.length) {
+                filterButtons.forEach((btn) => {
+                    btn.addEventListener('click', () => {
+                        const selected = btn.dataset.filter;
+
+                        filterButtons.forEach((item) => {
+                            item.classList.remove('bg-brand-dark', 'text-white', 'border-brand-dark');
+                            item.classList.add('bg-white', 'text-slate-700', 'border-slate-300');
+                        });
+                        btn.classList.remove('bg-white', 'text-slate-700', 'border-slate-300');
+                        btn.classList.add('bg-brand-dark', 'text-white', 'border-brand-dark');
+
+                        serviceCards.forEach((card) => {
+                            const categories = (card.dataset.category || '').split(' ');
+                            const visible = selected === 'all' || categories.includes(selected);
+                            card.classList.toggle('hidden', !visible);
+                        });
+                    });
                 });
             }
         })();
