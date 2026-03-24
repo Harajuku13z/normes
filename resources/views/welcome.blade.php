@@ -183,19 +183,23 @@
                     <h3 class="mb-3 text-2xl font-extrabold text-brand-dark">A propos de Normes & Renovation</h3>
                     <p class="mb-4 text-sm leading-relaxed text-slate-600 sm:text-base">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables.</p>
                     <ul class="mb-5 space-y-2 text-sm text-slate-700">
+                        <li>• Profitez de notre garantie sur les travaux realises</li>
+                        <li>• Nous nous occupons de tout pour vous simplifier la vie</li>
+                        <li>• Tous nos Techniciens sont qualifies & formes en continus</li>
                         <li>• Entreprise certifiee et orientee qualite</li>
                         <li>• Accompagnement complet de l'etude a la livraison</li>
                         <li>• Solutions performantes pour valoriser votre bien</li>
                     </ul>
-                    <div class="mb-5 flex flex-wrap gap-2">
-                        <span class="inline-flex items-center gap-2 rounded-full bg-brand-blue/10 px-3 py-1 text-xs font-extrabold text-brand-dark">
-                            <span class="grid h-5 w-5 place-items-center rounded-full bg-brand-blue text-[10px] text-white">RGE</span>
-                            Logo RGE
-                        </span>
-                        <span class="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1 text-xs font-extrabold text-green-700">
-                            <span aria-hidden="true">🌿</span>
-                            Eco-responsable
-                        </span>
+                    <div class="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                        <div class="rounded-xl border border-slate-200 bg-white p-2">
+                            <img src="/nous/rge.png" alt="Logo RGE Qualibat" class="h-20 w-full rounded-lg object-contain sm:h-24">
+                        </div>
+                        <div class="rounded-xl border border-slate-200 bg-white p-2">
+                            <img src="/nous/rge ventilation_.png" alt="Logo RGE Ventilation" class="h-20 w-full rounded-lg object-contain sm:h-24">
+                        </div>
+                        <div class="rounded-xl border border-slate-200 bg-white p-2">
+                            <img src="/nous/ECO.png" alt="Logo Eco Responsable" class="h-20 w-full rounded-lg object-contain sm:h-24">
+                        </div>
                     </div>
                     <div class="overflow-hidden rounded-xl border border-slate-200">
                         <img src="/nous/equipe.jpeg" alt="Equipe Normes & Renovation" class="h-48 w-full object-cover sm:h-56">
