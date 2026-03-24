@@ -182,9 +182,15 @@
                         <input id="baRange" type="range" min="0" max="100" value="50" class="w-full accent-brand-blue">
                         <div class="flex items-center justify-between bg-slate-50 px-4 py-3 text-xs font-bold uppercase tracking-wide text-slate-600 sm:text-sm"><span>Avant</span><span>Apres</span></div>
                     </div>
-                    <div class="mt-6 flex justify-center lg:justify-start">
-                        <a href="#realisations" class="inline-flex rounded-xl bg-brand-blue px-6 py-3 text-sm font-extrabold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-brand-dark">Voir toutes nos realisations</a>
-                    </div>
+                    <a href="#realisations" class="group relative mt-4 block overflow-hidden rounded-2xl border border-slate-200 shadow-soft">
+                        <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=80')"></div>
+                        <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-5 py-5">
+                            <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Realisations</p>
+                            <h3 class="text-xl font-extrabold text-white">Voir toutes nos realisations</h3>
+                            <p class="mt-1 text-sm text-slate-200">Decouvrez nos chantiers avant/apres et les transformations deja realisees pour nos clients.</p>
+                            <span class="mt-3 inline-flex rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition group-hover:bg-sky-500">Explorer les realisations</span>
+                        </div>
+                    </a>
                 </div>
 
                 <aside class="flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-6 shadow-soft">
