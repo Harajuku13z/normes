@@ -186,7 +186,7 @@
 
                 <aside class="flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-6 shadow-soft">
                     <h3 class="mb-3 text-3xl font-extrabold text-brand-dark"><span class="text-brand-dark">A propos de</span> <span class="text-brand-blue">Normes & Renovation</span></h3>
-                    <p class="mb-4 text-sm leading-relaxed text-slate-600 sm:text-base">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables.</p>
+                    <p class="mb-4 text-sm leading-relaxed text-slate-600 sm:text-base">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables. Nous sommes certifies RGE, engages dans le respect de l'environnement et nous privilegions des materiaux de qualite pour des renovations performantes et responsables.</p>
                     <ul class="mb-5 space-y-2 text-sm text-slate-700">
                         <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Profitez de notre garantie sur les travaux realises</span></li>
                         <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Nous nous occupons de tout pour vous simplifier la vie</span></li>
@@ -206,6 +206,7 @@
                             <img src="/nous/ECO.png" alt="Logo Eco Responsable" class="h-20 w-full rounded-lg object-contain sm:h-24">
                         </div>
                     </div>
+                    <p class="mb-5 text-xs font-semibold uppercase tracking-wide text-brand-dark">Certifications: Logo RGE Qualibat - Logo RGE Ventilation - Engagement eco-responsable</p>
                     <div class="mt-auto overflow-hidden rounded-xl border border-slate-200">
                         <img src="/nous/equipe.jpeg" alt="Equipe Normes & Renovation" class="h-48 w-full object-cover sm:h-56">
                     </div>
