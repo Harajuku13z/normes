@@ -34,10 +34,15 @@
             0%, 100% { transform: translateY(-50%); }
             50% { transform: translateY(calc(-50% - 6px)); }
         }
+
+        #agencyMap {
+            position: relative;
+            z-index: 1;
+        }
     </style>
 </head>
 <body class="bg-white font-sans text-brand-dark antialiased">
-    <header class="sticky top-0 z-50 border-b border-slate-100 bg-white/95 backdrop-blur-md">
+    <header class="sticky top-0 z-[1000] border-b border-slate-100 bg-white/95 backdrop-blur-md">
         <div class="mx-auto flex min-h-[84px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <a href="#top" class="shrink-0">
                 <img src="/logo.png" alt="Normes & Renovation" class="h-12 w-auto sm:h-14">
@@ -586,7 +591,11 @@
                             onEachFeature: (feature, layer) => {
                                 const depCode = feature?.properties?.code || '';
                                 const depName = feature?.properties?.nom || 'Departement';
-                                layer.bindPopup(`<strong>${depName}</strong> (${depCode})`);
+                                layer.bindTooltip(`${depName} (${depCode})`, {
+                                    sticky: true,
+                                    direction: 'top',
+                                    opacity: 0.95
+                                });
                             }
                         }).addTo(map);
 
