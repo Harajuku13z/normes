@@ -166,7 +166,7 @@
     <section id="realisations" class="py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="grid gap-6 lg:grid-cols-[1.2fr_.8fr] lg:items-stretch">
-                <div class="flex h-full flex-col">
+                <div class="flex min-h-0 flex-col lg:min-h-[560px]">
                     <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Avant</span> / Apres</h2>
                     <p class="mb-5 text-base text-slate-600 sm:text-lg">Comparez plusieurs chantiers et voyez l'impact concret de nos renovations.</p>
                     <div class="mb-4 flex flex-wrap gap-2">
@@ -174,15 +174,16 @@
                         <button type="button" data-ba-case="2" class="ba-case-btn rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Facade</button>
                         <button type="button" data-ba-case="3" class="ba-case-btn rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Isolation</button>
                     </div>
-                    <div class="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft">
-                        <div class="relative h-[300px] bg-slate-200 sm:h-[380px] lg:h-[440px]">
-                            <div id="beforeLayer" class="absolute inset-0 bg-cover bg-center" style="background-image:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=80')"></div>
-                            <div id="afterLayer" class="absolute inset-0 bg-cover bg-center" style="clip-path: inset(0 0 0 50%); background-image:url('https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1400&q=80')"></div>
+                    <div class="flex min-h-0 flex-1 flex-col gap-4">
+                        <div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft">
+                            <div class="relative min-h-[260px] flex-1 bg-slate-200 sm:min-h-[320px] lg:min-h-0">
+                                <div id="beforeLayer" class="absolute inset-0 bg-cover bg-center" style="background-image:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=80')"></div>
+                                <div id="afterLayer" class="absolute inset-0 bg-cover bg-center" style="clip-path: inset(0 0 0 50%); background-image:url('https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1400&q=80')"></div>
+                            </div>
+                            <input id="baRange" type="range" min="0" max="100" value="50" class="w-full shrink-0 accent-brand-blue">
+                            <div class="flex shrink-0 items-center justify-between bg-slate-50 px-4 py-3 text-xs font-bold uppercase tracking-wide text-slate-600 sm:text-sm"><span>Avant</span><span>Apres</span></div>
                         </div>
-                        <input id="baRange" type="range" min="0" max="100" value="50" class="w-full accent-brand-blue">
-                        <div class="flex items-center justify-between bg-slate-50 px-4 py-3 text-xs font-bold uppercase tracking-wide text-slate-600 sm:text-sm"><span>Avant</span><span>Apres</span></div>
-                    </div>
-                    <a href="#realisations" class="group relative mt-4 block overflow-hidden rounded-2xl border border-slate-200 shadow-soft">
+                    <a href="#realisations" class="group relative mt-0 block shrink-0 overflow-hidden rounded-2xl border border-slate-200 shadow-soft">
                         <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=80')"></div>
                         <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-5 py-5">
                             <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Realisations</p>
@@ -191,10 +192,11 @@
                             <span class="mt-3 inline-flex rounded-lg bg-brand-blue px-4 py-2 text-xs font-extrabold text-white transition group-hover:bg-sky-500">Explorer les realisations</span>
                         </div>
                     </a>
+                    </div>
                 </div>
 
-                <aside class="flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-6 shadow-soft">
-                    <h3 class="mb-3 text-3xl font-extrabold text-brand-dark"><span class="text-brand-dark">A propos de</span> <span class="text-brand-blue">Normes & Renovation</span></h3>
+                <aside class="flex min-h-0 flex-col rounded-2xl border border-slate-100 bg-white p-6 shadow-soft lg:min-h-[560px]">
+                    <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-dark">A propos de</span> <span class="text-brand-blue">Normes & Renovation</span></h2>
                     <p class="mb-4 text-sm leading-relaxed text-slate-600 sm:text-base">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables. Nous sommes certifies RGE, engages dans le respect de l'environnement et nous privilegions des materiaux de qualite pour des renovations performantes et responsables.</p>
                     <ul class="mb-5 space-y-2 text-sm text-slate-700">
                         <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-brand-blue/15 text-xs font-black text-brand-blue">✓</span><span>Profitez de notre garantie sur les travaux realises</span></li>
@@ -253,7 +255,7 @@
             </div>
 
             <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
-                <h3 class="mb-4 text-2xl font-extrabold text-brand-dark"><span class="text-brand-blue">Carte</span> des implantations</h3>
+                <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Carte</span> des implantations</h2>
                 <div id="agencyMap" class="min-h-[380px] rounded-xl border border-slate-200"></div>
                 <div class="mt-3 flex flex-wrap gap-2 text-xs font-semibold">
                     <span class="inline-flex items-center gap-1 rounded-full bg-brand-blue/20 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-blue"></span>Region Bretagne</span>
@@ -273,7 +275,7 @@
 
     <section class="bg-slate-50/70 py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 class="mb-8 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Pourquoi</span> nous ?</h2>
+            <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Pourquoi</span> nous ?</h2>
             <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 <article class="rounded-2xl border border-slate-100 bg-white p-5 shadow-soft">
                     <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-blue/10 text-xl text-brand-blue">🛠️</div>
@@ -298,7 +300,7 @@
             </div>
 
             <div class="mt-10 rounded-2xl border border-slate-100 bg-white p-6 shadow-soft sm:p-8">
-                <h3 class="text-3xl font-extrabold text-brand-dark sm:text-4xl"><span class="text-brand-blue">Processus</span> de prise en charge</h3>
+                <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Processus</span> de prise en charge</h2>
                 <div class="mt-6 space-y-6 border-l-2 border-brand-blue/30 pl-5">
                     <article class="relative">
                         <span class="absolute -left-[30px] top-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-blue text-xs font-extrabold text-white">1</span>
@@ -372,7 +374,7 @@
 
     <section id="franchise" class="bg-slate-50/70 py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 class="mb-8 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Bonus</span></h2>
+            <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">Bonus</span></h2>
             <div class="grid gap-4 lg:grid-cols-3">
                 <article class="rounded-xl border border-slate-100 bg-white p-5"><h3 class="mb-2 text-xl font-bold">Simulateur de devis</h3><p class="text-slate-600">Un parcours simple pour qualifier rapidement votre projet.</p></article>
                 <article class="rounded-xl border border-slate-100 bg-white p-5"><h3 class="mb-2 text-xl font-bold">Page realisations</h3><p class="text-slate-600">Mise en avant des chantiers avant/apres pour rassurer.</p></article>
@@ -383,7 +385,7 @@
 
     <footer class="bg-brand-dark py-10 text-white">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h3 class="mb-2 text-2xl font-bold">Normes & Renovation</h3>
+            <h2 class="mb-2 text-4xl font-extrabold text-white sm:text-5xl">Normes & Renovation</h2>
             <p class="text-slate-300">6 rue Pierre de Coubertin, 71100 Chalon-sur-Saone</p>
             <p class="text-slate-300">03 85 41 98 86</p>
             <p class="text-slate-300">bourgogne-agence@normesrenovation.fr</p>
