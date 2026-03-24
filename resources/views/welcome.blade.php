@@ -90,14 +90,14 @@
         </div>
     </section>
 
-    <section class="border-b border-slate-100 bg-gradient-to-r from-[#FADF70]/65 via-[#FADF70]/45 to-white py-8 sm:py-10">
+    <section class="border-b border-yellow-300 bg-[#FADF70] py-8 sm:py-10">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <form class="grid gap-3 rounded-2xl border border-[#FADF70] bg-white p-4 shadow-soft ring-2 ring-[#FADF70]/40 sm:grid-cols-[1fr_auto] sm:items-end sm:gap-4 sm:p-5">
+            <form class="grid gap-3 rounded-2xl border-2 border-brand-blue bg-[#FADF70] p-4 shadow-soft ring-2 ring-brand-dark/15 sm:grid-cols-[1fr_auto] sm:items-end sm:gap-4 sm:p-5">
                 <div>
                     <label for="address" class="mb-2 block text-sm font-extrabold text-brand-dark">Entrez votre adresse (simulateur)</label>
-                    <input id="address" type="text" placeholder="Ex: 6 rue Pierre de Coubertin, Chalon-sur-Saone" class="w-full rounded-xl border-2 border-[#FADF70]/70 bg-white px-4 py-3 text-sm text-brand-dark outline-none transition focus:border-brand-blue">
+                    <input id="address" type="text" placeholder="Ex: 6 rue Pierre de Coubertin, Chalon-sur-Saone" class="w-full rounded-xl border-2 border-brand-blue bg-white px-4 py-3 text-sm text-brand-dark outline-none transition placeholder:text-slate-500 focus:border-brand-dark">
                 </div>
-                <button type="button" class="rounded-xl bg-[#FADF70] px-6 py-3 text-sm font-extrabold text-brand-dark transition hover:bg-yellow-300">Lancer le simulateur</button>
+                <button type="button" class="rounded-xl bg-brand-blue px-6 py-3 text-sm font-extrabold text-white transition hover:bg-brand-dark">Lancer le simulateur</button>
             </form>
         </div>
     </section>
