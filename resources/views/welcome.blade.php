@@ -309,14 +309,17 @@
         </div>
     </section>
 
-    <aside class="fixed bottom-4 left-1/2 z-40 w-[min(100%,20.5rem)] max-w-[calc(100vw-2rem)] -translate-x-1/2 rounded-2xl border-2 border-brand-blue/40 bg-white p-4 shadow-lg ring-1 ring-slate-200/90 sm:left-4 sm:max-w-none sm:translate-x-0 xl:hidden" aria-label="Avis Google">
-        <a href="https://share.google/14Nu70a8PfwWT4P4p" target="_blank" rel="noopener noreferrer" class="flex min-h-[3.25rem] items-center gap-3">
-            <img src="/logo.png" alt="Normes &amp; Rénovation" class="h-12 w-12 shrink-0 rounded-xl border border-brand-blue/25 bg-white object-contain p-0.5" width="48" height="48" decoding="async">
+    <aside class="fixed bottom-4 left-1/2 z-50 flex w-[min(100%,22.5rem)] max-w-[calc(100vw-1rem)] -translate-x-1/2 items-stretch gap-2 rounded-2xl border-2 border-brand-blue/40 bg-white p-2 shadow-lg ring-1 ring-slate-200/90 sm:left-4 sm:max-w-none sm:translate-x-0 xl:hidden" aria-label="Avis Google et appel">
+        <a href="https://share.google/14Nu70a8PfwWT4P4p" target="_blank" rel="noopener noreferrer" class="flex min-h-[3.5rem] min-w-0 flex-1 items-center gap-2.5 rounded-xl py-1 pl-2 pr-1 transition hover:bg-slate-50">
+            <img src="/logo.png" alt="" class="h-11 w-11 shrink-0 rounded-lg border border-brand-blue/25 bg-white object-contain p-0.5" width="44" height="44" decoding="async">
             <div class="min-w-0 flex-1 text-left">
                 <p class="text-sm font-extrabold leading-tight text-brand-dark">5.0/5 — Avis Google</p>
-                <p class="mt-1 text-xs leading-tight text-yellow-500">★★★★★ <span class="font-semibold text-slate-600">+100 avis</span></p>
+                <p class="mt-0.5 text-xs leading-tight text-yellow-500">★★★★★ <span class="font-semibold text-slate-600">+100 avis</span></p>
                 <p class="mt-0.5 text-[11px] font-semibold text-brand-blue">Voir les avis →</p>
             </div>
+        </a>
+        <a href="tel:+33385419886" class="inline-flex w-14 shrink-0 items-center justify-center rounded-xl bg-brand-blue text-white shadow-md transition hover:bg-brand-dark active:scale-[0.98]" aria-label="Appeler le 03 85 41 98 86">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5.25a2.25 2.25 0 012.25-2.25h2.1a2.25 2.25 0 012.214 1.848l.42 2.52a2.25 2.25 0 01-1.184 2.355l-1.34.67a16.521 16.521 0 006.246 6.246l.67-1.34a2.25 2.25 0 012.355-1.184l2.52.42A2.25 2.25 0 0121 16.65v2.1A2.25 2.25 0 0118.75 21h-.75C9.716 21 3 14.284 3 6v-.75z"/></svg>
         </a>
     </aside>
 
@@ -975,12 +978,6 @@
             </div>
         </div>
     </footer>
-
-    <a href="tel:+33385419886" class="fixed bottom-4 right-4 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-brand-blue text-white shadow-soft transition hover:scale-105 hover:bg-brand-dark lg:hidden animate-pulse" aria-label="Appeler">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5.25a2.25 2.25 0 012.25-2.25h2.1a2.25 2.25 0 012.214 1.848l.42 2.52a2.25 2.25 0 01-1.184 2.355l-1.34.67a16.521 16.521 0 006.246 6.246l.67-1.34a2.25 2.25 0 012.355-1.184l2.52.42A2.25 2.25 0 0121 16.65v2.1A2.25 2.25 0 0118.75 21h-.75C9.716 21 3 14.284 3 6v-.75z" />
-        </svg>
-    </a>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
