@@ -194,24 +194,22 @@
         <div class="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[.95fr_1.05fr] lg:items-start lg:px-8">
             <div>
                 <h2 class="mb-3 text-3xl font-extrabold sm:text-4xl">Nos agences</h2>
-                <p class="mb-6 text-base text-slate-600 sm:text-lg">Retrouvez nos implantations principales en Bourgogne et en Bretagne.</p>
+                <p class="mb-6 text-base text-slate-600 sm:text-lg">Retrouvez nos 2 agences principales et les departements mis en avant sur la carte.</p>
                 <div class="space-y-3">
                     <article class="rounded-xl border border-slate-200 bg-white p-4">
                         <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Departement 71</p>
-                        <h3 class="text-lg font-extrabold text-brand-dark">Chalon-sur-Saone</h3>
+                        <h3 class="text-lg font-extrabold text-brand-dark">Agence Chalon-sur-Saone</h3>
                         <p class="text-sm text-slate-600">6 rue Pierre de Coubertin, 71100 Chalon-sur-Saone</p>
+                        <p class="mt-1 text-sm font-semibold text-brand-dark">Tel: 03 85 41 98 86</p>
                     </article>
                     <article class="rounded-xl border border-slate-200 bg-white p-4">
-                        <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Departement 21</p>
-                        <h3 class="text-lg font-extrabold text-brand-dark">Agence Cote-d'Or</h3>
-                        <p class="text-sm text-slate-600">Interventions rapides a Dijon et dans tout le 21.</p>
-                    </article>
-                    <article class="rounded-xl border border-slate-200 bg-white p-4">
-                        <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Bretagne</p>
+                        <p class="text-xs font-bold uppercase tracking-wide text-brand-blue">Departement 22 - Bretagne</p>
                         <h3 class="text-lg font-extrabold text-brand-dark">Agence Bretagne</h3>
-                        <p class="text-sm text-slate-600">Couverture regionale pour vos travaux de renovation energetique.</p>
+                        <p class="text-sm text-slate-600">ZA de Mikez - 22540 Pedernec</p>
+                        <p class="mt-1 text-sm font-semibold text-brand-dark">Tel: 02 96 40 07 55</p>
                     </article>
                 </div>
+                <a href="#franchise" class="mt-5 inline-flex rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white transition hover:bg-brand-dark">Devenir franchiser</a>
             </div>
 
             <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
@@ -528,15 +526,52 @@
 
                 const locations = [
                     { name: 'Agence 71 - Chalon-sur-Saone', coords: [46.781, 4.853], tag: '71' },
-                    { name: 'Agence 21 - Dijon', coords: [47.322, 5.041], tag: '21' },
-                    { name: 'Agence Bretagne - Pedernec', coords: [48.595, -3.286], tag: 'Bretagne' }
+                    { name: 'Agence Bretagne - Pedernec', coords: [48.595, -3.286], tag: '22' }
                 ];
 
                 locations.forEach((location) => {
-                    L.marker(location.coords)
+                    L.circleMarker(location.coords, {
+                        radius: 8,
+                        color: '#2F4251',
+                        weight: 2,
+                        fillColor: '#60B4F9',
+                        fillOpacity: 0.95
+                    })
                         .addTo(map)
                         .bindPopup(`<strong>${location.name}</strong><br>${location.tag}`);
                 });
+
+                fetch('https://france-geojson.gregoiredavid.fr/repo/departements.geojson')
+                    .then((response) => response.json())
+                    .then((geojson) => {
+                        L.geoJSON(geojson, {
+                            style: (feature) => {
+                                const code = feature?.properties?.code;
+                                if (code === '71' || code === '22') {
+                                    return {
+                                        color: '#2F4251',
+                                        weight: 2.2,
+                                        fillColor: '#FADF70',
+                                        fillOpacity: 0.8
+                                    };
+                                }
+                                return {
+                                    color: '#94a3b8',
+                                    weight: 1,
+                                    fillColor: '#e2e8f0',
+                                    fillOpacity: 0.35
+                                };
+                            },
+                            onEachFeature: (feature, layer) => {
+                                const depCode = feature?.properties?.code || '';
+                                const depName = feature?.properties?.nom || 'Departement';
+                                layer.bindPopup(`<strong>${depName}</strong> (${depCode})`);
+                            }
+                        }).addTo(map);
+                    })
+                    .catch(() => {
+                        // Keep base map and markers if geojson cannot be loaded.
+                    });
             }
         })();
     </script>
