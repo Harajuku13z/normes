@@ -660,8 +660,22 @@
     </section>
 
     <section id="devis" class="scroll-mt-24 bg-brand-dark py-16 text-white sm:py-20">
-        <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_1.05fr] lg:items-start lg:gap-12 lg:px-8">
-            <div class="space-y-6">
+        <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:items-start lg:gap-12 lg:px-8">
+            <div>
+                <div class="devis-simulator-bg relative overflow-hidden rounded-2xl border border-white/20 shadow-2xl ring-1 ring-white/10">
+                    <div class="relative z-[1] p-6 sm:p-8">
+                        <div class="max-w-lg">
+                            <p class="text-[11px] font-extrabold uppercase tracking-[0.26em] text-brand-yellow sm:text-xs">Simulateur de devis</p>
+                            <p class="mt-3 text-xl font-bold text-white sm:text-2xl">Estimation personnalisée &amp; rappel d'un conseiller</p>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-200 sm:text-base">Visualisez les grandes lignes de votre projet (toiture, surfaces, état du bien) — un interlocuteur vous rappelle pour affiner chiffrage et aides.</p>
+                            <p class="mt-2 text-sm text-slate-300">Réponse sous 48h en général — sans engagement.</p>
+                            <a href="#formulaire-contact" class="mt-5 inline-flex rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-lg transition hover:bg-yellow-300">Passer au formulaire de contact</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-8">
+                <div class="space-y-6">
                 <div>
                     <h2 class="mb-3 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-brand-yellow">Vous avez</span> <span class="text-white">un projet de rénovation ?</span></h2>
                     <p class="max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg">Décrivez votre besoin : nous vous recontactons rapidement avec un accompagnement personnalisé, vos options d'aides et une première base pour votre devis.</p>
@@ -697,18 +711,6 @@
                         </div>
                     </div>
                     <p class="text-xs text-slate-400">Horaires : du lundi au vendredi, sur rendez-vous — reponse sous 48h en general.</p>
-                </div>
-            </div>
-            <div class="flex flex-col gap-8">
-                <div class="devis-simulator-bg relative overflow-hidden rounded-2xl border border-white/20 shadow-2xl ring-1 ring-white/10">
-                <div class="relative z-[1] p-6 sm:p-8">
-                    <div class="max-w-lg">
-                        <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-brand-yellow">Simulateur de devis</p>
-                        <p class="mt-3 text-xl font-bold text-white sm:text-2xl">Estimation personnalisée &amp; rappel d'un conseiller</p>
-                        <p class="mt-2 text-sm leading-relaxed text-slate-200 sm:text-base">Visualisez les grandes lignes de votre projet (toiture, surfaces, état du bien) — un interlocuteur vous rappelle pour affiner chiffrage et aides.</p>
-                        <p class="mt-2 text-sm text-slate-300">Réponse sous 48h en général — sans engagement.</p>
-                        <a href="#formulaire-contact" class="mt-5 inline-flex rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-lg transition hover:bg-yellow-300">Passer au formulaire de contact</a>
-                    </div>
                 </div>
                 </div>
 
