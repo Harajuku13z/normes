@@ -59,6 +59,16 @@
             position: relative;
             z-index: 1;
         }
+
+        @media (min-width: 1024px) {
+            .nav-dropdown:focus-within .nav-dropdown-panel,
+            .nav-dropdown:hover .nav-dropdown-panel {
+                visibility: visible;
+                opacity: 1;
+                transform: translateY(0);
+                pointer-events: auto;
+            }
+        }
     </style>
 </head>
 <body class="bg-white font-sans text-brand-dark antialiased">
@@ -68,14 +78,47 @@
                 <img src="/logo.png" alt="Normes & Renovation" class="h-12 w-auto sm:h-14">
             </a>
 
-            <nav class="hidden items-center gap-5 lg:flex xl:gap-6">
-                <a href="#top" class="text-[17px] font-semibold transition hover:text-brand-blue">Acceuil</a>
-                <a href="#services" class="text-[17px] font-semibold transition hover:text-brand-blue">nos services</a>
-                <a href="#agences" class="text-[17px] font-semibold transition hover:text-brand-blue">agences</a>
-                <a href="#realisations" class="text-[17px] font-semibold transition hover:text-brand-blue">nos realisation</a>
-                <a href="#conseils" class="text-[17px] font-semibold transition hover:text-brand-blue">Astuces & blog</a>
-                <a href="#devis" class="nav-cta-contact relative rounded-xl bg-brand-blue px-5 py-2.5 text-sm font-extrabold text-white ring-2 ring-white/20 transition hover:-translate-y-0.5 hover:bg-sky-500 hover:ring-brand-yellow/40">Nous contacter</a>
-                <ul class="ml-2 flex list-none items-center gap-3 border-l border-slate-200 pl-4" aria-label="Réseaux sociaux">
+            <nav class="hidden items-center gap-1 lg:flex xl:gap-2" aria-label="Navigation principale">
+                <a href="#top" class="rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">Accueil</a>
+
+                <div class="nav-dropdown relative">
+                    <button type="button" class="inline-flex items-center gap-0.5 rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]" aria-expanded="false" aria-haspopup="true" aria-controls="nav-mega-entreprise">
+                        Normes &amp; Rénovation
+                        <svg class="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="nav-mega-entreprise" class="nav-dropdown-panel invisible absolute left-0 top-full z-[1100] min-w-[220px] translate-y-1 pt-1 opacity-0 transition-all duration-150 pointer-events-none">
+                        <div class="rounded-xl border border-slate-200 bg-white py-2 shadow-lg ring-1 ring-black/5">
+                            <a href="#a-propos" class="block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">À propos</a>
+                            <a href="#agences" class="block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Nos agences</a>
+                            <a href="#franchise" class="block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Franchise</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-dropdown relative">
+                    <button type="button" class="inline-flex items-center gap-0.5 rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]" aria-expanded="false" aria-haspopup="true" aria-controls="nav-mega-services">
+                        Services
+                        <svg class="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </button>
+                    <div id="nav-mega-services" class="nav-dropdown-panel invisible absolute left-0 top-full z-[1100] min-w-[260px] translate-y-1 pt-1 opacity-0 transition-all duration-150 pointer-events-none">
+                        <div class="rounded-xl border border-slate-200 bg-white py-2 shadow-lg ring-1 ring-black/5">
+                            <a href="#services" data-service-filter-group="toiture facade" class="service-submenu-link block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Toiture &amp; façade</a>
+                            <a href="#services" data-service-filter-group="isolation" class="service-submenu-link block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Isolation</a>
+                            <a href="#services" data-service-filter-group="traitement air" class="service-submenu-link block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Humidité &amp; ventilation</a>
+                            <a href="#services" data-service-filter-group="electricite" class="service-submenu-link block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Électricité</a>
+                            <a href="#services" data-service-filter-group="energie" class="service-submenu-link block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Photovoltaïque</a>
+                            <a href="#services" data-service-filter-group="air" class="service-submenu-link block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Climatisation</a>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#realisations" class="rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">Réalisations</a>
+                <a href="#conseils" class="rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">Conseils</a>
+                <a href="#devis" class="rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">Contact</a>
+
+                <a href="#devis" class="nav-cta-contact ml-2 inline-flex items-center rounded-xl bg-brand-blue px-5 py-2.5 text-sm font-extrabold text-white ring-2 ring-white/20 transition hover:-translate-y-0.5 hover:bg-sky-500 hover:ring-brand-yellow/40">Devis gratuit</a>
+
+                <ul class="ml-3 flex list-none items-center gap-2 border-l border-slate-200 pl-3 xl:ml-4 xl:gap-3 xl:pl-4" aria-label="Réseaux sociaux">
                     <li>
                         <a href="#" aria-label="Facebook" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1877F2] text-white shadow-soft transition hover:opacity-90 hover:ring-2 hover:ring-[#1877F2]/35 hover:ring-offset-2">
                             <svg class="h-[22px] w-[22px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
@@ -113,13 +156,39 @@
         </div>
 
         <div id="mobileMenu" class="hidden border-t border-slate-100 bg-white lg:hidden">
-            <div class="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-3 sm:px-6">
-                <a href="#top" class="rounded-lg px-3 py-2 font-semibold hover:bg-slate-50">Acceuil</a>
-                <a href="#services" class="rounded-lg px-3 py-2 font-semibold hover:bg-slate-50">nos services</a>
-                <a href="#agences" class="rounded-lg px-3 py-2 font-semibold hover:bg-slate-50">agences</a>
-                <a href="#realisations" class="rounded-lg px-3 py-2 font-semibold hover:bg-slate-50">nos realisation</a>
-                <a href="#conseils" class="rounded-lg px-3 py-2 font-semibold hover:bg-slate-50">Astuces & blog</a>
-                <a href="#devis" class="nav-cta-contact mt-2 inline-flex w-full items-center justify-center rounded-xl bg-brand-blue px-4 py-3.5 text-sm font-extrabold text-white ring-2 ring-brand-blue/30 transition hover:bg-sky-500">Nous contacter</a>
+            <div class="mx-auto flex max-w-7xl flex-col gap-0.5 px-4 py-3 sm:px-6">
+                <a href="#top" class="rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50">Accueil</a>
+
+                <details class="group rounded-lg">
+                    <summary class="cursor-pointer list-none px-3 py-2.5 text-[15px] font-semibold text-brand-dark marker:content-none [&::-webkit-details-marker]:hidden hover:bg-slate-50">
+                        <span class="inline-flex w-full items-center justify-between">Normes &amp; Rénovation <span class="text-slate-400" aria-hidden="true">▼</span></span>
+                    </summary>
+                    <div class="border-l-2 border-brand-blue/30 py-1 pl-4">
+                        <a href="#a-propos" class="block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">À propos</a>
+                        <a href="#agences" class="block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Nos agences</a>
+                        <a href="#franchise" class="block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Franchise</a>
+                    </div>
+                </details>
+
+                <details class="group rounded-lg">
+                    <summary class="cursor-pointer list-none px-3 py-2.5 text-[15px] font-semibold text-brand-dark marker:content-none [&::-webkit-details-marker]:hidden hover:bg-slate-50">
+                        <span class="inline-flex w-full items-center justify-between">Services <span class="text-slate-400" aria-hidden="true">▼</span></span>
+                    </summary>
+                    <div class="border-l-2 border-brand-blue/30 py-1 pl-4">
+                        <a href="#services" data-service-filter-group="toiture facade" class="service-submenu-link block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Toiture &amp; façade</a>
+                        <a href="#services" data-service-filter-group="isolation" class="service-submenu-link block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Isolation</a>
+                        <a href="#services" data-service-filter-group="traitement air" class="service-submenu-link block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Humidité &amp; ventilation</a>
+                        <a href="#services" data-service-filter-group="electricite" class="service-submenu-link block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Électricité</a>
+                        <a href="#services" data-service-filter-group="energie" class="service-submenu-link block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Photovoltaïque</a>
+                        <a href="#services" data-service-filter-group="air" class="service-submenu-link block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Climatisation</a>
+                    </div>
+                </details>
+
+                <a href="#realisations" class="rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50">Réalisations</a>
+                <a href="#conseils" class="rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50">Conseils</a>
+                <a href="#devis" class="rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50">Contact</a>
+
+                <a href="#devis" class="nav-cta-contact mt-2 inline-flex w-full items-center justify-center rounded-xl bg-brand-blue px-4 py-3.5 text-sm font-extrabold text-white ring-2 ring-brand-blue/30 transition hover:bg-sky-500">Devis gratuit</a>
                 <div class="mt-4 flex flex-col items-center gap-2 border-t border-slate-100 pt-4 sm:items-start">
                     <p class="text-center text-xs font-bold uppercase tracking-wide text-slate-500 sm:text-left">Suivez-nous</p>
                     <ul class="flex list-none items-center justify-center gap-4 sm:justify-start" aria-label="Réseaux sociaux">
@@ -207,7 +276,7 @@
         </a>
     </aside>
 
-    <section id="services" class="bg-slate-50/70 py-16 sm:py-20">
+    <section id="services" class="scroll-mt-24 bg-slate-50/70 py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <h2 class="mb-3 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">Nos services</span> de renovation</h2>
             <p class="mb-6 max-w-3xl text-base text-slate-600 sm:text-lg">Douze expertises pour votre maison. Filtrez par type de travaux pour afficher les prestations correspondantes.</p>
@@ -322,7 +391,7 @@
         </div>
     </section>
 
-    <section id="realisations" class="py-16 sm:py-20">
+    <section id="realisations" class="scroll-mt-24 py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="grid gap-6 lg:grid-cols-2 lg:items-stretch">
                 <div class="flex min-h-0 flex-col lg:min-h-[560px]">
@@ -354,30 +423,29 @@
                     </div>
                 </div>
 
-                <aside class="flex min-h-0 flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-soft lg:min-h-[560px]">
-                    <div class="mb-3 h-1 w-16 rounded-full bg-brand-dark" aria-hidden="true"></div>
-                    <h2 class="mb-3 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-slate-700">A propos de</span> <span class="text-brand-dark">Normes & Renovation</span></h2>
-                    <p class="mb-5 text-base leading-relaxed text-slate-600 sm:text-lg">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables. Nous sommes certifies RGE, engages dans le respect de l'environnement et nous privilegions des materiaux de qualite pour des renovations performantes et responsables.</p>
-                    <ul class="mb-5 space-y-2 text-base text-brand-dark">
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-white">✓</span><span>Profitez de notre garantie sur les travaux realises</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-white">✓</span><span>Nous nous occupons de tout pour vous simplifier la vie</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-white">✓</span><span>Tous nos Techniciens sont qualifies & formes en continus</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-white">✓</span><span>Entreprise certifiee et orientee qualite</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-white">✓</span><span>Accompagnement complet de l'etude a la livraison</span></li>
-                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-white">✓</span><span>Solutions performantes pour valoriser votre bien</span></li>
+                <aside id="a-propos" class="flex min-h-0 scroll-mt-28 flex-col rounded-2xl border border-white/25 bg-brand-blue p-6 shadow-soft lg:min-h-[560px]">
+                    <h2 class="mb-3 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-brand-yellow">A propos de</span> <span class="text-brand-dark">Normes & Renovation</span></h2>
+                    <p class="mb-5 text-base leading-relaxed text-white sm:text-lg">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables. Nous sommes certifies RGE, engages dans le respect de l'environnement et nous privilegions des materiaux de qualite pour des renovations performantes et responsables.</p>
+                    <ul class="mb-5 space-y-2 text-base text-white">
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Profitez de notre garantie sur les travaux realises</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Nous nous occupons de tout pour vous simplifier la vie</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Tous nos Techniciens sont qualifies & formes en continus</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Entreprise certifiee et orientee qualite</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Accompagnement complet de l'etude a la livraison</span></li>
+                        <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Solutions performantes pour valoriser votre bien</span></li>
                     </ul>
                     <div class="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                        <div class="rounded-xl border border-slate-200 bg-slate-50/80 p-2 shadow-sm">
+                        <div class="rounded-xl border border-white/30 bg-white p-2 shadow-sm">
                             <img src="/nous/rge.png" alt="Logo RGE Qualibat" class="h-20 w-full rounded-lg object-contain sm:h-24">
                         </div>
-                        <div class="rounded-xl border border-slate-200 bg-slate-50/80 p-2 shadow-sm">
+                        <div class="rounded-xl border border-white/30 bg-white p-2 shadow-sm">
                             <img src="/nous/rge ventilation_.png" alt="Logo RGE Ventilation" class="h-20 w-full rounded-lg object-contain sm:h-24">
                         </div>
-                        <div class="rounded-xl border border-slate-200 bg-slate-50/80 p-2 shadow-sm">
+                        <div class="rounded-xl border border-white/30 bg-white p-2 shadow-sm">
                             <img src="/nous/ECO.png" alt="Logo Eco Responsable" class="h-20 w-full rounded-lg object-contain sm:h-24">
                         </div>
                     </div>
-                    <div class="mt-auto overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+                    <div class="mt-auto overflow-hidden rounded-xl border border-white/30 shadow-sm">
                         <img src="/nous/equipe.jpeg" alt="Equipe Normes & Renovation" class="h-48 w-full object-cover sm:h-56">
                     </div>
                 </aside>
@@ -404,14 +472,6 @@
                         <p class="mt-1 text-sm font-semibold text-brand-dark">Tel: 02 96 40 07 55</p>
                     </article>
                 </div>
-                <a href="#devis" class="group relative mt-5 hidden overflow-hidden rounded-xl border border-slate-200 shadow-soft lg:block">
-                    <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1200&q=80')"></div>
-                    <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-4 py-4">
-                        <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Reseau Normes</p>
-                        <h3 class="text-lg font-extrabold text-white">Devenir franchiser</h3>
-                        <p class="mt-1 text-xs text-slate-200">Rejoignez notre reseau et developpez votre agence avec un accompagnement complet.</p>
-                    </div>
-                </a>
             </div>
 
             <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
@@ -422,12 +482,14 @@
                     <span class="inline-flex items-center gap-1 rounded-full bg-brand-yellow/70 px-3 py-1 text-brand-dark"><span class="h-2 w-2 rounded-full bg-brand-yellow"></span>Departements 71 & 21</span>
                 </div>
             </div>
-            <a href="#devis" class="group relative block overflow-hidden rounded-xl border border-slate-200 shadow-soft lg:hidden">
+
+            <a id="franchise" href="#devis" class="group relative col-span-full mt-2 block scroll-mt-28 overflow-hidden rounded-xl border border-slate-200 shadow-soft lg:mt-0">
                 <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('https://images.unsplash.com/photo-1556155092-490a1ba16284?auto=format&fit=crop&w=1200&q=80')"></div>
-                <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-4 py-4">
+                <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-5 py-5 sm:px-6 sm:py-6">
                     <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Reseau Normes</p>
-                    <h3 class="text-lg font-extrabold text-white">Devenir franchiser</h3>
-                    <p class="mt-1 text-xs text-slate-200">Rejoignez notre reseau et developpez votre agence avec un accompagnement complet.</p>
+                    <h3 class="text-xl font-extrabold text-white sm:text-2xl">Devenir franchisé</h3>
+                    <p class="mt-1 max-w-2xl text-sm text-slate-200 sm:text-base">Rejoignez notre reseau et developpez votre agence avec un accompagnement complet — contactez-nous pour en discuter.</p>
+                    <span class="mt-4 inline-flex rounded-lg bg-brand-blue px-4 py-2.5 text-xs font-extrabold text-white transition group-hover:bg-sky-500 sm:text-sm">Demander une presentation</span>
                 </div>
             </a>
         </div>
@@ -707,7 +769,7 @@
                         <li><a href="#services" class="text-slate-300 transition hover:text-white">Nos services</a></li>
                         <li><a href="#realisations" class="text-slate-300 transition hover:text-white">Realisations</a></li>
                         <li><a href="#agences" class="text-slate-300 transition hover:text-white">Agences & carte</a></li>
-                        <li><a href="#conseils" class="text-slate-300 transition hover:text-white">Astuces & blog</a></li>
+                        <li><a href="#conseils" class="text-slate-300 transition hover:text-white">Conseils</a></li>
                         <li><a href="#devis" class="font-semibold text-brand-blue transition hover:text-white">Contact / devis</a></li>
                     </ul>
                 </div>
@@ -913,6 +975,18 @@
 
             const filterButtons = Array.from(document.querySelectorAll('.service-filter'));
             const serviceCards = Array.from(document.querySelectorAll('.service-card'));
+            const serviceSection = document.getElementById('services');
+
+            const setServiceFilter = (selected) => {
+                if (!serviceCards.length) return;
+                const tokens = !selected || selected === 'all' ? null : String(selected).split(/\s+/).filter(Boolean);
+                serviceCards.forEach((card) => {
+                    const categories = (card.dataset.category || '').split(' ').filter(Boolean);
+                    const visible = !tokens || tokens.some((t) => categories.includes(t));
+                    card.classList.toggle('hidden', !visible);
+                });
+            };
+
             if (filterButtons.length && serviceCards.length) {
                 filterButtons.forEach((btn) => {
                     btn.addEventListener('click', () => {
@@ -925,14 +999,25 @@
                         btn.classList.remove('bg-white', 'text-slate-700', 'border-slate-300');
                         btn.classList.add('bg-brand-dark', 'text-white', 'border-brand-dark');
 
-                        serviceCards.forEach((card) => {
-                            const categories = (card.dataset.category || '').split(' ');
-                            const visible = selected === 'all' || categories.includes(selected);
-                            card.classList.toggle('hidden', !visible);
-                        });
+                        setServiceFilter(selected);
                     });
                 });
             }
+
+            document.querySelectorAll('a.service-submenu-link[data-service-filter-group]').forEach((link) => {
+                link.addEventListener('click', (e) => {
+                    const group = link.dataset.serviceFilterGroup;
+                    if (!group || !serviceCards.length) return;
+                    e.preventDefault();
+                    setServiceFilter(group);
+                    filterButtons.forEach((item) => {
+                        item.classList.remove('bg-brand-dark', 'text-white', 'border-brand-dark');
+                        item.classList.add('bg-white', 'text-slate-700', 'border-slate-300');
+                    });
+                    serviceSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    document.getElementById('mobileMenu')?.classList.add('hidden');
+                });
+            });
 
             const serviceCtas = Array.from(document.querySelectorAll('#serviceGrid .service-card a'));
             serviceCtas.forEach((link) => {
