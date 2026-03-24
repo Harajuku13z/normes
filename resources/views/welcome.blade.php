@@ -358,28 +358,47 @@
 
             <div class="mt-12 overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 shadow-soft sm:p-8">
                 <h2 class="mb-2 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">Processus</span> de prise en charge</h2>
-                <p class="mb-8 max-w-3xl text-base text-slate-600 sm:text-lg">Quatre etapes claires, de l'estimation de vos aides au suivi de chantier.</p>
-                <div class="grid gap-5 md:grid-cols-2">
-                    <article class="relative flex flex-col rounded-2xl border-l-4 border-brand-blue bg-gradient-to-r from-brand-blue/12 to-white p-5 pl-6 shadow-sm transition hover:shadow-md sm:p-6">
-                        <span class="mb-3 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-blue text-sm font-black text-white shadow-md shadow-brand-blue/30">1</span>
-                        <h4 class="text-lg font-extrabold text-brand-dark">Calcul de Primes et Devis precis</h4>
-                        <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">Nous nous occupons de tout le calcul de vos primes, des CEE (Certificats d'Economies d'Energie) et des differentes options de financement disponibles. Profitez de travaux couverts jusqu'a 90 % sans avance de frais.</p>
-                    </article>
-                    <article class="relative flex flex-col rounded-2xl border-l-4 border-brand-yellow bg-gradient-to-r from-brand-yellow/20 to-white p-5 pl-6 shadow-sm transition hover:shadow-md sm:p-6">
-                        <span class="mb-3 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-dark text-sm font-black text-brand-yellow shadow-md">2</span>
-                        <h4 class="text-lg font-extrabold text-brand-dark">Solutions de Financement</h4>
-                        <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">Nous proposons des solutions de financement adaptees grace a nos partenaires, pour vous aider a gerer le cout parfois eleve des travaux de renovation.</p>
-                    </article>
-                    <article class="relative flex flex-col rounded-2xl border-l-4 border-brand-dark bg-gradient-to-r from-brand-dark/12 to-white p-5 pl-6 shadow-sm transition hover:shadow-md sm:p-6">
-                        <span class="mb-3 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-dark text-sm font-black text-white shadow-md">3</span>
-                        <h4 class="text-lg font-extrabold text-brand-dark">Analyse Personnalisee</h4>
-                        <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">Un technicien qualifie se deplace gratuitement pour realiser un diagnostic approfondi et personnalise de vos besoins.</p>
-                    </article>
-                    <article class="relative flex flex-col rounded-2xl border-l-4 border-sky-500 bg-gradient-to-r from-sky-500/10 via-brand-blue/8 to-white p-5 pl-6 shadow-sm transition hover:shadow-md sm:p-6">
-                        <span class="mb-3 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-blue to-sky-600 text-sm font-black text-white shadow-md">4</span>
-                        <h4 class="text-lg font-extrabold text-brand-dark">Suivi et Assistance Continus</h4>
-                        <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">De la premiere consultation a la finalisation des travaux, nous vous accompagnons a chaque etape. Vous beneficiez d'un suivi regulier et d'une assistance dediee pour garantir que vos travaux se deroulent en toute serenite.</p>
-                    </article>
+                <p class="mb-2 max-w-3xl text-base text-slate-600 sm:text-lg">Quatre etapes claires, de l'estimation de vos aides au suivi de chantier.</p>
+                <p class="mb-8 text-sm text-slate-500 lg:hidden">Faites defiler horizontalement pour voir les etapes.</p>
+
+                <div class="relative">
+                    <div class="pointer-events-none absolute left-0 right-0 top-7 hidden h-0.5 bg-gradient-to-r from-brand-blue via-brand-dark/40 to-brand-blue lg:block" aria-hidden="true"></div>
+                    <ol class="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] lg:grid lg:snap-none lg:grid-cols-4 lg:gap-6 lg:overflow-visible lg:pb-0 [&::-webkit-scrollbar]:hidden">
+                        <li class="min-w-[85vw] snap-center rounded-2xl border border-slate-200 bg-slate-50/80 p-5 sm:min-w-[320px] lg:min-w-0 lg:border-0 lg:bg-transparent lg:p-0 lg:pt-2 lg:text-center">
+                            <span class="relative z-[1] mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-blue text-base font-black text-white shadow-md shadow-brand-blue/30 lg:mx-auto">1</span>
+                            <h4 class="text-lg font-extrabold text-brand-dark">Calcul de Primes et Devis precis</h4>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">Nous nous occupons de tout le calcul de vos primes, des CEE (Certificats d'Economies d'Energie) et des differentes options de financement disponibles. Profitez de travaux couverts jusqu'a 90 % sans avance de frais.</p>
+                        </li>
+                        <li class="min-w-[85vw] snap-center rounded-2xl border border-slate-200 bg-slate-50/80 p-5 sm:min-w-[320px] lg:min-w-0 lg:border-0 lg:bg-transparent lg:p-0 lg:pt-2 lg:text-center">
+                            <span class="relative z-[1] mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-dark text-base font-black text-brand-yellow shadow-md lg:mx-auto">2</span>
+                            <h4 class="text-lg font-extrabold text-brand-dark">Solutions de Financement</h4>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">Nous proposons des solutions de financement adaptees grace a nos partenaires, pour vous aider a gerer le cout parfois eleve des travaux de renovation.</p>
+                        </li>
+                        <li class="min-w-[85vw] snap-center rounded-2xl border border-slate-200 bg-slate-50/80 p-5 sm:min-w-[320px] lg:min-w-0 lg:border-0 lg:bg-transparent lg:p-0 lg:pt-2 lg:text-center">
+                            <span class="relative z-[1] mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-dark text-base font-black text-white shadow-md lg:mx-auto">3</span>
+                            <h4 class="text-lg font-extrabold text-brand-dark">Analyse Personnalisee</h4>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">Un technicien qualifie se deplace gratuitement pour realiser un diagnostic approfondi et personnalise de vos besoins.</p>
+                        </li>
+                        <li class="min-w-[85vw] snap-center rounded-2xl border border-slate-200 bg-slate-50/80 p-5 sm:min-w-[320px] lg:min-w-0 lg:border-0 lg:bg-transparent lg:p-0 lg:pt-2 lg:text-center">
+                            <span class="relative z-[1] mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-sky-600 text-base font-black text-white shadow-md lg:mx-auto">4</span>
+                            <h4 class="text-lg font-extrabold text-brand-dark">Suivi et Assistance Continus</h4>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-700 sm:text-base">De la premiere consultation a la finalisation des travaux, nous vous accompagnons a chaque etape. Vous beneficiez d'un suivi regulier et d'une assistance dediee pour garantir que vos travaux se deroulent en toute serenite.</p>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="mt-10 overflow-hidden rounded-2xl bg-brand-dark text-white shadow-lg">
+                    <div class="grid items-center gap-6 p-6 sm:gap-8 sm:p-8 md:grid-cols-[minmax(0,220px)_1fr] lg:grid-cols-[minmax(0,280px)_1fr]">
+                        <div class="flex justify-center md:justify-start">
+                            <img src="/nous/ma prime.png" alt="MaPrimeRénov — Mieux chez moi, mieux pour la planète" width="520" height="200" class="h-auto max-h-36 w-full max-w-[260px] rounded-xl border border-white/10 bg-black object-contain object-center p-3 shadow-md sm:max-h-44 md:max-w-none">
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Aides a la renovation</p>
+                            <h3 class="mt-2 text-2xl font-extrabold leading-tight text-white sm:text-3xl">On vous accompagne pour vos aides MaPrimeRénov' et CEE</h3>
+                            <p class="mt-3 text-sm leading-relaxed text-slate-200 sm:text-base">Notre equipe vous aide a comprendre vos droits, a monter les dossiers <strong class="font-semibold text-white">MaPrimeRénov'</strong> et a valoriser les <strong class="font-semibold text-white">Certificats d'Economies d'Energie (CEE)</strong> eligibles sur votre projet. Nous optimisons le cumul des dispositifs pour limiter votre reste a charge et securiser vos travaux.</p>
+                            <a href="#devis" class="mt-5 inline-flex rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500">Demander un accompagnement</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
