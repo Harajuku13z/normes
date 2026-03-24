@@ -160,7 +160,7 @@
 
     <section id="realisations" class="py-16 sm:py-20">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="grid gap-6 lg:grid-cols-[1.2fr_.8fr] lg:items-start">
+            <div class="grid gap-6 lg:grid-cols-[1.2fr_.8fr] lg:items-stretch">
                 <div>
                     <h2 class="mb-3 text-3xl font-extrabold sm:text-4xl">Avant / Apres</h2>
                     <p class="mb-5 text-base text-slate-600 sm:text-lg">Comparez plusieurs chantiers et voyez l'impact concret de nos renovations.</p>
@@ -179,7 +179,7 @@
                     </div>
                 </div>
 
-                <aside class="rounded-2xl border border-slate-100 bg-white p-6 shadow-soft">
+                <aside class="flex h-full flex-col rounded-2xl border border-slate-100 bg-white p-6 shadow-soft">
                     <h3 class="mb-3 text-2xl font-extrabold text-brand-dark">A propos de Normes & Renovation</h3>
                     <p class="mb-4 text-sm leading-relaxed text-slate-600 sm:text-base">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables.</p>
                     <ul class="mb-5 space-y-2 text-sm text-slate-700">
@@ -201,7 +201,7 @@
                             <img src="/nous/ECO.png" alt="Logo Eco Responsable" class="h-20 w-full rounded-lg object-contain sm:h-24">
                         </div>
                     </div>
-                    <div class="overflow-hidden rounded-xl border border-slate-200">
+                    <div class="mt-auto overflow-hidden rounded-xl border border-slate-200">
                         <img src="/nous/equipe.jpeg" alt="Equipe Normes & Renovation" class="h-48 w-full object-cover sm:h-56">
                     </div>
                 </aside>
