@@ -69,6 +69,18 @@
                 pointer-events: auto;
             }
         }
+
+        .footer-hero-bg {
+            background-image: linear-gradient(105deg, rgba(47, 66, 81, 0.94) 0%, rgba(47, 66, 81, 0.88) 45%, rgba(47, 66, 81, 0.82) 100%), url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .devis-simulator-bg {
+            background-image: linear-gradient(145deg, rgba(47, 66, 81, 0.88) 0%, rgba(47, 66, 81, 0.82) 40%, rgba(30, 41, 59, 0.9) 100%), url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+        }
     </style>
 </head>
 <body class="bg-white font-sans text-brand-dark antialiased">
@@ -424,8 +436,18 @@
                 </div>
 
                 <aside id="a-propos" class="flex min-h-0 scroll-mt-28 flex-col rounded-2xl border border-white/25 bg-brand-blue p-6 shadow-soft lg:min-h-[560px]">
-                    <h2 class="mb-3 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-brand-yellow">A propos de</span> <span class="text-brand-dark">Normes & Renovation</span></h2>
-                    <p class="mb-5 text-base leading-relaxed text-white sm:text-lg">Normes & Renovation accompagne les particuliers et professionnels dans leurs projets de renovation energetique, thermique et electrique. Notre equipe combine expertise technique, suivi de chantier et conseils sur-mesure pour des resultats fiables et durables. Nous sommes certifies RGE, engages dans le respect de l'environnement et nous privilegions des materiaux de qualite pour des renovations performantes et responsables.</p>
+                    <h2 class="mb-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
+                        <span class="text-white">À propos de</span>
+                        <span class="mt-1 block sm:mt-2 sm:inline sm:pl-2">
+                            <span class="rounded-xl bg-brand-dark px-3 py-1 text-white shadow-md ring-2 ring-white/25 sm:inline-block">Normes &amp; Rénovation</span>
+                        </span>
+                    </h2>
+                    <div class="mb-5 rounded-2xl border border-white/20 bg-brand-dark/35 p-4 backdrop-blur-sm sm:p-5">
+                        <p class="text-lg font-extrabold leading-snug text-white sm:text-xl">Vous avez un projet de rénovation ?</p>
+                        <p class="mt-2 text-sm leading-relaxed text-white/95 sm:text-base">Décrivez votre besoin : nous vous recontactons rapidement avec un accompagnement personnalisé, vos options d'aides et une première base pour votre devis.</p>
+                        <a href="#devis" class="mt-4 inline-flex rounded-xl bg-white px-4 py-2.5 text-sm font-extrabold text-brand-dark shadow-md transition hover:bg-brand-yellow">Ouvrir le simulateur de devis</a>
+                    </div>
+                    <p class="mb-5 text-base leading-relaxed text-white sm:text-lg">Normes &amp; Rénovation accompagne les particuliers et professionnels dans leurs projets de rénovation énergétique, thermique et électrique. Notre équipe combine expertise technique, suivi de chantier et conseils sur mesure pour des résultats fiables et durables. Nous sommes certifiés RGE, engagés dans le respect de l'environnement et nous privilégions des matériaux de qualité pour des rénovations performantes et responsables.</p>
                     <ul class="mb-5 space-y-2 text-base text-white">
                         <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Profitez de notre garantie sur les travaux realises</span></li>
                         <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>Nous nous occupons de tout pour vous simplifier la vie</span></li>
@@ -599,8 +621,8 @@
         <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1fr_1.05fr] lg:items-start lg:gap-12 lg:px-8">
             <div class="space-y-6">
                 <div>
-                    <h2 class="mb-3 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-brand-yellow">Vous avez</span> un projet de renovation ?</h2>
-                    <p class="max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg">Decrivez votre besoin : nous vous recontactons rapidement avec un accompagnement personnalise, vos options d'aides et une premiere base pour votre devis.</p>
+                    <h2 class="mb-3 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-white">Simulateur</span> <span class="text-brand-blue">de devis</span></h2>
+                    <p class="max-w-xl text-base leading-relaxed text-slate-200 sm:text-lg">Un même parcours que dans la rubrique « À propos » : décrivez votre besoin, nous préparons votre rappel avec les aides possibles et une première base chiffrée.</p>
                 </div>
                 <div class="space-y-4 rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-sm sm:p-6">
                     <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Nous contacter</p>
@@ -635,9 +657,16 @@
                     <p class="text-xs text-slate-400">Horaires : du lundi au vendredi, sur rendez-vous — reponse sous 48h en general.</p>
                 </div>
             </div>
-            <form class="rounded-2xl border border-slate-200/80 bg-white p-5 text-brand-dark shadow-soft sm:p-7" action="#" method="post">
+            <div class="devis-simulator-bg relative overflow-hidden rounded-2xl border border-white/20 shadow-2xl ring-1 ring-white/10">
+                <div class="relative z-[1] p-5 sm:p-7">
+                    <div class="mb-5 max-w-xl">
+                        <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-brand-yellow">Simulateur de devis</p>
+                        <p class="mt-2 text-lg font-bold text-white sm:text-xl">Estimation personnalisée &amp; rappel conseiller</p>
+                        <p class="mt-1 text-sm text-slate-200">Réponse sous 48h en général — sans engagement.</p>
+                    </div>
+                    <form class="rounded-2xl border border-white/40 bg-white/95 p-5 text-brand-dark shadow-xl backdrop-blur-md sm:p-7" action="#" method="post">
                 @csrf
-                <p class="mb-4 text-sm font-semibold text-slate-600">Formulaire de contact — champs complements pour mieux qualifier votre projet.</p>
+                <p class="mb-4 text-sm font-semibold text-slate-600">Affinez votre projet : ces informations nous permettent de préparer un devis pertinent.</p>
                 <div class="grid gap-3 sm:grid-cols-2">
                     <div class="sm:col-span-1">
                         <label for="devisPrenom" class="mb-1 block text-sm font-semibold">Prenom</label>
@@ -709,7 +738,9 @@
                 </div>
                 <button type="submit" class="mt-5 w-full rounded-xl bg-brand-yellow px-4 py-3.5 text-sm font-extrabold text-brand-dark shadow-soft transition hover:bg-yellow-300 sm:text-base">Envoyer ma demande — devis gratuit</button>
                 <p class="mt-3 text-center text-xs text-slate-500">Sans engagement. Un conseiller vous rappelle pour affiner votre projet.</p>
-            </form>
+                    </form>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -740,72 +771,112 @@
         </div>
     </section>
 
-    <footer class="border-t-4 border-brand-blue bg-brand-dark text-white">
-        <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
-            <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
-                <div class="lg:col-span-4">
-                    <a href="#top" class="inline-block text-2xl font-extrabold tracking-tight text-white transition hover:text-brand-yellow">Normes &amp; Renovation</a>
-                    <p class="mt-4 max-w-sm text-sm leading-relaxed text-slate-300">Renovation energetique et technique en Bourgogne et Bretagne. Entreprise certifiee <strong class="font-semibold text-white">RGE</strong>, accompagnement personnalise des aides a la livraison.</p>
-                    <p class="mt-4 text-xs text-slate-400">SIRET et references : sur demande — devis gratuits, sans engagement.</p>
+    <footer class="footer-hero-bg relative border-t-4 border-brand-blue text-white">
+        <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/95 via-brand-dark/75 to-transparent pointer-events-none"></div>
+        <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16 relative z-10">
+            <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-12 lg:gap-10">
+                <div class="lg:col-span-4 space-y-6">
+                    <a href="#top" class="inline-flex items-center justify-center rounded-2xl bg-white p-4 shadow-lg ring-1 ring-white/20 transition hover:ring-brand-yellow/50">
+                        <img src="/logo.png" alt="Normes &amp; Rénovation" class="h-12 w-auto sm:h-14">
+                    </a>
+                    <div class="rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-md shadow-[0_12px_40px_rgba(0,0,0,0.25)]">
+                        <h3 class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-yellow">Siège social</h3>
+                        <p class="mt-3 text-sm font-semibold text-white">Normes et Rénovation</p>
+                        <p class="mt-2 text-sm leading-relaxed text-slate-200">6 rue Pierre de Coubertin<br>71100 Chalon-sur-Saône</p>
+                        <dl class="mt-4 space-y-2 border-t border-white/10 pt-4 text-xs text-slate-300">
+                            <div class="flex flex-col gap-0.5 sm:flex-row sm:gap-2">
+                                <dt class="shrink-0 font-semibold text-slate-400">Représentant légal</dt>
+                                <dd class="sm:text-right lg:text-left">Conformément aux statuts.</dd>
+                            </div>
+                            <div class="flex flex-col gap-0.5 sm:flex-row sm:gap-2">
+                                <dt class="shrink-0 font-semibold text-slate-400">RCS</dt>
+                                <dd class="font-mono text-slate-100 sm:text-right lg:text-left">Chalon-sur-Saône — 900&nbsp;571&nbsp;696&nbsp;00013</dd>
+                            </div>
+                            <div class="flex flex-col gap-0.5 sm:flex-row sm:gap-2">
+                                <dt class="shrink-0 font-semibold text-slate-400">SIREN</dt>
+                                <dd class="font-mono text-slate-100">900&nbsp;571&nbsp;696</dd>
+                            </div>
+                            <div class="flex flex-col gap-0.5 sm:flex-row sm:gap-2">
+                                <dt class="shrink-0 font-semibold text-slate-400">SIRET (siège)</dt>
+                                <dd class="font-mono text-slate-100">900&nbsp;571&nbsp;696&nbsp;00013</dd>
+                            </div>
+                            <div class="flex flex-col gap-0.5 sm:flex-row sm:gap-2">
+                                <dt class="shrink-0 font-semibold text-slate-400">TVA intracommunautaire</dt>
+                                <dd class="font-mono text-slate-100">FR96&nbsp;900&nbsp;571&nbsp;696</dd>
+                            </div>
+                        </dl>
+                    </div>
                 </div>
                 <div class="lg:col-span-3">
-                    <h3 class="mb-4 text-sm font-extrabold uppercase tracking-wide text-brand-yellow">Nos agences</h3>
-                    <div class="space-y-5 text-sm">
+                    <div class="rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-md">
+                        <h3 class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-yellow">Contact</h3>
+                        <p class="mt-4 text-sm text-slate-200">
+                            <span class="block text-slate-400">Téléphone</span>
+                            <a href="tel:+33385419886" class="mt-1 inline-block text-lg font-bold text-brand-blue transition hover:text-white">03&nbsp;85&nbsp;41&nbsp;98&nbsp;86</a>
+                        </p>
+                        <p class="mt-4 text-sm text-slate-200">
+                            <span class="block text-slate-400">E-mail</span>
+                            <a href="mailto:bourgogne-agence@normesrenovation.fr" class="mt-1 break-all font-medium text-white underline-offset-2 transition hover:text-brand-yellow hover:underline">bourgogne-agence@normesrenovation.fr</a>
+                        </p>
+                    </div>
+                    <h3 class="mb-3 mt-8 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-yellow">Nos agences</h3>
+                    <div class="space-y-4 rounded-2xl border border-white/15 bg-white/5 p-5 text-sm backdrop-blur-md">
                         <div>
-                            <p class="font-semibold text-white">Chalon-sur-Saone (71)</p>
-                            <p class="mt-1 text-slate-300">6 rue Pierre de Coubertin<br>71100 Chalon-sur-Saone</p>
-                            <a href="tel:+33385419886" class="mt-1 inline-block font-bold text-brand-blue transition hover:text-white">03 85 41 98 86</a>
+                            <p class="font-semibold text-white">Chalon-sur-Saône (71)</p>
+                            <p class="mt-1 text-slate-300">6 rue Pierre de Coubertin<br>71100 Chalon-sur-Saône</p>
+                            <a href="tel:+33385419886" class="mt-2 inline-block font-bold text-brand-blue transition hover:text-white">03&nbsp;85&nbsp;41&nbsp;98&nbsp;86</a>
                         </div>
-                        <div class="border-t border-white/10 pt-5">
+                        <div class="border-t border-white/10 pt-4">
                             <p class="font-semibold text-white">Bretagne (22)</p>
-                            <p class="mt-1 text-slate-300">ZA de Mikez<br>22540 Pedernec</p>
-                            <a href="tel:+33296400755" class="mt-1 inline-block font-bold text-brand-blue transition hover:text-white">02 96 40 07 55</a>
+                            <p class="mt-1 text-slate-300">ZA de Mikez<br>22540 Pédernec</p>
+                            <a href="tel:+33296400755" class="mt-2 inline-block font-bold text-brand-blue transition hover:text-white">02&nbsp;96&nbsp;40&nbsp;07&nbsp;55</a>
                         </div>
                     </div>
                 </div>
                 <div class="lg:col-span-2">
-                    <h3 class="mb-4 text-sm font-extrabold uppercase tracking-wide text-brand-yellow">Liens rapides</h3>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#services" class="text-slate-300 transition hover:text-white">Nos services</a></li>
-                        <li><a href="#realisations" class="text-slate-300 transition hover:text-white">Realisations</a></li>
-                        <li><a href="#agences" class="text-slate-300 transition hover:text-white">Agences & carte</a></li>
-                        <li><a href="#conseils" class="text-slate-300 transition hover:text-white">Conseils</a></li>
-                        <li><a href="#devis" class="font-semibold text-brand-blue transition hover:text-white">Contact / devis</a></li>
-                    </ul>
+                    <div class="rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-md">
+                        <h3 class="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-yellow">Liens rapides</h3>
+                        <ul class="space-y-2.5 text-sm">
+                            <li><a href="#services" class="text-slate-200 transition hover:text-white">Nos services</a></li>
+                            <li><a href="#realisations" class="text-slate-200 transition hover:text-white">Réalisations</a></li>
+                            <li><a href="#agences" class="text-slate-200 transition hover:text-white">Agences &amp; carte</a></li>
+                            <li><a href="#conseils" class="text-slate-200 transition hover:text-white">Conseils</a></li>
+                            <li><a href="#devis" class="font-semibold text-brand-blue transition hover:text-white">Contact / devis</a></li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="lg:col-span-3">
-                    <h3 class="mb-4 text-sm font-extrabold uppercase tracking-wide text-brand-yellow">Contact & reseaux</h3>
-                    <p class="text-sm text-slate-300">
-                        <a href="mailto:bourgogne-agence@normesrenovation.fr" class="break-all font-medium text-white transition hover:text-brand-yellow">bourgogne-agence@normesrenovation.fr</a>
-                    </p>
-                    <p class="mt-4 text-xs leading-relaxed text-slate-400">Lundi au vendredi sur rendez-vous. Pour l'urgence, appelez l'agence la plus proche.</p>
-                    <div class="mt-5 flex flex-wrap items-center gap-2">
-                        <a href="#" aria-label="Facebook Normes & Renovation" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1877F2] text-white shadow-soft transition hover:opacity-90">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                        </a>
-                        <a href="#" aria-label="LinkedIn Normes & Renovation" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#0A66C2] text-white shadow-soft transition hover:opacity-90">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                        </a>
-                        <a href="#" aria-label="Instagram Normes & Renovation" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-soft ring-2 ring-white/20 transition hover:opacity-90">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
-                                <defs>
-                                    <linearGradient id="instaGradFooter" x1="0%" y1="100%" x2="100%" y2="0%">
-                                        <stop offset="0%" stop-color="#FFDC80"/>
-                                        <stop offset="25%" stop-color="#F77737"/>
-                                        <stop offset="50%" stop-color="#FD1D1D"/>
-                                        <stop offset="75%" stop-color="#E1306C"/>
-                                        <stop offset="100%" stop-color="#C13584"/>
-                                    </linearGradient>
-                                </defs>
-                                <path fill="url(#instaGradFooter)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.27.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.354 2.618 6.78 6.979 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                            </svg>
-                        </a>
+                    <div class="rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-md">
+                        <h3 class="mb-3 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-yellow">Réseaux</h3>
+                        <p class="text-xs leading-relaxed text-slate-400">Lundi au vendredi sur rendez-vous. En urgence, appelez l’agence la plus proche.</p>
+                        <div class="mt-5 flex flex-wrap items-center gap-2">
+                            <a href="#" aria-label="Facebook Normes &amp; Rénovation" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1877F2] text-white shadow-soft transition hover:opacity-90">
+                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            </a>
+                            <a href="#" aria-label="LinkedIn Normes &amp; Rénovation" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#0A66C2] text-white shadow-soft transition hover:opacity-90">
+                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                            </a>
+                            <a href="#" aria-label="Instagram Normes &amp; Rénovation" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-soft ring-2 ring-white/20 transition hover:opacity-90">
+                                <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
+                                    <defs>
+                                        <linearGradient id="instaGradFooter" x1="0%" y1="100%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#FFDC80"/>
+                                            <stop offset="25%" stop-color="#F77737"/>
+                                            <stop offset="50%" stop-color="#FD1D1D"/>
+                                            <stop offset="75%" stop-color="#E1306C"/>
+                                            <stop offset="100%" stop-color="#C13584"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <path fill="url(#instaGradFooter)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.27.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.354 2.618 6.78 6.979 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="mt-10 flex flex-col gap-4 border-t border-white/10 pt-8 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
-                <p>&copy; <span id="footerYear"></span> Normes &amp; Renovation. Tous droits reserves.</p>
-                <p class="sm:text-right">Entreprise RGE — Renovation energetique — <a href="#devis" class="text-slate-300 underline-offset-2 transition hover:text-white hover:underline">Contact</a></p>
+            <div class="mt-10 flex flex-col gap-4 rounded-2xl border border-white/10 bg-brand-dark/60 px-4 py-5 text-xs text-slate-400 backdrop-blur-md sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                <p>&copy; <span id="footerYear"></span> Normes et Rénovation. Tous droits réservés.</p>
+                <p class="sm:text-right">Entreprise RGE — Rénovation énergétique — <a href="#devis" class="text-slate-300 underline-offset-2 transition hover:text-white hover:underline">Demander un devis</a></p>
             </div>
         </div>
     </footer>
