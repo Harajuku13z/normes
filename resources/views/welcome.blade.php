@@ -432,14 +432,13 @@
                     <p class="mb-5 text-base text-slate-600 sm:text-lg">Comparez plusieurs chantiers et voyez l'impact concret de nos renovations.</p>
                     <div class="mb-4 flex flex-wrap gap-2">
                         <button type="button" data-ba-case="1" class="ba-case-btn rounded-full bg-brand-dark px-4 py-2 text-xs font-bold uppercase tracking-wide text-white sm:text-sm">Toiture</button>
-                        <button type="button" data-ba-case="2" class="ba-case-btn rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Facade</button>
-                        <button type="button" data-ba-case="3" class="ba-case-btn rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Isolation</button>
+                        <button type="button" data-ba-case="2" class="ba-case-btn rounded-full border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm">Façade</button>
                     </div>
                     <div class="flex min-h-0 flex-1 flex-col gap-4">
                         <div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft">
                             <div class="relative min-h-[260px] flex-1 bg-slate-200 sm:min-h-[320px] lg:min-h-0">
-                                <div id="beforeLayer" class="absolute inset-0 bg-cover bg-center" style="background-image:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=80')"></div>
-                                <div id="afterLayer" class="absolute inset-0 bg-cover bg-center" style="clip-path: inset(0 0 0 50%); background-image:url('https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1400&q=80')"></div>
+                                <div id="beforeLayer" class="absolute inset-0 bg-cover bg-center" style="background-image:url('{{ asset('avantapres/toitureavant.png') }}')"></div>
+                                <div id="afterLayer" class="absolute inset-0 bg-cover bg-center" style="clip-path: inset(0 0 0 50%); background-image:url('{{ asset('avantapres/toitureapres.png') }}')"></div>
                             </div>
                             <input id="baRange" type="range" min="0" max="100" value="50" class="w-full shrink-0 accent-brand-blue">
                             <div class="flex shrink-0 items-center justify-between bg-slate-50 px-4 py-3 text-xs font-bold uppercase tracking-wide text-slate-600 sm:text-sm"><span>Avant</span><span>Apres</span></div>
@@ -450,7 +449,7 @@
                             <a href="#devis" class="mt-4 inline-flex rounded-xl bg-brand-yellow px-4 py-2.5 text-sm font-extrabold text-brand-dark shadow-md transition hover:bg-yellow-300">Ouvrir le simulateur de devis</a>
                         </div>
                     <a href="#realisations" class="group relative mt-0 block shrink-0 overflow-hidden rounded-2xl border border-slate-200 shadow-soft">
-                        <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=80')"></div>
+                        <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('{{ asset('avantapres/toitureapres.png') }}')"></div>
                         <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-5 py-5">
                             <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">Realisations</p>
                             <h3 class="text-xl font-extrabold text-white">Voir toutes nos realisations</h3>
@@ -1085,16 +1084,12 @@
 
             const baCases = {
                 1: {
-                    before: "url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1400&q=80')",
-                    after: "url('https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1400&q=80')"
+                    before: "url('{{ asset('avantapres/toitureavant.png') }}')",
+                    after: "url('{{ asset('avantapres/toitureapres.png') }}')"
                 },
                 2: {
-                    before: "url('https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1400&q=80')",
-                    after: "url('https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1400&q=80')"
-                },
-                3: {
-                    before: "url('https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1400&q=80')",
-                    after: "url('https://images.unsplash.com/photo-1581094271901-8022df4466f9?auto=format&fit=crop&w=1400&q=80')"
+                    before: "url('{{ asset('avantapres/facadeavant.png') }}')",
+                    after: "url('{{ asset('avantapres/facadeapres.png') }}')"
                 }
             };
             const baCaseButtons = Array.from(document.querySelectorAll('.ba-case-btn'));
