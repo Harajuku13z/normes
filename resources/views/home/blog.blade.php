@@ -5,11 +5,29 @@
         <p class="mb-8 max-w-2xl text-base text-slate-600 sm:text-lg">{{ data_get($h, 'blog.intro') }}</p>
         <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             @foreach (data_get($h, 'blog.posts', []) as $post)
-                <article class="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-soft transition hover:border-brand-blue/30 {{ !empty($post['wide']) ? 'md:col-span-2 lg:col-span-1' : '' }}">
-                    <p class="mb-2 text-xs font-bold uppercase tracking-wide text-brand-blue">{{ data_get($post, 'tag') }}</p>
-                    <h3 class="mb-2 text-xl font-extrabold text-brand-dark">{{ data_get($post, 'title') }}</h3>
-                    <p class="flex-1 text-sm leading-relaxed text-slate-600">{{ data_get($post, 'excerpt') }}</p>
-                    <a href="{{ data_get($post, 'href') }}" class="mt-4 inline-flex text-sm font-bold text-brand-blue transition hover:text-brand-dark">{{ data_get($post, 'link_text') }}</a>
+                @php
+                    $img = \App\Support\HomeView::url(data_get($post, 'image'));
+                    $imgClass = !empty($post['wide']) ? 'h-52' : 'h-44';
+                @endphp
+                <article class="flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft transition hover:border-brand-blue/30 {{ !empty($post['wide']) ? 'md:col-span-2 lg:col-span-1' : '' }}">
+                    @if ($img !== '')
+                        <img
+                            src="{{ $img }}"
+                            alt="{{ data_get($post, 'title') }}"
+                            class="{{ $imgClass }} w-full object-cover"
+                            loading="lazy"
+                            decoding="async"
+                        >
+                    @endif
+
+                    <div class="flex flex-1 flex-col p-6">
+                        <p class="mb-2 text-xs font-bold uppercase tracking-wide text-brand-blue">{{ data_get($post, 'tag') }}</p>
+                        <h3 class="mb-2 text-xl font-extrabold text-brand-dark">{{ data_get($post, 'title') }}</h3>
+                        <p class="flex-1 text-sm leading-relaxed text-slate-600">{{ data_get($post, 'excerpt') }}</p>
+                        <a href="{{ data_get($post, 'href') }}" class="mt-4 inline-flex text-sm font-bold text-brand-blue transition hover:text-brand-dark">
+                            {{ data_get($post, 'link_text') }}
+                        </a>
+                    </div>
                 </article>
             @endforeach
         </div>
