@@ -43,7 +43,7 @@
 
         {{-- Deux colonnes : projet/réalisations + logos RGE / équipe --}}
         <div class="mt-8 grid gap-6 lg:grid-cols-2 lg:items-stretch">
-            <div class="flex min-h-0 flex-col gap-6">
+            <div class="flex min-h-0 flex-col gap-6 lg:h-full">
                 <div class="shrink-0 rounded-2xl border border-brand-dark/25 bg-gradient-to-br from-brand-dark via-brand-dark to-slate-900 p-5 shadow-lg sm:p-6">
                     <p class="text-lg font-extrabold leading-snug text-white sm:text-xl">{{ data_get($r, 'cta_title') }}</p>
                     <p class="mt-2 text-sm leading-relaxed text-slate-200 sm:text-base">{{ data_get($r, 'cta_text') }}</p>
@@ -52,9 +52,9 @@
                     </a>
                 </div>
 
-                <a href="#realisations" class="group relative block shrink-0 overflow-hidden rounded-2xl border border-slate-200 shadow-soft">
+                <a href="#realisations" class="group relative block flex-1 overflow-hidden rounded-2xl border border-slate-200 shadow-soft">
                     <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('{{ $promoBg }}')"></div>
-                    <div class="relative bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-5 py-5">
+                    <div class="relative flex h-full flex-col justify-end bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-5 py-5">
                         <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">{{ data_get($r, 'promo_kicker') }}</p>
                         <h3 class="text-xl font-extrabold text-white">{{ data_get($r, 'promo_title') }}</h3>
                         <p class="mt-1 text-sm text-slate-200">{{ data_get($r, 'promo_text') }}</p>
@@ -63,7 +63,7 @@
                 </a>
             </div>
 
-            <div class="flex min-h-0 flex-col gap-6">
+            <div class="flex min-h-0 flex-col gap-6 lg:h-full">
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft">
                     <h3 class="mb-4 text-lg font-extrabold text-brand-dark">Logos RGE</h3>
                     <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -75,8 +75,8 @@
                     </div>
                 </div>
 
-                <div class="overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
-                    <img src="{{ \App\Support\HomeView::url(data_get($h, 'about.team_image')) }}" alt="{{ data_get($h, 'about.team_alt') }}" class="h-56 w-full object-cover">
+                <div class="flex-1 overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
+                    <img src="{{ \App\Support\HomeView::url(data_get($h, 'about.team_image')) }}" alt="{{ data_get($h, 'about.team_alt') }}" class="h-full w-full object-cover">
                 </div>
             </div>
         </div>
