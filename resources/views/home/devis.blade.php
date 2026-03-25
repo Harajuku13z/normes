@@ -13,35 +13,6 @@
                 <p class="mt-2 text-sm text-slate-300">{{ data_get($d, 'response_note') }}</p>
                 <a href="#formulaire-contact" class="mt-5 inline-flex rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-lg transition hover:bg-yellow-300 lg:hidden">{{ data_get($d, 'mobile_form_cta') }}</a>
             </div>
-            <div class="shrink-0 space-y-4 rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-sm sm:p-6">
-                <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">{{ data_get($d, 'contact_heading') }}</p>
-                <div class="space-y-3 text-sm sm:text-base">
-                    @foreach (data_get($d, 'agencies_contact', []) as $i => $ag)
-                        <div class="flex gap-3 {{ $i > 0 ? 'border-t border-white/10 pt-3' : '' }}">
-                            <span class="mt-0.5 shrink-0 text-brand-blue" aria-hidden="true">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            </span>
-                            <div>
-                                <p class="font-semibold text-white">{{ data_get($ag, 'name') }}</p>
-                                <p class="text-slate-300">
-                                    @foreach (data_get($ag, 'lines', []) as $line)
-                                        {{ $line }}@if (! $loop->last)<br>@endif
-                                    @endforeach
-                                </p>
-                                <a href="tel:{{ data_get($ag, 'phone_href') }}" class="mt-1 inline-block font-extrabold text-brand-yellow transition hover:text-white">{{ data_get($ag, 'phone') }}</a>
-                            </div>
-                        </div>
-                    @endforeach
-                    <div class="border-t border-white/10 pt-3">
-                        <a href="mailto:{{ data_get($d, 'email') }}" class="inline-flex items-center gap-2 font-semibold text-white transition hover:text-brand-yellow">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-brand-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            {{ data_get($d, 'email') }}
-                        </a>
-                    </div>
-                </div>
-                <p class="text-xs text-slate-400">{{ data_get($d, 'hours') }}</p>
-            </div>
-
             <div class="hidden min-h-0 lg:block lg:flex-1" aria-hidden="true"></div>
 
             <div class="rounded-2xl border border-white/20 bg-white/10 p-5 sm:p-6 lg:shrink-0">
