@@ -3,14 +3,14 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <h2 class="mb-3 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">{{ data_get($h, 'services.title_accent') }}</span>{{ data_get($h, 'services.title_rest') }}</h2>
         <p class="mb-6 max-w-3xl text-base text-slate-600 sm:text-lg">{{ data_get($h, 'services.intro') }}</p>
-        <div id="serviceGrid" class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div id="serviceGrid" class="grid gap-6 sm:grid-cols-2 xl:grid-cols-2">
             @foreach (data_get($h, 'services.items', []) as $item)
                 @php
                     $num = data_get($item, 'num');
                     $title = data_get($item, 'title');
                     $bg = \App\Support\HomeView::url(data_get($item, 'image'));
                 @endphp
-                <article class="service-card relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md">
+                <article class="service-card relative h-[340px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md sm:h-[360px] lg:h-[380px]">
                     <div class="absolute inset-0">
                         <img
                             src="{{ $bg }}"
@@ -19,27 +19,29 @@
                             loading="lazy"
                             decoding="async"
                         >
-                        <div class="absolute inset-0 bg-gradient-to-r from-brand-dark/85 via-brand-dark/45 to-transparent"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/95 via-brand-dark/65 to-transparent"></div>
                     </div>
-                    <div class="relative z-10 flex h-full flex-col p-6">
-                        <p class="text-xs font-extrabold uppercase tracking-wider text-brand-yellow/90">
-                            @if ($num !== null)
-                                {{ $num }}.
-                            @endif
-                        </p>
-                        <h3 class="mt-2 text-lg font-extrabold leading-snug text-white sm:text-xl">
-                            @if ($num !== null)
-                                {{ $num }}. {{ $title }}
-                            @else
-                                {{ $title }}
-                            @endif
-                        </h3>
-                        <p class="mt-3 flex-1 text-sm leading-relaxed text-white/90">
-                            {{ data_get($item, 'description') }}
-                        </p>
-                        <a href="#devis" class="mt-5 inline-flex w-fit rounded-xl bg-brand-blue px-4 py-2 text-xs font-extrabold text-white shadow-soft transition hover:bg-brand-dark sm:text-sm">
-                            {{ data_get($item, 'cta', 'En savoir plus') }}
-                        </a>
+                    <div class="absolute inset-x-0 bottom-0 z-10 p-6">
+                        <div class="rounded-2xl bg-brand-dark/40 backdrop-blur-sm px-5 py-5 ring-1 ring-white/10">
+                            <p class="text-xs font-extrabold uppercase tracking-wider text-brand-yellow/95">
+                                @if ($num !== null)
+                                    {{ $num }}.
+                                @endif
+                            </p>
+                            <h3 class="mt-2 text-lg font-extrabold leading-snug text-white sm:text-xl">
+                                @if ($num !== null)
+                                    {{ $num }}. {{ $title }}
+                                @else
+                                    {{ $title }}
+                                @endif
+                            </h3>
+                            <p class="mt-3 text-sm leading-relaxed text-white/90">
+                                {{ data_get($item, 'description') }}
+                            </p>
+                            <a href="#devis" class="mt-5 inline-flex w-fit rounded-xl bg-brand-blue px-4 py-2 text-xs font-extrabold text-white shadow-soft transition hover:bg-brand-dark sm:text-sm">
+                                {{ data_get($item, 'cta', 'En savoir plus') }}
+                            </a>
+                        </div>
                     </div>
                 </article>
             @endforeach
