@@ -4,7 +4,6 @@
     $logo = \App\Support\HomeView::url(data_get($f, 'logo'));
 @endphp
 <footer class="footer-hero-bg relative border-t-4 border-brand-blue text-white">
-    <div class="absolute inset-0 bg-brand-dark/86 pointer-events-none"></div>
     <div class="relative z-10 mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
         <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-8">
             <div class="lg:col-span-4">
