@@ -51,8 +51,8 @@
     </script>
     <style>
         :root {
-            --footer-hero-bg: url({{ json_encode(data_get($h, 'styles.footer_bg')) }});
-            --aides-renov-bg: url({{ json_encode(data_get($h, 'styles.aides_bg')) }});
+            --footer-hero-bg: url({{ json_encode(\App\Support\HomeView::url(data_get($h, 'styles.footer_bg'))) }});
+            --aides-renov-bg: url({{ json_encode(\App\Support\HomeView::url(data_get($h, 'styles.aides_bg'))) }});
         }
 
         @keyframes avisFloat {
@@ -96,7 +96,7 @@
         }
 
         .footer-hero-bg {
-            background-image: linear-gradient(105deg, rgba(47, 66, 81, 0.94) 0%, rgba(47, 66, 81, 0.88) 45%, rgba(47, 66, 81, 0.82) 100%), var(--footer-hero-bg);
+            background-image: linear-gradient(105deg, rgba(47, 66, 81, 0.78) 0%, rgba(47, 66, 81, 0.68) 45%, rgba(47, 66, 81, 0.60) 100%), var(--footer-hero-bg);
             background-size: cover;
             background-position: center;
         }
