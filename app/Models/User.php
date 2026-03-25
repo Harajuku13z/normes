@@ -14,6 +14,15 @@ use Illuminate\Notifications\Notifiable;
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
+    /**
+     * Mass assignment (utilisé par User::create()).
+     * On le déclare explicitement pour éviter tout problème de compatibilité
+     * entre environnements/configs.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = ['name', 'email', 'password', 'is_admin'];
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
