@@ -18,7 +18,7 @@ return [
     ],
 
     'styles' => [
-        'footer_bg' => 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=2000&q=80',
+        'footer_bg' => '/slide/toiture.png',
         'aides_bg' => 'https://images.unsplash.com/photo-1565538810643-b5bdb714032a?auto=format&fit=crop&w=2000&q=80',
     ],
 
