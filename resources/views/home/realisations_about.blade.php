@@ -11,13 +11,6 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="grid gap-6 lg:grid-cols-2 lg:items-stretch">
             <div class="flex min-h-0 flex-col lg:min-h-[560px]">
-                <h2 class="mb-3 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">{{ data_get($r, 'title_accent') }}</span>{{ data_get($r, 'title_rest') }}</h2>
-                <p class="mb-5 text-base text-slate-600 sm:text-lg">{{ data_get($r, 'intro') }}</p>
-                <div class="mb-4 flex flex-wrap gap-2">
-                    @foreach (data_get($r, 'buttons', []) as $btn)
-                        <button type="button" data-ba-case="{{ data_get($btn, 'case') }}" class="ba-case-btn rounded-full {{ ($btn['case'] ?? 1) == 1 ? 'bg-brand-dark px-4 py-2 text-xs font-bold uppercase tracking-wide text-white sm:text-sm' : 'border border-slate-300 bg-white px-4 py-2 text-xs font-bold uppercase tracking-wide text-slate-700 sm:text-sm' }}">{{ data_get($btn, 'label') }}</button>
-                    @endforeach
-                </div>
                 <div class="flex min-h-0 flex-1 flex-col gap-4">
                     <div class="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-soft">
                         <div class="relative min-h-[260px] flex-1 bg-slate-200 sm:min-h-[320px] lg:min-h-0">
@@ -44,25 +37,25 @@
                 </div>
             </div>
 
-            <aside id="a-propos" class="flex min-h-0 scroll-mt-28 flex-col rounded-2xl border border-white/25 bg-brand-blue p-6 shadow-soft lg:min-h-[560px]">
-                <h2 class="mb-4 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
+            <aside id="a-propos" class="flex min-h-0 scroll-mt-28 flex-col rounded-2xl border border-slate-200 bg-white p-6 shadow-soft lg:min-h-[560px]">
+                <h2 class="mb-4 text-4xl font-extrabold leading-tight tracking-tight text-brand-dark sm:text-5xl">
                     {{ data_get($h, 'about.title') }}
                 </h2>
-                <p class="mb-5 text-base leading-relaxed text-white sm:text-lg">{{ data_get($h, 'about.body') }}</p>
-                <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-yellow">{{ data_get($h, 'about.commitments_heading') }}</p>
-                <ul class="mb-5 space-y-2 text-base text-white">
+                <p class="mb-5 text-base leading-relaxed text-slate-600 sm:text-lg">{{ data_get($h, 'about.body') }}</p>
+                <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ data_get($h, 'about.commitments_heading') }}</p>
+                <ul class="mb-5 space-y-2 text-base text-slate-700">
                     @foreach (data_get($h, 'about.commitments', []) as $line)
                         <li class="flex items-start gap-2"><span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span><span>{{ $line }}</span></li>
                     @endforeach
                 </ul>
                 <div class="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
                     @foreach (data_get($h, 'about.cert_images', []) as $img)
-                        <div class="rounded-xl border border-white/30 bg-white p-2 shadow-sm">
+                        <div class="rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
                             <img src="{{ \App\Support\HomeView::url(data_get($img, 'src')) }}" alt="{{ data_get($img, 'alt') }}" class="h-20 w-full rounded-lg object-contain sm:h-24">
                         </div>
                     @endforeach
                 </div>
-                <div class="mt-auto overflow-hidden rounded-xl border border-white/30 shadow-sm">
+                <div class="mt-auto overflow-hidden rounded-xl border border-slate-200 shadow-sm">
                     <img src="{{ \App\Support\HomeView::url(data_get($h, 'about.team_image')) }}" alt="{{ data_get($h, 'about.team_alt') }}" class="h-48 w-full object-cover sm:h-56">
                 </div>
             </aside>
