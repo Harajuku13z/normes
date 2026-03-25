@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class AdminUserController extends Controller
@@ -29,16 +30,27 @@ class AdminUserController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        $user = User::create([
+        $data = [
             'name' => (string) $request->input('name'),
             'email' => (string) $request->input('email'),
             'password' => Hash::make((string) $request->input('password')),
-            'is_admin' => true,
-        ]);
+        ];
+
+        $hasIsAdmin = Schema::hasColumn('users', 'is_admin');
+        if ($hasIsAdmin) {
+            $data['is_admin'] = true;
+        }
+
+        $user = User::create($data);
 
         return redirect()
             ->route('admin.adminuser.index')
-            ->with('status', 'Admin créé : '.$user->name);
+            ->with(
+                'status',
+                $hasIsAdmin
+                    ? ('Admin créé : '.$user->name)
+                    : ('Admin créé : '.$user->name.' (mais la colonne users.is_admin n\'existe pas sur cette DB : exécute php artisan migrate)')
+            );
     }
 }
 
