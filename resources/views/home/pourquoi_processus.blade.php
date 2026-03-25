@@ -11,12 +11,12 @@
             <h2 class="text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">{{ data_get($p, 'title_accent') }}</span>{{ data_get($p, 'title_rest') }}</h2>
             <p class="mt-3 text-base text-slate-600 sm:text-lg">{{ data_get($p, 'intro') }}</p>
         </div>
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:items-stretch">
             @foreach (data_get($p, 'cards', []) as $card)
-                <article class="rounded-xl border border-slate-200/90 bg-white p-6 shadow-sm ring-1 ring-slate-100/90 transition hover:shadow-md {{ !empty($card['wide']) ? 'sm:col-span-2 lg:col-span-1' : '' }}">
+                <article class="h-full min-h-[210px] rounded-xl border border-slate-200/90 bg-white p-6 shadow-sm ring-1 ring-slate-100/90 transition hover:shadow-md {{ !empty($card['wide']) ? 'sm:col-span-2 lg:col-span-1' : '' }} flex flex-col">
                     <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-blue/12 text-2xl" aria-hidden="true">{{ data_get($card, 'emoji') }}</div>
                     <h3 class="text-base font-extrabold text-brand-dark">{{ data_get($card, 'title') }}</h3>
-                    <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ data_get($card, 'text') }}</p>
+                    <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">{{ data_get($card, 'text') }}</p>
                 </article>
             @endforeach
         </div>

@@ -16,14 +16,29 @@
             </h2>
             <p class="mb-5 text-base leading-relaxed text-slate-600 sm:text-lg">{{ data_get($h, 'about.body') }}</p>
             <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ data_get($h, 'about.commitments_heading') }}</p>
-            <ul class="space-y-2 text-base text-slate-700">
-                @foreach (data_get($h, 'about.commitments', []) as $line)
-                    <li class="flex items-start gap-2">
-                        <span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span>
-                        <span>{{ $line }}</span>
-                    </li>
-                @endforeach
-            </ul>
+            @php
+                $commitments = data_get($h, 'about.commitments', []);
+                $left = array_slice($commitments, 0, 3);
+                $right = array_slice($commitments, 3, 3);
+            @endphp
+            <div class="grid gap-x-10 gap-y-2 sm:grid-cols-2">
+                <ul class="space-y-2 text-base text-slate-700">
+                    @foreach ($left as $line)
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span>
+                            <span>{{ $line }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+                <ul class="space-y-2 text-base text-slate-700">
+                    @foreach ($right as $line)
+                        <li class="flex items-start gap-2">
+                            <span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-dark text-xs font-black text-brand-yellow">✓</span>
+                            <span>{{ $line }}</span>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
         </div>
 
         {{-- Deux colonnes : projet/réalisations + logos RGE / équipe --}}
