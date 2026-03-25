@@ -4,6 +4,8 @@
     $first = $slides[0] ?? [];
     $firstBg = \App\Support\HomeView::url(data_get($first, 'image', 'slide/toiture.png'));
     $firstBgFull = "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('".$firstBg."')";
+    $avisIcon = \App\Support\HomeView::url(data_get($h, 'sidebar_avis.icon', '/iconne.png'));
+    $avisUrl = data_get($h, 'sidebar_avis.google_url');
 @endphp
 <section id="top" class="relative min-h-[540px] overflow-hidden sm:min-h-[620px]">
     <div id="heroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-500" style="background-image:{{ $firstBgFull }}"></div>
@@ -27,6 +29,15 @@
                 @endphp
                 <button type="button" class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 {{ $n === 1 ? 'border-brand-blue' : 'border-transparent' }} bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="{{ $n }}" style="{{ $thumbStyle }}" aria-label="{{ $aria }}"></button>
             @endforeach
+
+            <a href="{{ $avisUrl }}" target="_blank" rel="noopener noreferrer"
+               class="hidden xl:flex h-20 min-w-0 flex-none items-center justify-center rounded-xl border border-white/20 bg-brand-dark/55 shadow-soft lg:h-24 lg:w-32 lg:flex-none">
+                <span class="flex flex-col items-center justify-center leading-none">
+                    <img src="{{ $avisIcon }}" alt="{{ data_get($h, 'sidebar_avis.icon_alt') }}"
+                         class="h-10 w-10 rounded-full border border-white/50 bg-white object-cover">
+                    <span class="mt-1 text-[11px] font-bold uppercase tracking-wider text-white/80">{{ data_get($h, 'sidebar_avis.label', 'Avis') }}</span>
+                </span>
+            </a>
         </div>
     </div>
 </section>
