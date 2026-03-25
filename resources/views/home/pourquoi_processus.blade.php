@@ -13,10 +13,16 @@
         </div>
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:items-stretch">
             @foreach (data_get($p, 'cards', []) as $card)
-                <article class="h-full min-h-[210px] rounded-xl border border-slate-200/90 bg-white p-6 shadow-sm ring-1 ring-slate-100/90 transition hover:shadow-md {{ !empty($card['wide']) ? 'sm:col-span-2 lg:col-span-1' : '' }} flex flex-col">
-                    <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-blue/12 text-2xl" aria-hidden="true">{{ data_get($card, 'emoji') }}</div>
-                    <h3 class="text-base font-extrabold text-brand-dark">{{ data_get($card, 'title') }}</h3>
-                    <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">{{ data_get($card, 'text') }}</p>
+                @php
+                    $ring = (string) data_get($card, 'ring', 'brand-blue/15');
+                @endphp
+                <article class="h-full min-h-[210px] relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md {{ !empty($card['wide']) ? 'sm:col-span-2 lg:col-span-1' : '' }} flex flex-col">
+                    <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-slate-50 via-white/0 to-transparent"></div>
+                    <div class="relative">
+                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-{{ $ring }} ring-1 ring-{{ $ring }} text-2xl" aria-hidden="true">{{ data_get($card, 'emoji') }}</div>
+                        <h3 class="text-base font-extrabold text-brand-dark sm:text-lg">{{ data_get($card, 'title') }}</h3>
+                        <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">{{ data_get($card, 'text') }}</p>
+                    </div>
                 </article>
             @endforeach
         </div>
