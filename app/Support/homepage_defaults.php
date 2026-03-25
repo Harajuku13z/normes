@@ -44,15 +44,6 @@ return [
                 'secondary_href' => '#devis',
             ],
             [
-                'image' => 'slide/smulateur.png',
-                'title' => 'Besoin d\'un devis clair pour votre projet ?',
-                'subtitle' => 'Expliquez-nous vos travaux : nos equipes vous repondent et vous orientent sur les aides et le financement.',
-                'primary_text' => 'Demander un devis gratuit',
-                'primary_href' => '#devis',
-                'secondary_text' => 'Nous contacter',
-                'secondary_href' => '#devis',
-            ],
-            [
                 'image' => 'slide/solaire.png',
                 'title' => 'Photovoltaique: produisez votre propre energie',
                 'subtitle' => 'Installez des panneaux solaires performants et reduisez durablement vos factures.',
