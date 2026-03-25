@@ -4,12 +4,12 @@
     $logo = \App\Support\HomeView::url(data_get($f, 'logo'));
 @endphp
 <footer class="footer-hero-bg relative border-t-4 border-brand-blue text-white">
-    <div class="absolute inset-0 bg-brand-dark/60 pointer-events-none"></div>
+    <div class="absolute inset-0 bg-brand-dark/86 pointer-events-none"></div>
     <div class="relative z-10 mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
         <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-8">
             <div class="lg:col-span-4">
                 <a href="#top" class="inline-block">
-                    <img src="{{ $logo }}" alt="{{ data_get($f, 'logo_alt') }}" class="h-10 w-auto sm:h-11">
+                    <img src="{{ $logo }}" alt="{{ data_get($f, 'logo_alt') }}" class="h-11 w-auto sm:h-12">
                 </a>
                 <h3 class="mt-8 text-xs font-bold uppercase tracking-wider text-brand-yellow">{{ data_get($f, 'siege_title') }}</h3>
                 <p class="mt-2 text-sm font-semibold">{{ data_get($f, 'company') }}</p>
