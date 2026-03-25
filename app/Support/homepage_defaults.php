@@ -394,10 +394,21 @@ return [
     ],
 
     'partners' => [
-        'heading' => 'Nos partenaires',
-        'files' => [
-            'Calque 2.png', 'Calque 3.png', 'Calque 4.png', 'Calque 5.png',
-            'Calque 6.png', 'Calque 7.png', 'Calque 8.png', 'Calque 9.png',
+        'heading' => 'Partenaires & certification',
+        'logos' => [
+            // Logos "partenaires" (dossier public/partenaire)
+            '/partenaire/Calque 2.png',
+            '/partenaire/Calque 3.png',
+            '/partenaire/Calque 4.png',
+            '/partenaire/Calque 5.png',
+            '/partenaire/Calque 6.png',
+            '/partenaire/Calque 7.png',
+            '/partenaire/Calque 8.png',
+            '/partenaire/Calque 9.png',
+            // Logos de certification RGE (dossier public/nous)
+            '/nous/rge.png',
+            '/nous/rge ventilation_.png',
+            '/nous/ECO.png',
         ],
     ],
 
