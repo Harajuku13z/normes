@@ -40,6 +40,7 @@
                     </svg>
                     <span class="mt-1 text-[11px] font-extrabold tracking-tight text-brand-yellow">{{ data_get($h, 'sidebar_avis.score', '5.0/5') }}</span>
                     <span class="text-[9px] text-brand-yellow">{{ data_get($h, 'sidebar_avis.stars', '★★★★★') }}</span>
+                    <span class="mt-0.5 text-[9px] font-extrabold text-brand-yellow">{{ data_get($h, 'sidebar_avis.text', '+100 avis') }}</span>
                 </span>
             </a>
         </div>

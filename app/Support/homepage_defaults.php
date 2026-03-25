@@ -79,7 +79,7 @@ return [
         'label' => 'Avis Google',
         'score' => '5.0/5',
         'stars' => '★★★★★',
-        'text' => 'Plus de 100 avis clients',
+        'text' => '+100 avis',
     ],
 
     'services' => [
@@ -138,7 +138,7 @@ return [
             [
                 'num' => 7,
                 'category' => 'menuiserie',
-                'image' => 'services/renovation-facade.jpeg',
+                'image' => 'services/menuiserie.jpg',
                 'title' => 'Menuiserie',
                 'description' => 'Installation et remplacement de fenêtres, portes et menuiseries pour améliorer l’isolation et la sécurité.',
                 'cta' => 'En savoir plus',
