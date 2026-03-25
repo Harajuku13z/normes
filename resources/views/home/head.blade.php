@@ -96,7 +96,7 @@
         }
 
         .footer-hero-bg {
-            background-image: linear-gradient(105deg, rgba(47, 66, 81, 0.78) 0%, rgba(47, 66, 81, 0.68) 45%, rgba(47, 66, 81, 0.60) 100%), var(--footer-hero-bg);
+            background-image: linear-gradient(105deg, rgba(47, 66, 81, 0.92) 0%, rgba(47, 66, 81, 0.84) 45%, rgba(47, 66, 81, 0.72) 100%), var(--footer-hero-bg);
             background-size: cover;
             background-position: center;
         }
