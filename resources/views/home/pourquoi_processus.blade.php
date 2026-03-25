@@ -15,22 +15,28 @@
             @foreach (data_get($p, 'cards', []) as $card)
                 @php
                     $ring = (string) data_get($card, 'ring', 'brand-blue/15');
+                    $tint = match ($ring) {
+                        'brand-yellow/25' => 'bg-brand-yellow/5',
+                        'emerald-500/20' => 'bg-emerald-500/5',
+                        'sky-400/25' => 'bg-sky-400/5',
+                        default => 'bg-brand-blue/5',
+                    };
                 @endphp
-                <article class="flex h-full min-h-[210px] flex-col rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md {{ !empty($card['wide']) ? 'sm:col-span-2 lg:col-span-1' : '' }}">
+                <article class="flex h-full min-h-[210px] flex-col rounded-2xl border border-slate-200/90 p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md {{ $tint }} {{ !empty($card['wide']) ? 'sm:col-span-2 lg:col-span-1' : '' }}">
                     @if ($ring === 'brand-yellow/25')
-                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-yellow/15 ring-1 ring-brand-yellow/25 text-2xl" aria-hidden="true">
+                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-yellow/15 ring-1 ring-brand-yellow/25 text-3xl leading-none" aria-hidden="true">
                             {{ data_get($card, 'emoji') }}
                         </div>
                     @elseif ($ring === 'emerald-500/20')
-                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/15 ring-1 ring-emerald-500/25 text-2xl" aria-hidden="true">
+                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/15 ring-1 ring-emerald-500/25 text-3xl leading-none" aria-hidden="true">
                             {{ data_get($card, 'emoji') }}
                         </div>
                     @elseif ($ring === 'sky-400/25')
-                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-400/15 ring-1 ring-sky-400/25 text-2xl" aria-hidden="true">
+                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-400/15 ring-1 ring-sky-400/25 text-3xl leading-none" aria-hidden="true">
                             {{ data_get($card, 'emoji') }}
                         </div>
                     @else
-                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-blue/12 ring-1 ring-brand-blue/20 text-2xl" aria-hidden="true">
+                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-blue/12 ring-1 ring-brand-blue/20 text-3xl leading-none" aria-hidden="true">
                             {{ data_get($card, 'emoji') }}
                         </div>
                     @endif

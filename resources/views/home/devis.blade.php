@@ -49,6 +49,18 @@
                         <label for="devisPhone" class="mb-1 block text-sm font-semibold">Telephone</label>
                         <input id="devisPhone" name="telephone" type="tel" autocomplete="tel" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
                     </div>
+                    <div>
+                        <label for="devisCp" class="mb-1 block text-sm font-semibold">Code postal</label>
+                        <input
+                            id="devisCp"
+                            name="code_postal"
+                            type="text"
+                            inputmode="numeric"
+                            maxlength="10"
+                            autocomplete="postal-code"
+                            class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25"
+                        >
+                    </div>
                 </div>
                 <div class="mt-3">
                     <label for="devisMessage" class="mb-1 block text-sm font-semibold">Message</label>
