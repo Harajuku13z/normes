@@ -51,18 +51,13 @@
             </div>
         </div>
 
-        {{-- Deux colonnes : projet/réalisations + logos RGE / équipe --}}
+        {{-- Deux colonnes : à gauche "Réalisations", à droite "Vous avez un projet" --}}
         <div class="mt-8 grid gap-6 lg:grid-cols-2 lg:items-stretch">
             <div class="flex min-h-0 flex-col gap-6 lg:h-full">
-                <div class="shrink-0 rounded-2xl border border-brand-dark/25 bg-gradient-to-br from-brand-dark via-brand-dark to-slate-900 p-5 shadow-lg sm:p-6">
-                    <p class="text-lg font-extrabold leading-snug text-white sm:text-xl">{{ data_get($r, 'cta_title') }}</p>
-                    <p class="mt-2 text-sm leading-relaxed text-slate-200 sm:text-base">{{ data_get($r, 'cta_text') }}</p>
-                    <a href="{{ data_get($r, 'cta_href', '#devis') }}" class="mt-4 inline-flex rounded-xl bg-brand-yellow px-4 py-2.5 text-sm font-extrabold text-brand-dark shadow-md transition hover:bg-yellow-300">
-                        {{ data_get($r, 'cta_button') }}
-                    </a>
-                </div>
-
-                <a href="#realisations" class="group relative block flex-1 overflow-hidden rounded-2xl border border-slate-200 shadow-soft">
+                <a
+                    href="#realisations"
+                    class="group relative block flex-1 overflow-hidden rounded-2xl border border-slate-200 shadow-soft"
+                >
                     <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('{{ $promoBg }}')"></div>
                     <div class="relative flex h-full flex-col justify-end bg-gradient-to-r from-brand-dark/85 to-brand-dark/55 px-5 py-5">
                         <p class="text-xs font-bold uppercase tracking-wide text-brand-yellow">{{ data_get($r, 'promo_kicker') }}</p>
@@ -74,19 +69,15 @@
             </div>
 
             <div class="flex min-h-0 flex-col gap-6 lg:h-full">
-                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-soft">
-                    <h3 class="mb-4 text-lg font-extrabold text-brand-dark">Logos RGE</h3>
-                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                        @foreach (data_get($h, 'about.cert_images', []) as $img)
-                            <div class="rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
-                                <img src="{{ \App\Support\HomeView::url(data_get($img, 'src')) }}" alt="{{ data_get($img, 'alt') }}" class="h-20 w-full rounded-lg object-contain sm:h-24">
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="flex-1 overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
-                    <img src="{{ \App\Support\HomeView::url(data_get($h, 'about.team_image')) }}" alt="{{ data_get($h, 'about.team_alt') }}" class="h-full w-full object-cover">
+                <div class="flex-1 rounded-2xl border border-brand-dark/25 bg-gradient-to-br from-brand-dark via-brand-dark to-slate-900 p-5 shadow-lg sm:p-6">
+                    <p class="text-lg font-extrabold leading-snug text-white sm:text-xl">{{ data_get($r, 'cta_title') }}</p>
+                    <p class="mt-2 text-sm leading-relaxed text-slate-200 sm:text-base">{{ data_get($r, 'cta_text') }}</p>
+                    <a
+                        href="{{ data_get($r, 'cta_href', '#devis') }}"
+                        class="mt-4 inline-flex rounded-xl bg-brand-yellow px-4 py-2.5 text-sm font-extrabold text-brand-dark shadow-md transition hover:bg-yellow-300"
+                    >
+                        {{ data_get($r, 'cta_button') }}
+                    </a>
                 </div>
             </div>
         </div>
