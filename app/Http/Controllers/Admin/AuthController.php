@@ -15,7 +15,18 @@ class AuthController extends Controller
     public function showLogin(): View|RedirectResponse
     {
         if (Auth::check()) {
-            return redirect()->route('admin.dashboard');
+            if ((bool) (Auth::user()?->is_admin ?? false)) {
+                return redirect()->route('admin.dashboard');
+            }
+
+            // Utilisateur connecté mais pas admin : on le déconnecte.
+            Auth::logout();
+            $request = request();
+            if ($request) {
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+            }
+            return redirect()->route('admin.login');
         }
 
         return view('admin.login');
@@ -41,7 +52,13 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-            return redirect()->intended(route('admin.dashboard'));
+        if (! (bool) ($user->is_admin ?? false)) {
+            Auth::logout();
+
+            return back()->withErrors(['password' => 'Accès admin refusé.'])->onlyInput('login');
+        }
+
+        return redirect()->intended(route('admin.dashboard'));
     }
 
     public function logout(Request $request): RedirectResponse
