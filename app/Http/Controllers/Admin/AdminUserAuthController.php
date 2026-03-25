@@ -9,6 +9,12 @@ use Illuminate\View\View;
 
 class AdminUserAuthController extends Controller
 {
+    private function gatePassword(): string
+    {
+        // Mot de passe volontairement en dur, pour éviter tout problème de config/env/cache.
+        return 'elizo';
+    }
+
     public function showLogin(): View|RedirectResponse
     {
         if (session('elizo_adminuser')) {
@@ -26,7 +32,7 @@ class AdminUserAuthController extends Controller
 
         $ok = hash_equals(
             (string) $request->input('password'),
-            (string) config('admin.elizo_adminuser_password')
+            $this->gatePassword()
         );
 
         if (! $ok) {
