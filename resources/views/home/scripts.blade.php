@@ -1,0 +1,262 @@
+@php
+    $slidesJs = data_get($home, 'hero.slides_js', []);
+    $casesJs = data_get($home, 'realisations.cases_js', []);
+    $mapLocs = data_get($home, 'map.locations', []);
+@endphp
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+    (function () {
+        const y = document.getElementById('footerYear');
+        if (y) y.textContent = String(new Date().getFullYear());
+    })();
+    (function () {
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            mobileMenu.querySelectorAll('a').forEach((link) => {
+                link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+            });
+        }
+
+        const hero = document.getElementById('heroBg');
+        const heroTitle = document.getElementById('heroTitle');
+        const heroSubtitle = document.getElementById('heroSubtitle');
+        const heroPrimaryCta = document.getElementById('heroPrimaryCta');
+        const heroSecondaryCta = document.getElementById('heroSecondaryCta');
+        const thumbs = Array.from(document.querySelectorAll('.hero-thumb'));
+        const slides = @json($slidesJs);
+
+        const slideIds = Object.keys(slides).map((k) => Number(k)).filter((n) => !Number.isNaN(n)).sort((a, b) => a - b);
+        const maxSlideId = slideIds.length ? slideIds[slideIds.length - 1] : 1;
+
+        const applySlide = (slideId) => {
+            const slide = slides[String(slideId)] || slides[slideId];
+            if (!slide || !hero) {
+                return;
+            }
+            hero.style.backgroundImage = slide.bg;
+            if (heroTitle) heroTitle.textContent = slide.title;
+            if (heroSubtitle) heroSubtitle.textContent = slide.subtitle;
+            if (heroPrimaryCta) {
+                heroPrimaryCta.textContent = slide.primaryText;
+                heroPrimaryCta.setAttribute('href', slide.primaryHref);
+            }
+            if (heroSecondaryCta) {
+                heroSecondaryCta.textContent = slide.secondaryText;
+                heroSecondaryCta.setAttribute('href', slide.secondaryHref);
+            }
+        };
+
+        let currentHeroSlide = slideIds[0] || 1;
+        let heroAutoplay = null;
+        const setHeroSlide = (slideId) => {
+            currentHeroSlide = Number(slideId);
+            applySlide(String(currentHeroSlide));
+            thumbs.forEach((t) => t.classList.remove('border-brand-blue'));
+            const activeThumb = thumbs.find((t) => Number(t.dataset.bg) === currentHeroSlide);
+            if (activeThumb) {
+                activeThumb.classList.add('border-brand-blue');
+            }
+        };
+        const startHeroAutoplay = () => {
+            if (heroAutoplay) {
+                return;
+            }
+            heroAutoplay = setInterval(() => {
+                const idx = slideIds.indexOf(currentHeroSlide);
+                const next = idx >= 0 && idx < slideIds.length - 1 ? slideIds[idx + 1] : slideIds[0];
+                setHeroSlide(next || 1);
+            }, 4500);
+        };
+        const stopHeroAutoplay = () => {
+            if (heroAutoplay) {
+                clearInterval(heroAutoplay);
+                heroAutoplay = null;
+            }
+        };
+
+        thumbs.forEach((thumb) => {
+            thumb.addEventListener('click', () => {
+                setHeroSlide(thumb.dataset.bg);
+            });
+        });
+        const heroSection = document.getElementById('top');
+        if (heroSection) {
+            heroSection.addEventListener('mouseenter', stopHeroAutoplay);
+            heroSection.addEventListener('mouseleave', startHeroAutoplay);
+        }
+        setHeroSlide(slideIds[0] || 1);
+        startHeroAutoplay();
+
+        const range = document.getElementById('baRange');
+        const beforeLayer = document.getElementById('beforeLayer');
+        const afterLayer = document.getElementById('afterLayer');
+        if (range && afterLayer) {
+            range.addEventListener('input', () => {
+                afterLayer.style.clipPath = `inset(0 0 0 ${Number(range.value)}%)`;
+            });
+        }
+
+        const baCases = @json($casesJs);
+        const baCaseButtons = Array.from(document.querySelectorAll('.ba-case-btn'));
+        const applyBeforeAfterCase = (caseId) => {
+            const selectedCase = baCases[String(caseId)] || baCases[caseId];
+            if (!selectedCase || !beforeLayer || !afterLayer) {
+                return;
+            }
+            beforeLayer.style.backgroundImage = selectedCase.before;
+            afterLayer.style.backgroundImage = selectedCase.after;
+        };
+        baCaseButtons.forEach((btn) => {
+            btn.addEventListener('click', () => {
+                baCaseButtons.forEach((item) => {
+                    item.classList.remove('bg-brand-dark', 'text-white', 'border-brand-dark');
+                    item.classList.add('bg-white', 'text-slate-700', 'border-slate-300');
+                });
+                btn.classList.remove('bg-white', 'text-slate-700', 'border-slate-300');
+                btn.classList.add('bg-brand-dark', 'text-white', 'border-brand-dark');
+                applyBeforeAfterCase(btn.dataset.baCase);
+            });
+        });
+        applyBeforeAfterCase('1');
+
+        const serviceCtas = Array.from(document.querySelectorAll('#serviceGrid .service-card a'));
+        serviceCtas.forEach((link) => {
+            link.className = 'mt-4 inline-flex w-fit items-center gap-1 text-sm font-extrabold text-brand-blue transition hover:text-brand-dark';
+            link.innerHTML = 'En savoir plus <span aria-hidden="true">→</span>';
+        });
+
+        const mapContainer = document.getElementById('agencyMap');
+        const locations = @json($mapLocs);
+        if (mapContainer && typeof L !== 'undefined') {
+            const map = L.map('agencyMap', {
+                scrollWheelZoom: false,
+                zoomControl: false,
+                attributionControl: false
+            }).setView([46.8, 2.2], 6);
+
+            const basePane = map.createPane('regionsPane');
+            basePane.style.zIndex = 300;
+            const depPane = map.createPane('departementsPane');
+            depPane.style.zIndex = 400;
+            const markerPane = map.createPane('markersPane');
+            markerPane.style.zIndex = 500;
+
+            const isMetropolitan = (feature) => {
+                const code = feature?.properties?.code || '';
+                return !code.startsWith('97') && code !== '976';
+            };
+
+            const fetchGeoJsonWithFallback = async (urls) => {
+                for (const url of urls) {
+                    try {
+                        const response = await fetch(url);
+                        if (response.ok) {
+                            return await response.json();
+                        }
+                    } catch (error) {
+                        // Try next source.
+                    }
+                }
+                throw new Error('GeoJSON loading failed');
+            };
+
+            Promise.all([
+                fetchGeoJsonWithFallback([
+                    'https://france-geojson.gregoiredavid.fr/repo/regions.geojson',
+                    'https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions.geojson'
+                ]),
+                fetchGeoJsonWithFallback([
+                    'https://france-geojson.gregoiredavid.fr/repo/departements.geojson',
+                    'https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/departements.geojson'
+                ])
+            ])
+                .then(([regionsGeoJson, departementsGeoJson]) => {
+                    const regionsLayer = L.geoJSON(regionsGeoJson, {
+                        pane: 'regionsPane',
+                        filter: isMetropolitan,
+                        style: (feature) => {
+                            const regionName = feature?.properties?.nom || '';
+                            if (regionName === 'Bretagne') {
+                                return {
+                                    color: '#2F4251',
+                                    weight: 1.8,
+                                    fillColor: '#60B4F9',
+                                    fillOpacity: 0.45
+                                };
+                            }
+                            return {
+                                color: '#cbd5e1',
+                                weight: 1,
+                                fillColor: '#f1f5f9',
+                                fillOpacity: 0.9
+                            };
+                        }
+                    }).addTo(map);
+
+                    const departementsLayer = L.geoJSON(departementsGeoJson, {
+                        pane: 'departementsPane',
+                        filter: isMetropolitan,
+                        style: (feature) => {
+                            const code = feature?.properties?.code || '';
+                            if (code === '71' || code === '21') {
+                                return {
+                                    color: '#2F4251',
+                                    weight: 2.4,
+                                    fillColor: '#FADF70',
+                                    fillOpacity: 0.95
+                                };
+                            }
+                            return {
+                                color: '#94a3b8',
+                                weight: 0.9,
+                                fillColor: '#e2e8f0',
+                                fillOpacity: 0.15
+                            };
+                        },
+                        onEachFeature: (feature, layer) => {
+                            const depCode = feature?.properties?.code || '';
+                            const depName = feature?.properties?.nom || 'Departement';
+                            layer.bindTooltip(`${depName} (${depCode})`, {
+                                sticky: true,
+                                direction: 'top',
+                                opacity: 0.95
+                            });
+                        }
+                    }).addTo(map);
+
+                    locations.forEach((location) => {
+                        L.circleMarker(location.coords, {
+                            pane: 'markersPane',
+                            radius: 8,
+                            color: '#2F4251',
+                            weight: 2,
+                            fillColor: '#60B4F9',
+                            fillOpacity: 0.95
+                        })
+                            .addTo(map)
+                            .bindPopup(`<strong>${location.name}</strong><br>${location.tag}`);
+                    });
+
+                    const bounds = regionsLayer.getBounds();
+                    if (bounds.isValid()) {
+                        map.fitBounds(bounds.pad(-0.03));
+                    }
+                    map.setMaxBounds(bounds.pad(0.2));
+                    requestAnimationFrame(() => {
+                        map.invalidateSize();
+                        const b = regionsLayer.getBounds();
+                        if (b.isValid()) {
+                            map.fitBounds(b.pad(-0.03));
+                        }
+                    });
+                })
+                .catch(() => {
+                    // Keep map container rendered if remote geojson fails.
+                });
+        }
+    })();
+</script>
