@@ -402,7 +402,7 @@ return [
     ],
 
     'footer' => [
-        'logo' => '/logo.png',
+        'logo' => '/logofooter.png',
         'logo_alt' => 'Normes & Rénovation',
         'siege_title' => 'Siège social',
         'company' => 'Normes et Rénovation',
