@@ -48,7 +48,7 @@
                             $text = (string) data_get($t, 'text', '');
                             $deco = (string) data_get($t, 'deco_class', 'bg-brand-blue/5');
                         @endphp
-                        <article class="relative min-w-[85%] sm:min-w-[50%] md:min-w-[33%] lg:min-w-[calc((100%/2)-1.25rem)] flex-shrink-0 rounded-2xl border border-slate-200/90 bg-white p-6 shadow-soft ring-1 ring-slate-100 transition hover:border-brand-blue/25 hover:shadow-lg snap-start">
+                        <article class="relative w-full min-w-full flex-shrink-0 rounded-2xl border border-slate-200/90 bg-white p-6 shadow-soft ring-1 ring-slate-100 transition hover:border-brand-blue/25 hover:shadow-lg snap-start">
                             <div class="absolute -right-2 -top-2 h-16 w-16 rounded-full {{ $deco }}" aria-hidden="true"></div>
 
                             <div class="relative mb-4 flex items-start justify-between gap-3">
@@ -90,11 +90,8 @@
                 <div class="relative z-10 flex h-full flex-col justify-end p-6 sm:p-7">
                     <p class="text-xs font-extrabold uppercase tracking-wide text-brand-yellow">Clients satisfaits</p>
                     <h3 class="mt-2 text-2xl font-extrabold leading-tight text-white sm:text-3xl">
-                        Un résultat qui plaît.
+                        Une équipe au top pour des clients satisfaits.
                     </h3>
-                    <p class="mt-3 text-sm leading-relaxed text-slate-100 sm:text-base">
-                        Des chantiers soignés, un suivi clair et des finitions maîtrisées pour des clients sereins.
-                    </p>
                 </div>
             </div>
         </div>
@@ -108,22 +105,10 @@
         const next = document.getElementById('avisNext');
         if (!carousel || !prev || !next) return;
 
-        const getStep = () => {
-            const first = carousel.querySelector('article');
-            if (!first) return carousel.clientWidth;
-            const styles = window.getComputedStyle(carousel);
-            const gap = parseFloat(styles.gap || '0') || 0;
-            return first.getBoundingClientRect().width + gap;
-        };
-
-        const cardsPerPage = () => {
-            const step = getStep();
-            if (step <= 0) return 1;
-            return Math.max(1, Math.round(carousel.clientWidth / step));
-        };
+        const getStep = () => carousel.clientWidth;
 
         const scrollPageNext = () => {
-            const step = getStep() * cardsPerPage();
+            const step = getStep();
             const maxLeft = carousel.scrollWidth - carousel.clientWidth;
             if (carousel.scrollLeft >= maxLeft - 2) {
                 carousel.scrollTo({ left: 0, behavior: 'smooth' });
@@ -133,7 +118,7 @@
         };
 
         const scrollPagePrev = () => {
-            const step = getStep() * cardsPerPage();
+            const step = getStep();
             if (carousel.scrollLeft <= 2) {
                 const maxLeft = carousel.scrollWidth - carousel.clientWidth;
                 carousel.scrollTo({ left: maxLeft, behavior: 'smooth' });
