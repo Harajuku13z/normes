@@ -58,13 +58,10 @@
                 <ol class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
                     @foreach (data_get($proc, 'steps', []) as $step)
                         @php
-                            $style = data_get($step, 'num_style');
-                            $numClass = match ($style) {
-                                'brand-dark-yellow' => 'mb-4 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-dark text-sm font-black text-brand-yellow shadow-md lg:mx-auto',
-                                'brand-dark-white' => 'mb-4 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-dark text-sm font-black text-white shadow-md lg:mx-auto',
-                                'gradient' => 'mb-4 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-sky-600 text-sm font-black text-white shadow-md lg:mx-auto',
-                                default => 'mb-4 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-blue text-sm font-black text-white shadow-md shadow-brand-blue/25 lg:mx-auto',
-                            };
+                            $isOdd = ($loop->iteration % 2) === 1;
+                            $numClass = $isOdd
+                                ? 'mb-4 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-blue text-sm font-black text-white shadow-md shadow-brand-blue/25 lg:mx-auto'
+                                : 'mb-4 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-dark text-sm font-black text-white shadow-md lg:mx-auto';
                             $liClass = 'relative rounded-xl border border-slate-100 bg-slate-50/60 p-5 lg:border-slate-100/80 lg:bg-white lg:p-6 lg:text-center lg:shadow-sm';
                             if (!empty($step['span'])) {
                                 $liClass .= ' sm:col-span-2 lg:col-span-1';

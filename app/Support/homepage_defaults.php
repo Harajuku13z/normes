@@ -249,7 +249,7 @@ return [
         'cards' => [
             ['emoji' => '🛠️', 'title' => 'Expertise technique', 'text' => 'Des équipes qualifiées et des conseils adaptés à votre maison.', 'ring' => 'brand-blue/15'],
             ['emoji' => '✅', 'title' => 'Entreprise certifiée RGE', 'text' => 'Un accompagnement conforme aux normes et aux aides en vigueur.', 'ring' => 'brand-yellow/25'],
-            ['emoji' => '🌿', 'title' => 'Solutions durables', 'text' => 'Des choix techniques performants pour un impact long terme.', 'ring' => 'emerald-500/20'],
+            ['emoji' => '🌿', 'title' => 'Solutions durables', 'text' => 'Des produits et matériaux sélectionnés pour leur performance, leur longévité et un impact environnemental maîtrisé.', 'ring' => 'emerald-500/20'],
             ['emoji' => '🤝', 'title' => 'Accompagnement complet', 'text' => 'Un interlocuteur unique du devis jusqu\'à la fin de chantier.', 'ring' => 'sky-400/25', 'wide' => true],
         ],
     ],
