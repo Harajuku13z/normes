@@ -3,7 +3,7 @@
     $logos = data_get($h, 'partners.logos', []);
 @endphp
 <section class="partners-marquee border-y border-slate-200 bg-white py-10" aria-label="Partenaires et certification">
-    <p class="mx-auto max-w-7xl px-4 text-center text-[11px] font-extrabold uppercase tracking-[0.28em] text-brand-dark/55 sm:px-6 lg:px-8">{{ data_get($h, 'partners.heading') }}</p>
+    <p class="mx-auto w-[95%] px-4 text-center text-[11px] font-extrabold uppercase tracking-[0.28em] text-brand-dark/55 sm:px-6 lg:px-8">{{ data_get($h, 'partners.heading') }}</p>
     <div class="relative mt-7 overflow-hidden bg-white [mask-image:linear-gradient(to_right,transparent,rgba(0,0,0,1)_10%,rgba(0,0,0,1)_90%,transparent)]">
         <div class="partners-marquee-track">
             <div class="flex shrink-0 items-center gap-x-12 px-6 sm:gap-x-16 sm:px-8">

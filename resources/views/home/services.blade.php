@@ -1,6 +1,6 @@
 @php $h = $home ?? []; @endphp
 <section id="services" class="scroll-mt-24 bg-slate-50/70 py-16 sm:py-20">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <h2 class="mb-3 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">{{ data_get($h, 'services.title_accent') }}</span>{{ data_get($h, 'services.title_rest') }}</h2>
         <p class="mb-6 max-w-3xl text-base text-slate-600 sm:text-lg">{{ data_get($h, 'services.intro') }}</p>
         <div id="serviceGrid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

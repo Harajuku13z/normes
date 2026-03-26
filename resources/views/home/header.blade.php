@@ -4,7 +4,7 @@
     $logoAlt = data_get($h, 'header.logo_alt', 'Normes & Renovation');
 @endphp
 <header class="sticky top-0 z-[1000] border-b-4 border-brand-blue bg-white/95 shadow-[0_1px_0_rgba(15,23,42,0.06)] backdrop-blur-md">
-    <div class="mx-auto flex min-h-[84px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto flex min-h-[84px] w-[95%] items-center justify-between px-4 sm:px-6 lg:px-8">
         <a href="#top" class="shrink-0">
             <img src="{{ $logo }}" alt="{{ $logoAlt }}" class="h-12 w-auto sm:h-14">
         </a>
@@ -93,7 +93,7 @@
     </div>
 
     <div id="mobileMenu" class="hidden border-t border-slate-100 bg-white lg:hidden">
-        <div class="mx-auto flex max-w-7xl flex-col gap-0.5 px-4 py-3 sm:px-6">
+        <div class="mx-auto flex w-[95%] flex-col gap-0.5 px-4 py-3 sm:px-6">
             <a href="#top" class="rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50">Accueil</a>
 
             <details class="group rounded-lg">

@@ -1,6 +1,6 @@
 @php $h = $home ?? []; @endphp
 <section class="bg-brand-dark py-14 text-white sm:py-20">
-    <div class="mx-auto grid max-w-7xl gap-4 px-4 sm:grid-cols-2 sm:gap-5 sm:px-6 lg:grid-cols-4 lg:gap-6 lg:px-8">
+    <div class="mx-auto grid w-[95%] gap-4 px-4 sm:grid-cols-2 sm:gap-5 sm:px-6 lg:grid-cols-4 lg:gap-6 lg:px-8">
         @foreach (data_get($h, 'stats.items', []) as $item)
             <article class="flex flex-col items-center rounded-xl border border-white/10 bg-white/[0.06] px-4 py-7 text-center sm:py-8">
                 <span class="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-blue/25 text-brand-yellow ring-1 ring-white/10" aria-hidden="true">

@@ -8,7 +8,7 @@
     $promoBg = \App\Support\HomeView::url(data_get($r, 'promo_bg'));
 @endphp
 <section id="realisations" class="scroll-mt-24 py-16 sm:py-20">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         {{-- Carte À propos pleine largeur (sans Avant/Après) --}}
         <div id="a-propos" class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft lg:p-8">
             @php

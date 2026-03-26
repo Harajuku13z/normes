@@ -6,7 +6,7 @@
     $logoMa = \App\Support\HomeView::url(data_get($aides, 'logo'));
 @endphp
 <section class="bg-slate-50/70 py-16 sm:py-20">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <div class="mb-10 max-w-2xl">
             <h2 class="text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">{{ data_get($p, 'title_accent') }}</span>{{ data_get($p, 'title_rest') }}</h2>
             <p class="mt-3 text-base text-slate-600 sm:text-lg">{{ data_get($p, 'intro') }}</p>

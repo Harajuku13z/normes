@@ -1,6 +1,6 @@
 @php $h = $home ?? []; @endphp
 <section class="border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-white py-16 sm:py-20">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
             <div class="max-w-2xl">
                 <h2 class="text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">{{ data_get($h, 'avis.title_accent') }}</span>{{ data_get($h, 'avis.title_rest') }}</h2>

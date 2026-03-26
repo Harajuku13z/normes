@@ -8,7 +8,7 @@
 @endphp
 <section id="top" class="relative min-h-[540px] overflow-hidden sm:min-h-[620px]">
     <div id="heroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-500" style="background-image:{{ $firstBgFull }}"></div>
-    <div class="relative z-10 mx-auto flex min-h-[540px] max-w-7xl flex-col justify-end gap-5 px-4 py-8 sm:min-h-[620px] sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
+    <div class="relative z-10 mx-auto flex min-h-[540px] w-[95%] flex-col justify-end gap-5 px-4 py-8 sm:min-h-[620px] sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
         <div class="max-w-3xl text-white">
             <h1 id="heroTitle" class="mb-3 text-4xl font-extrabold leading-[1.03] tracking-tight sm:text-5xl lg:text-6xl">{{ data_get($first, 'title') }}</h1>
             <p id="heroSubtitle" class="mb-5 text-lg text-slate-100 sm:text-xl">{{ data_get($first, 'subtitle') }}</p>

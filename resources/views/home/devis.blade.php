@@ -4,7 +4,7 @@
     $sim = data_get($d, 'sim_block', []);
 @endphp
 <section id="devis" class="scroll-mt-24 bg-brand-dark py-16 text-white sm:py-20">
-        <div class="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:items-stretch lg:gap-12 lg:px-8">
+        <div class="mx-auto grid w-[95%] gap-10 px-4 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:items-stretch lg:gap-12 lg:px-8">
         <div class="flex min-h-0 flex-col gap-8 lg:h-full lg:min-h-0 lg:justify-center">
             <div class="max-w-lg shrink-0">
                 <h2 class="mb-4 text-4xl font-extrabold leading-tight sm:text-5xl"><span class="text-sky-400">{{ data_get($d, 'title_line1') }}</span> <span class="text-white">{{ data_get($d, 'title_line2') }}</span></h2>

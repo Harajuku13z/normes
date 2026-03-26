@@ -1,6 +1,6 @@
 @php $h = $home ?? []; @endphp
 <section id="simulateur-devis" class="scroll-mt-28 border-b border-slate-200 bg-white py-10 sm:py-12">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <form class="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-soft ring-1 ring-slate-100 sm:grid-cols-[1fr_auto] sm:items-end sm:gap-4">
             <div>
                 <label for="address" class="mb-2 block text-xs font-extrabold uppercase tracking-wider text-brand-blue/95">{{ data_get($h, 'simulateur.label') }}</label>
