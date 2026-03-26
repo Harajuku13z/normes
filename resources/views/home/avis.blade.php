@@ -43,14 +43,12 @@
                     @foreach (data_get($h, 'avis.testimonials', []) as $t)
                         @php
                             $platform = (string) data_get($t, 'platform', 'google');
-                            $reviewCount = (string) data_get($t, 'review_count', $platform === 'google' ? '+100 avis' : '+avis');
+                            $reviewCount = (string) data_get($t, 'review_count', $platform === 'google' ? '+5000 avis' : '+avis');
                             $author = (string) data_get($t, 'author', '');
                             $text = (string) data_get($t, 'text', '');
-                            $deco = (string) data_get($t, 'deco_class', 'bg-brand-blue/5');
+                            $countClass = ($loop->iteration % 2) === 1 ? 'text-brand-blue' : 'text-brand-yellow';
                         @endphp
-                        <article class="relative w-full min-w-full flex-shrink-0 rounded-2xl border border-slate-200/90 bg-white p-6 shadow-soft ring-1 ring-slate-100 transition hover:border-brand-blue/25 hover:shadow-lg snap-start">
-                            <div class="absolute -right-2 -top-2 h-16 w-16 rounded-full {{ $deco }}" aria-hidden="true"></div>
-
+                        <article class="relative w-full min-w-full flex-shrink-0 rounded-2xl p-6 snap-start">
                             <div class="relative mb-4 flex items-start justify-between gap-3">
                                 <div class="flex items-center gap-3">
                                     @if ($platform === 'google')
@@ -71,8 +69,8 @@
 
                             <p class="relative mb-4 text-sm leading-relaxed text-slate-700 sm:text-base">{{ $text }}</p>
 
-                            <div class="flex items-center justify-between gap-3 border-t border-slate-100 pt-4">
-                                <span class="text-xs font-extrabold text-brand-blue">{{ $reviewCount }}</span>
+                            <div class="flex items-center justify-between gap-3 border-t border-slate-200/60 pt-4">
+                                <span class="text-xs font-extrabold {{ $countClass }}">{{ $reviewCount }}</span>
                                 <p class="text-sm font-extrabold text-brand-dark">{{ $author }}</p>
                             </div>
                         </article>

@@ -66,7 +66,7 @@ return [
         'logo' => '/logo.png',
         'title' => '5.0/5 — Avis Google',
         'subtitle' => '★★★★★',
-        'subtitle_suffix' => '+100 avis',
+        'subtitle_suffix' => '+5000 avis',
         'link_text' => 'Voir les avis →',
         'phone' => '+33385419886',
         'phone_display' => '03 85 41 98 86',
@@ -79,7 +79,7 @@ return [
         'label' => 'Avis Google',
         'score' => '5.0/5',
         'stars' => '★★★★★',
-        'text' => '+100 avis',
+        'text' => '+5000 avis',
     ],
 
     'services' => [
@@ -90,7 +90,7 @@ return [
             [
                 'num' => 1,
                 'category' => 'toiture',
-                'image' => 'services/nettoyage-demoussage-toiture.jpeg',
+                'image' => 'slide/toiture.png',
                 'title' => 'Traitement et démoussage de toiture',
                 'description' => 'Nettoyage complet, élimination des mousses et application de traitement hydrofuge pour protéger durablement votre toiture.',
                 'cta' => 'En savoir plus',
@@ -98,7 +98,7 @@ return [
             [
                 'num' => 2,
                 'category' => 'toiture',
-                'image' => 'services/toiture-couverture.jpeg',
+                'image' => 'slide/toiture.png',
                 'title' => 'Remplacement de couverture et zinguerie',
                 'description' => 'Réfection complète de toiture, pose de tuiles et éléments de zinguerie pour garantir l’étanchéité et la longévité.',
                 'cta' => 'En savoir plus',
