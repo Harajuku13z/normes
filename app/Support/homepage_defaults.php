@@ -138,7 +138,7 @@ return [
             [
                 'num' => 7,
                 'category' => 'menuiserie',
-                'image' => 'services/menuiserie.jpg',
+                'image' => 'services/menuiserie2.jpg',
                 'title' => 'Menuiserie',
                 'description' => 'Installation et remplacement de fenêtres, portes et menuiseries pour améliorer l’isolation et la sécurité.',
                 'cta' => 'En savoir plus',
