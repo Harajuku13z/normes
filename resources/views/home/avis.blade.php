@@ -50,7 +50,7 @@
                             $text = (string) data_get($t, 'text', '');
                             $deco = (string) data_get($t, 'deco_class', 'bg-brand-blue/5');
                         @endphp
-                        <article class="relative min-w-[85%] sm:min-w-[50%] md:min-w-[33%] lg:min-w-[calc((100%/4)-1.25rem)] flex-shrink-0 rounded-2xl border border-slate-200/90 bg-white p-6 shadow-soft ring-1 ring-slate-100 transition hover:border-brand-blue/25 hover:shadow-lg snap-start">
+                        <article class="relative min-w-[85%] sm:min-w-[50%] md:min-w-[33%] lg:min-w-[calc((100%/2)-1.25rem)] flex-shrink-0 rounded-2xl border border-slate-200/90 bg-white p-6 shadow-soft ring-1 ring-slate-100 transition hover:border-brand-blue/25 hover:shadow-lg snap-start">
                             <div class="absolute -right-2 -top-2 h-16 w-16 rounded-full {{ $deco }}" aria-hidden="true"></div>
 
                             <div class="relative mb-4 flex items-start justify-between gap-3">
@@ -118,8 +118,14 @@
             return first.getBoundingClientRect().width + gap;
         };
 
+        const cardsPerPage = () => {
+            const step = getStep();
+            if (step <= 0) return 1;
+            return Math.max(1, Math.round(carousel.clientWidth / step));
+        };
+
         const scrollPageNext = () => {
-            const step = getStep() * 4;
+            const step = getStep() * cardsPerPage();
             const maxLeft = carousel.scrollWidth - carousel.clientWidth;
             if (carousel.scrollLeft >= maxLeft - 2) {
                 carousel.scrollTo({ left: 0, behavior: 'smooth' });
@@ -129,7 +135,7 @@
         };
 
         const scrollPagePrev = () => {
-            const step = getStep() * 4;
+            const step = getStep() * cardsPerPage();
             if (carousel.scrollLeft <= 2) {
                 const maxLeft = carousel.scrollWidth - carousel.clientWidth;
                 carousel.scrollTo({ left: maxLeft, behavior: 'smooth' });
