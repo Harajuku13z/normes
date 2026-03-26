@@ -66,7 +66,7 @@ return [
         'logo' => '/logo.png',
         'title' => '5.0/5 — Avis Google',
         'subtitle' => '★★★★★',
-        'subtitle_suffix' => '+5000 avis',
+        'subtitle_suffix' => '+100 avis',
         'link_text' => 'Voir les avis →',
         'phone' => '+33385419886',
         'phone_display' => '03 85 41 98 86',
@@ -79,7 +79,7 @@ return [
         'label' => 'Avis Google',
         'score' => '5.0/5',
         'stars' => '★★★★★',
-        'text' => '+5000 avis',
+        'text' => '+100 avis',
     ],
 
     'services' => [
@@ -90,7 +90,7 @@ return [
             [
                 'num' => 1,
                 'category' => 'toiture',
-                'image' => 'slide/toiture.png',
+                'image' => 'services/nettoyage-demoussage-toiture.jpeg',
                 'title' => 'Traitement et démoussage de toiture',
                 'description' => 'Nettoyage complet, élimination des mousses et application de traitement hydrofuge pour protéger durablement votre toiture.',
                 'cta' => 'En savoir plus',
@@ -301,7 +301,7 @@ return [
 
     'stats' => [
         'items' => [
-            ['value' => '+1000', 'label' => 'Chantiers réalisés', 'icon' => 'building'],
+            ['value' => '+5000', 'label' => 'Chantiers réalisés', 'icon' => 'building'],
             ['value' => '98%', 'label' => 'Satisfaction client', 'icon' => 'star'],
             ['value' => '48h', 'label' => 'Prise en charge rapide', 'icon' => 'clock'],
             ['value' => '100%', 'label' => 'Devis gratuit', 'icon' => 'doc'],

@@ -43,7 +43,7 @@
                     @foreach (data_get($h, 'avis.testimonials', []) as $t)
                         @php
                             $platform = (string) data_get($t, 'platform', 'google');
-                            $reviewCount = (string) data_get($t, 'review_count', $platform === 'google' ? '+5000 avis' : '+avis');
+                            $reviewCount = (string) data_get($t, 'review_count', $platform === 'google' ? '+100 avis' : '+avis');
                             $author = (string) data_get($t, 'author', '');
                             $text = (string) data_get($t, 'text', '');
                             $countClass = ($loop->iteration % 2) === 1 ? 'text-brand-blue' : 'text-brand-yellow';

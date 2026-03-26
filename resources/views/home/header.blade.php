@@ -102,7 +102,7 @@
                 </svg>
                 <span class="flex flex-col leading-none">
                     <span class="text-[12px] font-extrabold text-brand-dark">{{ data_get($h, 'sidebar_avis.score', '5.0/5') }}</span>
-                    <span class="text-[11px] font-bold text-yellow-500">{{ data_get($h, 'sidebar_avis.stars', '★★★★★') }} <span class="ml-1 text-brand-blue">{{ data_get($h, 'sidebar_avis.text', '+5000 avis') }}</span></span>
+                    <span class="text-[11px] font-bold text-yellow-500">{{ data_get($h, 'sidebar_avis.stars', '★★★★★') }} <span class="ml-1 text-brand-blue">{{ data_get($h, 'sidebar_avis.text', '+100 avis') }}</span></span>
                 </span>
             </a>
         </nav>
