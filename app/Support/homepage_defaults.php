@@ -315,9 +315,48 @@ return [
         'google_url' => 'https://share.google/14Nu70a8PfwWT4P4p',
         'google_button' => 'Voir la fiche',
         'testimonials' => [
-            ['text' => 'Équipe sérieuse, chantier propre et très bon résultat.', 'author' => 'Claire M.', 'deco_class' => 'bg-brand-blue/5'],
-            ['text' => 'Accompagnement pro du début à la fin et très bons conseils.', 'author' => 'Julien R.', 'deco_class' => 'bg-brand-yellow/10'],
-            ['text' => 'Travail de qualité, délais tenus et équipe très à l\'écoute.', 'author' => 'Sophie L.', 'deco_class' => 'bg-emerald-500/10'],
+            [
+                'platform' => 'google',
+                'review_count' => '+100 avis',
+                'text' => 'Équipe sérieuse, chantier propre et très bon résultat.',
+                'author' => 'Claire M.',
+                'deco_class' => 'bg-brand-blue/5'
+            ],
+            [
+                'platform' => 'google',
+                'review_count' => '+100 avis',
+                'text' => 'Accompagnement pro du début à la fin et très bons conseils.',
+                'author' => 'Julien R.',
+                'deco_class' => 'bg-brand-yellow/10'
+            ],
+            [
+                'platform' => 'travaux.com',
+                'review_count' => '+60 avis',
+                'text' => 'Intervention soignée, délais respectés et communication claire à chaque étape.',
+                'author' => 'Marion B.',
+                'deco_class' => 'bg-brand-blue/5'
+            ],
+            [
+                'platform' => 'travaux.com',
+                'review_count' => '+60 avis',
+                'text' => 'Devis précis, équipe ponctuelle et conseils adaptés à notre maison.',
+                'author' => 'Nicolas D.',
+                'deco_class' => 'bg-brand-yellow/10'
+            ],
+            [
+                'platform' => 'trustpilot',
+                'review_count' => '+45 avis',
+                'text' => 'Travail de qualité, finitions propres et équipe très à l\'écoute.',
+                'author' => 'Sophie L.',
+                'deco_class' => 'bg-emerald-500/10'
+            ],
+            [
+                'platform' => 'google',
+                'review_count' => '+100 avis',
+                'text' => 'Très bon suivi du devis jusqu\'à la fin de chantier. Résultat impeccable.',
+                'author' => 'Thomas K.',
+                'deco_class' => 'bg-brand-blue/5'
+            ],
         ],
     ],
 
