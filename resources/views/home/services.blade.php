@@ -22,7 +22,7 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/95 via-brand-dark/65 to-transparent"></div>
                     </div>
                     <div class="absolute inset-x-0 bottom-0 z-10 p-6">
-                        <h3 class="text-xl font-black leading-snug text-white sm:text-2xl">
+                        <h3 class="text-2xl font-black leading-snug text-white sm:text-3xl">
                             {{ $title }}
                         </h3>
                         <p class="mt-3 text-sm leading-relaxed text-white/90">
