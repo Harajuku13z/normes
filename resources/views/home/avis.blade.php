@@ -25,13 +25,13 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <button id="avisPrev" type="button" aria-label="Avis précédent"
-                            class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-soft transition hover:border-brand-blue/40 hover:text-brand-blue">
+                            class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-soft transition hover:border-brand-blue/40 hover:text-brand-blue active:scale-[0.99]">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M15 18l-6-6 6-6"/>
                         </svg>
                     </button>
                     <button id="avisNext" type="button" aria-label="Avis suivant"
-                            class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-soft transition hover:border-brand-blue/40 hover:text-brand-blue">
+                            class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-soft transition hover:border-brand-blue/40 hover:text-brand-blue active:scale-[0.99]">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M9 18l6-6-6-6"/>
                         </svg>
@@ -40,7 +40,7 @@
             </div>
 
             <div id="avisCarousel"
-                 class="flex gap-5 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                 class="flex gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 @foreach (data_get($h, 'avis.testimonials', []) as $t)
                     @php
                         $platform = (string) data_get($t, 'platform', 'google');
@@ -49,7 +49,7 @@
                         $text = (string) data_get($t, 'text', '');
                         $deco = (string) data_get($t, 'deco_class', 'bg-brand-blue/5');
                     @endphp
-                    <article class="relative min-w-[85%] sm:min-w-[55%] lg:min-w-[33%] flex-shrink-0 rounded-2xl border border-slate-200/90 bg-white p-6 shadow-soft ring-1 ring-slate-100 transition hover:border-brand-blue/25 hover:shadow-lg snap-start">
+                    <article class="relative min-w-[85%] sm:min-w-[50%] md:min-w-[33%] lg:min-w-[calc((100%/4)-1.25rem)] flex-shrink-0 rounded-2xl border border-slate-200/90 bg-white p-6 shadow-soft ring-1 ring-slate-100 transition hover:border-brand-blue/25 hover:shadow-lg snap-start">
                         <div class="absolute -right-2 -top-2 h-16 w-16 rounded-full {{ $deco }}" aria-hidden="true"></div>
 
                         <div class="relative mb-4 flex items-start justify-between gap-3">
@@ -90,19 +90,43 @@
         const next = document.getElementById('avisNext');
         if (!carousel || !prev || !next) return;
 
-        const scrollAmount = () => Math.max(1, carousel.clientWidth * 0.92);
-        const scrollNext = () => carousel.scrollBy({ left: scrollAmount(), behavior: 'smooth' });
-        const scrollPrev = () => carousel.scrollBy({ left: -scrollAmount(), behavior: 'smooth' });
+        const getStep = () => {
+            const first = carousel.querySelector('article');
+            if (!first) return carousel.clientWidth;
+            const styles = window.getComputedStyle(carousel);
+            const gap = parseFloat(styles.gap || '0') || 0;
+            return first.getBoundingClientRect().width + gap;
+        };
 
-        prev.addEventListener('click', scrollPrev);
-        next.addEventListener('click', scrollNext);
+        const scrollPageNext = () => {
+            const step = getStep() * 4;
+            const maxLeft = carousel.scrollWidth - carousel.clientWidth;
+            if (carousel.scrollLeft >= maxLeft - 2) {
+                carousel.scrollTo({ left: 0, behavior: 'smooth' });
+                return;
+            }
+            carousel.scrollBy({ left: step, behavior: 'smooth' });
+        };
+
+        const scrollPagePrev = () => {
+            const step = getStep() * 4;
+            if (carousel.scrollLeft <= 2) {
+                const maxLeft = carousel.scrollWidth - carousel.clientWidth;
+                carousel.scrollTo({ left: maxLeft, behavior: 'smooth' });
+                return;
+            }
+            carousel.scrollBy({ left: -step, behavior: 'smooth' });
+        };
+
+        prev.addEventListener('click', scrollPagePrev);
+        next.addEventListener('click', scrollPageNext);
 
         let t = null;
         const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const start = () => {
             if (reduced) return;
             if (t) return;
-            t = window.setInterval(scrollNext, 5200);
+            t = window.setInterval(scrollPageNext, 5200);
         };
         const stop = () => {
             if (!t) return;
