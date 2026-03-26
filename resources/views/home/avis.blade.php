@@ -18,8 +18,8 @@
             </a>
         </div>
 
-        <div class="mt-10 grid gap-6 lg:grid-cols-[2fr_1fr] lg:items-stretch">
-            <div>
+        <div class="mt-10 grid gap-6 lg:grid-cols-2 lg:items-stretch">
+            <div class="flex flex-col h-full">
                 <div class="mb-5 flex items-center justify-between gap-4">
                     <div class="text-sm font-semibold text-slate-600">
                         Des retours concrets, provenant de plusieurs plateformes.
@@ -82,7 +82,7 @@
                 </div>
             </div>
 
-            <div class="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-soft">
+            <div class="relative h-full overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-soft">
                 <div
                     class="absolute inset-0 bg-cover bg-center transition duration-300"
                     style="background-image:url('{{ \App\Support\HomeView::url('/services/menuiserie2.jpg') }}');"
