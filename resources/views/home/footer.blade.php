@@ -42,9 +42,10 @@
                 </ul>
             </div>
             <div class="lg:col-span-3">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-brand-yellow">Réseaux</h3>
+                <h3 class="text-xs font-bold uppercase tracking-wider text-brand-yellow">Horaires d'ouverture</h3>
                 <p class="mt-4 text-xs leading-relaxed text-white">{{ data_get($f, 'networks_note') }}</p>
-                <div class="mt-4 flex flex-wrap gap-2">
+                <p class="mt-5 text-xs font-bold uppercase tracking-wider text-brand-yellow">Réseaux sociaux</p>
+                <div class="mt-3 flex flex-wrap gap-2">
                     @foreach (data_get($f, 'social', []) as $item)
                         @if (($item['network'] ?? '') === 'facebook')
                             <a href="{{ $item['url'] ?? '#' }}" aria-label="{{ $item['label'] ?? 'Facebook' }}" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#1877F2] text-white transition hover:opacity-90">
