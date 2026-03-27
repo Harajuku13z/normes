@@ -27,6 +27,21 @@
                     Devis en 48h
                 </div>
 
+                <div class="mt-5 flex items-center gap-3">
+                    <img
+                        src="{{ \App\Support\HomeView::url('/logo.png') }}"
+                        alt="Normes & Rénovation"
+                        width="220"
+                        height="60"
+                        class="h-9 w-auto object-contain sm:h-10"
+                        loading="lazy"
+                        decoding="async"
+                    >
+                    <span class="text-xs font-extrabold uppercase tracking-[0.18em] text-brand-dark/55">
+                        Normes &amp; Rénovation
+                    </span>
+                </div>
+
                 <h3 id="leadPopupTitle" class="mt-4 text-2xl font-black leading-tight text-brand-dark sm:text-3xl">
                     Estimez votre projet en 30 secondes
                 </h3>
