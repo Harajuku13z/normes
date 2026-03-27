@@ -54,8 +54,8 @@
                             $text = (string) data_get($t, 'text', '');
                             $countClass = ($loop->iteration % 2) === 1 ? 'text-brand-blue' : 'text-brand-yellow';
                         @endphp
-                        <article class="relative w-full min-w-full flex-shrink-0 rounded-2xl border border-slate-200/90 bg-white p-6 snap-start">
-                            <div class="pointer-events-none absolute -right-2 -top-2 h-16 w-16 rounded-full bg-brand-blue/5" aria-hidden="true"></div>
+                        <article class="relative w-full min-w-full flex-shrink-0 overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-6 snap-start">
+                            <div class="pointer-events-none absolute right-4 top-4 h-14 w-14 rounded-full bg-brand-blue/6" aria-hidden="true"></div>
                             <div class="relative mb-4 flex items-start justify-between gap-3">
                                 <div class="flex items-center gap-3">
                                     @if ($platform === 'google')
