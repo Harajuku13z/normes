@@ -2,7 +2,7 @@
     $h = $home ?? [];
     $avisBg = \App\Support\HomeView::url('/slide/toiture.png');
 @endphp
-<section class="border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-white py-16 sm:py-20">
+<section class="overflow-x-hidden border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-white py-16 sm:py-20">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <div class="grid gap-6 lg:grid-cols-2 lg:items-stretch">
             <div class="flex h-full flex-col">
@@ -45,7 +45,7 @@
                     <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-blue/5 via-white to-brand-yellow/5" aria-hidden="true"></div>
                     <div class="relative z-10 p-3 sm:p-4">
                         <div id="avisCarousel"
-                             class="flex w-full gap-0 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                             class="flex w-full gap-0 overflow-x-hidden scroll-smooth snap-x snap-mandatory pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:overflow-x-auto">
                     @foreach (data_get($h, 'avis.testimonials', []) as $t)
                         @php
                             $platform = (string) data_get($t, 'platform', 'google');
