@@ -43,7 +43,7 @@
             </div>
             <div class="lg:col-span-3">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-brand-yellow">Horaires d'ouverture</h3>
-                <p class="mt-4 text-xs leading-relaxed text-white">{{ data_get($f, 'networks_note') }}</p>
+                <p class="mt-4 text-sm leading-relaxed text-white">{{ data_get($f, 'networks_note') }}</p>
                 <p class="mt-5 text-xs font-bold uppercase tracking-wider text-brand-yellow">Réseaux sociaux</p>
                 <div class="mt-3 flex flex-wrap gap-2">
                     @foreach (data_get($f, 'social', []) as $item)
