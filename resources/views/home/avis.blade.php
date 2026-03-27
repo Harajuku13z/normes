@@ -65,8 +65,8 @@
                             @endphp
                             <article
                                 class="avis-card w-full p-5 sm:p-6"
-                                style="grid-area:1/1; opacity:0; pointer-events:none; transition:opacity .45s ease"
-                                aria-hidden="true"
+                                style="grid-area:1/1; opacity:{{ $loop->first ? '1' : '0' }}; pointer-events:{{ $loop->first ? 'auto' : 'none' }}; transition:opacity .45s ease"
+                                aria-hidden="{{ $loop->first ? 'false' : 'true' }}"
                             >
                                 {{-- Logo plateforme + étoiles --}}
                                 <div class="mb-4 flex items-start justify-between gap-3">

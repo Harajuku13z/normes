@@ -75,9 +75,16 @@
                 </div>
             </div>
         </div>
-        <div class="mt-12 flex flex-col gap-3 border-t border-white/15 pt-8 text-xs text-white/90 sm:flex-row sm:items-center sm:justify-between">
+        <div class="mt-12 flex flex-col gap-3 border-t border-white/15 pt-8 text-xs text-white/90 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
             <p>&copy; <span id="footerYear"></span> {{ data_get($f, 'copyright_name') }}. Tous droits réservés.</p>
             <p class="sm:text-right">{{ data_get($f, 'bottom_line') }} <a href="{{ data_get($f, 'bottom_href') }}" class="text-white underline-offset-2 transition hover:text-brand-yellow hover:underline">{{ data_get($f, 'bottom_link') }}</a></p>
+            <button
+                id="cookieManageBtn"
+                type="button"
+                class="inline-flex w-fit items-center rounded-md border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-extrabold text-white transition hover:bg-white/20"
+            >
+                Gerer les cookies
+            </button>
         </div>
     </div>
 </footer>

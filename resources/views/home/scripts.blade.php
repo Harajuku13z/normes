@@ -57,7 +57,6 @@
             banner.classList.add('hidden');
             banner.classList.add('pointer-events-none');
             banner.setAttribute('aria-hidden', 'true');
-            if (manageBtn) manageBtn.classList.remove('hidden');
         };
 
         const setPrefsOpen = (open) => {
@@ -110,7 +109,6 @@
         }
 
         applyConsentToInputs(stored);
-        if (manageBtn) manageBtn.classList.remove('hidden');
         window.dispatchEvent(new CustomEvent('nr-cookie-consent-changed', { detail: stored }));
     })();
 

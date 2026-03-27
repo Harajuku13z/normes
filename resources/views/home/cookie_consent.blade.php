@@ -71,10 +71,3 @@
     </div>
 </div>
 
-<button
-    id="cookieManageBtn"
-    type="button"
-    class="fixed bottom-4 left-4 z-[110] hidden rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-extrabold text-brand-dark shadow-lg ring-1 ring-slate-100 transition hover:bg-slate-50"
->
-    Cookies
-</button>
