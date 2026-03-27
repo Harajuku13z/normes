@@ -1,5 +1,5 @@
 @php $h = $home ?? []; @endphp
-<section class="border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-white py-16 sm:py-20" style="overflow-x:hidden">
+<section class="border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-white py-16 sm:py-20">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <div class="grid gap-6 lg:grid-cols-2 lg:items-stretch">
 
