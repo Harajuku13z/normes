@@ -20,6 +20,30 @@
                     </article>
                 @endforeach
             </div>
+
+            @php
+                // 10 grandes villes (Bretagne + Saône-et-Loire) + Dijon + Beaune + "+ de villes"
+                $cities = [
+                    'Rennes', 'Brest', 'Quimper', 'Lorient', 'Vannes',
+                    'Saint-Brieuc', 'Saint-Malo',
+                    'Chalon-sur-Saône', 'Mâcon', 'Le Creusot',
+                    'Dijon', 'Beaune',
+                ];
+            @endphp
+
+            <div class="mt-6">
+                <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">Villes desservies</p>
+                <div class="flex flex-wrap gap-2">
+                    @foreach ($cities as $city)
+                        <span class="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-extrabold text-brand-dark shadow-sm">
+                            {{ $city }}
+                        </span>
+                    @endforeach
+                    <a href="#devis" class="inline-flex items-center rounded-full border border-brand-blue/25 bg-brand-blue/10 px-3 py-1.5 text-xs font-extrabold text-brand-blue shadow-sm transition hover:bg-brand-blue/15">
+                        + de villes
+                    </a>
+                </div>
+            </div>
         </div>
 
         <div class="flex h-full min-h-0 flex-col">
