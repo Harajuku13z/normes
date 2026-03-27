@@ -15,25 +15,25 @@
                 </a>
                 <h3 class="mt-8 text-xs font-bold uppercase tracking-wider text-brand-yellow">{{ data_get($f, 'siege_title') }}</h3>
                 <p class="mt-2 text-sm font-semibold">{{ data_get($f, 'company') }}</p>
-                <p class="mt-1 text-sm leading-relaxed text-slate-300">
+                <p class="mt-1 text-sm leading-relaxed text-white">
                     @foreach (data_get($f, 'address_lines', []) as $line)
                         {{ $line }}@if (! $loop->last)<br>@endif
                     @endforeach
                 </p>
-                <p class="mt-5 border-t border-white/15 pt-5 text-xs leading-relaxed text-slate-400">
+                <p class="mt-5 border-t border-white/15 pt-5 text-xs leading-relaxed text-white/90">
                     {{ data_get($f, 'legal') }}
                 </p>
             </div>
             <div class="lg:col-span-3">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-brand-yellow">Contact</h3>
-                <p class="mt-4 text-sm text-slate-300">Téléphone</p>
+                <p class="mt-4 text-sm text-white">Téléphone</p>
                 <a href="tel:{{ data_get($f, 'phone_href') }}" class="text-base font-bold text-brand-blue transition hover:text-white">{{ data_get($f, 'phone') }}</a>
-                <p class="mt-4 text-sm text-slate-300">E-mail</p>
+                <p class="mt-4 text-sm text-white">E-mail</p>
                 <a href="mailto:{{ data_get($f, 'email') }}" class="break-all text-sm text-white underline-offset-2 transition hover:text-brand-yellow hover:underline">{{ data_get($f, 'email') }}</a>
             </div>
             <div class="lg:col-span-2">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-brand-yellow">Liens rapides</h3>
-                <ul class="mt-4 space-y-2 text-sm text-slate-300">
+                <ul class="mt-4 space-y-2 text-sm text-white">
                     <li><a href="#services" class="transition hover:text-white">Nos services</a></li>
                     <li><a href="#realisations" class="transition hover:text-white">Réalisations</a></li>
                     <li><a href="#agences" class="transition hover:text-white">Agences &amp; carte</a></li>
@@ -43,7 +43,7 @@
             </div>
             <div class="lg:col-span-3">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-brand-yellow">Réseaux</h3>
-                <p class="mt-4 text-xs leading-relaxed text-slate-400">{{ data_get($f, 'networks_note') }}</p>
+                <p class="mt-4 text-xs leading-relaxed text-white">{{ data_get($f, 'networks_note') }}</p>
                 <div class="mt-4 flex flex-wrap gap-2">
                     @foreach (data_get($f, 'social', []) as $item)
                         @if (($item['network'] ?? '') === 'facebook')
@@ -74,9 +74,9 @@
                 </div>
             </div>
         </div>
-        <div class="mt-12 flex flex-col gap-3 border-t border-white/15 pt-8 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+        <div class="mt-12 flex flex-col gap-3 border-t border-white/15 pt-8 text-xs text-white/90 sm:flex-row sm:items-center sm:justify-between">
             <p>&copy; <span id="footerYear"></span> {{ data_get($f, 'copyright_name') }}. Tous droits réservés.</p>
-            <p class="sm:text-right">{{ data_get($f, 'bottom_line') }} <a href="{{ data_get($f, 'bottom_href') }}" class="text-slate-400 underline-offset-2 transition hover:text-white hover:underline">{{ data_get($f, 'bottom_link') }}</a></p>
+            <p class="sm:text-right">{{ data_get($f, 'bottom_line') }} <a href="{{ data_get($f, 'bottom_href') }}" class="text-white underline-offset-2 transition hover:text-brand-yellow hover:underline">{{ data_get($f, 'bottom_link') }}</a></p>
         </div>
     </div>
 </footer>

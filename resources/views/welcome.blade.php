@@ -17,6 +17,7 @@
 @include('home.partners', ['home' => $home])
 @include('home.footer', ['home' => $home])
 @include('home.popup_simulateur', ['home' => $home])
+@include('home.cookie_consent', ['home' => $home])
 @include('home.scripts', ['home' => $home])
 </body>
 </html>

@@ -6,6 +6,115 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
     (function () {
+        const banner = document.getElementById('cookieConsent');
+        const manageBtn = document.getElementById('cookieManageBtn');
+        if (!banner) return;
+
+        const closeBtn = document.getElementById('cookieConsentClose');
+        const rejectBtn = document.getElementById('cookieReject');
+        const acceptBtn = document.getElementById('cookieAccept');
+        const customizeBtn = document.getElementById('cookieCustomize');
+        const saveBtn = document.getElementById('cookieSave');
+        const prefsPanel = document.getElementById('cookiePrefsPanel');
+        const analyticsInput = document.getElementById('cookieAnalytics');
+        const marketingInput = document.getElementById('cookieMarketing');
+
+        const CONSENT_KEY = 'nr_cookie_consent_v1';
+        const TTL_DAYS = 180;
+
+        const readConsent = () => {
+            try {
+                const raw = localStorage.getItem(CONSENT_KEY);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                if (!parsed || typeof parsed !== 'object') return null;
+                if (!parsed.ts) return null;
+                const age = Date.now() - Number(parsed.ts);
+                const maxAge = TTL_DAYS * 24 * 60 * 60 * 1000;
+                if (!Number.isFinite(age) || age > maxAge) return null;
+                return parsed;
+            } catch (e) {
+                return null;
+            }
+        };
+
+        const saveConsent = (value) => {
+            const payload = { ...value, ts: Date.now() };
+            try {
+                localStorage.setItem(CONSENT_KEY, JSON.stringify(payload));
+            } catch (e) {
+                // ignore
+            }
+            window.dispatchEvent(new CustomEvent('nr-cookie-consent-changed', { detail: payload }));
+        };
+
+        const openBanner = () => {
+            banner.classList.remove('hidden');
+            banner.classList.remove('pointer-events-none');
+            banner.setAttribute('aria-hidden', 'false');
+        };
+        const closeBanner = () => {
+            banner.classList.add('hidden');
+            banner.classList.add('pointer-events-none');
+            banner.setAttribute('aria-hidden', 'true');
+            if (manageBtn) manageBtn.classList.remove('hidden');
+        };
+
+        const setPrefsOpen = (open) => {
+            if (!prefsPanel || !saveBtn || !customizeBtn) return;
+            prefsPanel.classList.toggle('hidden', !open);
+            saveBtn.classList.toggle('hidden', !open);
+            customizeBtn.classList.toggle('hidden', open);
+        };
+
+        const applyConsentToInputs = (consent) => {
+            if (analyticsInput) analyticsInput.checked = Boolean(consent?.analytics);
+            if (marketingInput) marketingInput.checked = Boolean(consent?.marketing);
+        };
+
+        const acceptAll = () => {
+            saveConsent({ necessary: true, analytics: true, marketing: true, choice: 'accept_all' });
+            closeBanner();
+        };
+        const rejectAll = () => {
+            saveConsent({ necessary: true, analytics: false, marketing: false, choice: 'reject_all' });
+            closeBanner();
+        };
+        const saveCustom = () => {
+            saveConsent({
+                necessary: true,
+                analytics: Boolean(analyticsInput?.checked),
+                marketing: Boolean(marketingInput?.checked),
+                choice: 'custom',
+            });
+            closeBanner();
+            setPrefsOpen(false);
+        };
+
+        if (acceptBtn) acceptBtn.addEventListener('click', acceptAll);
+        if (rejectBtn) rejectBtn.addEventListener('click', rejectAll);
+        if (saveBtn) saveBtn.addEventListener('click', saveCustom);
+        if (customizeBtn) customizeBtn.addEventListener('click', () => setPrefsOpen(true));
+        if (closeBtn) closeBtn.addEventListener('click', closeBanner);
+        if (manageBtn) manageBtn.addEventListener('click', () => {
+            openBanner();
+            setPrefsOpen(true);
+            if (manageBtn) manageBtn.classList.add('hidden');
+        });
+
+        const stored = readConsent();
+        if (!stored) {
+            applyConsentToInputs({ analytics: false, marketing: false });
+            openBanner();
+            return;
+        }
+
+        applyConsentToInputs(stored);
+        if (manageBtn) manageBtn.classList.remove('hidden');
+        window.dispatchEvent(new CustomEvent('nr-cookie-consent-changed', { detail: stored }));
+    })();
+
+    (function () {
         const popup = document.getElementById('leadPopup');
         if (!popup) return;
 

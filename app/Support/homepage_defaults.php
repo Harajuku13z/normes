@@ -464,7 +464,7 @@ return [
         'phone' => '03 85 41 98 86',
         'phone_href' => '+33385419886',
         'email' => 'bourgogne-agence@normesrenovation.fr',
-        'networks_note' => 'Lundi au vendredi sur rendez-vous. En urgence, appelez l\'agence la plus proche.',
+        'networks_note' => 'Lundi au vendredi de 8h30 à 17h. En urgence, appelez l\'agence la plus proche.',
         'copyright_name' => 'Normes et Rénovation',
         'bottom_line' => 'Entreprise RGE — Rénovation énergétique —',
         'bottom_link' => 'Demander un devis',
