@@ -45,7 +45,7 @@
                     <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-blue/5 via-white to-brand-yellow/5" aria-hidden="true"></div>
                     <div class="relative z-10 p-3 sm:p-4">
                         <div id="avisCarousel"
-                             class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-1 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                             class="flex w-full gap-0 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                     @foreach (data_get($h, 'avis.testimonials', []) as $t)
                         @php
                             $platform = (string) data_get($t, 'platform', 'google');
