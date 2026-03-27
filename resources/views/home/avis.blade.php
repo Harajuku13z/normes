@@ -41,10 +41,9 @@
                     </div>
                 </div>
 
-                <div class="relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-soft">
-                    <div class="absolute inset-0 bg-cover bg-center" style="background-image:url('{{ $avisBg }}');" aria-hidden="true"></div>
-                    <div class="absolute inset-0 bg-gradient-to-b from-brand-dark/85 via-brand-dark/60 to-white/15" aria-hidden="true"></div>
-                    <div class="relative z-10 p-2 sm:p-3">
+                <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft ring-1 ring-slate-100">
+                    <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-blue/5 via-white to-brand-yellow/5" aria-hidden="true"></div>
+                    <div class="relative z-10 p-3 sm:p-4">
                         <div id="avisCarousel"
                              class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-1 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                     @foreach (data_get($h, 'avis.testimonials', []) as $t)
