@@ -54,14 +54,14 @@
                         <h2 class="text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl lg:text-5xl"><span class="text-brand-blue">{{ data_get($proc, 'title_accent') }}</span>{{ data_get($proc, 'title_rest') }}</h2>
                         <p class="mt-3 max-w-3xl text-base text-slate-600 sm:text-lg">{{ data_get($proc, 'intro') }}</p>
                     </div>
-                    <div class="flex justify-start lg:justify-end">
-                        <div class="w-full max-w-[260px] rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                    <div class="hidden justify-start lg:flex lg:justify-end">
+                        <div class="w-full max-w-[390px] rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
                             <img
                                 src="{{ $logoMa }}"
                                 alt="{{ data_get($aides, 'logo_alt') }}"
                                 width="520"
                                 height="200"
-                                class="h-auto max-h-20 w-full object-contain object-center"
+                                class="h-auto max-h-28 w-full object-contain object-center"
                                 loading="lazy"
                                 decoding="async"
                             >
