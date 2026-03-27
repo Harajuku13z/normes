@@ -21,9 +21,20 @@
                         'sky-400/25' => 'text-sky-300',
                         default => 'text-sky-300',
                     };
+
+                    // Arrière-plan cohérent avec le contenu (fallback si le titre change légèrement)
+                    $title = (string) data_get($card, 'title', '');
+                    $t = mb_strtolower($title);
+                    $bg = match (true) {
+                        str_contains($t, 'rge') || str_contains($t, 'certifi') => '/nous/rge.png',
+                        str_contains($t, 'durable') || str_contains($t, 'éco') || str_contains($t, 'eco') => '/slide/solaire.png',
+                        str_contains($t, 'accompagn') || str_contains($t, 'interlocuteur') => '/nous/equipe.jpeg',
+                        default => '/slide/toiture.png', // expertise / technique
+                    };
+                    $bgUrl = \App\Support\HomeView::url($bg);
                 @endphp
                 <article class="group relative flex h-full min-h-[210px] flex-col overflow-hidden rounded-2xl border border-brand-dark/10 bg-brand-dark p-6 shadow-soft transition hover:-translate-y-0.5 hover:shadow-lg {{ !empty($card['wide']) ? 'sm:col-span-2 lg:col-span-1' : '' }}">
-                    <div class="absolute inset-0 bg-cover bg-center opacity-35 transition duration-300 group-hover:opacity-45" style="background-image:url('{{ \App\Support\HomeView::url('/slide/toiture.png') }}');" aria-hidden="true"></div>
+                    <div class="absolute inset-0 bg-cover bg-center opacity-35 transition duration-300 group-hover:opacity-45" style="background-image:url('{{ $bgUrl }}');" aria-hidden="true"></div>
                     <div class="absolute inset-0 bg-gradient-to-br from-brand-dark/95 via-brand-dark/75 to-brand-dark/55" aria-hidden="true"></div>
 
                     <div class="relative z-10">
