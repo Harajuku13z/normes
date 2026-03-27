@@ -1,12 +1,12 @@
 @php $h = $home ?? []; @endphp
 <section class="border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-white py-16 sm:py-20">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-        <div class="grid gap-6 lg:grid-cols-[2fr_1fr] lg:items-stretch">
+        <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-stretch">
 
             {{-- ══════════════════════════════
                  Colonne gauche : texte + carousel
             ══════════════════════════════ --}}
-            <div class="flex flex-col gap-5">
+            <div class="min-w-0 flex flex-col gap-5">
 
                 {{-- En-tête --}}
                 <div>
@@ -115,7 +115,7 @@
             {{-- ══════════════════════════════
                  Colonne droite : Clients satisfaits
             ══════════════════════════════ --}}
-            <div class="relative min-h-[280px] overflow-hidden rounded-2xl lg:min-h-0">
+            <div class="relative min-w-0 min-h-[280px] overflow-hidden rounded-2xl lg:min-h-0">
                 <img
                     src="{{ \App\Support\HomeView::url('/nous/equipe.jpeg') }}"
                     alt="Équipe Normes & Rénovation"
