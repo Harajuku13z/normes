@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
 @include('home.head', ['home' => $home])
-<body class="bg-white font-sans text-brand-dark antialiased">
+<body class="overflow-x-hidden bg-white font-sans text-brand-dark antialiased">
 @include('home.header', ['home' => $home])
 @include('home.hero', ['home' => $home])
 @include('home.simulateur', ['home' => $home])

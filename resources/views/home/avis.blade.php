@@ -57,8 +57,8 @@
                                 $text        = (string) data_get($t, 'text', '');
                                 $countClass  = ($loop->iteration % 2) === 1 ? 'text-brand-blue' : 'text-brand-yellow';
                             @endphp
-                            {{-- Pas de w-full ici : la largeur est forcée en pixels par JS --}}
-                            <article class="avis-card flex-shrink-0 overflow-hidden p-5 sm:p-6" style="box-sizing:border-box">
+                            {{-- w-full comme base CSS ; JS override ensuite avec la largeur exacte en px --}}
+                            <article class="avis-card w-full flex-shrink-0 overflow-hidden p-5 sm:p-6" style="box-sizing:border-box">
                                 <div class="mb-4 flex items-start justify-between gap-3">
                                     <div class="flex items-center gap-2">
                                         @if ($platform === 'google')
