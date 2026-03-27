@@ -1,16 +1,16 @@
 @php $h = $home ?? []; @endphp
-<div id="leadPopup" class="fixed inset-0 z-[120] hidden" aria-hidden="true">
+<div id="leadPopup" class="fixed inset-0 z-[120] hidden overflow-y-auto" aria-hidden="true">
     <div id="leadPopupBackdrop" class="absolute inset-0 bg-brand-dark/70 backdrop-blur-[2px]"></div>
 
-    <div class="relative mx-auto flex min-h-dvh w-[95%] max-w-xl items-end py-6 sm:items-center sm:py-10">
+    <div class="relative mx-auto flex min-h-dvh w-[95%] max-w-xl items-center py-6 sm:py-10">
         <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="leadPopupTitle"
-            class="relative w-full overflow-hidden rounded-3xl border border-white/15 bg-white shadow-2xl ring-1 ring-black/5"
+            class="relative w-full max-h-[calc(100dvh-3rem)] overflow-hidden rounded-3xl border border-white/15 bg-white shadow-2xl ring-1 ring-black/5 sm:max-h-[calc(100dvh-5rem)]"
         >
             <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-brand-blue/5 via-white to-brand-yellow/10" aria-hidden="true"></div>
-            <div class="relative p-6 sm:p-8">
+            <div class="relative overflow-y-auto p-6 sm:p-8">
                 <button
                     id="leadPopupClose"
                     type="button"
