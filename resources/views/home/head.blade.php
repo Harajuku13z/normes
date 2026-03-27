@@ -127,9 +127,5 @@
                 animation: none;
             }
         }
-    /* ── Carousel avis : cap avant init JS pour éviter l'élargissement du body ── */
-    #avisOuter { overflow: hidden; }
-    #avisTrack { display: flex; }
-    .avis-card  { flex-shrink: 0; box-sizing: border-box; max-width: 100vw; }
     </style>
 </head>
