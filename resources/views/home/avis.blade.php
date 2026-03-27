@@ -1,17 +1,22 @@
-@php $h = $home ?? []; @endphp
-<section class="border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-white py-16 sm:py-20">
+@php
+    $h = $home ?? [];
+    $avisBg = \App\Support\HomeView::url('/slide/toiture.png');
+@endphp
+<section class="relative overflow-hidden border-t border-slate-200/80 py-16 sm:py-20">
+    <div class="absolute inset-0 bg-cover bg-center" style="background-image:url('{{ $avisBg }}');" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-brand-dark/90 via-brand-dark/75 to-white" aria-hidden="true"></div>
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-        <div class="grid gap-6 lg:grid-cols-2 lg:items-stretch">
+        <div class="relative z-10 grid gap-6 lg:grid-cols-2 lg:items-stretch">
             <div class="flex h-full flex-col">
                 <div class="max-w-2xl">
-                    <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-blue/10 px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-brand-blue">
+                    <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-slate-100 ring-1 ring-white/15 backdrop-blur">
                         Avis multi-plateformes
                     </div>
-                    <h2 class="text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">{{ data_get($h, 'avis.title_accent') }}</span>{{ data_get($h, 'avis.title_rest') }}</h2>
-                    <p class="mt-3 text-base text-slate-600 sm:text-lg">{{ data_get($h, 'avis.intro') }}</p>
+                    <h2 class="text-4xl font-extrabold leading-tight text-white sm:text-5xl"><span class="text-sky-300">{{ data_get($h, 'avis.title_accent') }}</span>{{ data_get($h, 'avis.title_rest') }}</h2>
+                    <p class="mt-3 text-base text-slate-200 sm:text-lg">{{ data_get($h, 'avis.intro') }}</p>
 
                     <a href="{{ data_get($h, 'avis.google_url') }}" target="_blank" rel="noopener noreferrer"
-                       class="mt-6 inline-flex w-fit items-center justify-center gap-2 rounded-xl border-2 border-brand-dark/15 bg-white px-5 py-3 text-sm font-extrabold text-brand-dark shadow-sm ring-1 ring-slate-200/80 transition hover:border-brand-blue/40 hover:bg-slate-50 hover:text-brand-blue hover:shadow-md">
+                       class="mt-6 inline-flex w-fit items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-extrabold text-white shadow-sm ring-1 ring-white/10 backdrop-blur transition hover:bg-white/15">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-[#4285F4]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
                         {{ data_get($h, 'avis.google_button') }}
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
@@ -19,18 +24,18 @@
                 </div>
 
                 <div class="mb-5 flex items-center justify-between gap-4">
-                    <div class="text-sm font-semibold text-slate-600">
+                    <div class="text-sm font-semibold text-slate-200">
                         Des retours concrets, provenant de plusieurs plateformes.
                     </div>
                     <div class="flex items-center gap-2">
                         <button id="avisPrev" type="button" aria-label="Avis précédent"
-                                class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-soft transition hover:border-brand-blue/40 hover:text-brand-blue active:scale-[0.99]">
+                                class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-white shadow-sm ring-1 ring-white/10 backdrop-blur transition hover:bg-white/15 active:scale-[0.99]">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M15 18l-6-6 6-6"/>
                             </svg>
                         </button>
                         <button id="avisNext" type="button" aria-label="Avis suivant"
-                                class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-soft transition hover:border-brand-blue/40 hover:text-brand-blue active:scale-[0.99]">
+                                class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-white shadow-sm ring-1 ring-white/10 backdrop-blur transition hover:bg-white/15 active:scale-[0.99]">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M9 18l6-6-6-6"/>
                             </svg>
@@ -38,8 +43,9 @@
                     </div>
                 </div>
 
-                <div id="avisCarousel"
-                     class="flex gap-0 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <div class="relative overflow-hidden rounded-2xl border border-white/15 bg-white/5 p-2 ring-1 ring-white/10 backdrop-blur sm:p-3">
+                    <div id="avisCarousel"
+                         class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-1 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                     @foreach (data_get($h, 'avis.testimonials', []) as $t)
                         @php
                             $platform = (string) data_get($t, 'platform', 'google');
@@ -76,10 +82,11 @@
                             </div>
                         </article>
                     @endforeach
+                    </div>
                 </div>
             </div>
 
-            <div class="relative h-full overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-soft">
+            <div class="relative h-full overflow-hidden rounded-2xl border border-white/15 bg-white/10 shadow-soft ring-1 ring-white/10 backdrop-blur">
                 <div
                     class="absolute inset-0 bg-cover bg-center transition duration-300"
                     style="background-image:url('{{ \App\Support\HomeView::url('/nous/equipe.jpeg') }}');"
@@ -104,26 +111,39 @@
         const next = document.getElementById('avisNext');
         if (!carousel || !prev || !next) return;
 
-        const getStep = () => carousel.clientWidth;
+        const getCards = () => Array.from(carousel.querySelectorAll('article'));
+        const getStops = () => getCards().map((el) => el.offsetLeft);
+        const nearestIndex = () => {
+            const stops = getStops();
+            const x = carousel.scrollLeft;
+            let best = 0;
+            let bestDist = Infinity;
+            for (let i = 0; i < stops.length; i++) {
+                const d = Math.abs(stops[i] - x);
+                if (d < bestDist) { bestDist = d; best = i; }
+            }
+            return best;
+        };
+
+        const scrollToIndex = (idx) => {
+            const stops = getStops();
+            if (!stops.length) return;
+            const i = Math.max(0, Math.min(idx, stops.length - 1));
+            carousel.scrollTo({ left: stops[i], behavior: 'smooth' });
+        };
 
         const scrollPageNext = () => {
-            const step = getStep();
-            const maxLeft = carousel.scrollWidth - carousel.clientWidth;
-            if (carousel.scrollLeft >= maxLeft - 2) {
-                carousel.scrollTo({ left: 0, behavior: 'smooth' });
-                return;
-            }
-            carousel.scrollBy({ left: step, behavior: 'smooth' });
+            const n = getStops().length;
+            if (!n) return;
+            const i = nearestIndex();
+            scrollToIndex((i + 1) % n);
         };
 
         const scrollPagePrev = () => {
-            const step = getStep();
-            if (carousel.scrollLeft <= 2) {
-                const maxLeft = carousel.scrollWidth - carousel.clientWidth;
-                carousel.scrollTo({ left: maxLeft, behavior: 'smooth' });
-                return;
-            }
-            carousel.scrollBy({ left: -step, behavior: 'smooth' });
+            const n = getStops().length;
+            if (!n) return;
+            const i = nearestIndex();
+            scrollToIndex((i - 1 + n) % n);
         };
 
         prev.addEventListener('click', scrollPagePrev);
