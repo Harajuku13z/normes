@@ -11,10 +11,10 @@
                     <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-blue/10 px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-brand-blue">
                         Avis multi-plateformes
                     </div>
-                    <h2 class="text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl lg:text-5xl">
+                    <h2 class="break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl lg:text-5xl">
                         <span class="text-brand-blue">{{ data_get($h, 'avis.title_accent') }}</span>{{ data_get($h, 'avis.title_rest') }}
                     </h2>
-                    <p class="mt-3 text-base text-slate-600 sm:text-lg">{{ data_get($h, 'avis.intro') }}</p>
+                    <p class="mt-3 break-words text-base text-slate-600 sm:text-lg">{{ data_get($h, 'avis.intro') }}</p>
 
                     <a href="{{ data_get($h, 'avis.google_url') }}" target="_blank" rel="noopener noreferrer"
                        class="mt-5 inline-flex w-fit items-center gap-2 rounded-xl border-2 border-brand-dark/15 bg-white px-5 py-3 text-sm font-extrabold text-brand-dark shadow-sm ring-1 ring-slate-200/80 transition hover:border-brand-blue/40 hover:bg-slate-50 hover:text-brand-blue">
@@ -30,7 +30,7 @@
 
                 {{-- Contrôles navigation --}}
                 <div class="flex items-center justify-between gap-4">
-                    <p class="text-sm font-semibold text-slate-600">Des retours concrets, provenant de plusieurs plateformes.</p>
+                    <p class="min-w-0 flex-1 break-words text-sm font-semibold text-slate-600">Des retours concrets, provenant de plusieurs plateformes.</p>
                     <div class="flex shrink-0 items-center gap-2">
                         <button id="avisPrev" type="button" aria-label="Avis précédent"
                                 class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white shadow-sm transition hover:border-brand-blue/40 hover:text-brand-blue active:scale-95">
@@ -58,7 +58,7 @@
                                 $countClass  = ($loop->iteration % 2) === 1 ? 'text-brand-blue' : 'text-brand-yellow';
                             @endphp
                             {{-- Pas de w-full ici : la largeur est forcée en pixels par JS --}}
-                            <article class="avis-card flex-shrink-0 p-5 sm:p-6" style="box-sizing:border-box">
+                            <article class="avis-card flex-shrink-0 overflow-hidden p-5 sm:p-6" style="box-sizing:border-box">
                                 <div class="mb-4 flex items-start justify-between gap-3">
                                     <div class="flex items-center gap-2">
                                         @if ($platform === 'google')
