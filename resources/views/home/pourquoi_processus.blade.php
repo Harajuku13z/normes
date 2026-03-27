@@ -55,13 +55,13 @@
                         <p class="mt-3 max-w-3xl text-base text-slate-600 sm:text-lg">{{ data_get($proc, 'intro') }}</p>
                     </div>
                     <div class="flex justify-start lg:justify-end">
-                        <div class="w-full max-w-[220px] rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                        <div class="w-full max-w-[260px] rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
                             <img
                                 src="{{ $logoMa }}"
                                 alt="{{ data_get($aides, 'logo_alt') }}"
                                 width="520"
                                 height="200"
-                                class="h-auto max-h-16 w-full object-contain object-center"
+                                class="h-auto max-h-20 w-full object-contain object-center"
                                 loading="lazy"
                                 decoding="async"
                             >
