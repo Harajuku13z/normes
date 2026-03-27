@@ -6,6 +6,86 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script>
     (function () {
+        const popup = document.getElementById('leadPopup');
+        if (!popup) return;
+
+        const backdrop = document.getElementById('leadPopupBackdrop');
+        const closeBtn = document.getElementById('leadPopupClose');
+        const ctaSim = document.getElementById('leadPopupCtaSimulator');
+        const ctaForm = document.getElementById('leadPopupCtaForm');
+
+        const KEY = 'nr_lead_popup_dismissed_at';
+        const DISMISS_FOR_MS = 7 * 24 * 60 * 60 * 1000;
+
+        const now = () => Date.now();
+        const getDismissedAt = () => {
+            try {
+                const v = Number(localStorage.getItem(KEY));
+                return Number.isFinite(v) ? v : 0;
+            } catch (e) {
+                return 0;
+            }
+        };
+        const setDismissed = () => {
+            try {
+                localStorage.setItem(KEY, String(now()));
+            } catch (e) {
+                // ignore
+            }
+        };
+
+        const open = () => {
+            popup.classList.remove('hidden');
+            popup.setAttribute('aria-hidden', 'false');
+            document.documentElement.classList.add('overflow-hidden');
+            document.body.classList.add('overflow-hidden');
+        };
+        const close = () => {
+            popup.classList.add('hidden');
+            popup.setAttribute('aria-hidden', 'true');
+            document.documentElement.classList.remove('overflow-hidden');
+            document.body.classList.remove('overflow-hidden');
+        };
+
+        const dismissAndClose = () => {
+            setDismissed();
+            close();
+        };
+
+        if (backdrop) backdrop.addEventListener('click', dismissAndClose);
+        if (closeBtn) closeBtn.addEventListener('click', dismissAndClose);
+
+        const focusSimulator = () => {
+            const input = document.getElementById('address');
+            if (!input) return;
+            setTimeout(() => input.focus({ preventScroll: true }), 250);
+        };
+        const focusForm = () => {
+            const input = document.getElementById('devisPrenom');
+            if (!input) return;
+            setTimeout(() => input.focus({ preventScroll: true }), 250);
+        };
+
+        if (ctaSim) ctaSim.addEventListener('click', () => { dismissAndClose(); focusSimulator(); });
+        if (ctaForm) ctaForm.addEventListener('click', () => { dismissAndClose(); focusForm(); });
+
+        document.addEventListener('keydown', (e) => {
+            if (popup.classList.contains('hidden')) return;
+            if (e.key === 'Escape') {
+                dismissAndClose();
+            }
+        });
+
+        const dismissedAt = getDismissedAt();
+        const shouldShow = dismissedAt === 0 || (now() - dismissedAt) > DISMISS_FOR_MS;
+        if (!shouldShow) return;
+
+        const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const delay = reduced ? 0 : 1200;
+        window.setTimeout(open, delay);
+    })();
+
+    (function () {
         const y = document.getElementById('footerYear');
         if (y) y.textContent = String(new Date().getFullYear());
     })();
