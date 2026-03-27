@@ -1,5 +1,5 @@
 @php $h = $home ?? []; @endphp
-<section class="border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-white py-16 sm:py-20">
+<section id="avis-clients" class="border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-white py-16 sm:py-20">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-stretch">
 
@@ -65,8 +65,8 @@
                             @endphp
                             <article
                                 class="avis-card w-full p-5 sm:p-6"
-                                style="grid-area:1/1; opacity:{{ $loop->first ? '1' : '0' }}; pointer-events:{{ $loop->first ? 'auto' : 'none' }}; transition:opacity .45s ease"
-                                aria-hidden="{{ $loop->first ? 'false' : 'true' }}"
+                                style="grid-area:1/1; opacity:0; pointer-events:none; transition:opacity .45s ease"
+                                aria-hidden="true"
                             >
                                 {{-- Logo plateforme + étoiles --}}
                                 <div class="mb-4 flex items-start justify-between gap-3">
@@ -176,7 +176,15 @@
         timer = null;
     }
 
-    show(0);
+    var section = document.getElementById('avis-clients');
+    var initialized = false;
+
+    function initCarousel() {
+        if (initialized) return;
+        initialized = true;
+        show(0);
+        startAuto();
+    }
 
     if (prev) prev.addEventListener('click', function () { stopAuto(); show(current - 1); startAuto(); });
     if (next) next.addEventListener('click', function () { stopAuto(); show(current + 1); startAuto(); });
@@ -184,12 +192,26 @@
         d.addEventListener('click', function () { stopAuto(); show(Number(d.dataset.idx)); startAuto(); });
     });
 
-    var section = document.querySelector('section');
     if (section) {
         section.addEventListener('mouseenter', stopAuto);
         section.addEventListener('mouseleave', startAuto);
     }
 
-    startAuto();
+    if ('IntersectionObserver' in window && section) {
+        var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    initCarousel();
+                    observer.disconnect();
+                }
+            });
+        }, {
+            threshold: 0.25,
+            rootMargin: '0px 0px -10% 0px'
+        });
+        observer.observe(section);
+    } else {
+        initCarousel();
+    }
 })();
 </script>
