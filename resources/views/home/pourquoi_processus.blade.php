@@ -15,34 +15,28 @@
             @foreach (data_get($p, 'cards', []) as $card)
                 @php
                     $ring = (string) data_get($card, 'ring', 'brand-blue/15');
-                    $tint = match ($ring) {
-                        'brand-yellow/25' => 'bg-brand-yellow/5',
-                        'emerald-500/20' => 'bg-emerald-500/5',
-                        'sky-400/25' => 'bg-sky-400/5',
-                        default => 'bg-brand-blue/5',
+                    $accent = match ($ring) {
+                        'brand-yellow/25' => 'text-brand-yellow',
+                        'emerald-500/20' => 'text-emerald-300',
+                        'sky-400/25' => 'text-sky-300',
+                        default => 'text-sky-300',
                     };
                 @endphp
-                <article class="flex h-full min-h-[210px] flex-col rounded-2xl border border-slate-200/90 p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md {{ $tint }} {{ !empty($card['wide']) ? 'sm:col-span-2 lg:col-span-1' : '' }}">
-                    @if ($ring === 'brand-yellow/25')
-                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-yellow/15 ring-1 ring-brand-yellow/25 text-3xl leading-none" aria-hidden="true">
-                            {{ data_get($card, 'emoji') }}
-                        </div>
-                    @elseif ($ring === 'emerald-500/20')
-                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/15 ring-1 ring-emerald-500/25 text-3xl leading-none" aria-hidden="true">
-                            {{ data_get($card, 'emoji') }}
-                        </div>
-                    @elseif ($ring === 'sky-400/25')
-                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-400/15 ring-1 ring-sky-400/25 text-3xl leading-none" aria-hidden="true">
-                            {{ data_get($card, 'emoji') }}
-                        </div>
-                    @else
-                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-brand-blue/12 ring-1 ring-brand-blue/20 text-3xl leading-none" aria-hidden="true">
-                            {{ data_get($card, 'emoji') }}
-                        </div>
-                    @endif
+                <article class="group relative flex h-full min-h-[210px] flex-col overflow-hidden rounded-2xl border border-brand-dark/10 bg-brand-dark p-6 shadow-soft transition hover:-translate-y-0.5 hover:shadow-lg {{ !empty($card['wide']) ? 'sm:col-span-2 lg:col-span-1' : '' }}">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-35 transition duration-300 group-hover:opacity-45" style="background-image:url('{{ \App\Support\HomeView::url('/slide/toiture.png') }}');" aria-hidden="true"></div>
+                    <div class="absolute inset-0 bg-gradient-to-br from-brand-dark/95 via-brand-dark/75 to-brand-dark/55" aria-hidden="true"></div>
 
-                    <h3 class="text-base font-extrabold leading-snug text-brand-dark sm:text-lg">{{ data_get($card, 'title') }}</h3>
-                    <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">{{ data_get($card, 'text') }}</p>
+                    <div class="relative z-10">
+                        <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/15 text-3xl leading-none text-white backdrop-blur" aria-hidden="true">
+                            {{ data_get($card, 'emoji') }}
+                        </div>
+
+                        <h3 class="text-base font-black leading-snug text-white sm:text-lg">{{ data_get($card, 'title') }}</h3>
+                        <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-100/90">
+                            <span class="{{ $accent }} font-extrabold">•</span>
+                            {{ data_get($card, 'text') }}
+                        </p>
+                    </div>
                 </article>
             @endforeach
         </div>
