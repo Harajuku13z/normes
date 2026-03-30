@@ -14,13 +14,19 @@ class UploadController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'file' => ['required', 'file', 'image', 'max:10240'],
+            // Supporte images (pour le site) + PDF (doc technique)
+            'file' => ['required', 'file', 'mimetypes:application/pdf,image/jpeg,image/png,image/webp', 'max:20480'],
         ]);
 
         $file = $request->file('file');
-        $clientExt = strtolower((string) ($file->getClientOriginalExtension() ?: $file->guessExtension() ?: 'jpg'));
+        $clientExt = strtolower((string) ($file->getClientOriginalExtension() ?: $file->guessExtension() ?: ''));
+        $mime = (string) ($file->getMimeType() ?: '');
 
-        $targetExt = in_array($clientExt, ['jpg', 'jpeg', 'png', 'webp'], true) ? ($clientExt === 'jpeg' ? 'jpg' : $clientExt) : 'jpg';
+        $isPdf = $clientExt === 'pdf' || $mime === 'application/pdf';
+
+        $targetExt = $isPdf
+            ? 'pdf'
+            : (in_array($clientExt, ['jpg', 'jpeg', 'png', 'webp'], true) ? ($clientExt === 'jpeg' ? 'jpg' : $clientExt) : 'jpg');
 
         $filename = Str::random(24).'.'.$targetExt;
         $relativePath = 'uploads/'.$filename;
@@ -28,7 +34,10 @@ class UploadController extends Controller
         File::ensureDirectoryExists($publicDir);
         $fullPath = $publicDir.DIRECTORY_SEPARATOR.$filename;
 
-        $saved = $this->saveWithInterventionIfAvailable($file, $fullPath);
+        $saved = false;
+        if (! $isPdf) {
+            $saved = $this->saveWithInterventionIfAvailable($file, $fullPath);
+        }
 
         if (! $saved) {
             $file->move($publicDir, $filename);
