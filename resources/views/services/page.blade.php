@@ -144,12 +144,6 @@
     </section>
 @endif
 
-{{-- Fiches & certifications (logos) --}}
-@include('home.partners', ['home' => $h])
-
-{{-- Comment ça se passe ? (processus) --}}
-@include('home._processus_only', ['home' => $h])
-
 <div class="sticky top-[84px] z-40 border-b border-slate-200/70 bg-white/85 backdrop-blur supports-[backdrop-filter]:bg-white/75">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <nav class="flex flex-wrap items-center gap-2 py-3" aria-label="Navigation de la page service">
@@ -292,6 +286,47 @@
                 @endforeach
             </div>
         @endif
+
+        {{-- Processus de prise en charge (après les sous-services) --}}
+        @php
+            $proc = data_get($h, 'processus', []);
+            $procSteps = data_get($proc, 'steps', []);
+        @endphp
+        @if (is_array($procSteps) && $procSteps !== [])
+            <div class="{{ $subServices !== [] ? 'mt-12' : '' }} rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                    <div class="min-w-0">
+                        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Processus</p>
+                        <h2 class="mt-2 break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
+                            {{ trim((string) data_get($proc, 'title_accent', 'Prise en charge')) }}
+                            <span class="text-brand-blue">{{ trim((string) data_get($proc, 'title_rest', 'en 4 étapes')) }}</span>
+                        </h2>
+                        @if (!empty(trim((string) data_get($proc, 'intro'))))
+                            <p class="mt-3 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">{{ data_get($proc, 'intro') }}</p>
+                        @endif
+                    </div>
+                    <a href="#devis" class="inline-flex items-center justify-center rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500">
+                        Demander un devis
+                    </a>
+                </div>
+
+                <ol class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    @foreach ($procSteps as $step)
+                        <li class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/60 p-5 transition hover:bg-white hover:shadow-sm">
+                            <div class="flex items-start gap-3">
+                                <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-brand-dark text-sm font-black text-brand-yellow shadow-sm">
+                                    {{ data_get($step, 'num', $loop->iteration) }}
+                                </span>
+                                <div class="min-w-0">
+                                    <h3 class="break-words text-base font-extrabold text-brand-dark">{{ data_get($step, 'title') }}</h3>
+                                    <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ data_get($step, 'text') }}</p>
+                                </div>
+                            </div>
+                        </li>
+                    @endforeach
+                </ol>
+            </div>
+        @endif
     </div>
 </section>
 
@@ -305,7 +340,7 @@
         </div>
 
         @if ($reals !== [])
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 @foreach ($reals as $idx => $c)
                     @php
                         $cardLabel = (string) data_get($c, 'label', 'Chantier '.($idx + 1));
@@ -410,6 +445,41 @@
 
 {{-- Section formulaire identique à la page d'accueil (source unique) --}}
 @include('home.devis', ['home' => $h])
+
+{{-- Partenaires & certifications (avant le footer) --}}
+@php
+    $partnerLogos = data_get($h, 'partners.logos', []);
+    $partnerHeading = (string) data_get($h, 'partners.heading', 'Partenaires & Certification');
+@endphp
+@if (is_array($partnerLogos) && $partnerLogos !== [])
+    <section class="border-y border-slate-200 bg-white py-12" aria-label="Partenaires et certification">
+        <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+                <div class="min-w-0">
+                    <p class="text-xs font-extrabold uppercase tracking-[0.28em] text-brand-dark/60">{{ $partnerHeading }}</p>
+                    <p class="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
+                        Labels, partenaires et certifications : gages de qualité, conformité et accompagnement.
+                    </p>
+                </div>
+            </div>
+            <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+                @foreach ($partnerLogos as $src)
+                    <div class="flex items-center justify-center rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                        <img
+                            src="{{ HomeView::url($src) }}"
+                            alt="Logo"
+                            class="h-10 w-auto max-w-[10rem] object-contain opacity-95"
+                            width="200"
+                            height="80"
+                            loading="lazy"
+                            decoding="async"
+                        >
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+@endif
 
 @include('home.footer', ['home' => $h])
 
