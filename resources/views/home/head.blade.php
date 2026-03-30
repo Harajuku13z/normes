@@ -3,7 +3,12 @@
     $metaPageUrl = isset($canonicalUrl) && is_string($canonicalUrl) && trim($canonicalUrl) !== '' ? trim($canonicalUrl) : url('/');
     $metaTitle = isset($title) && is_string($title) && trim($title) !== '' ? trim($title) : data_get($h, 'meta.title');
     $metaDescription = isset($description) && is_string($description) && trim($description) !== '' ? trim($description) : data_get($h, 'meta.description');
-    $metaDescSocial = isset($descriptionSocial) && is_string($descriptionSocial) && trim($descriptionSocial) !== '' ? trim($descriptionSocial) : data_get($h, 'meta.description_social', $metaDescription);
+    // When a view passes an explicit meta description (e.g. service pages), OG/Twitter must use it too —
+    // otherwise homepage `meta.description_social` wins and previews ignore the page-specific text.
+    $descriptionWasPassed = isset($description) && is_string($description) && trim($description) !== '';
+    $metaDescSocial = isset($descriptionSocial) && is_string($descriptionSocial) && trim($descriptionSocial) !== ''
+        ? trim($descriptionSocial)
+        : ($descriptionWasPassed ? $metaDescription : data_get($h, 'meta.description_social', $metaDescription));
     $metaImage = isset($ogImage) && is_string($ogImage) && trim($ogImage) !== '' ? \App\Support\HomeView::url(trim($ogImage)) : \App\Support\HomeView::url(data_get($h, 'meta.og_image', 'logo.png'));
     $metaKeywords = isset($keywords) && is_string($keywords) && trim($keywords) !== '' ? trim($keywords) : '';
 @endphp
