@@ -97,12 +97,7 @@
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft ring-1 ring-slate-100 lg:grid lg:grid-cols-[1.05fr_0.95fr]">
                 <div class="p-6 sm:p-8 lg:p-10">
-                    @if (!empty($page->subtitle))
-                        <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-blue">{{ $page->subtitle }}</p>
-                    @endif
-                    <h2 class="mt-2 break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
-                        {{ $page->title }}
-                    </h2>
+                    <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-blue">En bref</p>
                     <p class="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
                         {{ $introText }}
                     </p>
@@ -148,6 +143,12 @@
         </div>
     </section>
 @endif
+
+{{-- Fiches & certifications (logos) --}}
+@include('home.partners', ['home' => $h])
+
+{{-- Comment ça se passe ? (processus) --}}
+@include('home._processus_only', ['home' => $h])
 
 <div class="sticky top-[84px] z-40 border-b border-slate-200/70 bg-white/85 backdrop-blur supports-[backdrop-filter]:bg-white/75">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
