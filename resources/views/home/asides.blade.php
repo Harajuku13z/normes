@@ -2,7 +2,7 @@
     $h = $home ?? [];
     $sideIcon = \App\Support\HomeView::url(data_get($h, 'sidebar_avis.icon', '/iconne.png'));
 @endphp
-<aside class="fixed bottom-4 left-1/2 z-50 flex w-[min(100%,22.5rem)] max-w-[calc(100vw-1rem)] -translate-x-1/2 items-stretch gap-2 rounded-2xl border-2 border-brand-blue/40 bg-white p-2 shadow-lg ring-1 ring-slate-200/90 sm:left-4 sm:max-w-none sm:translate-x-0 xl:hidden" aria-label="Avis Google et appel">
+<aside id="mobileFloatingAvis" class="fixed bottom-4 left-1/2 z-50 hidden w-[min(100%,22.5rem)] max-w-[calc(100vw-1rem)] -translate-x-1/2 items-stretch gap-2 rounded-2xl border-2 border-brand-blue/40 bg-white p-2 shadow-lg ring-1 ring-slate-200/90 sm:left-4 sm:max-w-none sm:translate-x-0 xl:hidden" aria-label="Avis Google et appel">
     <a href="{{ data_get($h, 'floating.google_url') }}" target="_blank" rel="noopener noreferrer" class="flex min-h-[3.5rem] min-w-0 flex-1 items-center gap-2.5 rounded-xl py-1 pl-2 pr-1 transition hover:bg-slate-50">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-9 w-9 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>

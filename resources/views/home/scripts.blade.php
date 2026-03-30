@@ -199,6 +199,8 @@
     (function () {
         const menuBtn = document.getElementById('menuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
+        const floatingAvis = document.getElementById('mobileFloatingAvis');
+        const aboutSection = document.getElementById('a-propos');
         if (menuBtn && mobileMenu) {
             menuBtn.addEventListener('click', () => {
                 mobileMenu.classList.toggle('hidden');
@@ -206,6 +208,25 @@
             mobileMenu.querySelectorAll('a').forEach((link) => {
                 link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
             });
+        }
+
+        // Affiche le widget avis mobile seulement APRES la section "A propos".
+        if (floatingAvis && aboutSection) {
+            const toggleFloatingAvis = () => {
+                const isDesktop = window.matchMedia('(min-width: 1280px)').matches;
+                if (isDesktop) {
+                    floatingAvis.classList.add('hidden');
+                    return;
+                }
+                const rect = aboutSection.getBoundingClientRect();
+                const passedAbout = rect.bottom <= 0;
+                floatingAvis.classList.toggle('hidden', !passedAbout);
+                floatingAvis.classList.toggle('flex', passedAbout);
+            };
+
+            window.addEventListener('scroll', toggleFloatingAvis, { passive: true });
+            window.addEventListener('resize', toggleFloatingAvis);
+            toggleFloatingAvis();
         }
 
         const hero = document.getElementById('heroBg');
