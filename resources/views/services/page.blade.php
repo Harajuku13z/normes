@@ -10,11 +10,30 @@
 
     $secondaryHref = $contactHref;
     $secondaryText = 'Devis gratuit';
+
+    $metaTitle = trim((string) ($page->meta_title ?? ''));
+    if ($metaTitle === '') {
+        $metaTitle = trim((string) ($page->title ?? '')).' | '.(string) data_get($h, 'meta.site_name', 'Normes & Rénovation');
+    }
+    $metaDescription = trim((string) ($page->meta_description ?? ''));
+    if ($metaDescription === '') {
+        $metaDescription = trim((string) ($page->intro ?? data_get($h, 'meta.description', '')));
+    }
+    $metaKeywords = trim((string) ($page->meta_keywords ?? ''));
+    $canonicalUrl = route('service.page', $page->slug);
+    $ogImage = trim((string) ($page->image ?? data_get($h, 'meta.og_image', 'logo.png')));
 @endphp
 
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
-@include('home.head', ['home' => $h])
+@include('home.head', [
+    'home' => $h,
+    'title' => $metaTitle,
+    'description' => $metaDescription,
+    'keywords' => $metaKeywords,
+    'canonicalUrl' => $canonicalUrl,
+    'ogImage' => $ogImage,
+])
 <body class="overflow-x-hidden bg-white font-sans text-brand-dark antialiased">
 @include('home.header', ['home' => $h])
 

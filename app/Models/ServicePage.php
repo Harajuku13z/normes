@@ -9,6 +9,9 @@ class ServicePage extends Model
     protected $fillable = [
         'service_num',
         'slug',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
         'title',
         'subtitle',
         'intro',

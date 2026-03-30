@@ -41,6 +41,9 @@ class AdminServicePagesController extends Controller
         $data = $request->validate([
             'service_num' => ['nullable', 'integer'],
             'slug' => ['required', 'string', 'max:190', 'unique:service_pages,slug'],
+            'meta_title' => ['nullable', 'string', 'max:190'],
+            'meta_description' => ['nullable', 'string', 'max:500'],
+            'meta_keywords' => ['nullable', 'string', 'max:500'],
             'title' => ['required', 'string', 'max:190'],
             'subtitle' => ['nullable', 'string', 'max:190'],
             'intro' => ['nullable', 'string'],
@@ -70,6 +73,15 @@ class AdminServicePagesController extends Controller
         ];
 
         // Compatibilité : si la migration n'est pas encore faite, on évite une erreur DB.
+        if (! Schema::hasColumn('service_pages', 'meta_title')) {
+            unset($payload['meta_title']);
+        }
+        if (! Schema::hasColumn('service_pages', 'meta_description')) {
+            unset($payload['meta_description']);
+        }
+        if (! Schema::hasColumn('service_pages', 'meta_keywords')) {
+            unset($payload['meta_keywords']);
+        }
         if (! Schema::hasColumn('service_pages', 'cta_card_background')) {
             unset($payload['cta_card_background']);
         }
@@ -96,6 +108,9 @@ class AdminServicePagesController extends Controller
         $data = $request->validate([
             'service_num' => ['nullable', 'integer'],
             'slug' => ['required', 'string', 'max:190', 'unique:service_pages,slug,'.$servicePage->id],
+            'meta_title' => ['nullable', 'string', 'max:190'],
+            'meta_description' => ['nullable', 'string', 'max:500'],
+            'meta_keywords' => ['nullable', 'string', 'max:500'],
             'title' => ['required', 'string', 'max:190'],
             'subtitle' => ['nullable', 'string', 'max:190'],
             'intro' => ['nullable', 'string'],
@@ -124,6 +139,15 @@ class AdminServicePagesController extends Controller
             'is_active' => (bool) ($data['is_active'] ?? true),
         ];
 
+        if (! Schema::hasColumn('service_pages', 'meta_title')) {
+            unset($payload['meta_title']);
+        }
+        if (! Schema::hasColumn('service_pages', 'meta_description')) {
+            unset($payload['meta_description']);
+        }
+        if (! Schema::hasColumn('service_pages', 'meta_keywords')) {
+            unset($payload['meta_keywords']);
+        }
         if (! Schema::hasColumn('service_pages', 'cta_card_background')) {
             unset($payload['cta_card_background']);
         }

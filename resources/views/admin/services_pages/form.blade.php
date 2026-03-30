@@ -51,6 +51,57 @@
             </div>
         </div>
 
+        {{-- SEO / Meta --}}
+        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="mb-3">
+                <h2 class="text-sm font-extrabold text-slate-900">SEO (meta)</h2>
+                <p class="mt-1 text-xs text-slate-500">Ces champs remplacent le SEO global de la homepage pour cette page service.</p>
+            </div>
+
+            <div class="grid gap-4 lg:grid-cols-2">
+                <div>
+                    <div class="flex items-center justify-between gap-3">
+                        <label class="text-sm font-semibold text-slate-800">Meta title</label>
+                        <span id="metaTitleCount" class="text-xs font-semibold text-slate-500">0 / 60</span>
+                    </div>
+                    <input
+                        id="metaTitleInput"
+                        name="meta_title"
+                        value="{{ old('meta_title', $page->meta_title ?? '') }}"
+                        placeholder="Ex. Traitement et démoussage de toiture | Normes & Rénovation"
+                        class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                    />
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between gap-3">
+                        <label class="text-sm font-semibold text-slate-800">Meta keywords</label>
+                        <span id="metaKeywordsCount" class="text-xs font-semibold text-slate-500">0 / 200</span>
+                    </div>
+                    <input
+                        id="metaKeywordsInput"
+                        name="meta_keywords"
+                        value="{{ old('meta_keywords', $page->meta_keywords ?? '') }}"
+                        placeholder="démoussage toiture, hydrofuge, nettoyage toiture, ..."
+                        class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                    />
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <div class="flex items-center justify-between gap-3">
+                    <label class="text-sm font-semibold text-slate-800">Meta description</label>
+                    <span id="metaDescriptionCount" class="text-xs font-semibold text-slate-500">0 / 160</span>
+                </div>
+                <textarea
+                    id="metaDescriptionInput"
+                    name="meta_description"
+                    rows="3"
+                    class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                >{{ old('meta_description', $page->meta_description ?? '') }}</textarea>
+            </div>
+        </div>
+
         <div class="grid gap-4 lg:grid-cols-2">
             <div>
                 <label class="text-sm font-semibold text-slate-800">Titre</label>
@@ -545,6 +596,23 @@
                     });
                 });
             });
+
+            // Compteurs caractères SEO (meta)
+            function bindCount({ input, counter, softMax }) {
+                if (!input || !counter) return;
+                const update = () => {
+                    const v = String(input.value || '');
+                    const n = v.length;
+                    counter.textContent = n + ' / ' + softMax;
+                    counter.classList.toggle('text-amber-600', n > softMax);
+                };
+                input.addEventListener('input', update);
+                update();
+            }
+
+            bindCount({ input: document.getElementById('metaTitleInput'), counter: document.getElementById('metaTitleCount'), softMax: 60 });
+            bindCount({ input: document.getElementById('metaDescriptionInput'), counter: document.getElementById('metaDescriptionCount'), softMax: 160 });
+            bindCount({ input: document.getElementById('metaKeywordsInput'), counter: document.getElementById('metaKeywordsCount'), softMax: 200 });
         })();
     </script>
 @endsection

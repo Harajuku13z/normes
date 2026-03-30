@@ -1,16 +1,20 @@
 @php
     $h = $home ?? [];
-    $metaPageUrl = url('/');
-    $metaTitle = data_get($h, 'meta.title');
-    $metaDescription = data_get($h, 'meta.description');
-    $metaDescSocial = data_get($h, 'meta.description_social', $metaDescription);
-    $metaImage = \App\Support\HomeView::url(data_get($h, 'meta.og_image', 'logo.png'));
+    $metaPageUrl = isset($canonicalUrl) && is_string($canonicalUrl) && trim($canonicalUrl) !== '' ? trim($canonicalUrl) : url('/');
+    $metaTitle = isset($title) && is_string($title) && trim($title) !== '' ? trim($title) : data_get($h, 'meta.title');
+    $metaDescription = isset($description) && is_string($description) && trim($description) !== '' ? trim($description) : data_get($h, 'meta.description');
+    $metaDescSocial = isset($descriptionSocial) && is_string($descriptionSocial) && trim($descriptionSocial) !== '' ? trim($descriptionSocial) : data_get($h, 'meta.description_social', $metaDescription);
+    $metaImage = isset($ogImage) && is_string($ogImage) && trim($ogImage) !== '' ? \App\Support\HomeView::url(trim($ogImage)) : \App\Support\HomeView::url(data_get($h, 'meta.og_image', 'logo.png'));
+    $metaKeywords = isset($keywords) && is_string($keywords) && trim($keywords) !== '' ? trim($keywords) : '';
 @endphp
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $metaTitle }}</title>
     <meta name="description" content="{{ $metaDescription }}">
+    @if ($metaKeywords !== '')
+        <meta name="keywords" content="{{ $metaKeywords }}">
+    @endif
     <link rel="canonical" href="{{ $metaPageUrl }}">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $metaTitle }}">
