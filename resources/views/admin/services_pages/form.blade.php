@@ -155,6 +155,50 @@
             </div>
         </div>
 
+        <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+            <h3 class="text-sm font-extrabold text-slate-900">Image de fond — carte « Un projet de rénovation ? »</h3>
+            <p class="mt-1 text-xs text-slate-500">
+                Photo affichée derrière la carte à droite (section avis + simulateur / contact), avec un dégradé pour la lisibilité du texte. Si vide, le site utilise <code class="rounded bg-white px-1">slide/toiture.png</code>.
+            </p>
+            <div class="mt-4 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+                <div>
+                    <label class="text-sm font-semibold text-slate-800">URL image</label>
+                    <input
+                        id="ctaCardBgUrl"
+                        name="cta_card_background"
+                        value="{{ old('cta_card_background', $page->cta_card_background ?? '') }}"
+                        class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                    />
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-800">Upload</label>
+                    <input
+                        id="ctaCardBgFile"
+                        type="file"
+                        accept="image/*"
+                        data-url-target="ctaCardBgUrl"
+                        data-preview-target="ctaCardBgPreview"
+                        data-placeholder-target="ctaCardBgPlaceholder"
+                        class="mt-2 w-full text-sm"
+                    />
+                </div>
+            </div>
+            <div class="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                @php $ctaBg = old('cta_card_background', $page->cta_card_background ?? ''); @endphp
+                <img
+                    id="ctaCardBgPreview"
+                    src="{{ (is_string($ctaBg) && trim($ctaBg) !== '') ? \App\Support\HomeView::url($ctaBg) : '' }}"
+                    alt=""
+                    class="h-36 w-full object-cover"
+                    style="{{ (is_string($ctaBg) && trim($ctaBg) !== '') ? '' : 'display:none;' }}"
+                >
+                <div
+                    id="ctaCardBgPlaceholder"
+                    class="h-36 w-full bg-slate-100 {{ (is_string($ctaBg) && trim($ctaBg) !== '') ? 'hidden' : '' }}"
+                ></div>
+            </div>
+        </div>
+
         {{-- Sous-services (6 à 9 cartes) --}}
         <div class="space-y-4 pt-2">
             <div>

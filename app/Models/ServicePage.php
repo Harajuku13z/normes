@@ -21,6 +21,7 @@ class ServicePage extends Model
         'realisations',
         'cta_text',
         'cta_href',
+        'cta_card_background',
         'is_active',
     ];
 

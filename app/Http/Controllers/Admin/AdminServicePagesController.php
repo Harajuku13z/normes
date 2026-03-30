@@ -59,6 +59,7 @@ class AdminServicePagesController extends Controller
             'realisations.*.after' => ['nullable', 'string', 'max:800'],
             'cta_text' => ['nullable', 'string', 'max:190'],
             'cta_href' => ['nullable', 'string', 'max:500'],
+            'cta_card_background' => ['nullable', 'string', 'max:800'],
             'is_active' => ['nullable', 'boolean'],
         ]);
 
@@ -69,6 +70,9 @@ class AdminServicePagesController extends Controller
         ];
 
         // Compatibilité : si la migration n'est pas encore faite, on évite une erreur DB.
+        if (! Schema::hasColumn('service_pages', 'cta_card_background')) {
+            unset($payload['cta_card_background']);
+        }
         if (! Schema::hasColumn('service_pages', 'sub_services')) {
             unset($payload['sub_services']);
         }
@@ -110,6 +114,7 @@ class AdminServicePagesController extends Controller
             'realisations.*.after' => ['nullable', 'string', 'max:800'],
             'cta_text' => ['nullable', 'string', 'max:190'],
             'cta_href' => ['nullable', 'string', 'max:500'],
+            'cta_card_background' => ['nullable', 'string', 'max:800'],
             'is_active' => ['nullable', 'boolean'],
         ]);
 
@@ -119,6 +124,9 @@ class AdminServicePagesController extends Controller
             'is_active' => (bool) ($data['is_active'] ?? true),
         ];
 
+        if (! Schema::hasColumn('service_pages', 'cta_card_background')) {
+            unset($payload['cta_card_background']);
+        }
         if (! Schema::hasColumn('service_pages', 'sub_services')) {
             unset($payload['sub_services']);
         }
