@@ -330,8 +330,8 @@
             </div>
 
             <div class="min-w-0">
-                {{-- Bloc partagé avec la page d'accueil (source unique) --}}
-                @include('home.simulateur', ['home' => $h])
+                {{-- Formulaire de contact directement sur la page service (même source que l'accueil) --}}
+                @include('home._devis_form', ['home' => $h])
             </div>
         </div>
     </div>
