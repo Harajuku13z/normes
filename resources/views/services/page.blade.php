@@ -270,13 +270,13 @@
                             @if ($servicePartnersPhrase !== '')
                                 <p class="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">{{ $servicePartnersPhrase }}</p>
                             @endif
-                            <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                            <div class="mt-5 grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
                                 @foreach (array_slice($servicePartnersLogos, 0, 6) as $src)
-                                    <div class="flex items-center justify-center rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                                    <div class="flex min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-sm sm:p-3">
                                         <img
                                             src="{{ HomeView::url($src) }}"
                                             alt="Logo partenaire"
-                                            class="h-10 w-auto max-w-[10rem] object-contain"
+                                            class="h-9 w-full max-w-full object-contain sm:h-10"
                                             width="200"
                                             height="80"
                                             loading="lazy"
