@@ -372,11 +372,11 @@
             </div>
         </div>
 
-        <div class="mt-8">
-            @include('home._devis_form', ['home' => $h])
-        </div>
     </div>
 </section>
+
+{{-- Section formulaire identique à la page d'accueil (source unique) --}}
+@include('home.devis', ['home' => $h])
 
 @include('home.footer', ['home' => $h])
 
