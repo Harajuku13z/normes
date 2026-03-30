@@ -119,8 +119,16 @@
         </div>
 
         <div>
-            <label class="text-sm font-semibold text-slate-800">Texte principal (HTML ou texte brut)</label>
-            <textarea name="body" rows="8" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm leading-relaxed focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200">{{ old('body', $page->body ?? '') }}</textarea>
+            <label class="text-sm font-semibold text-slate-800">Description (page service)</label>
+            <p class="mt-1 text-xs text-slate-500">
+                Affichée <strong>au-dessus</strong> des sous-services sur la page publique. Éditeur : titres, gras, listes, liens, etc.
+            </p>
+            <textarea
+                id="serviceBodyEditor"
+                name="body"
+                rows="14"
+                class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm leading-relaxed focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+            >{{ old('body', $page->body ?? '') }}</textarea>
         </div>
 
         <div class="grid gap-4 lg:grid-cols-2">
@@ -616,4 +624,37 @@
         })();
     </script>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/tinymce@6.8.4/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+(function () {
+    const el = document.getElementById('serviceBodyEditor');
+    if (!el || typeof tinymce === 'undefined') return;
+
+    const form = el.closest('form');
+    if (form) {
+        form.addEventListener('submit', function () {
+            try { tinymce.triggerSave(); } catch (e) {}
+        });
+    }
+
+    tinymce.init({
+        selector: '#serviceBodyEditor',
+        height: 440,
+        menubar: false,
+        branding: false,
+        promotion: false,
+        license_key: 'gpl',
+        plugins: 'lists link autoresize code',
+        toolbar: 'undo redo | blocks | bold italic underline | alignleft aligncenter alignjustify | bullist numlist | link | removeformat | code',
+        block_formats: 'Paragraph=p; Heading 2=h2; Heading 3=h3',
+        content_style: 'body{font-family:ui-sans-serif,system-ui,sans-serif;font-size:14px;line-height:1.65;}',
+        paste_as_text: false,
+        entity_encoding: 'raw',
+        convert_urls: false,
+    });
+})();
+</script>
+@endpush
 

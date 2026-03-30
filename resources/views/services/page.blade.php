@@ -100,6 +100,36 @@
 
 <section class="scroll-mt-24 bg-slate-50/70 py-12 sm:py-16">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+        @php
+            $bodyRaw = trim((string) ($page->body ?? ''));
+            $bodyLooksHtml = $bodyRaw !== '' && preg_match('/<[a-z][\s\S]*>/i', $bodyRaw) === 1;
+        @endphp
+
+        {{-- Description du service : toujours avant les sous-services --}}
+        @if ($bodyRaw !== '')
+            <div class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+                <p class="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Description</p>
+                <div
+                    class="service-page-body max-w-none text-base leading-relaxed text-slate-700 sm:text-lg
+                        [&_p]:mb-3 [&_p:last-child]:mb-0
+                        [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6
+                        [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-6
+                        [&_li]:my-1
+                        [&_strong]:font-bold [&_b]:font-bold
+                        [&_a]:font-semibold [&_a]:text-brand-blue [&_a]:underline
+                        [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:text-brand-dark
+                        [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-extrabold [&_h3]:text-brand-dark
+                    "
+                >
+                    @if ($bodyLooksHtml)
+                        {!! $bodyRaw !!}
+                    @else
+                        {!! nl2br(e($bodyRaw)) !!}
+                    @endif
+                </div>
+            </div>
+        @endif
+
         @if ($subServices !== [])
             @php
                 $sectionHeading = trim((string) ($page->sub_services_section_title ?? ''));
@@ -111,7 +141,7 @@
                     $rest = isset($parts[1]) ? $parts[1] : '';
                 }
             @endphp
-            <div class="mb-6">
+            <div class="{{ $bodyRaw !== '' ? 'mt-10' : '' }} mb-6">
                 <h2 class="break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
                     <span class="text-brand-blue">{{ $accent }}</span>{{ $rest !== '' ? ' '.$rest : '' }}
                 </h2>
@@ -152,14 +182,6 @@
                         </div>
                     </article>
                 @endforeach
-            </div>
-        @endif
-
-        @if (!empty($page->body))
-            <div class="mt-8 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
-                <div class="prose max-w-none text-slate-700">
-                    {!! nl2br(e($page->body)) !!}
-                </div>
             </div>
         @endif
     </div>

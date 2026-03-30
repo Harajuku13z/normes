@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin — Normes')</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    @stack('styles')
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-900 antialiased">
     <header class="border-b border-slate-200 bg-white">
@@ -79,6 +80,8 @@
             </div>
         </div>
     </footer>
+
+    @stack('scripts')
 
     <script>
         (function () {
