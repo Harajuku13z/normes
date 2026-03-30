@@ -6,6 +6,10 @@
 @php
     $routeName = request()->route() ? request()->route()->getName() : null;
     $isServicePage = $routeName === 'service.page';
+    $homeHref = route('home');
+    $servicesHref = $isServicePage ? $homeHref.'#services' : '#services';
+    $realisationsHref = $isServicePage ? $homeHref.'#realisations' : '#realisations';
+    $conseilsHref = $isServicePage ? $homeHref.'#conseils' : '#conseils';
 @endphp
 <header class="sticky top-0 z-[1000] border-b-4 border-brand-blue bg-white/95 shadow-[0_1px_0_rgba(15,23,42,0.06)] backdrop-blur-md">
     <div class="mx-auto flex min-h-[84px] w-[95%] items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -14,50 +18,39 @@
         </a>
 
         <nav class="hidden items-center gap-1 lg:flex xl:gap-2" aria-label="Navigation principale">
-            <a href="#top" class="rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">Accueil</a>
+            <a href="{{ $homeHref }}" class="rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">Accueil</a>
+
+            <a href="{{ $servicesHref }}" data-service-filter-group="toiture facade" class="service-submenu-link rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">
+                Toiture
+            </a>
+            <a href="{{ $servicesHref }}" data-service-filter-group="toiture facade" class="service-submenu-link rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">
+                Façade
+            </a>
+            <a href="{{ $servicesHref }}" data-service-filter-group="isolation" class="service-submenu-link rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">
+                Isolation
+            </a>
+            <a href="{{ $servicesHref }}" data-service-filter-group="energie" class="service-submenu-link rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">
+                Énergie
+            </a>
 
             <div class="nav-dropdown relative">
-                <button type="button" class="inline-flex items-center gap-0.5 rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]" aria-expanded="false" aria-haspopup="true" aria-controls="nav-mega-entreprise">
-                    Normes &amp; Rénovation
+                <button type="button" class="inline-flex items-center gap-0.5 rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]" aria-expanded="false" aria-haspopup="true" aria-controls="nav-mega-reseau">
+                    Le réseau
                     <svg class="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
-                <div id="nav-mega-entreprise" class="nav-dropdown-panel invisible absolute left-0 top-full z-[1100] min-w-[220px] translate-y-1 pt-1 opacity-0 transition-all duration-150 pointer-events-none">
+                <div id="nav-mega-reseau" class="nav-dropdown-panel invisible absolute left-0 top-full z-[1100] min-w-[220px] translate-y-1 pt-1 opacity-0 transition-all duration-150 pointer-events-none">
                     <div class="rounded-xl border border-slate-200 bg-white py-2 shadow-lg ring-1 ring-black/5">
-                        <a href="#a-propos" class="block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">À propos</a>
-                        <a href="#agences" class="block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Nos agences</a>
-                        <a href="#franchise" class="block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Franchise</a>
+                        <a href="{{ $homeHref.'#a-propos' }}" class="block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">À propos</a>
+                        <a href="{{ $homeHref.'#agences' }}" class="block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Nos agences</a>
+                        <a href="{{ $homeHref.'#franchise' }}" class="block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Franchise</a>
                     </div>
                 </div>
             </div>
 
-            <div class="nav-dropdown relative">
-                <button
-                    type="button"
-                    class="inline-flex items-center gap-0.5 rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px] {{ $isServicePage ? 'bg-brand-blue/10 text-brand-blue ring-1 ring-brand-blue/20' : '' }}"
-                    aria-expanded="false"
-                    aria-haspopup="true"
-                    aria-controls="nav-mega-services"
-                >
-                    Services
-                    <svg class="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                </button>
-                <div id="nav-mega-services" class="nav-dropdown-panel invisible absolute left-0 top-full z-[1100] min-w-[260px] translate-y-1 pt-1 opacity-0 transition-all duration-150 pointer-events-none">
-                    <div class="rounded-xl border border-slate-200 bg-white py-2 shadow-lg ring-1 ring-black/5">
-                        <a href="#services" data-service-filter-group="toiture facade" class="service-submenu-link block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Toiture &amp; façade</a>
-                        <a href="#services" data-service-filter-group="isolation" class="service-submenu-link block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Isolation</a>
-                        <a href="#services" data-service-filter-group="traitement air" class="service-submenu-link block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Humidité &amp; ventilation</a>
-                        <a href="#services" data-service-filter-group="electricite" class="service-submenu-link block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Électricité</a>
-                        <a href="#services" data-service-filter-group="energie" class="service-submenu-link block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Photovoltaïque</a>
-                        <a href="#services" data-service-filter-group="air" class="service-submenu-link block px-4 py-2.5 text-sm font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Climatisation</a>
-                    </div>
-                </div>
-            </div>
+            <a href="{{ $realisationsHref }}" class="rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">Réalisations</a>
+            <a href="{{ $conseilsHref }}" class="rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">Conseils</a>
 
-            <a href="#realisations" class="rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">Réalisations</a>
-            <a href="#conseils" class="rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">Conseils</a>
-            <a href="{{ route('contact.page').'#devis' }}" class="rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]">Contact</a>
-
-            <a href="{{ route('contact.page').'#devis' }}" class="nav-cta-contact ml-2 inline-flex items-center rounded-xl bg-brand-blue px-5 py-2.5 text-sm font-extrabold text-white ring-2 ring-white/20 transition hover:-translate-y-0.5 hover:bg-sky-500 hover:ring-brand-yellow/40">Devis gratuit</a>
+            <a href="{{ route('contact.page').'#devis' }}" class="nav-cta-contact ml-2 inline-flex items-center rounded-xl bg-brand-blue px-5 py-2.5 text-sm font-extrabold text-white ring-2 ring-white/20 transition hover:-translate-y-0.5 hover:bg-sky-500 hover:ring-brand-yellow/40">Devis</a>
 
             <ul class="ml-3 flex list-none items-center gap-2 border-l border-slate-200 pl-3 xl:ml-4 xl:gap-3 xl:pl-4" aria-label="Réseaux sociaux">
                 @foreach (data_get($h, 'header.social', []) as $item)
@@ -126,41 +119,28 @@
 
     <div id="mobileMenu" class="hidden border-t border-slate-100 bg-white lg:hidden">
         <div class="mx-auto flex w-[95%] flex-col gap-0.5 px-4 py-3 sm:px-6">
-            <a href="#top" class="rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50">Accueil</a>
+            <a href="{{ $homeHref }}" class="rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50">Accueil</a>
+
+            <a href="{{ $servicesHref }}" data-service-filter-group="toiture facade" class="service-submenu-link rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Toiture</a>
+            <a href="{{ $servicesHref }}" data-service-filter-group="toiture facade" class="service-submenu-link rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Façade</a>
+            <a href="{{ $servicesHref }}" data-service-filter-group="isolation" class="service-submenu-link rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Isolation</a>
+            <a href="{{ $servicesHref }}" data-service-filter-group="energie" class="service-submenu-link rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue">Énergie</a>
 
             <details class="group rounded-lg">
                 <summary class="cursor-pointer list-none px-3 py-2.5 text-[15px] font-semibold text-brand-dark marker:content-none [&::-webkit-details-marker]:hidden hover:bg-slate-50">
-                    <span class="inline-flex w-full items-center justify-between">Normes &amp; Rénovation <span class="text-slate-400" aria-hidden="true">▼</span></span>
+                    <span class="inline-flex w-full items-center justify-between">Le réseau <span class="text-slate-400" aria-hidden="true">▼</span></span>
                 </summary>
                 <div class="border-l-2 border-brand-blue/30 py-1 pl-4">
-                    <a href="#a-propos" class="block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">À propos</a>
-                    <a href="#agences" class="block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Nos agences</a>
-                    <a href="#franchise" class="block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Franchise</a>
+                    <a href="{{ $homeHref.'#a-propos' }}" class="block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">À propos</a>
+                    <a href="{{ $homeHref.'#agences' }}" class="block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Nos agences</a>
+                    <a href="{{ $homeHref.'#franchise' }}" class="block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Franchise</a>
                 </div>
             </details>
 
-            <details class="group rounded-lg">
-                <summary class="cursor-pointer list-none px-3 py-2.5 text-[15px] font-semibold text-brand-dark marker:content-none [&::-webkit-details-marker]:hidden hover:bg-slate-50">
-                    <span class="inline-flex w-full items-center justify-between">
-                        Services
-                        <span class="text-slate-400" aria-hidden="true">▼</span>
-                    </span>
-                </summary>
-                <div class="border-l-2 border-brand-blue/30 py-1 pl-4">
-                    <a href="#services" data-service-filter-group="toiture facade" class="service-submenu-link block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Toiture &amp; façade</a>
-                    <a href="#services" data-service-filter-group="isolation" class="service-submenu-link block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Isolation</a>
-                    <a href="#services" data-service-filter-group="traitement air" class="service-submenu-link block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Humidité &amp; ventilation</a>
-                    <a href="#services" data-service-filter-group="electricite" class="service-submenu-link block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Électricité</a>
-                    <a href="#services" data-service-filter-group="energie" class="service-submenu-link block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Photovoltaïque</a>
-                    <a href="#services" data-service-filter-group="air" class="service-submenu-link block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Climatisation</a>
-                </div>
-            </details>
+            <a href="{{ $realisationsHref }}" class="rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50">Réalisations</a>
+            <a href="{{ $conseilsHref }}" class="rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50">Conseils</a>
 
-            <a href="#realisations" class="rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50">Réalisations</a>
-            <a href="#conseils" class="rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50">Conseils</a>
-            <a href="{{ route('contact.page').'#devis' }}" class="rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50">Contact</a>
-
-            <a href="{{ route('contact.page').'#devis' }}" class="nav-cta-contact mt-2 inline-flex w-full items-center justify-center rounded-xl bg-brand-blue px-4 py-3.5 text-sm font-extrabold text-white ring-2 ring-brand-blue/30 transition hover:bg-sky-500">Devis gratuit</a>
+            <a href="{{ route('contact.page').'#devis' }}" class="nav-cta-contact mt-2 inline-flex w-full items-center justify-center rounded-xl bg-brand-blue px-4 py-3.5 text-sm font-extrabold text-white ring-2 ring-brand-blue/30 transition hover:bg-sky-500">Devis</a>
             <div class="mt-4 flex flex-col items-center gap-2 border-t border-slate-100 pt-4 sm:items-start">
                 <p class="text-center text-xs font-bold uppercase tracking-wide text-slate-500 sm:text-left">Suivez-nous</p>
                 <ul class="flex list-none items-center justify-center gap-4 sm:justify-start" aria-label="Réseaux sociaux">

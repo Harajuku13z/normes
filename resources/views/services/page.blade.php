@@ -49,6 +49,19 @@
     <div class="relative z-10 mx-auto flex min-h-[520px] w-[95%] flex-col justify-end gap-6 px-4 py-10 sm:min-h-[620px] sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
         <div class="max-w-3xl text-white">
             <div class="rounded-3xl border border-white/15 bg-brand-dark/35 p-6 shadow-soft backdrop-blur-md sm:p-8">
+                @php
+                    $category = trim((string) ($page->subtitle ?? ''));
+                    $category = $category !== '' ? $category : 'Services';
+                @endphp
+                <nav class="mb-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-bold text-white/85" aria-label="Fil d’ariane">
+                    <a href="{{ route('home') }}" class="underline decoration-white/30 underline-offset-4 hover:text-white">Accueil</a>
+                    <span aria-hidden="true" class="opacity-60">/</span>
+                    <a href="{{ route('home').'#services' }}" class="underline decoration-white/30 underline-offset-4 hover:text-white">Services</a>
+                    <span aria-hidden="true" class="opacity-60">/</span>
+                    <span class="rounded-full bg-white/10 px-2 py-0.5 font-extrabold uppercase tracking-[0.18em] text-white/95 ring-1 ring-white/15">
+                        {{ $category }}
+                    </span>
+                </nav>
                 @if (!empty($page->subtitle))
                     <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">
                         {{ $page->subtitle }}
@@ -81,6 +94,39 @@
 </section>
 
 @php
+    // Navigation “à la Technitoit” : ancres vers les sections clés de la page.
+    // On affiche toujours la nav, et on rend certains onglets optionnels selon le contenu disponible.
+    $hasRole = trim((string) ($page->body ?? '')) !== '' || trim((string) ($page->intro ?? '')) !== '';
+    $hasEtapes = is_array($page->sub_services ?? null) && $page->sub_services !== [];
+    $hasPeriode = str_contains((string) $page->slug, 'demouss') || str_contains((string) $page->slug, 'démouss');
+@endphp
+
+<div class="sticky top-[84px] z-40 border-b border-slate-200/70 bg-white/85 backdrop-blur supports-[backdrop-filter]:bg-white/75">
+    <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+        <nav class="flex flex-wrap items-center gap-2 py-3" aria-label="Navigation de la page service">
+            @if ($hasRole)
+                <a href="#role" class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-brand-dark transition hover:border-slate-300 hover:bg-slate-50">
+                    Rôle
+                </a>
+            @endif
+            @if ($hasPeriode)
+                <a href="#periode" class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-brand-dark transition hover:border-slate-300 hover:bg-slate-50">
+                    Période idéale
+                </a>
+            @endif
+            @if ($hasEtapes)
+                <a href="#etapes" class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-brand-dark transition hover:border-slate-300 hover:bg-slate-50">
+                    Étapes
+                </a>
+            @endif
+            <a href="#cout" class="inline-flex items-center rounded-xl bg-brand-blue px-4 py-2 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500">
+                Coût
+            </a>
+        </nav>
+    </div>
+</div>
+
+@php
     $subServicesRaw = is_array($page->sub_services ?? null) ? $page->sub_services : [];
     $subServices = collect($subServicesRaw)
         ->filter(fn ($s) => is_array($s) && !empty(data_get($s, 'title')) && !empty(data_get($s, 'image')))
@@ -92,14 +138,47 @@
         ->filter(fn ($c) => is_array($c) && !empty(data_get($c, 'before')) && !empty(data_get($c, 'after')))
         ->values()
         ->all();
-
-    $firstReal = $reals[0] ?? null;
-    $beforeUrl = $firstReal ? HomeView::url((string) data_get($firstReal, 'before')) : '';
-    $afterUrl = $firstReal ? HomeView::url((string) data_get($firstReal, 'after')) : '';
 @endphp
 
 <section class="scroll-mt-24 bg-slate-50/70 py-12 sm:py-16">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+        {{-- Bloc “Découvrez …” (intro + visuel), dans l’esprit Technitoit --}}
+        @php
+            $discoverTitle = trim((string) ($page->title ?? ''));
+            $discoverKicker = 'Découvrez';
+            $discoverText = trim((string) ($page->intro ?? ''));
+            if ($discoverText === '') {
+                $discoverText = trim((string) ($page->meta_description ?? ''));
+            }
+            $discoverImage = trim((string) ($page->featured_image ?? ''));
+            $discoverImage = $discoverImage !== '' ? HomeView::url($discoverImage) : ($bg ?: HomeView::url('slide/toiture.png'));
+        @endphp
+        @if ($discoverTitle !== '' && $discoverText !== '')
+            <div class="mb-8 grid gap-6 lg:grid-cols-2 lg:items-stretch">
+                <div class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+                    <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $discoverKicker }}</p>
+                    <h2 class="mt-2 break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
+                        {{ $discoverTitle }}
+                    </h2>
+                    <p class="mt-3 text-base leading-relaxed text-slate-700 sm:text-lg">
+                        {{ $discoverText }}
+                    </p>
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <a href="{{ $secondaryHref }}" class="inline-flex items-center justify-center rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500">
+                            Diagnostic gratuit
+                        </a>
+                        <a href="{{ $secondaryHref }}" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-extrabold text-brand-dark shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
+                            Devis gratuit
+                        </a>
+                    </div>
+                </div>
+                <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-soft">
+                    <div class="absolute inset-0 bg-cover bg-center" style="background-image:url('{{ $discoverImage }}')" aria-hidden="true"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/60 via-transparent to-transparent" aria-hidden="true"></div>
+                </div>
+            </div>
+        @endif
+
         @php
             $bodyRaw = trim((string) ($page->body ?? ''));
             $bodyLooksHtml = $bodyRaw !== '' && preg_match('/<[a-z][\s\S]*>/i', $bodyRaw) === 1;
@@ -107,7 +186,7 @@
 
         {{-- Description du service : toujours avant les sous-services --}}
         @if ($bodyRaw !== '')
-            <div class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+            <div id="role" class="scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
                 <p class="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Description</p>
                 <div
                     class="service-page-body max-w-none text-base leading-relaxed text-slate-700 sm:text-lg
@@ -130,6 +209,20 @@
             </div>
         @endif
 
+        @if ($hasPeriode)
+            <div id="periode" class="{{ $bodyRaw !== '' ? 'mt-10' : '' }} scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+                <p class="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Période idéale</p>
+                <div class="max-w-none text-base leading-relaxed text-slate-700 sm:text-lg">
+                    <p class="mb-3">
+                        Pour un traitement de démoussage, l’idéal est d’intervenir lorsque les températures sont modérées et que la toiture est sèche, afin d’optimiser l’adhérence et l’efficacité du traitement.
+                    </p>
+                    <p class="mb-0">
+                        Évitez les périodes de gel, de fortes chaleurs et les épisodes très pluvieux. Un diagnostic sur place permet de valider la meilleure fenêtre d’intervention selon votre couverture et l’exposition.
+                    </p>
+                </div>
+            </div>
+        @endif
+
         @if ($subServices !== [])
             @php
                 $sectionHeading = trim((string) ($page->sub_services_section_title ?? ''));
@@ -141,7 +234,7 @@
                     $rest = isset($parts[1]) ? $parts[1] : '';
                 }
             @endphp
-            <div class="{{ $bodyRaw !== '' ? 'mt-10' : '' }} mb-6">
+            <div id="etapes" class="{{ $bodyRaw !== '' ? 'mt-10' : '' }} mb-6 scroll-mt-32">
                 <h2 class="break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
                     <span class="text-brand-blue">{{ $accent }}</span>{{ $rest !== '' ? ' '.$rest : '' }}
                 </h2>
@@ -194,67 +287,48 @@
                 <span class="text-brand-blue">Réalisations</span> avant / après
             </h2>
             <p class="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-                Faites défiler les chantiers et comparez directement le résultat final.
+                Deux chantiers par ligne sur ordinateur : à gauche la photo <strong>avant</strong>, à droite la photo <strong>après</strong>.
             </p>
         </div>
 
         @if ($reals !== [])
-            <div class="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6">
-                <div class="flex flex-wrap gap-2">
-                    @foreach ($reals as $idx => $c)
-                        @php
-                            $btnLabel = (string) data_get($c, 'label', 'Chantier '.($idx + 1));
-                            $isFirst = $idx === 0;
-                        @endphp
-                        <button
-                            type="button"
-                            class="ba-case-btn inline-flex items-center justify-center rounded-xl border px-3 py-2 text-sm font-extrabold transition
-                                {{ $isFirst ? 'border-brand-dark bg-brand-dark text-white' : 'border-slate-300 bg-white text-slate-700' }}"
-                            data-ba-case="{{ $idx + 1 }}"
-                        >
-                            {{ $btnLabel }}
-                        </button>
-                    @endforeach
-                </div>
-
-                {{--
-                  Hauteur explicite : si tous les enfants sont en absolute, le bloc a hauteur 0
-                  et le comparateur semble « cassé ». aspect-ratio + min-h sécurise l’affichage.
-                --}}
-                <div
-                    class="relative mt-5 w-full max-h-[min(72vh,640px)] min-h-[220px] overflow-hidden rounded-2xl border border-slate-200 bg-slate-900/10 aspect-[16/10] sm:min-h-[260px]"
-                >
-                    <div
-                        id="beforeLayer"
-                        class="absolute inset-0 z-0 bg-cover bg-center bg-slate-200"
-                        style="background-image:url('{{ $beforeUrl }}')"
-                        role="img"
-                        aria-label="Photo avant travaux"
-                    ></div>
-                    <div
-                        id="afterLayer"
-                        class="absolute inset-0 z-[1] bg-cover bg-center"
-                        style="background-image:url('{{ $afterUrl }}'); clip-path: inset(0 0 0 50%);"
-                        role="img"
-                        aria-label="Photo après travaux"
-                    ></div>
-                    <div class="pointer-events-none absolute left-3 top-3 z-10 rounded-lg bg-brand-dark/70 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wide text-white">
-                        Avant
-                    </div>
-                    <div class="pointer-events-none absolute right-3 top-3 z-10 rounded-lg bg-brand-blue/85 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wide text-white">
-                        Après
-                    </div>
-
-                    <input
-                        id="baRange"
-                        type="range"
-                        min="0"
-                        max="100"
-                        value="50"
-                        class="absolute bottom-3 left-3 right-3 z-20 h-3 w-auto cursor-ew-resize accent-brand-blue"
-                        aria-label="Comparer avant et après"
-                    >
-                </div>
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                @foreach ($reals as $idx => $c)
+                    @php
+                        $cardLabel = (string) data_get($c, 'label', 'Chantier '.($idx + 1));
+                        $before = HomeView::url((string) data_get($c, 'before'));
+                        $after = HomeView::url((string) data_get($c, 'after'));
+                    @endphp
+                    <article class="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                        <div class="border-b border-slate-100 px-4 py-3">
+                            <h3 class="break-words text-sm font-extrabold text-brand-dark sm:text-base">{{ $cardLabel }}</h3>
+                        </div>
+                        <div class="grid grid-cols-2 gap-px bg-slate-200">
+                            <div class="relative min-h-0">
+                                <div
+                                    class="aspect-[4/3] w-full bg-cover bg-center bg-slate-100"
+                                    style="background-image:url('{{ $before }}')"
+                                    role="img"
+                                    aria-label="Avant — {{ $cardLabel }}"
+                                ></div>
+                                <div class="pointer-events-none absolute left-2 top-2 rounded-md bg-brand-dark/80 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-white sm:left-3 sm:top-3 sm:text-xs">
+                                    Avant
+                                </div>
+                            </div>
+                            <div class="relative min-h-0">
+                                <div
+                                    class="aspect-[4/3] w-full bg-cover bg-center bg-slate-100"
+                                    style="background-image:url('{{ $after }}')"
+                                    role="img"
+                                    aria-label="Après — {{ $cardLabel }}"
+                                ></div>
+                                <div class="pointer-events-none absolute right-2 top-2 rounded-md bg-brand-blue/90 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-white sm:right-3 sm:top-3 sm:text-xs">
+                                    Après
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                @endforeach
             </div>
         @else
             <div class="rounded-3xl border border-slate-200 bg-slate-50 p-6 text-slate-600">
@@ -265,7 +339,7 @@
 </section>
 
 <section class="scroll-mt-24 bg-slate-50/70 py-16 sm:py-20">
-    <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+    <div id="cout" class="mx-auto w-[95%] scroll-mt-32 px-4 sm:px-6 lg:px-8">
         <div class="grid gap-6 lg:grid-cols-2 lg:items-stretch">
             <div class="min-w-0">
                 @include('services.avis_only', ['home' => $h])
