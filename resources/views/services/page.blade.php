@@ -329,44 +329,9 @@
                 @include('services.avis_only', ['home' => $h])
             </div>
 
-            @php
-                $ctaCardBgPath = trim((string) (data_get($page, 'cta_card_background') ?? ''));
-                $ctaCardBg = $ctaCardBgPath !== '' ? HomeView::url($ctaCardBgPath) : HomeView::url('slide/toiture.png');
-            @endphp
-            <div class="relative h-full min-h-[280px] overflow-hidden rounded-2xl border border-white/20 shadow-soft ring-1 ring-black/5 sm:min-h-[320px]">
-                <div
-                    class="absolute inset-0 bg-cover bg-center"
-                    style="background-image: url('{{ $ctaCardBg }}');"
-                    aria-hidden="true"
-                ></div>
-                <div class="absolute inset-0 bg-gradient-to-br from-brand-dark/90 via-brand-dark/75 to-brand-dark/60" aria-hidden="true"></div>
-
-                <div class="relative z-10 flex min-h-[280px] flex-col p-6 sm:min-h-[320px] sm:p-8">
-                    <div>
-                        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-yellow">Un projet de rénovation ?</p>
-                        <h2 class="mt-2 break-words text-3xl font-extrabold leading-tight text-white sm:text-4xl">
-                            Démarrez dès maintenant
-                        </h2>
-                        <p class="mt-3 text-base leading-relaxed text-slate-100/95">
-                            Lancez le simulateur pour une première estimation, ou envoyez votre demande pour être contacté rapidement.
-                        </p>
-                    </div>
-
-                    <div class="mt-auto grid gap-3 pt-6 sm:grid-cols-1">
-                        <a
-                            href="{{ route('home').'#simulateur-devis' }}"
-                            class="inline-flex items-center justify-center rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500"
-                        >
-                            Ouvrir le simulateur de devis
-                        </a>
-                        <a
-                            href="{{ route('contact.page') }}"
-                            class="inline-flex items-center justify-center rounded-xl border-2 border-white/45 bg-white/10 px-5 py-3 text-sm font-extrabold text-white shadow-sm backdrop-blur-sm transition hover:bg-white/20"
-                        >
-                            Accéder au formulaire de contact
-                        </a>
-                    </div>
-                </div>
+            <div class="min-w-0">
+                {{-- Bloc partagé avec la page d'accueil (source unique) --}}
+                @include('home.simulateur', ['home' => $h])
             </div>
         </div>
     </div>
