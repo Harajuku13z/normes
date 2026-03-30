@@ -195,9 +195,6 @@
 
         {{-- Description du service : toujours avant les sous-services --}}
         @php
-            $sidebarAvisScore = (string) data_get($h, 'sidebar_avis.score', '5.0/5');
-            $sidebarAvisText = (string) data_get($h, 'sidebar_avis.text', '+100 avis');
-
             $servicePartners = is_array($page->service_partners ?? null) ? $page->service_partners : [];
             $servicePartnersPhrase = trim((string) data_get($servicePartners, 'phrase', ''));
             $servicePartnersLogos = collect((array) data_get($servicePartners, 'logos', []))
@@ -205,7 +202,19 @@
                 ->values()
                 ->all();
 
-            $globalPartnerLogos = data_get($h, 'partners.logos', []);
+            $stats = is_array($page->service_stats ?? null) ? $page->service_stats : [];
+            $statsItems = collect((array) data_get($stats, 'items', []))
+                ->filter(fn ($it) => is_array($it) && trim((string) data_get($it, 'label')) !== '' && trim((string) data_get($it, 'value')) !== '')
+                ->values()
+                ->all();
+
+            if ($statsItems === []) {
+                $statsItems = [
+                    ['label' => 'Avis', 'value' => (string) data_get($h, 'sidebar_avis.score', '5.0/5'), 'text' => (string) data_get($h, 'sidebar_avis.text', '+100 avis')],
+                    ['label' => 'Délai', 'value' => '48h', 'text' => 'Réponse en général'],
+                    ['label' => 'Devis', 'value' => '0€', 'text' => 'Sans engagement'],
+                ];
+            }
         @endphp
 
         @if ($bodyRaw !== '')
@@ -240,25 +249,44 @@
                             <a href="#avis" class="text-xs font-extrabold text-brand-blue hover:underline">Voir les avis</a>
                         </div>
                         <div class="mt-5 grid gap-4 sm:grid-cols-3">
-                            <div class="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4">
-                                <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">Avis</p>
-                                <p class="mt-2 text-2xl font-black text-brand-dark">{{ $sidebarAvisScore }}</p>
-                                <p class="mt-1 text-sm font-semibold text-slate-600">{{ $sidebarAvisText }}</p>
-                            </div>
-                            <div class="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4">
-                                <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">Délai</p>
-                                <p class="mt-2 text-2xl font-black text-brand-dark">48h</p>
-                                <p class="mt-1 text-sm font-semibold text-slate-600">Réponse en général</p>
-                            </div>
-                            <div class="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4">
-                                <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">Devis</p>
-                                <p class="mt-2 text-2xl font-black text-brand-dark">0€</p>
-                                <p class="mt-1 text-sm font-semibold text-slate-600">Sans engagement</p>
-                            </div>
+                            @foreach (array_slice($statsItems, 0, 3) as $it)
+                                <div class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4 transition hover:shadow-sm">
+                                    <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">{{ data_get($it, 'label') }}</p>
+                                    <p class="mt-2 text-2xl font-black text-brand-dark">{{ data_get($it, 'value') }}</p>
+                                    @if (trim((string) data_get($it, 'text')) !== '')
+                                        <p class="mt-1 text-sm font-semibold text-slate-600">{{ data_get($it, 'text') }}</p>
+                                    @endif
+                                </div>
+                            @endforeach
                         </div>
                     </div>
 
-                    {{-- Logos partenaires déplacés avant le footer --}}
+                    @if ($servicePartnersLogos !== [])
+                        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
+                            <div class="flex flex-wrap items-end justify-between gap-3">
+                                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Partenaires associés</p>
+                                <a href="#devis" class="text-xs font-extrabold text-brand-blue hover:underline">Nous contacter</a>
+                            </div>
+                            @if ($servicePartnersPhrase !== '')
+                                <p class="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">{{ $servicePartnersPhrase }}</p>
+                            @endif
+                            <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                                @foreach (array_slice($servicePartnersLogos, 0, 6) as $src)
+                                    <div class="flex items-center justify-center rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                                        <img
+                                            src="{{ HomeView::url($src) }}"
+                                            alt="Logo partenaire"
+                                            class="h-10 w-auto max-w-[10rem] object-contain"
+                                            width="200"
+                                            height="80"
+                                            loading="lazy"
+                                            decoding="async"
+                                        >
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         @endif

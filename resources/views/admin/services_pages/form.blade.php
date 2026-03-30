@@ -250,6 +250,51 @@
             </div>
         </div>
 
+        {{-- Chiffres (spécifiques au service) --}}
+        @php
+            $stats = is_array($page->service_stats ?? null) ? $page->service_stats : [];
+            $statsItems = is_array(data_get($stats, 'items', [])) ? data_get($stats, 'items', []) : [];
+        @endphp
+        <div class="space-y-4 pt-2">
+            <div>
+                <h2 class="text-sm font-extrabold text-slate-900">Chiffres (service)</h2>
+                <p class="mt-1 text-xs text-slate-500">Définis le titre (label) et la valeur (nombre/texte) affichés sur la page service.</p>
+            </div>
+            <div class="grid gap-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4 lg:grid-cols-3">
+                @for ($s = 0; $s < 3; $s++)
+                    @php
+                        $item = is_array($statsItems) ? (data_get($statsItems, $s, []) ?: []) : [];
+                        $labelVal = old("service_stats.items.$s.label", (string) data_get($item, 'label', ''));
+                        $valueVal = old("service_stats.items.$s.value", (string) data_get($item, 'value', ''));
+                        $textVal = old("service_stats.items.$s.text", (string) data_get($item, 'text', ''));
+                    @endphp
+                    <div class="rounded-xl border border-slate-200 bg-white p-4">
+                        <label class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Titre</label>
+                        <input
+                            name="service_stats[items][{{ $s }}][label]"
+                            value="{{ $labelVal }}"
+                            placeholder="Ex. Avis"
+                            class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                        />
+                        <label class="mt-3 block text-xs font-extrabold uppercase tracking-wider text-slate-500">Nombre / Valeur</label>
+                        <input
+                            name="service_stats[items][{{ $s }}][value]"
+                            value="{{ $valueVal }}"
+                            placeholder="Ex. 5.0/5"
+                            class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                        />
+                        <label class="mt-3 block text-xs font-extrabold uppercase tracking-wider text-slate-500">Texte (optionnel)</label>
+                        <input
+                            name="service_stats[items][{{ $s }}][text]"
+                            value="{{ $textVal }}"
+                            placeholder="Ex. +100 avis"
+                            class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                        />
+                    </div>
+                @endfor
+            </div>
+        </div>
+
         <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
             <h3 class="text-sm font-extrabold text-slate-900">Image de fond — carte « Un projet de rénovation ? »</h3>
             <p class="mt-1 text-xs text-slate-500">
