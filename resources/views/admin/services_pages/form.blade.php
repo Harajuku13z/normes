@@ -232,6 +232,22 @@
             const heroPreview = document.getElementById('heroImagePreview');
             const heroPlaceholder = document.getElementById('heroImagePlaceholder');
 
+            // Fallback: si l'input URL est déjà rempli (édition), on force l'affichage.
+            try {
+                if (featuredUrl && featuredPreview && featuredPlaceholder && String(featuredUrl.value || '').trim() !== '') {
+                    featuredPreview.src = featuredUrl.value;
+                    featuredPreview.style.display = 'block';
+                    featuredPlaceholder.classList.add('hidden');
+                }
+                if (heroUrl && heroPreview && heroPlaceholder && String(heroUrl.value || '').trim() !== '') {
+                    heroPreview.src = heroUrl.value;
+                    heroPreview.style.display = 'block';
+                    heroPlaceholder.classList.add('hidden');
+                }
+            } catch (e) {
+                // ignore
+            }
+
             if (featuredFile) {
                 featuredFile.addEventListener('change', function () {
                     uploadAndSet({
