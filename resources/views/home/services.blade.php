@@ -15,6 +15,9 @@
                         ->first();
 
                     $href = $servicePage ? route('service.page', $servicePage->slug) : '#devis';
+                    if ($servicePage && !empty($servicePage->featured_image)) {
+                        $bg = \App\Support\HomeView::url($servicePage->featured_image);
+                    }
                     $ctaText = $servicePage && !empty($servicePage->cta_text)
                         ? $servicePage->cta_text
                         : data_get($item, 'cta', 'En savoir plus');

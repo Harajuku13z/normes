@@ -59,7 +59,26 @@
 
         <div class="grid gap-4 lg:grid-cols-2">
             <div>
-                <label class="text-sm font-semibold text-slate-800">Image (URL)</label>
+                <label class="text-sm font-semibold text-slate-800">Image mise en avant (Homepage)</label>
+                <input name="featured_image" value="{{ old('featured_image', $page->featured_image ?? '') }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                <p class="mt-1 text-xs text-slate-500">Ex: <code class="rounded bg-white px-1">services/menuiserie2.jpg</code> ou <code class="rounded bg-white px-1">slide/toiture.png</code></p>
+            </div>
+            <div class="flex flex-col">
+                <label class="text-sm font-semibold text-slate-800">Aperçu</label>
+                <div class="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                    @php $fimg = $page->featured_image ?? ''; @endphp
+                    @if (is_string($fimg) && trim($fimg) !== '')
+                        <img src="{{ \App\Support\HomeView::url($fimg) }}" alt="" class="h-40 w-full object-cover">
+                    @else
+                        <div class="h-40 w-full bg-slate-50"></div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <div class="grid gap-4 lg:grid-cols-2 mt-2">
+            <div>
+                <label class="text-sm font-semibold text-slate-800">Image Hero (Page service)</label>
                 <input name="image" value="{{ old('image', $page->image ?? '') }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
                 <p class="mt-1 text-xs text-slate-500">Ex: <code class="rounded bg-white px-1">slide/toiture.png</code> ou <code class="rounded bg-white px-1">storage/uploads/...png</code></p>
             </div>

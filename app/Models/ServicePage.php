@@ -14,6 +14,7 @@ class ServicePage extends Model
         'intro',
         'body',
         'image',
+        'featured_image',
         'cta_text',
         'cta_href',
         'is_active',
