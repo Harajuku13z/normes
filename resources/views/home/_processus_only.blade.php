@@ -22,17 +22,21 @@
                         @php
                             $isOdd = ($loop->iteration % 2) === 1;
                             $numClass = $isOdd
-                                ? 'mb-4 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-blue text-sm font-black text-white shadow-md shadow-brand-blue/25 lg:mx-auto'
-                                : 'mb-4 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-dark text-sm font-black text-white shadow-md lg:mx-auto';
+                                ? 'inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-blue text-sm font-black text-white shadow-md shadow-brand-blue/25 lg:mx-auto lg:mb-4'
+                                : 'inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-dark text-sm font-black text-white shadow-md lg:mx-auto lg:mb-4';
                             $liClass = 'relative rounded-xl border border-slate-100 bg-slate-50/60 p-5 lg:border-slate-100/80 lg:bg-white lg:p-6 lg:text-center lg:shadow-sm';
                             if (!empty($step['span'])) {
                                 $liClass .= ' sm:col-span-2 lg:col-span-1';
                             }
                         @endphp
                         <li class="{{ $liClass }}">
-                            <span class="{{ $numClass }}">{{ data_get($step, 'num') }}</span>
-                            <h4 class="text-base font-extrabold text-brand-dark sm:text-lg">{{ data_get($step, 'title') }}</h4>
-                            <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ data_get($step, 'text') }}</p>
+                            <div class="flex items-start gap-4 lg:flex-col lg:items-center">
+                                <span class="{{ $numClass }}">{{ data_get($step, 'num') }}</span>
+                                <div class="min-w-0">
+                                    <h4 class="break-words text-base font-extrabold text-brand-dark sm:text-lg lg:text-center">{{ data_get($step, 'title') }}</h4>
+                                    <p class="mt-2 text-sm leading-relaxed text-slate-600 lg:text-center">{{ data_get($step, 'text') }}</p>
+                                </div>
+                            </div>
                         </li>
                     @endforeach
                 </ol>
