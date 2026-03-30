@@ -10,7 +10,8 @@
     <header class="border-b border-slate-200 bg-white">
         @php
             $currentRoute = request()->route() ? request()->route()->getName() : null;
-            $isHomepage = $currentRoute === 'admin.homepage.edit' || $currentRoute === 'admin.homepage.update';
+        $isHomepage = $currentRoute === 'admin.homepage.edit' || $currentRoute === 'admin.homepage.update';
+        $isServicesPages = str_starts_with((string) $currentRoute, 'admin.services_pages.');
             $headerMaxWidth = $isHomepage ? 'max-w-none w-full' : 'mx-auto max-w-5xl';
         @endphp
         <div class="{{ $headerMaxWidth }} flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
@@ -41,6 +42,10 @@
                         <a href="{{ route('admin.homepage.edit') }}"
                            class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isHomepage ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
                             Homepage
+                        </a>
+                        <a href="{{ route('admin.services_pages.index') }}"
+                           class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isServicesPages ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
+                            Services pages
                         </a>
                     </div>
                 </nav>

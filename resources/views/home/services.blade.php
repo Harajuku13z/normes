@@ -9,6 +9,15 @@
                     $num = data_get($item, 'num');
                     $title = data_get($item, 'title');
                     $bg = \App\Support\HomeView::url(data_get($item, 'image'));
+                    $servicePage = \App\Models\ServicePage::query()
+                        ->where('service_num', (int) $num)
+                        ->where('is_active', true)
+                        ->first();
+
+                    $href = $servicePage ? route('service.page', $servicePage->slug) : '#devis';
+                    $ctaText = $servicePage && !empty($servicePage->cta_text)
+                        ? $servicePage->cta_text
+                        : data_get($item, 'cta', 'En savoir plus');
                 @endphp
                 <article class="service-card relative h-[340px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md sm:h-[360px] lg:h-[380px]">
                     <div class="absolute inset-0">
@@ -28,8 +37,8 @@
                         <p class="mt-3 text-sm leading-relaxed text-white/90">
                             {{ data_get($item, 'description') }}
                         </p>
-                        <a href="#devis" class="mt-5 inline-flex w-fit rounded-xl bg-brand-blue px-4 py-2 text-xs font-extrabold text-white shadow-soft transition hover:bg-brand-dark sm:text-sm">
-                            {{ data_get($item, 'cta', 'En savoir plus') }}
+                        <a href="{{ $href }}" class="mt-5 inline-flex w-fit rounded-xl bg-brand-blue px-4 py-2 text-xs font-extrabold text-white shadow-soft transition hover:bg-brand-dark sm:text-sm">
+                            {{ $ctaText }}
                         </a>
                     </div>
                 </article>
