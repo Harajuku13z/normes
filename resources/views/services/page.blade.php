@@ -318,7 +318,7 @@
                     <span class="text-brand-blue">{{ $accent }}</span>{{ $rest !== '' ? ' '.$rest : '' }}
                 </h2>
                 @if (!empty(trim((string) ($page->sub_services_section_intro ?? ''))))
-                    <p class="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                    <p class="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg lg:max-w-none lg:whitespace-nowrap">
                         {{ $page->sub_services_section_intro }}
                     </p>
                 @endif
