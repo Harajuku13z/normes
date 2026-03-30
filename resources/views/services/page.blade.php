@@ -49,19 +49,6 @@
     <div class="relative z-10 mx-auto flex min-h-[520px] w-[95%] flex-col justify-end gap-6 px-4 py-10 sm:min-h-[620px] sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
         <div class="max-w-3xl text-white">
             <div class="rounded-3xl border border-white/15 bg-brand-dark/35 p-6 shadow-soft backdrop-blur-md sm:p-8">
-                @php
-                    $category = trim((string) ($page->subtitle ?? ''));
-                    $category = $category !== '' ? $category : 'Services';
-                @endphp
-                <nav class="mb-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-bold text-white/85" aria-label="Fil d’ariane">
-                    <a href="{{ route('home') }}" class="underline decoration-white/30 underline-offset-4 hover:text-white">Accueil</a>
-                    <span aria-hidden="true" class="opacity-60">/</span>
-                    <a href="{{ route('home').'#services' }}" class="underline decoration-white/30 underline-offset-4 hover:text-white">Services</a>
-                    <span aria-hidden="true" class="opacity-60">/</span>
-                    <span class="rounded-full bg-white/10 px-2 py-0.5 font-extrabold uppercase tracking-[0.18em] text-white/95 ring-1 ring-white/15">
-                        {{ $category }}
-                    </span>
-                </nav>
                 @if (!empty($page->subtitle))
                     <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">
                         {{ $page->subtitle }}
@@ -70,11 +57,6 @@
                 <h1 class="mb-4 text-4xl font-black leading-[1.02] tracking-tight drop-shadow sm:text-5xl">
                     {{ $page->title }}
                 </h1>
-                @if (!empty($page->intro))
-                    <p class="text-lg font-semibold text-slate-100/95 drop-shadow sm:text-xl">
-                        {{ $page->intro }}
-                    </p>
-                @endif
 
                 <div class="mt-6 flex flex-wrap gap-3">
                     @if (!empty($page->cta_text))
@@ -146,10 +128,7 @@
         @php
             $discoverTitle = trim((string) ($page->title ?? ''));
             $discoverKicker = 'Découvrez';
-            $discoverText = trim((string) ($page->intro ?? ''));
-            if ($discoverText === '') {
-                $discoverText = trim((string) ($page->meta_description ?? ''));
-            }
+            $discoverText = trim((string) ($page->meta_description ?? ''));
             $discoverImage = trim((string) ($page->featured_image ?? ''));
             $discoverImage = $discoverImage !== '' ? HomeView::url($discoverImage) : ($bg ?: HomeView::url('slide/toiture.png'));
         @endphp
@@ -185,41 +164,44 @@
         @endphp
 
         {{-- Description du service : toujours avant les sous-services --}}
-        @if ($bodyRaw !== '')
-            <div id="role" class="scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
-                <p class="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Description</p>
-                <div
-                    class="service-page-body max-w-none text-base leading-relaxed text-slate-700 sm:text-lg
-                        [&_p]:mb-3 [&_p:last-child]:mb-0
-                        [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6
-                        [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-6
-                        [&_li]:my-1
-                        [&_strong]:font-bold [&_b]:font-bold
-                        [&_a]:font-semibold [&_a]:text-brand-blue [&_a]:underline
-                        [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:text-brand-dark
-                        [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-extrabold [&_h3]:text-brand-dark
-                    "
-                >
-                    @if ($bodyLooksHtml)
-                        {!! $bodyRaw !!}
-                    @else
-                        {!! nl2br(e($bodyRaw)) !!}
-                    @endif
-                </div>
-            </div>
-        @endif
+        @if ($bodyRaw !== '' || $hasPeriode)
+            <div class="grid gap-6 {{ ($bodyRaw !== '' && $hasPeriode) ? 'lg:grid-cols-2' : '' }}">
+                @if ($bodyRaw !== '')
+                    <div id="role" class="scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+                        <div
+                            class="service-page-body max-w-none text-base leading-relaxed text-slate-700 sm:text-lg
+                                [&_p]:mb-3 [&_p:last-child]:mb-0
+                                [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6
+                                [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-6
+                                [&_li]:my-1
+                                [&_strong]:font-bold [&_b]:font-bold
+                                [&_a]:font-semibold [&_a]:text-brand-blue [&_a]:underline
+                                [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:text-brand-dark
+                                [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-extrabold [&_h3]:text-brand-dark
+                            "
+                        >
+                            @if ($bodyLooksHtml)
+                                {!! $bodyRaw !!}
+                            @else
+                                {!! nl2br(e($bodyRaw)) !!}
+                            @endif
+                        </div>
+                    </div>
+                @endif
 
-        @if ($hasPeriode)
-            <div id="periode" class="{{ $bodyRaw !== '' ? 'mt-10' : '' }} scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
-                <p class="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Période idéale</p>
-                <div class="max-w-none text-base leading-relaxed text-slate-700 sm:text-lg">
-                    <p class="mb-3">
-                        Pour un traitement de démoussage, l’idéal est d’intervenir lorsque les températures sont modérées et que la toiture est sèche, afin d’optimiser l’adhérence et l’efficacité du traitement.
-                    </p>
-                    <p class="mb-0">
-                        Évitez les périodes de gel, de fortes chaleurs et les épisodes très pluvieux. Un diagnostic sur place permet de valider la meilleure fenêtre d’intervention selon votre couverture et l’exposition.
-                    </p>
-                </div>
+                @if ($hasPeriode)
+                    <div id="periode" class="scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+                        <p class="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Période idéale</p>
+                        <div class="max-w-none text-base leading-relaxed text-slate-700 sm:text-lg">
+                            <p class="mb-3">
+                                Pour un traitement de démoussage, l’idéal est d’intervenir lorsque les températures sont modérées et que la toiture est sèche, afin d’optimiser l’adhérence et l’efficacité du traitement.
+                            </p>
+                            <p class="mb-0">
+                                Évitez les périodes de gel, de fortes chaleurs et les épisodes très pluvieux. Un diagnostic sur place permet de valider la meilleure fenêtre d’intervention selon votre couverture et l’exposition.
+                            </p>
+                        </div>
+                    </div>
+                @endif
             </div>
         @endif
 
@@ -286,9 +268,7 @@
             <h2 class="break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
                 <span class="text-brand-blue">Réalisations</span> avant / après
             </h2>
-            <p class="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-                Deux chantiers par ligne sur ordinateur : à gauche la photo <strong>avant</strong>, à droite la photo <strong>après</strong>.
-            </p>
+            <p class="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">Faites glisser le curseur pour comparer.</p>
         </div>
 
         @if ($reals !== [])
@@ -303,29 +283,33 @@
                         <div class="border-b border-slate-100 px-4 py-3">
                             <h3 class="break-words text-sm font-extrabold text-brand-dark sm:text-base">{{ $cardLabel }}</h3>
                         </div>
-                        <div class="grid grid-cols-2 gap-px bg-slate-200">
-                            <div class="relative min-h-0">
-                                <div
-                                    class="aspect-[4/3] w-full bg-cover bg-center bg-slate-100"
-                                    style="background-image:url('{{ $before }}')"
-                                    role="img"
-                                    aria-label="Avant — {{ $cardLabel }}"
-                                ></div>
-                                <div class="pointer-events-none absolute left-2 top-2 rounded-md bg-brand-dark/80 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-white sm:left-3 sm:top-3 sm:text-xs">
-                                    Avant
-                                </div>
+                        <div class="ba-compare relative w-full overflow-hidden bg-slate-900/5 aspect-[4/3]">
+                            <div
+                                class="ba-before absolute inset-0 z-0 bg-cover bg-center bg-slate-100"
+                                style="background-image:url('{{ $before }}')"
+                                role="img"
+                                aria-label="Avant — {{ $cardLabel }}"
+                            ></div>
+                            <div
+                                class="ba-after absolute inset-0 z-[1] bg-cover bg-center"
+                                style="background-image:url('{{ $after }}'); clip-path: inset(0 0 0 50%);"
+                                role="img"
+                                aria-label="Après — {{ $cardLabel }}"
+                            ></div>
+                            <div class="pointer-events-none absolute left-3 top-3 z-10 rounded-lg bg-brand-dark/70 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wide text-white">
+                                Avant
                             </div>
-                            <div class="relative min-h-0">
-                                <div
-                                    class="aspect-[4/3] w-full bg-cover bg-center bg-slate-100"
-                                    style="background-image:url('{{ $after }}')"
-                                    role="img"
-                                    aria-label="Après — {{ $cardLabel }}"
-                                ></div>
-                                <div class="pointer-events-none absolute right-2 top-2 rounded-md bg-brand-blue/90 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-white sm:right-3 sm:top-3 sm:text-xs">
-                                    Après
-                                </div>
+                            <div class="pointer-events-none absolute right-3 top-3 z-10 rounded-lg bg-brand-blue/85 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wide text-white">
+                                Après
                             </div>
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value="50"
+                                class="ba-range absolute bottom-3 left-3 right-3 z-20 h-3 w-auto cursor-ew-resize accent-brand-blue"
+                                aria-label="Comparer avant et après — {{ $cardLabel }}"
+                            >
                         </div>
                     </article>
                 @endforeach
@@ -357,16 +341,18 @@
                 ></div>
                 <div class="absolute inset-0 bg-gradient-to-br from-brand-dark/90 via-brand-dark/75 to-brand-dark/60" aria-hidden="true"></div>
 
-                <div class="relative z-10 flex min-h-[280px] flex-col justify-center p-6 sm:min-h-[320px] sm:p-8">
-                    <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-yellow">Un projet de rénovation ?</p>
-                    <h2 class="mt-2 break-words text-3xl font-extrabold leading-tight text-white sm:text-4xl">
-                        Démarrez dès maintenant
-                    </h2>
-                    <p class="mt-3 text-base leading-relaxed text-slate-100/95">
-                        Lancez le simulateur pour une première estimation, ou envoyez votre demande pour être contacté rapidement.
-                    </p>
+                <div class="relative z-10 flex min-h-[280px] flex-col p-6 sm:min-h-[320px] sm:p-8">
+                    <div>
+                        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-yellow">Un projet de rénovation ?</p>
+                        <h2 class="mt-2 break-words text-3xl font-extrabold leading-tight text-white sm:text-4xl">
+                            Démarrez dès maintenant
+                        </h2>
+                        <p class="mt-3 text-base leading-relaxed text-slate-100/95">
+                            Lancez le simulateur pour une première estimation, ou envoyez votre demande pour être contacté rapidement.
+                        </p>
+                    </div>
 
-                    <div class="mt-6 grid gap-3 sm:grid-cols-1">
+                    <div class="mt-auto grid gap-3 pt-6 sm:grid-cols-1">
                         <a
                             href="{{ route('home').'#simulateur-devis' }}"
                             class="inline-flex items-center justify-center rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500"

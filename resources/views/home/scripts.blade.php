@@ -299,14 +299,37 @@
         setHeroSlide(slideIds[0] || 1);
         startHeroAutoplay();
 
-        const range = document.getElementById('baRange');
+        const initBeforeAfterComparators = () => {
+            // Nouveau format (grille) : plusieurs comparateurs sur la même page.
+            const blocks = Array.from(document.querySelectorAll('.ba-compare'));
+            blocks.forEach((block) => {
+                const rangeEl = block.querySelector('input.ba-range');
+                const afterEl = block.querySelector('.ba-after');
+                if (!rangeEl || !afterEl) {
+                    return;
+                }
+                const apply = () => {
+                    afterEl.style.clipPath = `inset(0 0 0 ${Number(rangeEl.value)}%)`;
+                };
+                rangeEl.addEventListener('input', apply);
+                apply();
+            });
+
+            // Ancien format (un seul comparateur avec IDs) : conservé si présent.
+            const range = document.getElementById('baRange');
+            const afterLayer = document.getElementById('afterLayer');
+            if (range && afterLayer) {
+                const apply = () => {
+                    afterLayer.style.clipPath = `inset(0 0 0 ${Number(range.value)}%)`;
+                };
+                range.addEventListener('input', apply);
+                apply();
+            }
+        };
+        initBeforeAfterComparators();
+
         const beforeLayer = document.getElementById('beforeLayer');
         const afterLayer = document.getElementById('afterLayer');
-        if (range && afterLayer) {
-            range.addEventListener('input', () => {
-                afterLayer.style.clipPath = `inset(0 0 0 ${Number(range.value)}%)`;
-            });
-        }
 
         const baCases = @json($casesJs);
         const baCaseButtons = Array.from(document.querySelectorAll('.ba-case-btn'));
@@ -329,7 +352,9 @@
                 applyBeforeAfterCase(btn.dataset.baCase);
             });
         });
-        applyBeforeAfterCase('1');
+        if (baCaseButtons.length > 0) {
+            applyBeforeAfterCase('1');
+        }
 
         const serviceCtas = Array.from(document.querySelectorAll('#serviceGrid .service-card a'));
         serviceCtas.forEach((link) => {
