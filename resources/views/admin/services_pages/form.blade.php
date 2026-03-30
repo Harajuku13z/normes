@@ -24,6 +24,19 @@
             @method('PUT')
         @endif
 
+        @if ($isEdit && !empty($page->slug))
+            <div class="flex flex-wrap items-center justify-end">
+                <a
+                    href="{{ route('service.page', $page->slug) }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-slate-700 hover:bg-slate-50"
+                >
+                    Voir la page du service
+                </a>
+            </div>
+        @endif
+
         <div class="grid gap-4 lg:grid-cols-2">
             <div>
                 <label class="text-sm font-semibold text-slate-800">Slug (URL)</label>
@@ -60,18 +73,35 @@
         <div class="grid gap-4 lg:grid-cols-2">
             <div>
                 <label class="text-sm font-semibold text-slate-800">Image mise en avant (Homepage)</label>
-                <input name="featured_image" value="{{ old('featured_image', $page->featured_image ?? '') }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
-                <p class="mt-1 text-xs text-slate-500">Ex: <code class="rounded bg-white px-1">services/menuiserie2.jpg</code> ou <code class="rounded bg-white px-1">slide/toiture.png</code></p>
+                <input
+                    id="featuredImageUrl"
+                    name="featured_image"
+                    value="{{ old('featured_image', $page->featured_image ?? '') }}"
+                    class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                />
+                <input
+                    id="featuredImageFile"
+                    type="file"
+                    accept="image/*"
+                    class="mt-2 w-full text-sm"
+                />
+                <p class="mt-1 text-xs text-slate-500">Choisis une image sur ton PC, puis elle sera uploadée automatiquement.</p>
             </div>
             <div class="flex flex-col">
                 <label class="text-sm font-semibold text-slate-800">Aperçu</label>
                 <div class="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white">
                     @php $fimg = $page->featured_image ?? ''; @endphp
-                    @if (is_string($fimg) && trim($fimg) !== '')
-                        <img src="{{ \App\Support\HomeView::url($fimg) }}" alt="" class="h-40 w-full object-cover">
-                    @else
-                        <div class="h-40 w-full bg-slate-50"></div>
-                    @endif
+                    <img
+                        id="featuredImagePreview"
+                        src="{{ (is_string($fimg) && trim($fimg) !== '') ? \App\Support\HomeView::url($fimg) : '' }}"
+                        alt=""
+                        class="h-40 w-full object-cover"
+                        style="{{ (is_string($fimg) && trim($fimg) !== '') ? '' : 'display:none;' }}"
+                    >
+                    <div
+                        id="featuredImagePlaceholder"
+                        class="h-40 w-full bg-slate-50 {{ (is_string($fimg) && trim($fimg) !== '') ? 'hidden' : '' }}"
+                    ></div>
                 </div>
             </div>
         </div>
@@ -79,18 +109,35 @@
         <div class="grid gap-4 lg:grid-cols-2 mt-2">
             <div>
                 <label class="text-sm font-semibold text-slate-800">Image Hero (Page service)</label>
-                <input name="image" value="{{ old('image', $page->image ?? '') }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
-                <p class="mt-1 text-xs text-slate-500">Ex: <code class="rounded bg-white px-1">slide/toiture.png</code> ou <code class="rounded bg-white px-1">storage/uploads/...png</code></p>
+                <input
+                    id="heroImageUrl"
+                    name="image"
+                    value="{{ old('image', $page->image ?? '') }}"
+                    class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                />
+                <input
+                    id="heroImageFile"
+                    type="file"
+                    accept="image/*"
+                    class="mt-2 w-full text-sm"
+                />
+                <p class="mt-1 text-xs text-slate-500">Choisis une image sur ton PC, puis elle sera uploadée automatiquement.</p>
             </div>
             <div class="flex flex-col">
                 <label class="text-sm font-semibold text-slate-800">Aperçu</label>
                 <div class="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white">
                     @php $img = $page->image ?? ''; @endphp
-                    @if (is_string($img) && trim($img) !== '')
-                        <img src="{{ \App\Support\HomeView::url($img) }}" alt="" class="h-40 w-full object-cover">
-                    @else
-                        <div class="h-40 w-full bg-slate-50"></div>
-                    @endif
+                    <img
+                        id="heroImagePreview"
+                        src="{{ (is_string($img) && trim($img) !== '') ? \App\Support\HomeView::url($img) : '' }}"
+                        alt=""
+                        class="h-40 w-full object-cover"
+                        style="{{ (is_string($img) && trim($img) !== '') ? '' : 'display:none;' }}"
+                    >
+                    <div
+                        id="heroImagePlaceholder"
+                        class="h-40 w-full bg-slate-50 {{ (is_string($img) && trim($img) !== '') ? 'hidden' : '' }}"
+                    ></div>
                 </div>
             </div>
         </div>
@@ -117,5 +164,75 @@
             </button>
         </div>
     </form>
+
+    <script>
+        (function () {
+            const uploadUrl = @json(route('admin.upload'));
+            const csrfToken = @json(csrf_token());
+
+            async function uploadAndSet({ fileInput, urlInput, previewImg, placeholderDiv }) {
+                if (!fileInput || !urlInput || !previewImg || !placeholderDiv) return;
+                const file = fileInput.files && fileInput.files[0];
+                if (!file) return;
+
+                const fd = new FormData();
+                fd.append('file', file);
+
+                try {
+                    const res = await fetch(uploadUrl, {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+                        body: fd,
+                        credentials: 'same-origin'
+                    });
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok) throw new Error(data.message || 'Erreur upload');
+                    const url = data.url;
+                    if (!url) throw new Error('URL upload manquante');
+
+                    urlInput.value = url;
+                    previewImg.src = url;
+                    previewImg.style.display = 'block';
+                    placeholderDiv.classList.add('hidden');
+                } catch (err) {
+                    alert(String(err));
+                } finally {
+                    fileInput.value = '';
+                }
+            }
+
+            const featuredFile = document.getElementById('featuredImageFile');
+            const featuredUrl = document.getElementById('featuredImageUrl');
+            const featuredPreview = document.getElementById('featuredImagePreview');
+            const featuredPlaceholder = document.getElementById('featuredImagePlaceholder');
+
+            const heroFile = document.getElementById('heroImageFile');
+            const heroUrl = document.getElementById('heroImageUrl');
+            const heroPreview = document.getElementById('heroImagePreview');
+            const heroPlaceholder = document.getElementById('heroImagePlaceholder');
+
+            if (featuredFile) {
+                featuredFile.addEventListener('change', function () {
+                    uploadAndSet({
+                        fileInput: featuredFile,
+                        urlInput: featuredUrl,
+                        previewImg: featuredPreview,
+                        placeholderDiv: featuredPlaceholder,
+                    });
+                });
+            }
+
+            if (heroFile) {
+                heroFile.addEventListener('change', function () {
+                    uploadAndSet({
+                        fileInput: heroFile,
+                        urlInput: heroUrl,
+                        previewImg: heroPreview,
+                        placeholderDiv: heroPlaceholder,
+                    });
+                });
+            }
+        })();
+    </script>
 @endsection
 
