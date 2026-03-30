@@ -195,13 +195,33 @@
                     @endforeach
                 </div>
 
-                <div class="relative mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-                    <div id="beforeLayer" class="absolute inset-0 bg-cover bg-center" style="background-image:url('{{ $beforeUrl }}')"></div>
+                {{--
+                  Hauteur explicite : si tous les enfants sont en absolute, le bloc a hauteur 0
+                  et le comparateur semble « cassé ». aspect-ratio + min-h sécurise l’affichage.
+                --}}
+                <div
+                    class="relative mt-5 w-full max-h-[min(72vh,640px)] min-h-[220px] overflow-hidden rounded-2xl border border-slate-200 bg-slate-900/10 aspect-[16/10] sm:min-h-[260px]"
+                >
+                    <div
+                        id="beforeLayer"
+                        class="absolute inset-0 z-0 bg-cover bg-center bg-slate-200"
+                        style="background-image:url('{{ $beforeUrl }}')"
+                        role="img"
+                        aria-label="Photo avant travaux"
+                    ></div>
                     <div
                         id="afterLayer"
-                        class="absolute inset-0 bg-cover bg-center"
+                        class="absolute inset-0 z-[1] bg-cover bg-center"
                         style="background-image:url('{{ $afterUrl }}'); clip-path: inset(0 0 0 50%);"
+                        role="img"
+                        aria-label="Photo après travaux"
                     ></div>
+                    <div class="pointer-events-none absolute left-3 top-3 z-10 rounded-lg bg-brand-dark/70 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wide text-white">
+                        Avant
+                    </div>
+                    <div class="pointer-events-none absolute right-3 top-3 z-10 rounded-lg bg-brand-blue/85 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wide text-white">
+                        Après
+                    </div>
 
                     <input
                         id="baRange"
@@ -209,7 +229,7 @@
                         min="0"
                         max="100"
                         value="50"
-                        class="absolute bottom-3 left-3 right-3 z-20 h-2 w-auto cursor-pointer accent-brand-blue"
+                        class="absolute bottom-3 left-3 right-3 z-20 h-3 w-auto cursor-ew-resize accent-brand-blue"
                         aria-label="Comparer avant et après"
                     >
                 </div>
