@@ -451,7 +451,7 @@
                                 min="0"
                                 max="100"
                                 value="50"
-                                class="ba-range absolute bottom-3 left-3 right-3 z-20 h-3 w-auto cursor-ew-resize accent-brand-blue"
+                                class="ba-range absolute bottom-3 left-3 right-3 z-20 h-3 w-auto cursor-default accent-brand-blue sm:cursor-ew-resize"
                                 aria-label="Comparer avant et après — {{ $cardLabel }}"
                             >
                         </div>
