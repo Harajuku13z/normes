@@ -7,6 +7,7 @@ use App\Models\ServicePage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Schema;
 
 class AdminServicePagesController extends Controller
 {
@@ -46,16 +47,33 @@ class AdminServicePagesController extends Controller
             'body' => ['nullable', 'string'],
             'image' => ['nullable', 'string', 'max:500'],
             'featured_image' => ['nullable', 'string', 'max:500'],
+            'sub_services' => ['nullable', 'array'],
+            'sub_services.*.title' => ['nullable', 'string', 'max:190'],
+            'sub_services.*.image' => ['nullable', 'string', 'max:800'],
+            'realisations' => ['nullable', 'array'],
+            'realisations.*.label' => ['nullable', 'string', 'max:190'],
+            'realisations.*.before' => ['nullable', 'string', 'max:800'],
+            'realisations.*.after' => ['nullable', 'string', 'max:800'],
             'cta_text' => ['nullable', 'string', 'max:190'],
             'cta_href' => ['nullable', 'string', 'max:500'],
             'is_active' => ['nullable', 'boolean'],
         ]);
 
-        ServicePage::query()->create([
+        $payload = [
             'service_num' => $data['service_num'] ?? null,
             ...$data,
             'is_active' => (bool) ($data['is_active'] ?? true),
-        ]);
+        ];
+
+        // Compatibilité : si la migration n'est pas encore faite, on évite une erreur DB.
+        if (! Schema::hasColumn('service_pages', 'sub_services')) {
+            unset($payload['sub_services']);
+        }
+        if (! Schema::hasColumn('service_pages', 'realisations')) {
+            unset($payload['realisations']);
+        }
+
+        ServicePage::query()->create($payload);
 
         return redirect()->route('admin.services_pages.index')->with('status', 'Page service créée.');
     }
@@ -71,16 +89,32 @@ class AdminServicePagesController extends Controller
             'body' => ['nullable', 'string'],
             'image' => ['nullable', 'string', 'max:500'],
             'featured_image' => ['nullable', 'string', 'max:500'],
+            'sub_services' => ['nullable', 'array'],
+            'sub_services.*.title' => ['nullable', 'string', 'max:190'],
+            'sub_services.*.image' => ['nullable', 'string', 'max:800'],
+            'realisations' => ['nullable', 'array'],
+            'realisations.*.label' => ['nullable', 'string', 'max:190'],
+            'realisations.*.before' => ['nullable', 'string', 'max:800'],
+            'realisations.*.after' => ['nullable', 'string', 'max:800'],
             'cta_text' => ['nullable', 'string', 'max:190'],
             'cta_href' => ['nullable', 'string', 'max:500'],
             'is_active' => ['nullable', 'boolean'],
         ]);
 
-        $servicePage->update([
+        $payload = [
             'service_num' => $data['service_num'] ?? null,
             ...$data,
             'is_active' => (bool) ($data['is_active'] ?? true),
-        ]);
+        ];
+
+        if (! Schema::hasColumn('service_pages', 'sub_services')) {
+            unset($payload['sub_services']);
+        }
+        if (! Schema::hasColumn('service_pages', 'realisations')) {
+            unset($payload['realisations']);
+        }
+
+        $servicePage->update($payload);
 
         return redirect()->route('admin.services_pages.edit', $servicePage)->with('status', 'Page service enregistrée.');
     }

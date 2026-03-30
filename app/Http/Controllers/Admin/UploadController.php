@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
 
@@ -26,8 +26,10 @@ class UploadController extends Controller
         $targetExt = in_array($clientExt, ['jpg', 'jpeg', 'png', 'webp'], true) ? ($clientExt === 'jpeg' ? 'jpg' : $clientExt) : 'jpg';
 
         $filename = Str::random(24).'.'.$targetExt;
-        $relativePath = 'uploads/'.$filename;
-        $fullPath = Storage::disk('public')->path($relativePath);
+        $relativePath = 'uploads/'.$filename; // dans /public
+        $publicDir = public_path('uploads');
+        File::ensureDirectoryExists($publicDir);
+        $fullPath = $publicDir.DIRECTORY_SEPARATOR.$filename;
 
         $image = (new ImageManager(GdDriver::class))
             ->decodePath($file->getRealPath())
@@ -38,8 +40,8 @@ class UploadController extends Controller
         $image->save($fullPath, 85);
 
         return response()->json([
-            'url' => asset('storage/'.$relativePath),
-            'path' => 'storage/'.$relativePath,
+            'url' => asset($relativePath),
+            'path' => $relativePath,
         ]);
     }
 }

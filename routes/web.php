@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminHomepageController;
 use App\Http\Controllers\Admin\AdminServicePagesController;
 use App\Http\Controllers\ServicePagesController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -40,6 +41,9 @@ Route::prefix('admin')->group(function () {
 
 // Pages publiques dédiées aux services
 Route::get('/services/{slug}', [ServicePagesController::class, 'show'])->name('service.page');
+
+// Page publique contact (formulaire)
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.page');
 
 // Admin : pages dédiées aux services
 Route::middleware('admin')->prefix('admin')->group(function () {

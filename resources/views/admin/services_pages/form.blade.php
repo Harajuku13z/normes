@@ -1,6 +1,8 @@
 @php
     $isEdit = isset($page) && $page->exists;
     $pageTitle = $isEdit ? 'Modifier la page service' : 'Créer une page service';
+    $subServices = is_array($page->sub_services ?? null) ? $page->sub_services : [];
+    $realisations = is_array($page->realisations ?? null) ? $page->realisations : [];
 @endphp
 
 @extends('admin.layout')
@@ -153,6 +155,174 @@
             </div>
         </div>
 
+        {{-- Sous-services (6 à 9 cartes) --}}
+        <div class="space-y-4 pt-2">
+            <div>
+                <h2 class="text-sm font-extrabold text-slate-900">Sous-services (6 à 9 cartes)</h2>
+                <p class="mt-1 text-xs text-slate-500">Pour chaque carte : un titre + une image. Les cartes vides ne s'affichent pas.</p>
+            </div>
+
+            <div class="space-y-4">
+                @for ($i = 1; $i <= 9; $i++)
+                    @php
+                        $slot = is_array($subServices) ? (data_get($subServices, $i, []) ?: []) : [];
+                        $sTitle = old('sub_services.'.$i.'.title', data_get($slot, 'title', ''));
+                        $sImage = old('sub_services.'.$i.'.image', data_get($slot, 'image', ''));
+                    @endphp
+                    <div class="rounded-xl border border-slate-200 bg-white p-4">
+                        <div class="grid gap-4 lg:grid-cols-3 lg:items-start">
+                            <div>
+                                <label class="text-sm font-semibold text-slate-800">Titre carte {{ $i }}</label>
+                                <input
+                                    name="sub_services[{{ $i }}][title]"
+                                    value="{{ $sTitle }}"
+                                    class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                                />
+                            </div>
+
+                            <div class="lg:col-span-2">
+                                <div class="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+                                    <div>
+                                        <label class="text-sm font-semibold text-slate-800">Image (URL stockée)</label>
+                                        <input
+                                            id="subService{{ $i }}ImageUrl"
+                                            name="sub_services[{{ $i }}][image]"
+                                            value="{{ $sImage }}"
+                                            class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label class="text-sm font-semibold text-slate-800">Upload</label>
+                                        <input
+                                            id="subService{{ $i }}ImageFile"
+                                            type="file"
+                                            accept="image/*"
+                                            data-url-target="subService{{ $i }}ImageUrl"
+                                            data-preview-target="subService{{ $i }}ImagePreview"
+                                            data-placeholder-target="subService{{ $i }}ImagePlaceholder"
+                                            class="mt-2 w-full text-sm"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div class="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                                    <img
+                                        id="subService{{ $i }}ImagePreview"
+                                        src="{{ (is_string($sImage) && trim($sImage) !== '') ? \App\Support\HomeView::url($sImage) : '' }}"
+                                        alt=""
+                                        class="h-28 w-full object-cover"
+                                        style="{{ (is_string($sImage) && trim($sImage) !== '') ? '' : 'display:none;' }}"
+                                    >
+                                    <div
+                                        id="subService{{ $i }}ImagePlaceholder"
+                                        class="h-28 w-full bg-slate-50 {{ (is_string($sImage) && trim($sImage) !== '') ? 'hidden' : '' }}"
+                                    ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endfor
+            </div>
+        </div>
+
+        {{-- Réalisations avant / après (comparateur) --}}
+        <div class="space-y-4 pt-6">
+            <div>
+                <h2 class="text-sm font-extrabold text-slate-900">Réalisations (avant / après)</h2>
+                <p class="mt-1 text-xs text-slate-500">Ajoute les photos. Elles seront affichées dans la section “Réalisations” de la page service.</p>
+            </div>
+
+            <div class="space-y-4">
+                @for ($j = 1; $j <= 6; $j++)
+                    @php
+                        $rSlot = is_array($realisations) ? (data_get($realisations, $j, []) ?: []) : [];
+                        $rLabel = old('realisations.'.$j.'.label', data_get($rSlot, 'label', ''));
+                        $before = old('realisations.'.$j.'.before', data_get($rSlot, 'before', ''));
+                        $after = old('realisations.'.$j.'.after', data_get($rSlot, 'after', ''));
+                    @endphp
+                    <div class="rounded-xl border border-slate-200 bg-white p-4">
+                        <div class="grid gap-4 lg:grid-cols-2 lg:items-start">
+                            <div>
+                                <label class="text-sm font-semibold text-slate-800">Label du bouton (cas {{ $j }})</label>
+                                <input
+                                    name="realisations[{{ $j }}][label]"
+                                    value="{{ $rLabel }}"
+                                    class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                                />
+                            </div>
+
+                            <div class="grid gap-3 sm:grid-cols-2">
+                                <div>
+                                    <label class="text-sm font-semibold text-slate-800">Avant (URL)</label>
+                                    <input
+                                        id="realBefore{{ $j }}Url"
+                                        name="realisations[{{ $j }}][before]"
+                                        value="{{ $before }}"
+                                        class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                                    />
+                                    <input
+                                        id="realBefore{{ $j }}File"
+                                        type="file"
+                                        accept="image/*"
+                                        data-url-target="realBefore{{ $j }}Url"
+                                        data-preview-target="realBefore{{ $j }}Preview"
+                                        data-placeholder-target="realBefore{{ $j }}Placeholder"
+                                        class="mt-2 w-full text-sm"
+                                    />
+                                    <div class="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                                        <img
+                                            id="realBefore{{ $j }}Preview"
+                                            src="{{ (is_string($before) && trim($before) !== '') ? \App\Support\HomeView::url($before) : '' }}"
+                                            alt=""
+                                            class="h-28 w-full object-cover"
+                                            style="{{ (is_string($before) && trim($before) !== '') ? '' : 'display:none;' }}"
+                                        >
+                                        <div
+                                            id="realBefore{{ $j }}Placeholder"
+                                            class="h-28 w-full bg-slate-50 {{ (is_string($before) && trim($before) !== '') ? 'hidden' : '' }}"
+                                        ></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="text-sm font-semibold text-slate-800">Après (URL)</label>
+                                    <input
+                                        id="realAfter{{ $j }}Url"
+                                        name="realisations[{{ $j }}][after]"
+                                        value="{{ $after }}"
+                                        class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                                    />
+                                    <input
+                                        id="realAfter{{ $j }}File"
+                                        type="file"
+                                        accept="image/*"
+                                        data-url-target="realAfter{{ $j }}Url"
+                                        data-preview-target="realAfter{{ $j }}Preview"
+                                        data-placeholder-target="realAfter{{ $j }}Placeholder"
+                                        class="mt-2 w-full text-sm"
+                                    />
+                                    <div class="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                                        <img
+                                            id="realAfter{{ $j }}Preview"
+                                            src="{{ (is_string($after) && trim($after) !== '') ? \App\Support\HomeView::url($after) : '' }}"
+                                            alt=""
+                                            class="h-28 w-full object-cover"
+                                            style="{{ (is_string($after) && trim($after) !== '') ? '' : 'display:none;' }}"
+                                        >
+                                        <div
+                                            id="realAfter{{ $j }}Placeholder"
+                                            class="h-28 w-full bg-slate-50 {{ (is_string($after) && trim($after) !== '') ? 'hidden' : '' }}"
+                                        ></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endfor
+            </div>
+        </div>
+
         <label class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3">
             <input type="checkbox" name="is_active" value="1" class="h-4 w-4 rounded border-slate-300 text-sky-600" {{ (old('is_active', $page->is_active ?? true)) ? 'checked' : '' }}>
             <span class="text-sm font-semibold text-slate-800">Page active</span>
@@ -269,6 +439,36 @@
                     });
                 });
             }
+
+            // Uploads additionnels (sous-services + réalisations)
+            const extraFileInputs = document.querySelectorAll('input[type="file"][data-url-target][data-preview-target][data-placeholder-target]');
+            extraFileInputs.forEach(function (fileInput) {
+                const urlInput = document.getElementById(fileInput.dataset.urlTarget);
+                const previewImg = document.getElementById(fileInput.dataset.previewTarget);
+                const placeholderDiv = document.getElementById(fileInput.dataset.placeholderTarget);
+
+                if (!urlInput || !previewImg || !placeholderDiv) return;
+
+                // Fallback édition : si l'URL est déjà présente, forcer l'affichage.
+                try {
+                    if (String(urlInput.value || '').trim() !== '') {
+                        previewImg.src = urlInput.value;
+                        previewImg.style.display = 'block';
+                        placeholderDiv.classList.add('hidden');
+                    }
+                } catch (e) {
+                    // ignore
+                }
+
+                fileInput.addEventListener('change', function () {
+                    uploadAndSet({
+                        fileInput: fileInput,
+                        urlInput: urlInput,
+                        previewImg: previewImg,
+                        placeholderDiv: placeholderDiv,
+                    });
+                });
+            });
         })();
     </script>
 @endsection

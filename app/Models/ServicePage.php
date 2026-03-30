@@ -15,9 +15,16 @@ class ServicePage extends Model
         'body',
         'image',
         'featured_image',
+        'sub_services',
+        'realisations',
         'cta_text',
         'cta_href',
         'is_active',
+    ];
+
+    protected $casts = [
+        'sub_services' => 'array',
+        'realisations' => 'array',
     ];
 }
 
