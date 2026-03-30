@@ -19,20 +19,45 @@
             </div>
         </div>
     </header>
-    <main class="mx-auto max-w-5xl px-4 py-8 sm:px-6">
-        @if (session('status'))
-            <div class="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-900">{{ session('status') }}</div>
-        @endif
-        @if ($errors->any())
-            <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
-                <ul class="list-inside list-disc space-y-1">
-                    @foreach ($errors->all() as $e)
-                        <li>{{ $e }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-        @yield('content')
-    </main>
+    @php
+        $currentRoute = request()->route() ? request()->route()->getName() : null;
+        $isDashboard = $currentRoute === 'admin.dashboard';
+        $isHomepage = $currentRoute === 'admin.homepage.edit' || $currentRoute === 'admin.homepage.update';
+    @endphp
+    <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+        <div class="flex gap-6">
+            <aside class="hidden w-64 shrink-0 lg:block">
+                <nav class="rounded-2xl border border-slate-200 bg-white p-3">
+                    <p class="px-2 text-xs font-extrabold uppercase tracking-wide text-slate-500">Menu admin</p>
+                    <div class="mt-3 space-y-2">
+                        <a href="{{ route('admin.dashboard') }}"
+                           class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isDashboard ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
+                            Accueil
+                        </a>
+                        <a href="{{ route('admin.homepage.edit') }}"
+                           class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isHomepage ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
+                            Homepage
+                        </a>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="min-w-0 flex-1">
+                @if (session('status'))
+                    <div class="mb-6 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-900">{{ session('status') }}</div>
+                @endif
+                @if ($errors->any())
+                    <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
+                        <ul class="list-inside list-disc space-y-1">
+                            @foreach ($errors->all() as $e)
+                                <li>{{ $e }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                @yield('content')
+            </main>
+        </div>
+    </div>
 </body>
 </html>

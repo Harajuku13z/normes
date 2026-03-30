@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminUserAuthController;
 use App\Http\Controllers\Admin\HomeAdminController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\UploadController;
+use App\Http\Controllers\Admin\AdminHomepageController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,9 @@ Route::prefix('admin')->group(function () {
         Route::get('/section/{key}', [HomeAdminController::class, 'edit'])->name('admin.section.edit');
         Route::put('/section/{key}', [HomeAdminController::class, 'update'])->name('admin.section.update');
         Route::post('/upload', [UploadController::class, 'store'])->name('admin.upload');
+
+        Route::get('/homepage', [AdminHomepageController::class, 'edit'])->name('admin.homepage.edit');
+        Route::post('/homepage', [AdminHomepageController::class, 'update'])->name('admin.homepage.update');
     });
 
     Route::middleware('elizo_adminuser')->group(function () {
