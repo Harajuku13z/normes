@@ -458,6 +458,75 @@
             </div>
         </div>
 
+        {{-- Partenaires associés au service --}}
+        @php
+            $sp = is_array($page->service_partners ?? null) ? $page->service_partners : [];
+            $spPhrase = old('service_partners.phrase', (string) data_get($sp, 'phrase', ''));
+            $spLogos = is_array(data_get($sp, 'logos', [])) ? data_get($sp, 'logos', []) : [];
+        @endphp
+        <div class="space-y-4 pt-6">
+            <div>
+                <h2 class="text-sm font-extrabold text-slate-900">Partenaires associés</h2>
+                <p class="mt-1 text-xs text-slate-500">Logos + phrase (spécifiques à ce service). Si vide, rien ne s’affiche sur la page publique.</p>
+            </div>
+
+            <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                <label class="text-sm font-semibold text-slate-800">Phrase</label>
+                <textarea
+                    name="service_partners[phrase]"
+                    rows="2"
+                    placeholder="Ex. Partenaires et fabricants sélectionnés selon votre couverture et votre région."
+                    class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                >{{ $spPhrase }}</textarea>
+            </div>
+
+            <div class="grid gap-4">
+                @for ($k = 1; $k <= 6; $k++)
+                    @php
+                        $logoVal = old('service_partners.logos.'.$k, (string) data_get($spLogos, $k, ''));
+                    @endphp
+                    <div class="rounded-xl border border-slate-200 bg-white p-4">
+                        <div class="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+                            <div>
+                                <label class="text-sm font-semibold text-slate-800">Logo {{ $k }} (URL)</label>
+                                <input
+                                    id="servicePartnerLogo{{ $k }}Url"
+                                    name="service_partners[logos][{{ $k }}]"
+                                    value="{{ $logoVal }}"
+                                    class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                                />
+                            </div>
+                            <div>
+                                <label class="text-sm font-semibold text-slate-800">Upload</label>
+                                <input
+                                    id="servicePartnerLogo{{ $k }}File"
+                                    type="file"
+                                    accept="image/*"
+                                    data-url-target="servicePartnerLogo{{ $k }}Url"
+                                    data-preview-target="servicePartnerLogo{{ $k }}Preview"
+                                    data-placeholder-target="servicePartnerLogo{{ $k }}Placeholder"
+                                    class="mt-2 w-full text-sm"
+                                />
+                            </div>
+                        </div>
+                        <div class="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                            <img
+                                id="servicePartnerLogo{{ $k }}Preview"
+                                src="{{ (is_string($logoVal) && trim($logoVal) !== '') ? \App\Support\HomeView::url($logoVal) : '' }}"
+                                alt=""
+                                class="h-24 w-full object-contain p-3"
+                                style="{{ (is_string($logoVal) && trim($logoVal) !== '') ? '' : 'display:none;' }}"
+                            >
+                            <div
+                                id="servicePartnerLogo{{ $k }}Placeholder"
+                                class="h-24 w-full bg-slate-50 {{ (is_string($logoVal) && trim($logoVal) !== '') ? 'hidden' : '' }}"
+                            ></div>
+                        </div>
+                    </div>
+                @endfor
+            </div>
+        </div>
+
         <label class="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3">
             <input type="checkbox" name="is_active" value="1" class="h-4 w-4 rounded border-slate-300 text-sky-600" {{ (old('is_active', $page->is_active ?? true)) ? 'checked' : '' }}>
             <span class="text-sm font-semibold text-slate-800">Page active</span>

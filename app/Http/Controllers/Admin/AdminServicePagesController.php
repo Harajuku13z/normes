@@ -60,6 +60,10 @@ class AdminServicePagesController extends Controller
             'realisations.*.label' => ['nullable', 'string', 'max:190'],
             'realisations.*.before' => ['nullable', 'string', 'max:800'],
             'realisations.*.after' => ['nullable', 'string', 'max:800'],
+            'service_partners' => ['nullable', 'array'],
+            'service_partners.phrase' => ['nullable', 'string', 'max:300'],
+            'service_partners.logos' => ['nullable', 'array'],
+            'service_partners.logos.*' => ['nullable', 'string', 'max:800'],
             'cta_text' => ['nullable', 'string', 'max:190'],
             'cta_href' => ['nullable', 'string', 'max:500'],
             'cta_card_background' => ['nullable', 'string', 'max:800'],
@@ -97,6 +101,9 @@ class AdminServicePagesController extends Controller
         if (! Schema::hasColumn('service_pages', 'realisations')) {
             unset($payload['realisations']);
         }
+        if (! Schema::hasColumn('service_pages', 'service_partners')) {
+            unset($payload['service_partners']);
+        }
 
         ServicePage::query()->create($payload);
 
@@ -127,6 +134,10 @@ class AdminServicePagesController extends Controller
             'realisations.*.label' => ['nullable', 'string', 'max:190'],
             'realisations.*.before' => ['nullable', 'string', 'max:800'],
             'realisations.*.after' => ['nullable', 'string', 'max:800'],
+            'service_partners' => ['nullable', 'array'],
+            'service_partners.phrase' => ['nullable', 'string', 'max:300'],
+            'service_partners.logos' => ['nullable', 'array'],
+            'service_partners.logos.*' => ['nullable', 'string', 'max:800'],
             'cta_text' => ['nullable', 'string', 'max:190'],
             'cta_href' => ['nullable', 'string', 'max:500'],
             'cta_card_background' => ['nullable', 'string', 'max:800'],
@@ -162,6 +173,9 @@ class AdminServicePagesController extends Controller
         }
         if (! Schema::hasColumn('service_pages', 'realisations')) {
             unset($payload['realisations']);
+        }
+        if (! Schema::hasColumn('service_pages', 'service_partners')) {
+            unset($payload['service_partners']);
         }
 
         $servicePage->update($payload);

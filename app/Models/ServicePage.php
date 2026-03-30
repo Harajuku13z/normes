@@ -22,6 +22,7 @@ class ServicePage extends Model
         'sub_services_section_title',
         'sub_services_section_intro',
         'realisations',
+        'service_partners',
         'cta_text',
         'cta_href',
         'cta_card_background',
@@ -31,6 +32,7 @@ class ServicePage extends Model
     protected $casts = [
         'sub_services' => 'array',
         'realisations' => 'array',
+        'service_partners' => 'array',
     ];
 }
 

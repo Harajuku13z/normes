@@ -80,7 +80,6 @@
     // On affiche toujours la nav, et on rend certains onglets optionnels selon le contenu disponible.
     $hasRole = trim((string) ($page->body ?? '')) !== '' || trim((string) ($page->intro ?? '')) !== '';
     $hasEtapes = is_array($page->sub_services ?? null) && $page->sub_services !== [];
-    $hasPeriode = str_contains((string) $page->slug, 'demouss') || str_contains((string) $page->slug, 'démouss');
 @endphp
 
 {{-- Intro + image mise en avant + CTA (juste après le hero) --}}
@@ -185,8 +184,19 @@
         @endphp
 
         {{-- Description du service : toujours avant les sous-services --}}
-        @if ($bodyRaw !== '' || $hasPeriode)
-            <div class="grid gap-6 {{ ($bodyRaw !== '' && $hasPeriode) ? 'lg:grid-cols-2' : '' }}">
+        @php
+            $sidebarAvisScore = (string) data_get($h, 'sidebar_avis.score', '5.0/5');
+            $sidebarAvisText = (string) data_get($h, 'sidebar_avis.text', '+100 avis');
+            $servicePartners = is_array($page->service_partners ?? null) ? $page->service_partners : [];
+            $servicePartnersPhrase = trim((string) data_get($servicePartners, 'phrase', ''));
+            $servicePartnersLogos = collect((array) data_get($servicePartners, 'logos', []))
+                ->filter(fn ($v) => is_string($v) && trim($v) !== '')
+                ->values()
+                ->all();
+        @endphp
+
+        @if ($bodyRaw !== '' || $servicePartnersLogos !== [])
+            <div class="grid gap-6 {{ ($bodyRaw !== '' && ($servicePartnersLogos !== [])) ? 'lg:grid-cols-2' : '' }}">
                 @if ($bodyRaw !== '')
                     <div id="role" class="scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
                         <div
@@ -210,19 +220,52 @@
                     </div>
                 @endif
 
-                @if ($hasPeriode)
-                    <div id="periode" class="scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
-                        <p class="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Période idéale</p>
-                        <div class="max-w-none text-base leading-relaxed text-slate-700 sm:text-lg">
-                            <p class="mb-3">
-                                Pour un traitement de démoussage, l’idéal est d’intervenir lorsque les températures sont modérées et que la toiture est sèche, afin d’optimiser l’adhérence et l’efficacité du traitement.
-                            </p>
-                            <p class="mb-0">
-                                Évitez les périodes de gel, de fortes chaleurs et les épisodes très pluvieux. Un diagnostic sur place permet de valider la meilleure fenêtre d’intervention selon votre couverture et l’exposition.
-                            </p>
+                <div class="grid gap-6">
+                    <div class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+                        <p class="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Chiffres clés</p>
+                        <div class="grid gap-4 sm:grid-cols-3">
+                            <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+                                <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">Avis</p>
+                                <p class="mt-2 text-2xl font-black text-brand-dark">{{ $sidebarAvisScore }}</p>
+                                <p class="mt-1 text-sm font-semibold text-slate-600">{{ $sidebarAvisText }}</p>
+                            </div>
+                            <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+                                <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">Délai</p>
+                                <p class="mt-2 text-2xl font-black text-brand-dark">48h</p>
+                                <p class="mt-1 text-sm font-semibold text-slate-600">Réponse en général</p>
+                            </div>
+                            <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+                                <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">Devis</p>
+                                <p class="mt-2 text-2xl font-black text-brand-dark">0€</p>
+                                <p class="mt-1 text-sm font-semibold text-slate-600">Sans engagement</p>
+                            </div>
                         </div>
                     </div>
-                @endif
+
+                    @if ($servicePartnersLogos !== [])
+                        <div class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+                            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Partenaires associés</p>
+                            @if ($servicePartnersPhrase !== '')
+                                <p class="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">{{ $servicePartnersPhrase }}</p>
+                            @endif
+                            <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                                @foreach (array_slice($servicePartnersLogos, 0, 6) as $src)
+                                    <div class="flex items-center justify-center rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                                        <img
+                                            src="{{ HomeView::url($src) }}"
+                                            alt="Logo partenaire"
+                                            class="h-10 w-auto max-w-[10rem] object-contain"
+                                            width="200"
+                                            height="80"
+                                            loading="lazy"
+                                            decoding="async"
+                                        >
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
             </div>
         @endif
 
