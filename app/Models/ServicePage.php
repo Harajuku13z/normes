@@ -16,6 +16,8 @@ class ServicePage extends Model
         'image',
         'featured_image',
         'sub_services',
+        'sub_services_section_title',
+        'sub_services_section_intro',
         'realisations',
         'cta_text',
         'cta_href',

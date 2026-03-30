@@ -47,8 +47,11 @@ class AdminServicePagesController extends Controller
             'body' => ['nullable', 'string'],
             'image' => ['nullable', 'string', 'max:500'],
             'featured_image' => ['nullable', 'string', 'max:500'],
+            'sub_services_section_title' => ['nullable', 'string', 'max:190'],
+            'sub_services_section_intro' => ['nullable', 'string'],
             'sub_services' => ['nullable', 'array'],
             'sub_services.*.title' => ['nullable', 'string', 'max:190'],
+            'sub_services.*.subtitle' => ['nullable', 'string', 'max:300'],
             'sub_services.*.image' => ['nullable', 'string', 'max:800'],
             'realisations' => ['nullable', 'array'],
             'realisations.*.label' => ['nullable', 'string', 'max:190'],
@@ -68,6 +71,12 @@ class AdminServicePagesController extends Controller
         // Compatibilité : si la migration n'est pas encore faite, on évite une erreur DB.
         if (! Schema::hasColumn('service_pages', 'sub_services')) {
             unset($payload['sub_services']);
+        }
+        if (! Schema::hasColumn('service_pages', 'sub_services_section_title')) {
+            unset($payload['sub_services_section_title']);
+        }
+        if (! Schema::hasColumn('service_pages', 'sub_services_section_intro')) {
+            unset($payload['sub_services_section_intro']);
         }
         if (! Schema::hasColumn('service_pages', 'realisations')) {
             unset($payload['realisations']);
@@ -89,8 +98,11 @@ class AdminServicePagesController extends Controller
             'body' => ['nullable', 'string'],
             'image' => ['nullable', 'string', 'max:500'],
             'featured_image' => ['nullable', 'string', 'max:500'],
+            'sub_services_section_title' => ['nullable', 'string', 'max:190'],
+            'sub_services_section_intro' => ['nullable', 'string'],
             'sub_services' => ['nullable', 'array'],
             'sub_services.*.title' => ['nullable', 'string', 'max:190'],
+            'sub_services.*.subtitle' => ['nullable', 'string', 'max:300'],
             'sub_services.*.image' => ['nullable', 'string', 'max:800'],
             'realisations' => ['nullable', 'array'],
             'realisations.*.label' => ['nullable', 'string', 'max:190'],
@@ -109,6 +121,12 @@ class AdminServicePagesController extends Controller
 
         if (! Schema::hasColumn('service_pages', 'sub_services')) {
             unset($payload['sub_services']);
+        }
+        if (! Schema::hasColumn('service_pages', 'sub_services_section_title')) {
+            unset($payload['sub_services_section_title']);
+        }
+        if (! Schema::hasColumn('service_pages', 'sub_services_section_intro')) {
+            unset($payload['sub_services_section_intro']);
         }
         if (! Schema::hasColumn('service_pages', 'realisations')) {
             unset($payload['realisations']);

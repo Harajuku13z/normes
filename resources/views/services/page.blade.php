@@ -82,22 +82,35 @@
 <section class="scroll-mt-24 bg-slate-50/70 py-12 sm:py-16">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         @if ($subServices !== [])
+            @php
+                $sectionHeading = trim((string) ($page->sub_services_section_title ?? ''));
+                $accent = 'Sous';
+                $rest = 'prestations';
+                if ($sectionHeading !== '') {
+                    $parts = preg_split('/\s+/', $sectionHeading, 2, PREG_SPLIT_NO_EMPTY);
+                    $accent = $parts[0] ?? $sectionHeading;
+                    $rest = isset($parts[1]) ? $parts[1] : '';
+                }
+            @endphp
             <div class="mb-6">
                 <h2 class="break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
-                    <span class="text-brand-blue">Sous</span> prestations
+                    <span class="text-brand-blue">{{ $accent }}</span>{{ $rest !== '' ? ' '.$rest : '' }}
                 </h2>
-                <p class="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
-                    Des solutions adaptées à votre toiture, sélectionnées pour des résultats durables.
-                </p>
+                @if (!empty(trim((string) ($page->sub_services_section_intro ?? ''))))
+                    <p class="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                        {{ $page->sub_services_section_intro }}
+                    </p>
+                @endif
             </div>
 
             <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach (array_slice($subServices, 0, 9) as $s)
                     @php
                         $title = (string) data_get($s, 'title', '');
+                        $sub = trim((string) data_get($s, 'subtitle', ''));
                         $img = HomeView::url((string) data_get($s, 'image', ''));
                     @endphp
-                    <article class="service-card relative h-[280px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5">
+                    <article class="service-card relative min-h-[300px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5 sm:min-h-[320px]">
                         <div class="absolute inset-0">
                             <img
                                 src="{{ $img }}"
@@ -109,9 +122,14 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/95 via-brand-dark/65 to-transparent"></div>
                         </div>
                         <div class="absolute inset-x-0 bottom-0 z-10 p-6">
-                            <h3 class="text-2xl font-black leading-snug text-white sm:text-3xl">
+                            <h3 class="break-words text-2xl font-black leading-snug text-white sm:text-3xl">
                                 {{ $title }}
                             </h3>
+                            @if ($sub !== '')
+                                <p class="mt-2 break-words text-sm leading-relaxed text-white/90 sm:text-base">
+                                    {{ $sub }}
+                                </p>
+                            @endif
                         </div>
                     </article>
                 @endforeach

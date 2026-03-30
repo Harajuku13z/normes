@@ -159,7 +159,28 @@
         <div class="space-y-4 pt-2">
             <div>
                 <h2 class="text-sm font-extrabold text-slate-900">Sous-services (6 à 9 cartes)</h2>
-                <p class="mt-1 text-xs text-slate-500">Pour chaque carte : un titre + une image. Les cartes vides ne s'affichent pas.</p>
+                <p class="mt-1 text-xs text-slate-500">Titre et texte d’introduction pour toute la section, puis pour chaque carte : titre, sous-titre et image. Les cartes sans titre + image ne s’affichent pas.</p>
+            </div>
+
+            <div class="grid gap-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4 lg:grid-cols-2">
+                <div>
+                    <label class="text-sm font-semibold text-slate-800">Titre de la section (au-dessus des cartes)</label>
+                    <input
+                        name="sub_services_section_title"
+                        value="{{ old('sub_services_section_title', $page->sub_services_section_title ?? '') }}"
+                        placeholder="Ex. Sous prestations"
+                        class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                    />
+                    <p class="mt-1 text-xs text-slate-500">Sur le site, le premier mot sera en bleu (comme les autres titres), le reste en bleu nuit.</p>
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-800">Texte sous le titre (optionnel)</label>
+                    <textarea
+                        name="sub_services_section_intro"
+                        rows="3"
+                        class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                    >{{ old('sub_services_section_intro', $page->sub_services_section_intro ?? '') }}</textarea>
+                </div>
             </div>
 
             <div class="space-y-4">
@@ -167,17 +188,28 @@
                     @php
                         $slot = is_array($subServices) ? (data_get($subServices, $i, []) ?: []) : [];
                         $sTitle = old('sub_services.'.$i.'.title', data_get($slot, 'title', ''));
+                        $sSubtitle = old('sub_services.'.$i.'.subtitle', data_get($slot, 'subtitle', ''));
                         $sImage = old('sub_services.'.$i.'.image', data_get($slot, 'image', ''));
                     @endphp
                     <div class="rounded-xl border border-slate-200 bg-white p-4">
                         <div class="grid gap-4 lg:grid-cols-3 lg:items-start">
-                            <div>
-                                <label class="text-sm font-semibold text-slate-800">Titre carte {{ $i }}</label>
-                                <input
-                                    name="sub_services[{{ $i }}][title]"
-                                    value="{{ $sTitle }}"
-                                    class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
-                                />
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-sm font-semibold text-slate-800">Titre carte {{ $i }}</label>
+                                    <input
+                                        name="sub_services[{{ $i }}][title]"
+                                        value="{{ $sTitle }}"
+                                        class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                                    />
+                                </div>
+                                <div>
+                                    <label class="text-sm font-semibold text-slate-800">Sous-titre carte {{ $i }}</label>
+                                    <textarea
+                                        name="sub_services[{{ $i }}][subtitle]"
+                                        rows="2"
+                                        class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                                    >{{ $sSubtitle }}</textarea>
+                                </div>
                             </div>
 
                             <div class="lg:col-span-2">
