@@ -68,5 +68,28 @@
             </main>
         </div>
     </div>
+
+    <footer class="border-t border-slate-200 bg-white/70">
+        @php
+            $footerWrapClasses = $isHomepage ? 'w-full max-w-none px-4 py-8 sm:px-6' : 'mx-auto max-w-5xl px-4 py-8 sm:px-6';
+        @endphp
+        <div class="{{ $footerWrapClasses }}">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                <p class="text-sm font-semibold text-slate-700">
+                    Admin Normes &amp; Rénovation
+                </p>
+                <p class="text-xs text-slate-500">
+                    © <span id="adminFooterYear"></span> — Tous droits réservés.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            const y = document.getElementById('adminFooterYear');
+            if (y) y.textContent = String(new Date().getFullYear());
+        })();
+    </script>
 </body>
 </html>

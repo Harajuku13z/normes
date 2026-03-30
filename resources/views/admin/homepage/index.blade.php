@@ -24,13 +24,13 @@
     <form method="post" action="{{ route('admin.homepage.update') }}" class="mt-8 space-y-6">
         @csrf
 
-        <div class="grid gap-4 lg:grid-cols-2">
+        <div class="flex flex-col gap-4">
             @foreach ($keys as $key)
                 @php
                     $value = $merged[$key] ?? [];
                     $label = $labels[$key] ?? $key;
                 @endphp
-                <details class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" open>
+                <details class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <summary class="cursor-pointer select-none">
                         <div class="flex items-center justify-between gap-4">
                             <div class="min-w-0">
