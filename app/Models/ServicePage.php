@@ -23,6 +23,7 @@ class ServicePage extends Model
         'sub_services_section_intro',
         'realisations',
         'service_partners',
+        'technical_doc',
         'cta_text',
         'cta_href',
         'cta_card_background',

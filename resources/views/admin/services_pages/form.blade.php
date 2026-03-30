@@ -214,6 +214,42 @@
             </div>
         </div>
 
+        {{-- Doc technique (PDF / document) --}}
+        <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+            <h3 class="text-sm font-extrabold text-slate-900">Doc technique (optionnel)</h3>
+            <p class="mt-1 text-xs text-slate-500">Permet d’uploader un PDF (ou document) existant et d’afficher un lien sur la page service.</p>
+            @php $techDoc = old('technical_doc', $page->technical_doc ?? ''); @endphp
+            <div class="mt-4 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+                <div>
+                    <label class="text-sm font-semibold text-slate-800">URL document</label>
+                    <input
+                        id="technicalDocUrl"
+                        name="technical_doc"
+                        value="{{ $techDoc }}"
+                        placeholder="/uploads/docs/fiche-technique.pdf"
+                        class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                    />
+                    @if (is_string($techDoc) && trim($techDoc) !== '')
+                        <a href="{{ \App\Support\HomeView::url($techDoc) }}" target="_blank" rel="noopener noreferrer" class="mt-2 inline-flex text-sm font-extrabold text-sky-700 hover:underline">
+                            Ouvrir le document ↗
+                        </a>
+                    @endif
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-800">Upload</label>
+                    <input
+                        id="technicalDocFile"
+                        type="file"
+                        accept="application/pdf,image/*"
+                        data-url-target="technicalDocUrl"
+                        data-preview-target=""
+                        data-placeholder-target=""
+                        class="mt-2 w-full text-sm"
+                    />
+                </div>
+            </div>
+        </div>
+
         <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
             <h3 class="text-sm font-extrabold text-slate-900">Image de fond — carte « Un projet de rénovation ? »</h3>
             <p class="mt-1 text-xs text-slate-500">
@@ -563,12 +599,14 @@
                 }
 
             async function uploadAndSet({ fileInput, urlInput, previewImg, placeholderDiv }) {
-                if (!fileInput || !urlInput || !previewImg || !placeholderDiv) return;
+                if (!fileInput || !urlInput) return;
                 const file = fileInput.files && fileInput.files[0];
                 if (!file) return;
 
                     // Preview instant (avant upload) pour éviter "aperçu qui ne s'affiche pas".
-                    showPreviewFromLocalFile({ file, previewImg, placeholderDiv });
+                    if (previewImg && placeholderDiv) {
+                        showPreviewFromLocalFile({ file, previewImg, placeholderDiv });
+                    }
 
                 const fd = new FormData();
                 fd.append('file', file);
@@ -586,9 +624,11 @@
                     if (!url) throw new Error('URL upload manquante');
 
                     urlInput.value = url;
-                    previewImg.src = url;
-                    previewImg.style.display = 'block';
-                    placeholderDiv.classList.add('hidden');
+                    if (previewImg && placeholderDiv) {
+                        previewImg.src = url;
+                        previewImg.style.display = 'block';
+                        placeholderDiv.classList.add('hidden');
+                    }
                 } catch (err) {
                     alert(String(err));
                 } finally {
@@ -648,14 +688,14 @@
             const extraFileInputs = document.querySelectorAll('input[type="file"][data-url-target][data-preview-target][data-placeholder-target]');
             extraFileInputs.forEach(function (fileInput) {
                 const urlInput = document.getElementById(fileInput.dataset.urlTarget);
-                const previewImg = document.getElementById(fileInput.dataset.previewTarget);
-                const placeholderDiv = document.getElementById(fileInput.dataset.placeholderTarget);
+                const previewImg = fileInput.dataset.previewTarget ? document.getElementById(fileInput.dataset.previewTarget) : null;
+                const placeholderDiv = fileInput.dataset.placeholderTarget ? document.getElementById(fileInput.dataset.placeholderTarget) : null;
 
-                if (!urlInput || !previewImg || !placeholderDiv) return;
+                if (!urlInput) return;
 
                 // Fallback édition : si l'URL est déjà présente, forcer l'affichage.
                 try {
-                    if (String(urlInput.value || '').trim() !== '') {
+                    if (previewImg && placeholderDiv && String(urlInput.value || '').trim() !== '') {
                         previewImg.src = urlInput.value;
                         previewImg.style.display = 'block';
                         placeholderDiv.classList.add('hidden');

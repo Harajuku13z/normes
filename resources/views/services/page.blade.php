@@ -110,6 +110,16 @@
                         <a href="{{ $secondaryHref }}" class="inline-flex items-center justify-center rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:bg-yellow-300">
                             {{ $secondaryText }}
                         </a>
+                        @if (!empty(trim((string) ($page->technical_doc ?? ''))))
+                            <a
+                                href="{{ HomeView::url((string) $page->technical_doc) }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-extrabold text-brand-dark shadow-sm transition hover:border-slate-300 hover:bg-slate-50"
+                            >
+                                Doc technique <span class="ml-1" aria-hidden="true">↗</span>
+                            </a>
+                        @endif
                     </div>
 
                     <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
@@ -318,6 +328,12 @@
                                     {{ $sub }}
                                 </p>
                             @endif
+                            <a
+                                href="#devis"
+                                class="mt-5 inline-flex w-fit items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm font-extrabold text-white ring-1 ring-white/20 backdrop-blur transition hover:bg-white/15 hover:ring-white/35"
+                            >
+                                C’EST CE QU’IL ME FAUT <span aria-hidden="true">⟶</span>
+                            </a>
                         </div>
                     </article>
                 @endforeach
