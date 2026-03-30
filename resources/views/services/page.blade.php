@@ -258,16 +258,7 @@
                         </div>
                     </div>
 
-                    @if (is_array($globalPartnerLogos) && $globalPartnerLogos !== [])
-                        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8" aria-label="Partenaires et certification">
-                            <div class="mx-auto w-full">
-                                @include('home._partners_marquee', ['home' => $h])
-                            </div>
-                            @if ($servicePartnersPhrase !== '')
-                                <p class="mt-4 text-sm leading-relaxed text-slate-600 sm:text-base">{{ $servicePartnersPhrase }}</p>
-                            @endif
-                        </div>
-                    @endif
+                    {{-- Logos partenaires déplacés avant le footer --}}
                 </div>
             </div>
         @endif
@@ -490,6 +481,11 @@
 
 {{-- Section formulaire identique à la page d'accueil (source unique) --}}
 @include('home.devis', ['home' => $h])
+
+{{-- Partenaires & certification (juste avant le footer) --}}
+@if (is_array(data_get($h, 'partners.logos', [])) && data_get($h, 'partners.logos', []) !== [])
+    @include('home.partners', ['home' => $h])
+@endif
 
 @include('home.footer', ['home' => $h])
 
