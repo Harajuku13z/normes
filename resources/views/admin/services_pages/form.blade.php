@@ -170,10 +170,31 @@
             const uploadUrl = @json(route('admin.upload'));
             const csrfToken = @json(csrf_token());
 
+                function showPreviewFromLocalFile({ file, previewImg, placeholderDiv }) {
+                    try {
+                        const reader = new FileReader();
+                        reader.onload = function () {
+                            if (previewImg) {
+                                previewImg.src = String(reader.result || '');
+                                previewImg.style.display = 'block';
+                            }
+                            if (placeholderDiv) {
+                                placeholderDiv.classList.add('hidden');
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    } catch (e) {
+                        // ignore (preview only)
+                    }
+                }
+
             async function uploadAndSet({ fileInput, urlInput, previewImg, placeholderDiv }) {
                 if (!fileInput || !urlInput || !previewImg || !placeholderDiv) return;
                 const file = fileInput.files && fileInput.files[0];
                 if (!file) return;
+
+                    // Preview instant (avant upload) pour éviter "aperçu qui ne s'affiche pas".
+                    showPreviewFromLocalFile({ file, previewImg, placeholderDiv });
 
                 const fd = new FormData();
                 fd.append('file', file);
