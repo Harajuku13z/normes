@@ -475,7 +475,7 @@
                     ></div>
                     <div class="absolute inset-0 bg-gradient-to-br from-brand-dark/90 via-brand-dark/75 to-brand-dark/60" aria-hidden="true"></div>
 
-                    <div class="relative z-10 flex min-h-[280px] flex-col items-center justify-end p-6 text-center sm:min-h-[320px] sm:p-8">
+                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-end p-6 pb-8 text-center sm:justify-center sm:p-8">
                         <div class="w-full max-w-md">
                             <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-yellow">Un projet de rénovation ?</p>
                             <h2 class="mt-2 break-words text-3xl font-extrabold leading-tight text-white sm:text-4xl">
