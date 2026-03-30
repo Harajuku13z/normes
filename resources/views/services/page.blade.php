@@ -147,23 +147,17 @@
 <div class="sticky top-[84px] z-40 border-b border-slate-200/70 bg-white/85 backdrop-blur supports-[backdrop-filter]:bg-white/75">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <nav class="flex flex-wrap items-center gap-2 py-3" aria-label="Navigation de la page service">
-            @if ($hasRole)
-                <a href="#role" class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-brand-dark transition hover:border-slate-300 hover:bg-slate-50">
-                    Rôle
-                </a>
-            @endif
-            @if ($hasPeriode)
-                <a href="#periode" class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-brand-dark transition hover:border-slate-300 hover:bg-slate-50">
-                    Période idéale
-                </a>
-            @endif
-            @if ($hasEtapes)
-                <a href="#etapes" class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-brand-dark transition hover:border-slate-300 hover:bg-slate-50">
-                    Étapes
-                </a>
-            @endif
-            <a href="#cout" class="inline-flex items-center rounded-xl bg-brand-blue px-4 py-2 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500">
-                Coût
+            <a href="#etapes" class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-brand-dark transition hover:border-slate-300 hover:bg-slate-50">
+                Services
+            </a>
+            <a href="#devis" class="inline-flex items-center rounded-xl bg-brand-blue px-4 py-2 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500">
+                Contact
+            </a>
+            <a href="#avis" class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-brand-dark transition hover:border-slate-300 hover:bg-slate-50">
+                Avis
+            </a>
+            <a href="#realisations" class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-brand-dark transition hover:border-slate-300 hover:bg-slate-50">
+                Réalisations
             </a>
         </nav>
     </div>
@@ -330,7 +324,7 @@
     </div>
 </section>
 
-<section class="scroll-mt-24 bg-white py-14 sm:py-20">
+<section id="realisations" class="scroll-mt-24 bg-white py-14 sm:py-20">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <div class="mb-6">
             <h2 class="break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
@@ -390,8 +384,8 @@
     </div>
 </section>
 
-<section class="scroll-mt-24 bg-slate-50/70 py-16 sm:py-20">
-    <div id="cout" class="mx-auto w-[95%] scroll-mt-32 px-4 sm:px-6 lg:px-8">
+<section id="avis" class="scroll-mt-24 bg-slate-50/70 py-16 sm:py-20">
+    <div class="mx-auto w-[95%] scroll-mt-32 px-4 sm:px-6 lg:px-8">
         <div class="grid gap-6 lg:grid-cols-2 lg:items-stretch">
             <div class="min-w-0">
                 @include('services.avis_only', ['home' => $h])
