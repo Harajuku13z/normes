@@ -8,7 +8,12 @@
 </head>
 <body class="min-h-screen bg-slate-100 text-slate-900 antialiased">
     <header class="border-b border-slate-200 bg-white">
-        <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
+        @php
+            $currentRoute = request()->route() ? request()->route()->getName() : null;
+            $isHomepage = $currentRoute === 'admin.homepage.edit' || $currentRoute === 'admin.homepage.update';
+            $headerMaxWidth = $isHomepage ? 'max-w-none w-full' : 'mx-auto max-w-5xl';
+        @endphp
+        <div class="{{ $headerMaxWidth }} flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6">
             <a href="{{ route('admin.dashboard') }}" class="text-lg font-extrabold text-slate-800">Admin — Page d'accueil</a>
             <div class="flex items-center gap-3 text-sm">
                 <a href="{{ route('home') }}" class="font-semibold text-sky-700 hover:underline" target="_blank" rel="noopener">Voir le site</a>
@@ -20,11 +25,10 @@
         </div>
     </header>
     @php
-        $currentRoute = request()->route() ? request()->route()->getName() : null;
+        $mainWrapClasses = $isHomepage ? 'w-full max-w-none px-4 py-8 sm:px-6' : 'mx-auto max-w-5xl px-4 py-8 sm:px-6';
         $isDashboard = $currentRoute === 'admin.dashboard';
-        $isHomepage = $currentRoute === 'admin.homepage.edit' || $currentRoute === 'admin.homepage.update';
     @endphp
-    <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+    <div class="{{ $mainWrapClasses }}">
         <div class="flex gap-6">
             <aside class="hidden w-64 shrink-0 lg:block">
                 <nav class="rounded-2xl border border-slate-200 bg-white p-3">
