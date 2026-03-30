@@ -478,7 +478,8 @@
                     $ctaCardBgPath = trim((string) (data_get($page, 'cta_card_background') ?? ''));
                     $ctaCardBg = $ctaCardBgPath !== '' ? HomeView::url($ctaCardBgPath) : HomeView::url('slide/toiture.png');
                 @endphp
-                <div class="relative h-full min-h-[280px] overflow-hidden rounded-2xl border border-white/20 shadow-soft ring-1 ring-black/5 sm:min-h-[320px]">
+                {{-- Fonds en absolute ; contenu en flux pour hauteur auto (mobile : plus de texte rogné) --}}
+                <div class="relative overflow-hidden rounded-2xl border border-white/20 shadow-soft ring-1 ring-black/5 lg:flex lg:h-full lg:min-h-[20rem] lg:flex-col">
                     <div
                         class="absolute inset-0 bg-cover bg-center"
                         style="background-image: url('{{ $ctaCardBg }}');"
@@ -486,25 +487,27 @@
                     ></div>
                     <div class="absolute inset-0 bg-gradient-to-br from-brand-dark/90 via-brand-dark/75 to-brand-dark/60" aria-hidden="true"></div>
 
-                    <div class="absolute inset-0 z-10 flex flex-col items-center justify-end p-6 pb-8 text-center sm:justify-center sm:p-8">
+                    <div class="relative z-10 flex w-full flex-col items-center justify-center px-4 py-8 text-center sm:px-6 sm:py-10 lg:flex-1 lg:px-8 lg:py-10">
                         <div class="w-full max-w-md">
-                            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-yellow">Un projet de rénovation ?</p>
-                            <h2 class="mt-2 break-words text-3xl font-extrabold leading-tight text-white sm:text-4xl">
+                            <p class="text-[0.7rem] font-extrabold uppercase leading-snug tracking-[0.12em] text-brand-yellow sm:text-xs sm:tracking-[0.2em]">
+                                Un projet de rénovation ?
+                            </p>
+                            <h2 class="mt-2 break-words text-2xl font-extrabold leading-snug text-white sm:text-3xl sm:leading-tight lg:text-4xl">
                                 Démarrez dès maintenant
                             </h2>
-                            <p class="mt-3 text-base leading-relaxed text-slate-100/95">
+                            <p class="mt-3 text-sm leading-relaxed text-slate-100/95 sm:text-base">
                                 Lancez le simulateur pour une première estimation, ou envoyez votre demande pour être contacté rapidement.
                             </p>
-                            <div class="mt-6 grid gap-3">
+                            <div class="mt-6 grid w-full gap-3">
                                 <a
                                     href="{{ route('home').'#simulateur-devis' }}"
-                                    class="inline-flex items-center justify-center rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500"
+                                    class="inline-flex w-full min-w-0 items-center justify-center rounded-xl bg-brand-blue px-4 py-3 text-center text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 sm:px-5"
                                 >
                                     Ouvrir le simulateur de devis
                                 </a>
                                 <a
                                     href="#formulaire-contact"
-                                    class="inline-flex items-center justify-center rounded-xl border-2 border-white/45 bg-white/10 px-5 py-3 text-sm font-extrabold text-white shadow-sm backdrop-blur-sm transition hover:bg-white/20"
+                                    class="inline-flex w-full min-w-0 items-center justify-center rounded-xl border-2 border-white/45 bg-white/10 px-4 py-3 text-center text-sm font-extrabold text-white shadow-sm backdrop-blur-sm transition hover:bg-white/20 sm:px-5"
                                 >
                                     Accéder au formulaire de contact
                                 </a>
