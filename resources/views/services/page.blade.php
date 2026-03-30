@@ -197,16 +197,19 @@
         @php
             $sidebarAvisScore = (string) data_get($h, 'sidebar_avis.score', '5.0/5');
             $sidebarAvisText = (string) data_get($h, 'sidebar_avis.text', '+100 avis');
+
             $servicePartners = is_array($page->service_partners ?? null) ? $page->service_partners : [];
             $servicePartnersPhrase = trim((string) data_get($servicePartners, 'phrase', ''));
             $servicePartnersLogos = collect((array) data_get($servicePartners, 'logos', []))
                 ->filter(fn ($v) => is_string($v) && trim($v) !== '')
                 ->values()
                 ->all();
+
+            $globalPartnerLogos = data_get($h, 'partners.logos', []);
         @endphp
 
-        @if ($bodyRaw !== '' || $servicePartnersLogos !== [])
-            <div class="grid gap-6 {{ ($bodyRaw !== '' && ($servicePartnersLogos !== [])) ? 'lg:grid-cols-2' : '' }}">
+        @if ($bodyRaw !== '')
+            <div class="grid gap-6 lg:grid-cols-2">
                 @if ($bodyRaw !== '')
                     <div id="role" class="scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
                         <div
@@ -231,20 +234,23 @@
                 @endif
 
                 <div class="grid gap-6">
-                    <div class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
-                        <p class="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Chiffres clés</p>
-                        <div class="grid gap-4 sm:grid-cols-3">
-                            <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+                    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
+                        <div class="flex flex-wrap items-end justify-between gap-3">
+                            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Chiffres clés</p>
+                            <a href="#avis" class="text-xs font-extrabold text-brand-blue hover:underline">Voir les avis</a>
+                        </div>
+                        <div class="mt-5 grid gap-4 sm:grid-cols-3">
+                            <div class="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4">
                                 <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">Avis</p>
                                 <p class="mt-2 text-2xl font-black text-brand-dark">{{ $sidebarAvisScore }}</p>
                                 <p class="mt-1 text-sm font-semibold text-slate-600">{{ $sidebarAvisText }}</p>
                             </div>
-                            <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+                            <div class="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4">
                                 <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">Délai</p>
                                 <p class="mt-2 text-2xl font-black text-brand-dark">48h</p>
                                 <p class="mt-1 text-sm font-semibold text-slate-600">Réponse en général</p>
                             </div>
-                            <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-4">
+                            <div class="rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4">
                                 <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">Devis</p>
                                 <p class="mt-2 text-2xl font-black text-brand-dark">0€</p>
                                 <p class="mt-1 text-sm font-semibold text-slate-600">Sans engagement</p>
@@ -252,27 +258,14 @@
                         </div>
                     </div>
 
-                    @if ($servicePartnersLogos !== [])
-                        <div class="rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
-                            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Partenaires associés</p>
-                            @if ($servicePartnersPhrase !== '')
-                                <p class="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">{{ $servicePartnersPhrase }}</p>
-                            @endif
-                            <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                                @foreach (array_slice($servicePartnersLogos, 0, 6) as $src)
-                                    <div class="flex items-center justify-center rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-                                        <img
-                                            src="{{ HomeView::url($src) }}"
-                                            alt="Logo partenaire"
-                                            class="h-10 w-auto max-w-[10rem] object-contain"
-                                            width="200"
-                                            height="80"
-                                            loading="lazy"
-                                            decoding="async"
-                                        >
-                                    </div>
-                                @endforeach
+                    @if (is_array($globalPartnerLogos) && $globalPartnerLogos !== [])
+                        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8" aria-label="Partenaires et certification">
+                            <div class="mx-auto w-full">
+                                @include('home._partners_marquee', ['home' => $h])
                             </div>
+                            @if ($servicePartnersPhrase !== '')
+                                <p class="mt-4 text-sm leading-relaxed text-slate-600 sm:text-base">{{ $servicePartnersPhrase }}</p>
+                            @endif
                         </div>
                     @endif
                 </div>
@@ -497,41 +490,6 @@
 
 {{-- Section formulaire identique à la page d'accueil (source unique) --}}
 @include('home.devis', ['home' => $h])
-
-{{-- Partenaires & certifications (avant le footer) --}}
-@php
-    $partnerLogos = data_get($h, 'partners.logos', []);
-    $partnerHeading = (string) data_get($h, 'partners.heading', 'Partenaires & Certification');
-@endphp
-@if (is_array($partnerLogos) && $partnerLogos !== [])
-    <section class="border-y border-slate-200 bg-white py-12" aria-label="Partenaires et certification">
-        <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-                <div class="min-w-0">
-                    <p class="text-xs font-extrabold uppercase tracking-[0.28em] text-brand-dark/60">{{ $partnerHeading }}</p>
-                    <p class="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
-                        Labels, partenaires et certifications : gages de qualité, conformité et accompagnement.
-                    </p>
-                </div>
-            </div>
-            <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-                @foreach ($partnerLogos as $src)
-                    <div class="flex items-center justify-center rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                        <img
-                            src="{{ HomeView::url($src) }}"
-                            alt="Logo"
-                            class="h-10 w-auto max-w-[10rem] object-contain opacity-95"
-                            width="200"
-                            height="80"
-                            loading="lazy"
-                            decoding="async"
-                        >
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-@endif
 
 @include('home.footer', ['home' => $h])
 
