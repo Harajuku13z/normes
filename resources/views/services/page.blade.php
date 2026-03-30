@@ -153,20 +153,31 @@
     </section>
 @endif
 
-<div class="sticky top-[84px] z-40 border-b border-slate-200/70 bg-white/85 backdrop-blur supports-[backdrop-filter]:bg-white/75">
+@php
+    $bodyForNav = trim((string) ($page->body ?? ''));
+    $subForNav = collect(is_array($page->sub_services ?? null) ? $page->sub_services : [])
+        ->filter(fn ($s) => is_array($s) && !empty(data_get($s, 'title')) && !empty(data_get($s, 'image')))
+        ->values()
+        ->all();
+    $navServicesAnchor = $bodyForNav !== '' ? '#role' : ($subForNav !== [] ? '#etapes' : '#top');
+    $subNavLinkClass = 'inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-brand-dark transition hover:border-slate-300 hover:bg-slate-50';
+@endphp
+
+{{-- Ordre des liens = ordre vertical de la page ; pas de barre fixe (scroll avec le contenu) --}}
+<div class="border-b border-slate-200/80 bg-white">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <nav class="flex flex-wrap items-center gap-2 py-3" aria-label="Navigation de la page service">
-            <a href="#etapes" class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-brand-dark transition hover:border-slate-300 hover:bg-slate-50">
+            <a href="{{ $navServicesAnchor }}" class="{{ $subNavLinkClass }}">
                 Services
             </a>
-            <a href="#devis" class="inline-flex items-center rounded-xl bg-brand-blue px-4 py-2 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500">
-                Contact
+            <a href="#realisations" class="{{ $subNavLinkClass }}">
+                Réalisations
             </a>
-            <a href="#avis" class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-brand-dark transition hover:border-slate-300 hover:bg-slate-50">
+            <a href="#avis" class="{{ $subNavLinkClass }}">
                 Avis
             </a>
-            <a href="#realisations" class="inline-flex items-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-extrabold text-brand-dark transition hover:border-slate-300 hover:bg-slate-50">
-                Réalisations
+            <a href="#devis" class="{{ $subNavLinkClass }}">
+                Contact
             </a>
         </nav>
     </div>
