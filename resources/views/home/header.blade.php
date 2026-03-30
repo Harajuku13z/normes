@@ -3,6 +3,10 @@
     $logo = \App\Support\HomeView::url(data_get($h, 'header.logo', '/logo.png'));
     $logoAlt = data_get($h, 'header.logo_alt', 'Normes & Renovation');
 @endphp
+@php
+    $routeName = request()->route() ? request()->route()->getName() : null;
+    $isServicePage = $routeName === 'service.page';
+@endphp
 <header class="sticky top-0 z-[1000] border-b-4 border-brand-blue bg-white/95 shadow-[0_1px_0_rgba(15,23,42,0.06)] backdrop-blur-md">
     <div class="mx-auto flex min-h-[84px] w-[95%] items-center justify-between px-4 sm:px-6 lg:px-8">
         <a href="#top" class="shrink-0">
@@ -27,7 +31,13 @@
             </div>
 
             <div class="nav-dropdown relative">
-                <button type="button" class="inline-flex items-center gap-0.5 rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]" aria-expanded="false" aria-haspopup="true" aria-controls="nav-mega-services">
+                <button
+                    type="button"
+                    class="inline-flex items-center gap-0.5 rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px] {{ $isServicePage ? 'bg-brand-blue/10 text-brand-blue ring-1 ring-brand-blue/20' : '' }}"
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    aria-controls="nav-mega-services"
+                >
                     Services
                     <svg class="h-4 w-4 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                 </button>
@@ -131,7 +141,10 @@
 
             <details class="group rounded-lg">
                 <summary class="cursor-pointer list-none px-3 py-2.5 text-[15px] font-semibold text-brand-dark marker:content-none [&::-webkit-details-marker]:hidden hover:bg-slate-50">
-                    <span class="inline-flex w-full items-center justify-between">Services <span class="text-slate-400" aria-hidden="true">▼</span></span>
+                    <span class="inline-flex w-full items-center justify-between">
+                        Services
+                        <span class="text-slate-400" aria-hidden="true">▼</span>
+                    </span>
                 </summary>
                 <div class="border-l-2 border-brand-blue/30 py-1 pl-4">
                     <a href="#services" data-service-filter-group="toiture facade" class="service-submenu-link block rounded-lg py-2 text-sm font-medium text-slate-700 hover:text-brand-blue">Toiture &amp; façade</a>

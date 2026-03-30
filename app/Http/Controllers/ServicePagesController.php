@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\ServicePage;
+use App\Services\HomePageService;
 use Illuminate\View\View;
 
 class ServicePagesController extends Controller
 {
-    public function show(string $slug): View
+    public function show(string $slug, HomePageService $homePage): View
     {
         $page = ServicePage::query()
             ->where('slug', $slug)
@@ -16,6 +17,7 @@ class ServicePagesController extends Controller
 
         return view('services.page', [
             'page' => $page,
+            'home' => $homePage->merged(),
         ]);
     }
 }
