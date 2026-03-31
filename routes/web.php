@@ -47,6 +47,7 @@ Route::prefix('admin')->group(function () {
         Route::post('/simulateur-settings', [AdminSimulateurSettingsController::class, 'update'])->name('admin.simulateur_settings.update');
         Route::get('/simulateur-leads', [AdminSimulateurSettingsController::class, 'leads'])->name('admin.simulateur_leads.index');
         Route::get('/simulateur-leads/{simulateurLead}', [AdminSimulateurSettingsController::class, 'showLead'])->name('admin.simulateur_leads.show');
+        Route::get('/simulateur-leads/{simulateurLead}/pdf', [AdminSimulateurSettingsController::class, 'leadPdf'])->name('admin.simulateur_leads.pdf');
         Route::post('/simulateur-leads/{simulateurLead}/resend-admin-mail', [AdminSimulateurSettingsController::class, 'resendAdminMail'])->name('admin.simulateur_leads.resend_admin_mail');
         Route::post('/simulateur-leads/{simulateurLead}/resend-client-mail', [AdminSimulateurSettingsController::class, 'resendClientMail'])->name('admin.simulateur_leads.resend_client_mail');
     });

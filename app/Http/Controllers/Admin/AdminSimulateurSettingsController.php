@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HomeSection;
 use App\Models\SimulateurLead;
 use App\Services\SimulateurMailer;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -42,6 +43,15 @@ class AdminSimulateurSettingsController extends Controller
         return view('admin.simulateur_settings.show', [
             'lead' => $simulateurLead,
         ]);
+    }
+
+    public function leadPdf(SimulateurLead $simulateurLead)
+    {
+        $lead = $simulateurLead;
+        $pdf = Pdf::loadView('admin.simulateur_settings.pdf', ['lead' => $lead]);
+        $filename = 'simulateur-lead-'.$lead->id.'.pdf';
+
+        return $pdf->download($filename);
     }
 
     public function resendAdminMail(Request $request, SimulateurLead $simulateurLead, SimulateurMailer $mailer): RedirectResponse
