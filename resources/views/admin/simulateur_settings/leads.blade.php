@@ -16,8 +16,10 @@
                     <th class="px-3 py-2">Name</th>
                     <th class="px-3 py-2">Email / Phone</th>
                     <th class="px-3 py-2">Status</th>
+                    <th class="px-3 py-2">Actions</th>
                     <th class="px-3 py-2">Mail</th>
                     <th class="px-3 py-2">Resend to admin</th>
+                    <th class="px-3 py-2">Resend to client</th>
                     <th class="px-3 py-2">Error</th>
                 </tr>
                 </thead>
@@ -35,6 +37,11 @@
                             <span class="inline-flex rounded-full px-2 py-1 text-xs font-bold {{ $lead->completed_at ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
                                 {{ $lead->completed_at ? 'completed' : 'in_progress' }}
                             </span>
+                        </td>
+                        <td class="px-3 py-2">
+                            <a href="{{ route('admin.simulateur_leads.show', $lead) }}" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-extrabold text-slate-700 hover:bg-slate-50">
+                                Voir
+                            </a>
                         </td>
                         <td class="px-3 py-2 text-xs text-slate-600">
                             <div>Admin step1: {{ $lead->admin_notified_started_at ? 'yes' : 'no' }}</div>
@@ -57,11 +64,27 @@
                                 </button>
                             </form>
                         </td>
+                        <td class="px-3 py-2">
+                            <form method="post" action="{{ route('admin.simulateur_leads.resend_client_mail', $lead) }}" class="grid gap-2">
+                                @csrf
+                                <input
+                                    type="email"
+                                    name="recipient_email"
+                                    required
+                                    value="{{ old('recipient_email', (string) ($lead->email ?? '')) }}"
+                                    class="w-56 rounded-lg border border-slate-300 px-2.5 py-1.5 text-xs"
+                                    placeholder="client@email.com"
+                                >
+                                <button class="inline-flex w-fit items-center rounded-lg bg-emerald-600 px-2.5 py-1.5 text-xs font-extrabold text-white hover:bg-emerald-700">
+                                    Resend
+                                </button>
+                            </form>
+                        </td>
                         <td class="px-3 py-2 text-xs text-rose-700">{{ $lead->mail_error ?: '-' }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="px-3 py-6 text-center text-slate-500">No leads yet.</td>
+                        <td colspan="10" class="px-3 py-6 text-center text-slate-500">No leads yet.</td>
                     </tr>
                 @endforelse
                 </tbody>

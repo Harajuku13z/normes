@@ -103,6 +103,18 @@ class SimulateurMailer
         $this->sendHtml($settings, $to, $subject, $html);
     }
 
+    public function sendClientManual(SimulateurLead $lead, string $recipientEmail): void
+    {
+        $to = trim($recipientEmail);
+        if ($to === '') {
+            throw new \RuntimeException('Client recipient email is required.');
+        }
+
+        $settings = $this->settings();
+        $html = View::make('emails.simulateur_client_confirmation', ['lead' => $lead])->render();
+        $this->sendHtml($settings, $to, 'Your renovation simulation request is received', $html);
+    }
+
     /**
      * @param  array<string, mixed>  $settings
      */

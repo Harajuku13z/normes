@@ -37,6 +37,13 @@ class AdminSimulateurSettingsController extends Controller
         ]);
     }
 
+    public function showLead(SimulateurLead $simulateurLead): View
+    {
+        return view('admin.simulateur_settings.show', [
+            'lead' => $simulateurLead,
+        ]);
+    }
+
     public function resendAdminMail(Request $request, SimulateurLead $simulateurLead, SimulateurMailer $mailer): RedirectResponse
     {
         $lead = $simulateurLead;
@@ -64,6 +71,34 @@ class AdminSimulateurSettingsController extends Controller
             return redirect()
                 ->route('admin.simulateur_leads.index')
                 ->withErrors(['recipient_email' => 'Unable to send email: '.$e->getMessage()]);
+        }
+    }
+
+    public function resendClientMail(Request $request, SimulateurLead $simulateurLead, SimulateurMailer $mailer): RedirectResponse
+    {
+        $lead = $simulateurLead;
+        $data = $request->validate([
+            'recipient_email' => ['required', 'email', 'max:190'],
+        ]);
+
+        $recipient = trim((string) $data['recipient_email']);
+
+        try {
+            $mailer->sendClientManual($lead, $recipient);
+            $lead->forceFill([
+                'client_notified_at' => now(),
+                'mail_error' => null,
+            ])->save();
+
+            return redirect()
+                ->route('admin.simulateur_leads.index')
+                ->with('status', 'Client email resent to '.$recipient.' for lead #'.$lead->id.'.');
+        } catch (\Throwable $e) {
+            $lead->forceFill(['mail_error' => $e->getMessage()])->save();
+
+            return redirect()
+                ->route('admin.simulateur_leads.index')
+                ->withErrors(['recipient_email' => 'Unable to send client email: '.$e->getMessage()]);
         }
     }
 
