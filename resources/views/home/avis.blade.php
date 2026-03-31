@@ -1,4 +1,11 @@
-@php $h = $home ?? []; @endphp
+@php
+    $h = $home ?? [];
+    $testimonials = collect((array) data_get($h, 'avis.testimonials', []))
+        ->filter(fn ($t) => is_array($t))
+        ->take(5)
+        ->values()
+        ->all();
+@endphp
 <section id="avis-clients" class="border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-white py-16 sm:py-20">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-stretch">
@@ -55,7 +62,7 @@
                 <div class="flex-1 rounded-2xl border border-slate-200 bg-white">
                     {{-- Grille à une cellule : les cards s'empilent --}}
                     <div id="avisStack" style="display:grid">
-                        @foreach (data_get($h, 'avis.testimonials', []) as $t)
+                        @foreach ($testimonials as $t)
                             @php
                                 $platform    = (string) data_get($t, 'platform', 'google');
                                 $reviewCount = (string) data_get($t, 'review_count', '+100 avis');
@@ -99,7 +106,7 @@
 
                     {{-- Indicateurs dots --}}
                     <div id="avisDots" class="flex justify-center gap-2 px-4 pb-4 pt-1">
-                        @foreach (data_get($h, 'avis.testimonials', []) as $t)
+                        @foreach ($testimonials as $t)
                             <button
                                 type="button"
                                 data-idx="{{ $loop->index }}"

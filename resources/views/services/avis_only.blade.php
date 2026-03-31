@@ -7,6 +7,11 @@
     $intro = trim((string) data_get($ov, 'intro', (string) data_get($h, 'avis.intro')));
     $googleButton = trim((string) data_get($ov, 'google_button', (string) data_get($h, 'avis.google_button')));
     $platformInfo = trim((string) data_get($ov, 'platform_info', 'Des retours concrets, provenant de plusieurs plateformes.'));
+    $testimonials = collect((array) data_get($h, 'avis.testimonials', []))
+        ->filter(fn ($t) => is_array($t))
+        ->take(5)
+        ->values()
+        ->all();
 @endphp
 
 <div
@@ -65,7 +70,7 @@
 
         <div class="flex-1 rounded-2xl border border-slate-200 bg-white">
             <div id="avisStack" style="display:grid">
-                @foreach (data_get($h, 'avis.testimonials', []) as $t)
+                @foreach ($testimonials as $t)
                     @php
                         $platform    = (string) data_get($t, 'platform', 'google');
                         $reviewCount = (string) data_get($t, 'review_count', '+100 avis');
@@ -105,7 +110,7 @@
             </div>
 
             <div id="avisDots" class="flex justify-center gap-2 px-4 pb-4 pt-1">
-                @foreach (data_get($h, 'avis.testimonials', []) as $t)
+                @foreach ($testimonials as $t)
                     <button
                         type="button"
                         data-idx="{{ $loop->index }}"
