@@ -29,6 +29,7 @@
         $googleMapQuery .= ', '.implode(', ', array_filter(array_map('strval', $hqLines)));
     }
     $googleMapEmbedUrl = 'https://www.google.com/maps?q='.rawurlencode($googleMapQuery).'&output=embed';
+    $socialBg = HomeView::url((string) data_get($h, 'hero.background_image', 'slide/toiture.png'));
 @endphp
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
@@ -144,8 +145,10 @@
 </section>
 
 @if (is_array(data_get($f, 'social')) && data_get($f, 'social') !== [])
-    <section id="reseaux" class="scroll-mt-24 border-t border-slate-200 bg-slate-50/70 py-12 sm:py-16">
-        <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+    <section id="reseaux" class="relative scroll-mt-24 overflow-hidden border-t border-slate-200 bg-slate-50/70 py-12 sm:py-16">
+        <div class="absolute inset-0 bg-cover bg-center opacity-25" style="background-image: url('{{ $socialBg }}');" aria-hidden="true"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-brand-dark/20 via-transparent to-brand-blue/20" aria-hidden="true"></div>
+        <div class="relative z-10 mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
                 <div class="pointer-events-none absolute -right-14 -top-16 h-40 w-40 rounded-full bg-brand-blue/10 blur-2xl" aria-hidden="true"></div>
                 <div class="pointer-events-none absolute -bottom-14 -left-10 h-36 w-36 rounded-full bg-brand-yellow/20 blur-2xl" aria-hidden="true"></div>
