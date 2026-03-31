@@ -10,11 +10,25 @@
     if ($metaDescription === '') {
         $metaDescription = 'Contactez-nous pour un devis gratuit, une question sur votre chantier ou nos agences. Réponse sous 48 h en général.';
     }
-    $heroBg = HomeView::url('slide/toiture.png');
+    $heroBg = HomeView::url((string) data_get($h, 'hero.background_image', 'slide/toiture.png'));
+    $heroKicker = (string) data_get($d, 'contact_heading', 'Contact');
+    $heroTitleLine1 = (string) data_get($d, 'title_line1', 'Vous avez');
+    $heroTitleLine2 = (string) data_get($d, 'title_line2', 'un projet de rénovation ?');
+    $heroIntro = trim((string) data_get($d, 'intro', ''));
+    $heroSubtitle = trim((string) data_get($d, 'subtitle', ''));
     $agenciesContact = data_get($d, 'agencies_contact', []);
     if (! is_array($agenciesContact)) {
         $agenciesContact = [];
     }
+    $hqLines = data_get($f, 'address_lines', []);
+    if (! is_array($hqLines)) {
+        $hqLines = [];
+    }
+    $googleMapQuery = trim((string) data_get($f, 'company', 'Normes et Rénovation'));
+    if ($hqLines !== []) {
+        $googleMapQuery .= ', '.implode(', ', array_filter(array_map('strval', $hqLines)));
+    }
+    $googleMapEmbedUrl = 'https://www.google.com/maps?q='.rawurlencode($googleMapQuery).'&output=embed';
 @endphp
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
@@ -29,34 +43,43 @@
 <body class="overflow-x-hidden bg-white font-sans text-brand-dark antialiased">
 @include('home.header', ['home' => $h])
 
-<section id="top" class="relative min-h-[280px] overflow-hidden sm:min-h-[340px]">
+<section id="top" class="relative min-h-[520px] overflow-hidden sm:min-h-[620px]">
     <div
         class="absolute inset-0 bg-cover bg-center"
         style="background-image: url('{{ $heroBg }}');"
         aria-hidden="true"
     ></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/92 via-brand-dark/65 to-brand-dark/35" aria-hidden="true"></div>
-    <div class="relative z-10 mx-auto flex min-h-[280px] w-[95%] max-w-3xl flex-col justify-end px-4 py-10 sm:min-h-[340px] sm:px-6 lg:px-8">
-        <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">Contact</p>
-        <h1 class="mt-3 text-4xl font-black leading-tight tracking-tight text-white sm:text-5xl">
-            Parlons de votre <span class="text-brand-blue">projet</span>
-        </h1>
-        <p class="mt-4 max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">
-            {{ data_get($d, 'subtitle', 'Estimation personnalisée & rappel d’un conseiller') }} — {{ data_get($d, 'intro', '') }}
-        </p>
-        <div class="mt-6 flex flex-wrap gap-3">
-            <a
-                href="#formulaire-contact"
-                class="inline-flex items-center justify-center rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500"
-            >
-                Formulaire de contact
-            </a>
-            <a
-                href="tel:{{ data_get($f, 'phone_href') }}"
-                class="inline-flex items-center justify-center rounded-xl border-2 border-white/40 bg-white/10 px-5 py-3 text-sm font-extrabold text-white backdrop-blur-sm transition hover:bg-white/20"
-            >
-                {{ data_get($f, 'phone') }}
-            </a>
+    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/55 to-transparent" aria-hidden="true"></div>
+    <div class="relative z-10 mx-auto flex min-h-[520px] w-[95%] flex-col justify-end gap-6 px-4 py-10 sm:min-h-[620px] sm:px-6 lg:px-8">
+        <div class="max-w-3xl text-white">
+            <div class="rounded-3xl border border-white/15 bg-brand-dark/35 p-6 shadow-soft backdrop-blur-md sm:p-8">
+                <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">
+                    {{ $heroKicker }}
+                </p>
+                <h1 class="mb-4 text-4xl font-black leading-[1.02] tracking-tight drop-shadow sm:text-5xl">
+                    <span>{{ $heroTitleLine1 }}</span>
+                    <span class="text-brand-blue">{{ ' '.$heroTitleLine2 }}</span>
+                </h1>
+                @if ($heroSubtitle !== '' || $heroIntro !== '')
+                    <p class="max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">
+                        {{ $heroSubtitle }}@if ($heroSubtitle !== '' && $heroIntro !== '') — @endif{{ $heroIntro }}
+                    </p>
+                @endif
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <a
+                        href="#formulaire-contact"
+                        class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500"
+                    >
+                        Formulaire de contact
+                    </a>
+                    <a
+                        href="tel:{{ data_get($f, 'phone_href') }}"
+                        class="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:bg-yellow-300"
+                    >
+                        {{ data_get($f, 'phone') }}
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -142,12 +165,17 @@
             <h2 class="mt-2 text-3xl font-extrabold text-brand-dark sm:text-4xl">Nos implantations</h2>
             <p class="mt-2 text-sm text-slate-600 sm:text-base">Repérez nos agences en un coup d’œil (Bretagne et Bourgogne).</p>
         </div>
-        <div
-            id="agencyMap"
-            class="relative z-[1] h-[min(22rem,55vh)] min-h-[16rem] overflow-hidden rounded-2xl border border-slate-200 shadow-soft sm:h-[28rem]"
-            role="region"
-            aria-label="Carte des agences"
-        ></div>
+        <div class="overflow-hidden rounded-2xl border border-slate-200 shadow-soft">
+            <iframe
+                src="{{ $googleMapEmbedUrl }}"
+                class="h-[min(22rem,55vh)] min-h-[16rem] w-full sm:h-[28rem]"
+                style="border:0;"
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                allowfullscreen
+                title="Google Maps - Siège social"
+            ></iframe>
+        </div>
     </div>
 </section>
 
