@@ -16,6 +16,8 @@
         5 => 'Validation finale',
     ];
     $stepTitle = $stepTitles[$step] ?? 'Étape';
+    $callHref = trim((string) data_get($h, 'footer.phone_href', '+33385419886'));
+    $callLabel = trim((string) data_get($h, 'footer.phone', '03 85 41 98 86'));
 @endphp
 <!DOCTYPE html>
 <html lang="fr">
@@ -104,7 +106,12 @@
                         <input name="address" value="{{ old('address', data_get($s, 'address', '')) }}" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm">
                     </div>
                     <div class="sm:col-span-2 pt-1">
-                        <button class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white hover:bg-sky-500">Continuer</button>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white hover:bg-sky-500">Continuer</button>
+                            <a href="tel:{{ $callHref }}" class="rounded-xl border border-emerald-300 bg-emerald-50 px-5 py-3 text-sm font-extrabold text-emerald-700 hover:bg-emerald-100">
+                                Appeler tout de suite — {{ $callLabel }}
+                            </a>
+                        </div>
                     </div>
                 </form>
             </section>
@@ -151,6 +158,9 @@
                     <div class="pt-1 flex gap-2">
                         <a href="{{ route('simulateur.step1') }}" class="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-700 hover:bg-slate-50">Retour</a>
                         <button id="simStep2Continue" class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white hover:bg-sky-500" disabled>Continuer</button>
+                        <a href="tel:{{ $callHref }}" class="rounded-xl border border-emerald-300 bg-emerald-50 px-5 py-3 text-sm font-extrabold text-emerald-700 hover:bg-emerald-100">
+                            Appeler tout de suite
+                        </a>
                     </div>
                 </form>
             </section>
@@ -237,6 +247,9 @@
                     <div class="pt-1 flex gap-2">
                         <a href="{{ route('simulateur.step2') }}" class="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-700 hover:bg-slate-50">Retour</a>
                         <button class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white hover:bg-sky-500">Continuer</button>
+                        <a href="tel:{{ $callHref }}" class="rounded-xl border border-emerald-300 bg-emerald-50 px-5 py-3 text-sm font-extrabold text-emerald-700 hover:bg-emerald-100">
+                            Appeler tout de suite
+                        </a>
                     </div>
                 </form>
             </section>
@@ -283,6 +296,9 @@
                     <div class="pt-1 flex gap-2">
                         <a href="{{ route('simulateur.step3') }}" class="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-700 hover:bg-slate-50">Retour</a>
                         <button class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white hover:bg-sky-500">Continuer</button>
+                        <a href="tel:{{ $callHref }}" class="rounded-xl border border-emerald-300 bg-emerald-50 px-5 py-3 text-sm font-extrabold text-emerald-700 hover:bg-emerald-100">
+                            Appeler tout de suite
+                        </a>
                     </div>
                 </form>
             </section>
@@ -314,6 +330,9 @@
                     <div class="sm:col-span-2 pt-1 flex gap-2">
                         <a href="{{ route('simulateur.step4') }}" class="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-700 hover:bg-slate-50">Retour</a>
                         <button class="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-extrabold text-white hover:bg-emerald-700">Valider mon simulateur</button>
+                        <a href="tel:{{ $callHref }}" class="rounded-xl border border-emerald-300 bg-emerald-50 px-5 py-3 text-sm font-extrabold text-emerald-700 hover:bg-emerald-100">
+                            Appeler tout de suite
+                        </a>
                     </div>
                 </form>
             </section>
