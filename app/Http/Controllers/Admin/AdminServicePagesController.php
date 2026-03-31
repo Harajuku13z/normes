@@ -84,6 +84,12 @@ class AdminServicePagesController extends Controller
             'is_active' => (bool) ($data['is_active'] ?? true),
         ];
 
+        if (! Schema::hasColumn('service_pages', 'content_overrides') && array_key_exists('content_overrides', $data)) {
+            return back()
+                ->withErrors(['content_overrides' => 'Les textes éditables ne peuvent pas être enregistrés : la migration de la colonne content_overrides n’a pas été exécutée. Lancez php artisan migrate.'])
+                ->withInput();
+        }
+
         // Compatibilité : si la migration n'est pas encore faite, on évite une erreur DB.
         if (! Schema::hasColumn('service_pages', 'meta_title')) {
             unset($payload['meta_title']);
@@ -174,6 +180,12 @@ class AdminServicePagesController extends Controller
             ...$data,
             'is_active' => (bool) ($data['is_active'] ?? true),
         ];
+
+        if (! Schema::hasColumn('service_pages', 'content_overrides') && array_key_exists('content_overrides', $data)) {
+            return back()
+                ->withErrors(['content_overrides' => 'Les textes éditables ne peuvent pas être enregistrés : la migration de la colonne content_overrides n’a pas été exécutée. Lancez php artisan migrate.'])
+                ->withInput();
+        }
 
         if (! Schema::hasColumn('service_pages', 'meta_title')) {
             unset($payload['meta_title']);
