@@ -183,6 +183,20 @@
                     <input name="content_overrides[sub_services][cta_text]" value="{{ old('content_overrides.sub_services.cta_text', data_get($ov, 'sub_services.cta_text', 'C’EST CE QU’IL ME FAUT')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
                     <label class="mt-3 block text-sm font-semibold text-slate-800">Bouton doc technique</label>
                     <input name="content_overrides[sub_services][doc_text]" value="{{ old('content_overrides.sub_services.doc_text', data_get($ov, 'sub_services.doc_text', 'DOC TECHNIQUE')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Hauteur des cartes sous-services</label>
+                    <div class="mt-2 grid gap-2 sm:grid-cols-2">
+                        @php
+                            $subCardHeight = old('content_overrides.sub_services.card_height', data_get($ov, 'sub_services.card_height', 'normal'));
+                        @endphp
+                        <label class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
+                            <input type="radio" name="content_overrides[sub_services][card_height]" value="normal" {{ $subCardHeight === 'normal' ? 'checked' : '' }}>
+                            Standard
+                        </label>
+                        <label class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
+                            <input type="radio" name="content_overrides[sub_services][card_height]" value="tall" {{ $subCardHeight === 'tall' ? 'checked' : '' }}>
+                            Allongée (texte long)
+                        </label>
+                    </div>
                     <label class="mt-3 block text-sm font-semibold text-slate-800">Titre réalisations (accent)</label>
                     <input name="content_overrides[realisations][title_accent]" value="{{ old('content_overrides.realisations.title_accent', data_get($ov, 'realisations.title_accent', 'Réalisations')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
                     <label class="mt-3 block text-sm font-semibold text-slate-800">Titre réalisations (suite)</label>

@@ -36,6 +36,10 @@
     $ctaCardOverrides = is_array(data_get($ov, 'cta_card')) ? data_get($ov, 'cta_card') : [];
     $subServiceCtaText = trim((string) data_get($ov, 'sub_services.cta_text', 'C’EST CE QU’IL ME FAUT'));
     $subServiceDocText = trim((string) data_get($ov, 'sub_services.doc_text', 'DOC TECHNIQUE'));
+    $subServiceCardHeight = trim((string) data_get($ov, 'sub_services.card_height', 'normal'));
+    $subServiceCardClass = $subServiceCardHeight === 'tall'
+        ? 'service-card relative min-h-[380px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5 sm:min-h-[430px]'
+        : 'service-card relative min-h-[300px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5 sm:min-h-[320px]';
     $statsHeadingText = trim((string) data_get($ov, 'stats.heading', 'Chiffres clés'));
     $statsLinkText = trim((string) data_get($ov, 'stats.link_text', 'Voir les avis'));
     $partnersHeadingText = trim((string) data_get($ov, 'partners.heading', 'Partenaires associés'));
@@ -361,7 +365,7 @@
                         $img = HomeView::url((string) data_get($s, 'image', ''));
                         $techDoc = trim((string) data_get($s, 'technical_doc', ''));
                     @endphp
-                    <article class="service-card relative min-h-[300px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5 sm:min-h-[320px]">
+                    <article class="{{ $subServiceCardClass }}">
                         <div class="absolute inset-0">
                             <img
                                 src="{{ $img }}"
