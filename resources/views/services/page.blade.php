@@ -331,9 +331,11 @@
                 $subCount = count($subServices);
                 $subServicesGridClass = $subCount === 4
                     ? 'grid gap-6 sm:grid-cols-2 lg:grid-cols-4'
-                    : ($subCount > 4
-                        ? 'grid gap-6 sm:grid-cols-2 lg:grid-cols-2'
-                        : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3');
+                    : ($subCount === 6
+                        ? 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3'
+                        : ($subCount > 4
+                            ? 'grid gap-6 sm:grid-cols-2 lg:grid-cols-2'
+                            : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3'));
                 if ($sectionHeading !== '') {
                     $parts = preg_split('/\s+/', $sectionHeading, 2, PREG_SPLIT_NO_EMPTY);
                     $accent = $parts[0] ?? $sectionHeading;
