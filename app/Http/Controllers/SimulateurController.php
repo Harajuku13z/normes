@@ -95,7 +95,12 @@ class SimulateurController extends Controller
         }
 
         $subService = trim((string) ($data['sub_service'] ?? ''));
-        if ($subService !== '' && ! in_array($subService, (array) ($selected['sub_services'] ?? []), true)) {
+        $allowedSubServices = collect((array) ($selected['sub_services'] ?? []))
+            ->map(fn ($sub) => trim((string) data_get($sub, 'title', '')))
+            ->filter(fn ($title) => $title !== '')
+            ->values()
+            ->all();
+        if ($subService !== '' && ! in_array($subService, $allowedSubServices, true)) {
             return back()->withErrors(['sub_service' => 'Sous-service invalide pour ce service.'])->withInput();
         }
 
@@ -195,7 +200,7 @@ class SimulateurController extends Controller
     }
 
     /**
-     * @return array<int, array{slug:string,title:string,sub_services:array<int,string>}>
+     * @return array<int, array{slug:string,title:string,subtitle:string,image:string,sub_services:array<int,array{title:string,subtitle:string,image:string}>}>
      */
     private function servicesWithSubServices(): array
     {
@@ -206,15 +211,26 @@ class SimulateurController extends Controller
             ->get()
             ->map(function (ServicePage $page): array {
                 $subs = collect((array) ($page->sub_services ?? []))
-                    ->map(fn ($s) => trim((string) data_get($s, 'title', '')))
-                    ->filter(fn ($s) => $s !== '')
-                    ->unique()
+                    ->filter(fn ($s) => is_array($s))
+                    ->map(function ($s): array {
+                        $title = trim((string) data_get($s, 'title', ''));
+                        $image = trim((string) data_get($s, 'image', ''));
+                        return [
+                            'title' => $title,
+                            'subtitle' => trim((string) data_get($s, 'subtitle', '')),
+                            'image' => $this->publicUrl($image !== '' ? $image : 'slide/toiture.png'),
+                        ];
+                    })
+                    ->filter(fn ($s) => $s['title'] !== '')
+                    ->unique('title')
                     ->values()
                     ->all();
 
                 return [
                     'slug' => (string) $page->slug,
                     'title' => (string) $page->title,
+                    'subtitle' => trim((string) ($page->subtitle ?? '')),
+                    'image' => $this->publicUrl(trim((string) ($page->image ?: $page->featured_image ?: 'slide/toiture.png'))),
                     'sub_services' => $subs,
                 ];
             })
@@ -229,5 +245,17 @@ class SimulateurController extends Controller
         }
 
         return null;
+    }
+
+    private function publicUrl(string $path): string
+    {
+        $path = trim($path);
+        if ($path === '') {
+            return asset('slide/toiture.png');
+        }
+
+        return str_starts_with($path, 'http://') || str_starts_with($path, 'https://')
+            ? $path
+            : asset(ltrim($path, '/'));
     }
 }

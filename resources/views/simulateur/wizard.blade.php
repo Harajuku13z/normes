@@ -104,28 +104,47 @@
             @endphp
             <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                 <h1 class="text-2xl font-black text-slate-900">Service et sous-service</h1>
-                <p class="mt-1 text-sm text-slate-600">Choisissez le service principal puis le sous-service correspondant.</p>
+                <p class="mt-1 text-sm text-slate-600">Choisissez le service principal puis le sous-service correspondant, en cartes visuelles.</p>
 
-                <form method="post" action="{{ route('simulateur.step2.store') }}" class="mt-5 grid gap-4 sm:grid-cols-2">
+                <form method="post" action="{{ route('simulateur.step2.store') }}" class="mt-5 grid gap-4">
                     @csrf
-                    <div class="sm:col-span-2">
-                        <label class="mb-1 block text-sm font-semibold">Service</label>
-                        <select id="simService" name="service_slug" required class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm">
-                            <option value="">Sélectionner un service</option>
+                    <input type="hidden" id="simServiceInput" name="service_slug" value="{{ $selectedSlug }}" required>
+                    <input type="hidden" id="simSubServiceInput" name="sub_service" value="{{ $selectedSub }}">
+
+                    <div>
+                        <label class="mb-2 block text-sm font-semibold">Service</label>
+                        <div id="simServiceCards" class="grid gap-3 sm:grid-cols-2">
                             @foreach ($services as $sv)
-                                <option value="{{ data_get($sv, 'slug') }}" @selected($selectedSlug === data_get($sv, 'slug'))>
-                                    {{ data_get($sv, 'title') }}
-                                </option>
+                                @php
+                                    $slug = (string) data_get($sv, 'slug');
+                                    $isSelected = $selectedSlug === $slug;
+                                @endphp
+                                <button
+                                    type="button"
+                                    data-service-slug="{{ $slug }}"
+                                    class="js-service-card group relative overflow-hidden rounded-2xl border text-left shadow-sm transition {{ $isSelected ? 'border-brand-blue ring-2 ring-brand-blue/30' : 'border-slate-200 hover:border-brand-blue/40' }}"
+                                >
+                                    <div class="aspect-[16/9] w-full overflow-hidden bg-slate-100">
+                                        <img src="{{ data_get($sv, 'image') }}" alt="{{ data_get($sv, 'title') }}" class="h-full w-full object-cover transition duration-200 group-hover:scale-[1.02]">
+                                    </div>
+                                    <div class="p-3">
+                                        <p class="text-sm font-extrabold text-slate-900">{{ data_get($sv, 'title') }}</p>
+                                        @if (trim((string) data_get($sv, 'subtitle')) !== '')
+                                            <p class="mt-1 text-xs text-slate-600">{{ data_get($sv, 'subtitle') }}</p>
+                                        @endif
+                                    </div>
+                                </button>
                             @endforeach
-                        </select>
+                        </div>
                     </div>
-                    <div class="sm:col-span-2">
-                        <label class="mb-1 block text-sm font-semibold">Sous-service</label>
-                        <select id="simSubService" name="sub_service" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm">
-                            <option value="">Sélectionner un sous-service (optionnel)</option>
-                        </select>
+
+                    <div>
+                        <label class="mb-2 block text-sm font-semibold">Sous-service</label>
+                        <div id="simSubServiceCards" class="grid gap-3 sm:grid-cols-2"></div>
+                        <p class="mt-2 text-xs text-slate-500">Optionnel : vous pouvez continuer sans sous-service.</p>
                     </div>
-                    <div class="sm:col-span-2 pt-1 flex gap-2">
+
+                    <div class="pt-1 flex gap-2">
                         <a href="{{ route('simulateur.step1') }}" class="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-700 hover:bg-slate-50">Retour</a>
                         <button class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white hover:bg-sky-500">Continuer</button>
                     </div>
@@ -136,23 +155,71 @@
                 (function () {
                     const map = @json($serviceMap);
                     const selectedSub = @json($selectedSub);
-                    const serviceEl = document.getElementById('simService');
-                    const subEl = document.getElementById('simSubService');
-                    if (!serviceEl || !subEl) return;
-                    const renderSub = () => {
-                        const slug = serviceEl.value || '';
-                        const subs = Array.isArray(map[slug]) ? map[slug] : [];
-                        subEl.innerHTML = '<option value="">Sélectionner un sous-service (optionnel)</option>';
-                        subs.forEach((name) => {
-                            const opt = document.createElement('option');
-                            opt.value = name;
-                            opt.textContent = name;
-                            if (name === selectedSub) opt.selected = true;
-                            subEl.appendChild(opt);
+                    const serviceInput = document.getElementById('simServiceInput');
+                    const subInput = document.getElementById('simSubServiceInput');
+                    const serviceCards = Array.from(document.querySelectorAll('.js-service-card'));
+                    const subWrap = document.getElementById('simSubServiceCards');
+                    if (!serviceInput || !subInput || !subWrap) return;
+
+                    const updateServiceUI = () => {
+                        const slug = serviceInput.value || '';
+                        serviceCards.forEach((card) => {
+                            const on = card.dataset.serviceSlug === slug;
+                            card.classList.toggle('border-brand-blue', on);
+                            card.classList.toggle('ring-2', on);
+                            card.classList.toggle('ring-brand-blue/30', on);
+                            card.classList.toggle('border-slate-200', !on);
                         });
                     };
-                    serviceEl.addEventListener('change', renderSub);
-                    renderSub();
+
+                    const renderSubs = () => {
+                        const slug = serviceInput.value || '';
+                        const subs = Array.isArray(map[slug]) ? map[slug] : [];
+                        subWrap.innerHTML = '';
+                        if (subs.length === 0) {
+                            subWrap.innerHTML = '<div class="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-500">Aucun sous-service pour ce service.</div>';
+                            return;
+                        }
+                        subs.forEach((sub) => {
+                            const title = String(sub?.title || '').trim();
+                            if (!title) return;
+                            const btn = document.createElement('button');
+                            btn.type = 'button';
+                            btn.dataset.subTitle = title;
+                            const selected = subInput.value === title;
+                            btn.className = 'js-sub-card group relative overflow-hidden rounded-2xl border text-left shadow-sm transition ' + (selected ? 'border-brand-blue ring-2 ring-brand-blue/30' : 'border-slate-200 hover:border-brand-blue/40');
+                            btn.innerHTML = `
+                                <div class="aspect-[16/9] w-full overflow-hidden bg-slate-100">
+                                    <img src="${String(sub?.image || '')}" alt="${title.replace(/"/g, '&quot;')}" class="h-full w-full object-cover transition duration-200 group-hover:scale-[1.02]">
+                                </div>
+                                <div class="p-3">
+                                    <p class="text-sm font-extrabold text-slate-900">${title}</p>
+                                    ${String(sub?.subtitle || '').trim() ? `<p class="mt-1 text-xs text-slate-600">${String(sub.subtitle)}</p>` : ''}
+                                </div>
+                            `;
+                            btn.addEventListener('click', () => {
+                                if (subInput.value === title) {
+                                    subInput.value = '';
+                                } else {
+                                    subInput.value = title;
+                                }
+                                renderSubs();
+                            });
+                            subWrap.appendChild(btn);
+                        });
+                    };
+
+                    serviceCards.forEach((card) => {
+                        card.addEventListener('click', () => {
+                            serviceInput.value = card.dataset.serviceSlug || '';
+                            subInput.value = '';
+                            updateServiceUI();
+                            renderSubs();
+                        });
+                    });
+
+                    updateServiceUI();
+                    renderSubs();
                 })();
             </script>
         @endif
