@@ -15,7 +15,9 @@ class SimulateurLead extends Model
         'email',
         'service_slug',
         'service_title',
+        'selected_services',
         'sub_service',
+        'selected_sub_services',
         'message',
         'photos',
         'status',
@@ -24,6 +26,8 @@ class SimulateurLead extends Model
 
     protected $casts = [
         'photos' => 'array',
+        'selected_services' => 'array',
+        'selected_sub_services' => 'array',
         'completed_at' => 'datetime',
         'surface_m2' => 'decimal:2',
     ];

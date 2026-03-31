@@ -112,29 +112,28 @@
 
         @if ($step === 2)
             @php
-                $selectedSlug = old('service_slug', data_get($s, 'service_slug', ''));
+                $selectedSlugs = collect(old('service_slugs', data_get($s, 'service_slugs', [])))
+                    ->map(fn ($v) => trim((string) $v))
+                    ->filter(fn ($v) => $v !== '')
+                    ->values()
+                    ->all();
             @endphp
             <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                 <h1 class="text-2xl font-black text-slate-900">Choisissez votre service</h1>
-                <p class="mt-1 text-sm text-slate-600">Sélectionnez un service. La transition vers l’étape suivante se fait automatiquement.</p>
+                <p class="mt-1 text-sm text-slate-600">Sélectionnez un ou plusieurs services, puis continuez.</p>
 
                 <form id="simStep2Form" method="post" action="{{ route('simulateur.step2.store') }}" class="mt-5 grid gap-4">
                     @csrf
-                    <input type="hidden" id="simServiceInput" name="service_slug" value="{{ $selectedSlug }}" required>
-
                     <div>
                         <label class="mb-2 block text-sm font-semibold">Service</label>
                         <div id="simServiceCards" class="grid gap-3 sm:grid-cols-2">
                             @foreach ($services as $sv)
                                 @php
                                     $slug = (string) data_get($sv, 'slug');
-                                    $isSelected = $selectedSlug === $slug;
+                                    $isSelected = in_array($slug, $selectedSlugs, true);
                                 @endphp
-                                <button
-                                    type="button"
-                                    data-service-slug="{{ $slug }}"
-                                    class="js-service-card group relative overflow-hidden rounded-2xl border text-left shadow-sm transition {{ $isSelected ? 'border-brand-blue ring-2 ring-brand-blue/30' : 'border-slate-200 hover:border-brand-blue/40' }}"
-                                >
+                                <label class="js-service-card group relative overflow-hidden rounded-2xl border text-left shadow-sm transition cursor-pointer {{ $isSelected ? 'border-brand-blue ring-2 ring-brand-blue/30' : 'border-slate-200 hover:border-brand-blue/40' }}">
+                                    <input type="checkbox" name="service_slugs[]" value="{{ $slug }}" class="sr-only js-service-checkbox" {{ $isSelected ? 'checked' : '' }}>
                                     <div class="aspect-[16/9] w-full overflow-hidden bg-slate-100">
                                         <img src="{{ data_get($sv, 'image') }}" alt="{{ data_get($sv, 'title') }}" class="h-full w-full object-cover transition duration-200 group-hover:scale-[1.02]">
                                     </div>
@@ -144,7 +143,7 @@
                                             <p class="mt-1 text-xs text-slate-600">{{ data_get($sv, 'subtitle') }}</p>
                                         @endif
                                     </div>
-                                </button>
+                                </label>
                             @endforeach
                         </div>
                     </div>
@@ -159,29 +158,25 @@
             <script>
                 (function () {
                     const form = document.getElementById('simStep2Form');
-                    const serviceInput = document.getElementById('simServiceInput');
                     const continueBtn = document.getElementById('simStep2Continue');
                     const serviceCards = Array.from(document.querySelectorAll('.js-service-card'));
-                    if (!form || !serviceInput || !continueBtn) return;
+                    const checkboxes = Array.from(document.querySelectorAll('.js-service-checkbox'));
+                    if (!form || !continueBtn) return;
 
                     const updateServiceUI = () => {
-                        const slug = serviceInput.value || '';
                         serviceCards.forEach((card) => {
-                            const on = card.dataset.serviceSlug === slug;
+                            const box = card.querySelector('.js-service-checkbox');
+                            const on = !!(box && box.checked);
                             card.classList.toggle('border-brand-blue', on);
                             card.classList.toggle('ring-2', on);
                             card.classList.toggle('ring-brand-blue/30', on);
                             card.classList.toggle('border-slate-200', !on);
                         });
-                        continueBtn.disabled = slug === '';
+                        continueBtn.disabled = !checkboxes.some((b) => b.checked);
                     };
 
-                    serviceCards.forEach((card) => {
-                        card.addEventListener('click', () => {
-                            serviceInput.value = card.dataset.serviceSlug || '';
-                            updateServiceUI();
-                            setTimeout(() => form.submit(), 180);
-                        });
+                    checkboxes.forEach((box) => {
+                        box.addEventListener('change', updateServiceUI);
                     });
 
                     updateServiceUI();
@@ -192,39 +187,49 @@
         @if ($step === 3)
             <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                 @php
-                    $selected = is_array($selectedService ?? null) ? $selectedService : [];
-                    $selectedSub = old('sub_service', data_get($s, 'sub_service', ''));
-                    $subs = is_array(data_get($selected, 'sub_services', [])) ? data_get($selected, 'sub_services', []) : [];
+                    $selected = is_array($selectedServices ?? null) ? $selectedServices : [];
+                    $selectedSubs = collect(old('sub_services', data_get($s, 'sub_services', [])))
+                        ->map(fn ($v) => trim((string) $v))
+                        ->filter(fn ($v) => $v !== '')
+                        ->values()
+                        ->all();
                 @endphp
-                <h1 class="text-2xl font-black text-slate-900">Choisissez un sous-service</h1>
-                <p class="mt-1 text-sm text-slate-600">Service sélectionné : <span class="font-extrabold text-brand-blue">{{ data_get($selected, 'title', '') }}</span></p>
+                <h1 class="text-2xl font-black text-slate-900">Choisissez vos sous-services</h1>
+                <p class="mt-1 text-sm text-slate-600">Sélectionnez un ou plusieurs sous-services liés à vos services.</p>
 
                 <form method="post" action="{{ route('simulateur.step3.store') }}" class="mt-5 grid gap-4">
                     @csrf
                     <div>
-                        <input type="hidden" id="simSubServiceInput" name="sub_service" value="{{ $selectedSub }}">
-                        <div id="simSubServiceCards" class="grid gap-3 sm:grid-cols-2">
-                            @foreach ($subs as $sub)
+                        <div id="simSubServiceCards" class="space-y-4">
+                            @foreach ($selected as $sv)
                                 @php
-                                    $st = trim((string) data_get($sub, 'title', ''));
-                                    if ($st === '') continue;
-                                    $isSelected = $selectedSub === $st;
+                                    $svTitle = (string) data_get($sv, 'title', '');
+                                    $svSubs = is_array(data_get($sv, 'sub_services', [])) ? data_get($sv, 'sub_services', []) : [];
                                 @endphp
-                                <button
-                                    type="button"
-                                    data-sub-title="{{ $st }}"
-                                    class="js-sub-card group relative overflow-hidden rounded-2xl border text-left shadow-sm transition {{ $isSelected ? 'border-brand-blue ring-2 ring-brand-blue/30' : 'border-slate-200 hover:border-brand-blue/40' }}"
-                                >
-                                    <div class="aspect-[16/9] w-full overflow-hidden bg-slate-100">
-                                        <img src="{{ data_get($sub, 'image') }}" alt="{{ $st }}" class="h-full w-full object-cover transition duration-200 group-hover:scale-[1.02]">
+                                <div class="rounded-2xl border border-slate-200 bg-slate-50/70 p-3">
+                                    <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.18em] text-brand-blue">{{ $svTitle }}</p>
+                                    <div class="grid gap-3 sm:grid-cols-2">
+                                        @foreach ($svSubs as $sub)
+                                            @php
+                                                $st = trim((string) data_get($sub, 'title', ''));
+                                                if ($st === '') continue;
+                                                $isSelected = in_array($st, $selectedSubs, true);
+                                            @endphp
+                                            <label class="js-sub-card group relative overflow-hidden rounded-2xl border text-left shadow-sm transition cursor-pointer {{ $isSelected ? 'border-brand-blue ring-2 ring-brand-blue/30' : 'border-slate-200 hover:border-brand-blue/40' }}">
+                                                <input type="checkbox" name="sub_services[]" value="{{ $st }}" class="sr-only js-sub-checkbox" {{ $isSelected ? 'checked' : '' }}>
+                                                <div class="aspect-[16/9] w-full overflow-hidden bg-slate-100">
+                                                    <img src="{{ data_get($sub, 'image') }}" alt="{{ $st }}" class="h-full w-full object-cover transition duration-200 group-hover:scale-[1.02]">
+                                                </div>
+                                                <div class="p-3">
+                                                    <p class="text-sm font-extrabold text-slate-900">{{ $st }}</p>
+                                                    @if (trim((string) data_get($sub, 'subtitle')) !== '')
+                                                        <p class="mt-1 text-xs text-slate-600">{{ data_get($sub, 'subtitle') }}</p>
+                                                    @endif
+                                                </div>
+                                            </label>
+                                        @endforeach
                                     </div>
-                                    <div class="p-3">
-                                        <p class="text-sm font-extrabold text-slate-900">{{ $st }}</p>
-                                        @if (trim((string) data_get($sub, 'subtitle')) !== '')
-                                            <p class="mt-1 text-xs text-slate-600">{{ data_get($sub, 'subtitle') }}</p>
-                                        @endif
-                                    </div>
-                                </button>
+                                </div>
                             @endforeach
                         </div>
                         <p class="mt-2 text-xs text-slate-500">Optionnel : vous pouvez continuer sans sous-service.</p>
@@ -238,24 +243,21 @@
 
             <script>
                 (function () {
-                    const input = document.getElementById('simSubServiceInput');
                     const cards = Array.from(document.querySelectorAll('.js-sub-card'));
-                    if (!input || cards.length === 0) return;
+                    const boxes = Array.from(document.querySelectorAll('.js-sub-checkbox'));
+                    if (cards.length === 0) return;
                     const refresh = () => {
                         cards.forEach((card) => {
-                            const on = (card.dataset.subTitle || '') === (input.value || '');
+                            const box = card.querySelector('.js-sub-checkbox');
+                            const on = !!(box && box.checked);
                             card.classList.toggle('border-brand-blue', on);
                             card.classList.toggle('ring-2', on);
                             card.classList.toggle('ring-brand-blue/30', on);
                             card.classList.toggle('border-slate-200', !on);
                         });
                     };
-                    cards.forEach((card) => {
-                        card.addEventListener('click', () => {
-                            const val = card.dataset.subTitle || '';
-                            input.value = input.value === val ? '' : val;
-                            refresh();
-                        });
+                    boxes.forEach((box) => {
+                        box.addEventListener('change', refresh);
                     });
                     refresh();
                 })();
@@ -295,8 +297,8 @@
                     <p><span class="font-extrabold">Nom :</span> {{ data_get($s, 'nom_prenom', '-') }}</p>
                     <p><span class="font-extrabold">Code postal :</span> {{ data_get($s, 'code_postal', '-') }}</p>
                     <p><span class="font-extrabold">Surface :</span> {{ data_get($s, 'surface_m2', '-') }} m²</p>
-                    <p><span class="font-extrabold">Service :</span> {{ data_get($s, 'service_title', '-') }}</p>
-                    <p><span class="font-extrabold">Sous-service :</span> {{ data_get($s, 'sub_service', '-') ?: '—' }}</p>
+                    <p><span class="font-extrabold">Services :</span> {{ collect((array) data_get($s, 'service_titles', []))->filter()->implode(', ') ?: '-' }}</p>
+                    <p><span class="font-extrabold">Sous-services :</span> {{ collect((array) data_get($s, 'sub_services', []))->filter()->implode(', ') ?: '—' }}</p>
                 </div>
 
                 <form method="post" action="{{ route('simulateur.finish') }}" class="mt-5 grid gap-4 sm:grid-cols-2">

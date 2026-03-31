@@ -91,20 +91,28 @@ class SimulateurController extends Controller
             ->all();
 
         $data = $request->validate([
-            'service_slug' => ['required', Rule::in($serviceSlugs)],
+            'service_slugs' => ['required', 'array', 'min:1'],
+            'service_slugs.*' => ['required', Rule::in($serviceSlugs)],
         ]);
 
         $services = $this->servicesWithSubServices();
-        $selected = collect($services)->firstWhere('slug', $data['service_slug']);
-        if (! is_array($selected)) {
-            return back()->withErrors(['service_slug' => 'Service introuvable.'])->withInput();
+        $selectedServices = collect($services)
+            ->filter(fn ($sv) => in_array((string) data_get($sv, 'slug'), (array) $data['service_slugs'], true))
+            ->values()
+            ->all();
+        if ($selectedServices === []) {
+            return back()->withErrors(['service_slugs' => 'Sélectionnez au moins un service.'])->withInput();
         }
 
         $state = (array) $request->session()->get('simulateur_devis', []);
+        $selectedTitles = collect($selectedServices)->map(fn ($sv) => (string) data_get($sv, 'title'))->values()->all();
         $state = array_merge($state, [
-            'service_slug' => (string) $selected['slug'],
-            'service_title' => (string) $selected['title'],
+            'service_slug' => (string) data_get($selectedServices, '0.slug', ''),
+            'service_title' => (string) data_get($selectedServices, '0.title', ''),
+            'service_slugs' => array_values((array) $data['service_slugs']),
+            'service_titles' => $selectedTitles,
             'sub_service' => '',
+            'sub_services' => [],
         ]);
         $request->session()->put('simulateur_devis', $state);
         $this->upsertLeadFromState($request, $state);
@@ -115,14 +123,21 @@ class SimulateurController extends Controller
     public function step3(Request $request, HomePageService $homePage): View|RedirectResponse
     {
         $state = (array) $request->session()->get('simulateur_devis', []);
-        $serviceSlug = trim((string) data_get($state, 'service_slug', ''));
-        if ($serviceSlug === '') {
+        $serviceSlugs = collect((array) data_get($state, 'service_slugs', []))
+            ->map(fn ($v) => trim((string) $v))
+            ->filter(fn ($v) => $v !== '')
+            ->values()
+            ->all();
+        if ($serviceSlugs === []) {
             return redirect()->route('simulateur.step2');
         }
 
         $services = $this->servicesWithSubServices();
-        $selected = collect($services)->firstWhere('slug', $serviceSlug);
-        if (! is_array($selected)) {
+        $selectedServices = collect($services)
+            ->filter(fn ($sv) => in_array((string) data_get($sv, 'slug'), $serviceSlugs, true))
+            ->values()
+            ->all();
+        if ($selectedServices === []) {
             return redirect()->route('simulateur.step2');
         }
 
@@ -131,40 +146,58 @@ class SimulateurController extends Controller
             'step' => 3,
             'state' => $state,
             'services' => $services,
-            'selectedService' => $selected,
+            'selectedServices' => $selectedServices,
         ]);
     }
 
     public function step3Store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'sub_service' => ['nullable', 'string', 'max:190'],
+            'sub_services' => ['nullable', 'array'],
+            'sub_services.*' => ['nullable', 'string', 'max:190'],
         ]);
 
         $state = (array) $request->session()->get('simulateur_devis', []);
-        $serviceSlug = trim((string) data_get($state, 'service_slug', ''));
-        if ($serviceSlug === '') {
+        $serviceSlugs = collect((array) data_get($state, 'service_slugs', []))
+            ->map(fn ($v) => trim((string) $v))
+            ->filter(fn ($v) => $v !== '')
+            ->values()
+            ->all();
+        if ($serviceSlugs === []) {
             return redirect()->route('simulateur.step2');
         }
 
         $services = $this->servicesWithSubServices();
-        $selected = collect($services)->firstWhere('slug', $serviceSlug);
-        if (! is_array($selected)) {
+        $selectedServices = collect($services)
+            ->filter(fn ($sv) => in_array((string) data_get($sv, 'slug'), $serviceSlugs, true))
+            ->values()
+            ->all();
+        if ($selectedServices === []) {
             return redirect()->route('simulateur.step2');
         }
 
-        $subService = trim((string) ($data['sub_service'] ?? ''));
-        $allowedSubServices = collect((array) ($selected['sub_services'] ?? []))
+        $selectedSubServices = collect((array) ($data['sub_services'] ?? []))
+            ->map(fn ($v) => trim((string) $v))
+            ->filter(fn ($v) => $v !== '')
+            ->unique()
+            ->values()
+            ->all();
+        $allowedSubServices = collect($selectedServices)
+            ->flatMap(fn ($sv) => (array) data_get($sv, 'sub_services', []))
             ->map(fn ($sub) => trim((string) data_get($sub, 'title', '')))
             ->filter(fn ($title) => $title !== '')
+            ->unique()
             ->values()
             ->all();
 
-        if ($subService !== '' && ! in_array($subService, $allowedSubServices, true)) {
-            return back()->withErrors(['sub_service' => 'Sous-service invalide pour ce service.'])->withInput();
+        foreach ($selectedSubServices as $subService) {
+            if (! in_array($subService, $allowedSubServices, true)) {
+                return back()->withErrors(['sub_services' => 'Sous-service invalide pour les services sélectionnés.'])->withInput();
+            }
         }
 
-        $state['sub_service'] = $subService;
+        $state['sub_service'] = (string) ($selectedSubServices[0] ?? '');
+        $state['sub_services'] = $selectedSubServices;
         $request->session()->put('simulateur_devis', $state);
         $this->upsertLeadFromState($request, $state);
 
@@ -174,8 +207,12 @@ class SimulateurController extends Controller
     public function step4(Request $request, HomePageService $homePage): View|RedirectResponse
     {
         $state = (array) $request->session()->get('simulateur_devis', []);
-        $serviceSlug = trim((string) data_get($state, 'service_slug', ''));
-        if ($serviceSlug === '') {
+        $serviceSlugs = collect((array) data_get($state, 'service_slugs', []))
+            ->map(fn ($v) => trim((string) $v))
+            ->filter(fn ($v) => $v !== '')
+            ->values()
+            ->all();
+        if ($serviceSlugs === []) {
             return redirect()->route('simulateur.step2');
         }
 
@@ -221,8 +258,12 @@ class SimulateurController extends Controller
     public function step5(Request $request, HomePageService $homePage): View|RedirectResponse
     {
         $state = (array) $request->session()->get('simulateur_devis', []);
-        $serviceSlug = trim((string) data_get($state, 'service_slug', ''));
-        if ($serviceSlug === '') {
+        $serviceSlugs = collect((array) data_get($state, 'service_slugs', []))
+            ->map(fn ($v) => trim((string) $v))
+            ->filter(fn ($v) => $v !== '')
+            ->values()
+            ->all();
+        if ($serviceSlugs === []) {
             return redirect()->route('simulateur.step2');
         }
 
@@ -344,7 +385,17 @@ class SimulateurController extends Controller
                 'email' => trim((string) ($state['email'] ?? '')) ?: null,
                 'service_slug' => trim((string) ($state['service_slug'] ?? '')) ?: null,
                 'service_title' => trim((string) ($state['service_title'] ?? '')) ?: null,
+                'selected_services' => collect((array) ($state['service_titles'] ?? []))
+                    ->map(fn ($v) => trim((string) $v))
+                    ->filter(fn ($v) => $v !== '')
+                    ->values()
+                    ->all(),
                 'sub_service' => trim((string) ($state['sub_service'] ?? '')) ?: null,
+                'selected_sub_services' => collect((array) ($state['sub_services'] ?? []))
+                    ->map(fn ($v) => trim((string) $v))
+                    ->filter(fn ($v) => $v !== '')
+                    ->values()
+                    ->all(),
                 'message' => trim((string) ($state['message'] ?? '')) ?: null,
                 'photos' => is_array($state['photos'] ?? null) ? array_values((array) $state['photos']) : null,
                 'status' => $completed ? 'completed' : 'draft',
