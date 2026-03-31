@@ -1,8 +1,8 @@
 @php
     $h = $home ?? [];
     $d = data_get($h, 'devis', []);
-    $serviceOptions = collect((array) data_get($h, 'services.items', []))
-        ->map(fn ($item) => trim((string) data_get($item, 'title', '')))
+    $serviceOptions = collect((array) data_get($h, 'service_options', []))
+        ->map(fn ($title) => trim((string) $title))
         ->filter(fn ($title) => $title !== '')
         ->unique()
         ->values()

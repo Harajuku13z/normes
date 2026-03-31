@@ -4,18 +4,37 @@
     $h = $home ?? [];
     $f = data_get($h, 'footer', []);
     $d = data_get($h, 'devis', []);
+    $cp = data_get($h, 'contact_page', []);
     $siteName = (string) data_get($h, 'meta.site_name', 'Normes & Rénovation');
     $metaTitle = 'Contact | '.$siteName;
     $metaDescription = trim((string) data_get($h, 'meta.description', ''));
     if ($metaDescription === '') {
         $metaDescription = 'Contactez-nous pour un devis gratuit, une question sur votre chantier ou nos agences. Réponse sous 48 h en général.';
     }
-    $heroBg = HomeView::url((string) data_get($h, 'hero.background_image', 'slide/toiture.png'));
-    $heroKicker = (string) data_get($d, 'contact_heading', 'Contact');
-    $heroTitleLine1 = (string) data_get($d, 'title_line1', 'Vous avez');
-    $heroTitleLine2 = (string) data_get($d, 'title_line2', 'un projet de rénovation ?');
-    $heroIntro = trim((string) data_get($d, 'intro', ''));
-    $heroSubtitle = trim((string) data_get($d, 'subtitle', ''));
+    $heroBg = HomeView::url((string) data_get($cp, 'hero_bg', 'slide/toiture.png'));
+    $heroKicker = (string) data_get($cp, 'hero_kicker', data_get($d, 'contact_heading', 'Contact'));
+    $heroTitleLine1 = (string) data_get($cp, 'hero_title_line1', data_get($d, 'title_line1', 'Vous avez'));
+    $heroTitleLine2 = (string) data_get($cp, 'hero_title_line2', data_get($d, 'title_line2', 'un projet de rénovation ?'));
+    $heroIntro = trim((string) data_get($cp, 'hero_intro', data_get($d, 'intro', '')));
+    $heroSubtitle = trim((string) data_get($cp, 'hero_subtitle', data_get($d, 'subtitle', '')));
+    $heroCtaForm = trim((string) data_get($cp, 'hero_cta_form', 'Formulaire de contact'));
+    $heroCtaPhone = trim((string) data_get($cp, 'hero_cta_phone', (string) data_get($f, 'phone', '')));
+    $labelSiege = trim((string) data_get($cp, 'labels.siege', 'Siège social'));
+    $labelPhone = trim((string) data_get($cp, 'labels.phone', 'Téléphone'));
+    $labelEmail = trim((string) data_get($cp, 'labels.email', 'E-mail'));
+    $labelHours = trim((string) data_get($cp, 'labels.hours', 'Horaires'));
+    $labelSocial = trim((string) data_get($cp, 'labels.social', 'Réseaux sociaux'));
+    $labelMap = trim((string) data_get($cp, 'labels.map', 'Carte'));
+    $socialTitle = trim((string) data_get($cp, 'social_title', 'Suivez nos actualités'));
+    $socialIntro = trim((string) data_get($cp, 'social_intro', 'Retrouvez-nous sur les réseaux pour nos chantiers, conseils et nouveautés.'));
+    $mapTitle = trim((string) data_get($cp, 'map_title', 'Nos implantations'));
+    $mapIntro = trim((string) data_get($cp, 'map_intro', 'Repérez nos agences en un coup d’œil (Bretagne et Bourgogne).'));
+    $contactCta = data_get($cp, 'cta_card', []);
+    $contactCtaKicker = trim((string) data_get($contactCta, 'kicker', 'Un projet de rénovation ?'));
+    $contactCtaTitle = trim((string) data_get($contactCta, 'title', 'Démarrez dès maintenant'));
+    $contactCtaText = trim((string) data_get($contactCta, 'text', 'Lancez le simulateur pour une première estimation, ou envoyez votre demande pour être contacté rapidement.'));
+    $contactCtaSimText = trim((string) data_get($contactCta, 'simulateur_text', 'Ouvrir le simulateur de devis'));
+    $contactCtaFormText = trim((string) data_get($contactCta, 'contact_text', 'Accéder au formulaire de contact'));
     $agenciesContact = data_get($d, 'agencies_contact', []);
     if (! is_array($agenciesContact)) {
         $agenciesContact = [];
@@ -29,7 +48,7 @@
         $googleMapQuery .= ', '.implode(', ', array_filter(array_map('strval', $hqLines)));
     }
     $googleMapEmbedUrl = 'https://www.google.com/maps?q='.rawurlencode($googleMapQuery).'&output=embed';
-    $socialBg = HomeView::url((string) data_get($h, 'hero.background_image', 'slide/toiture.png'));
+    $socialBg = HomeView::url((string) data_get($cp, 'social_bg', 'slide/toiture.png'));
 @endphp
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
@@ -71,13 +90,13 @@
                         href="#formulaire-contact"
                         class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500"
                     >
-                        Formulaire de contact
+                        {{ $heroCtaForm !== '' ? $heroCtaForm : 'Formulaire de contact' }}
                     </a>
                     <a
                         href="tel:{{ data_get($f, 'phone_href') }}"
                         class="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:bg-yellow-300"
                     >
-                        {{ data_get($f, 'phone') }}
+                        {{ $heroCtaPhone !== '' ? $heroCtaPhone : data_get($f, 'phone') }}
                     </a>
                 </div>
             </div>
@@ -90,7 +109,7 @@
         <div class="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:items-start lg:gap-10">
             <div class="order-2 min-w-0 space-y-6 lg:order-1">
                 <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
-                    <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ data_get($f, 'siege_title') }}</p>
+                    <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $labelSiege !== '' ? $labelSiege : data_get($f, 'siege_title') }}</p>
                     <h2 class="mt-2 text-xl font-extrabold text-brand-dark">{{ data_get($f, 'company') }}</h2>
                     <p class="mt-3 text-sm leading-relaxed text-slate-600">
                         @foreach (data_get($f, 'address_lines', []) as $line)
@@ -98,11 +117,11 @@
                         @endforeach
                     </p>
                     <div class="mt-5 space-y-3 border-t border-slate-100 pt-5">
-                        <p class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Téléphone</p>
+                        <p class="text-xs font-extrabold uppercase tracking-wider text-slate-500">{{ $labelPhone !== '' ? $labelPhone : 'Téléphone' }}</p>
                         <a href="tel:{{ data_get($f, 'phone_href') }}" class="text-lg font-extrabold text-brand-blue transition hover:text-brand-dark">
                             {{ data_get($f, 'phone') }}
                         </a>
-                        <p class="text-xs font-extrabold uppercase tracking-wider text-slate-500">E-mail</p>
+                        <p class="text-xs font-extrabold uppercase tracking-wider text-slate-500">{{ $labelEmail !== '' ? $labelEmail : 'E-mail' }}</p>
                         <a href="mailto:{{ data_get($f, 'email') }}" class="break-all text-sm font-semibold text-brand-dark underline-offset-2 hover:text-brand-blue hover:underline">
                             {{ data_get($f, 'email') }}
                         </a>
@@ -132,7 +151,7 @@
                 </div>
 
                 <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
-                    <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Horaires</p>
+                    <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $labelHours !== '' ? $labelHours : 'Horaires' }}</p>
                     <p class="mt-3 text-sm leading-relaxed text-slate-600">{{ data_get($f, 'networks_note') }}</p>
                 </div>
             </div>
@@ -154,9 +173,9 @@
                 <div class="pointer-events-none absolute -bottom-14 -left-10 h-36 w-36 rounded-full bg-brand-yellow/20 blur-2xl" aria-hidden="true"></div>
                 <div class="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                 <div class="min-w-0">
-                    <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Réseaux sociaux</p>
-                    <h2 class="mt-2 text-2xl font-extrabold text-brand-dark sm:text-3xl">Suivez nos actualités</h2>
-                    <p class="mt-2 max-w-xl text-sm text-slate-600 sm:text-base">Retrouvez-nous sur les réseaux pour nos chantiers, conseils et nouveautés.</p>
+                    <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $labelSocial !== '' ? $labelSocial : 'Réseaux sociaux' }}</p>
+                    <h2 class="mt-2 text-2xl font-extrabold text-brand-dark sm:text-3xl">{{ $socialTitle !== '' ? $socialTitle : 'Suivez nos actualités' }}</h2>
+                    <p class="mt-2 max-w-xl text-sm text-slate-600 sm:text-base">{{ $socialIntro !== '' ? $socialIntro : 'Retrouvez-nous sur les réseaux pour nos chantiers, conseils et nouveautés.' }}</p>
                 </div>
                 @include('home._social_icons', [
                     'home' => $h,
@@ -173,9 +192,9 @@
 <section id="carte-agences" class="scroll-mt-24 border-t border-slate-200 bg-white py-12 sm:py-16">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <div class="mb-6 max-w-2xl">
-            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Carte</p>
-            <h2 class="mt-2 text-3xl font-extrabold text-brand-dark sm:text-4xl">Nos implantations</h2>
-            <p class="mt-2 text-sm text-slate-600 sm:text-base">Repérez nos agences en un coup d’œil (Bretagne et Bourgogne).</p>
+            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $labelMap !== '' ? $labelMap : 'Carte' }}</p>
+            <h2 class="mt-2 text-3xl font-extrabold text-brand-dark sm:text-4xl">{{ $mapTitle !== '' ? $mapTitle : 'Nos implantations' }}</h2>
+            <p class="mt-2 text-sm text-slate-600 sm:text-base">{{ $mapIntro !== '' ? $mapIntro : 'Repérez nos agences en un coup d’œil (Bretagne et Bourgogne).' }}</p>
         </div>
         <div class="overflow-hidden rounded-2xl border border-slate-200 shadow-soft">
             <iframe
@@ -213,26 +232,26 @@
                     <div class="relative z-10 flex w-full flex-col items-center justify-center px-4 py-8 text-center sm:px-6 sm:py-10 lg:flex-1 lg:px-8 lg:py-10">
                         <div class="w-full max-w-md">
                             <p class="text-[0.7rem] font-extrabold uppercase leading-snug tracking-[0.12em] text-brand-yellow sm:text-xs sm:tracking-[0.2em]">
-                                Un projet de rénovation ?
+                                {{ $contactCtaKicker !== '' ? $contactCtaKicker : 'Un projet de rénovation ?' }}
                             </p>
                             <h2 class="mt-2 break-words text-2xl font-extrabold leading-snug text-white sm:text-3xl sm:leading-tight lg:text-4xl">
-                                Démarrez dès maintenant
+                                {{ $contactCtaTitle !== '' ? $contactCtaTitle : 'Démarrez dès maintenant' }}
                             </h2>
                             <p class="mt-3 text-sm leading-relaxed text-slate-100/95 sm:text-base">
-                                Lancez le simulateur pour une première estimation, ou envoyez votre demande pour être contacté rapidement.
+                                {{ $contactCtaText !== '' ? $contactCtaText : 'Lancez le simulateur pour une première estimation, ou envoyez votre demande pour être contacté rapidement.' }}
                             </p>
                             <div class="mt-6 grid w-full gap-3">
                                 <a
                                     href="{{ route('home').'#simulateur-devis' }}"
                                     class="inline-flex w-full min-w-0 items-center justify-center rounded-xl bg-brand-blue px-4 py-3 text-center text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 sm:px-5"
                                 >
-                                    Ouvrir le simulateur de devis
+                                    {{ $contactCtaSimText !== '' ? $contactCtaSimText : 'Ouvrir le simulateur de devis' }}
                                 </a>
                                 <a
                                     href="#formulaire-contact"
                                     class="inline-flex w-full min-w-0 items-center justify-center rounded-xl border-2 border-white/45 bg-white/10 px-4 py-3 text-center text-sm font-extrabold text-white shadow-sm backdrop-blur-sm transition hover:bg-white/20 sm:px-5"
                                 >
-                                    Accéder au formulaire de contact
+                                    {{ $contactCtaFormText !== '' ? $contactCtaFormText : 'Accéder au formulaire de contact' }}
                                 </a>
                             </div>
                         </div>

@@ -43,6 +43,7 @@ final class HomePageDefaults
             'aides_renov' => 'Bloc aides MaPrimeRénov’',
             'stats' => 'Chiffres clés',
             'avis' => 'Avis clients',
+            'contact_page' => 'Page contact (textes)',
             'devis' => 'Contact & devis',
             'blog' => 'Blog / conseils',
             'partners' => 'Partenaires',

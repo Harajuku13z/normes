@@ -360,6 +360,41 @@ return [
         ],
     ],
 
+    'contact_page' => [
+        'hero_bg' => '/slide/toiture.png',
+        'hero_kicker' => 'Contact',
+        'hero_title_line1' => 'Vous avez',
+        'hero_title_line2' => 'un projet de rénovation ?',
+        'hero_subtitle' => 'Estimation personnalisée & rappel d\'un conseiller',
+        'hero_intro' => 'Visualisez les grandes lignes de votre projet (toiture, surfaces, état du bien) — un interlocuteur vous rappelle pour affiner chiffrage et aides.',
+        'hero_cta_form' => 'Formulaire de contact',
+        'hero_cta_phone' => '03 85 41 98 86',
+
+        'labels' => [
+            'siege' => 'Siège social',
+            'phone' => 'Téléphone',
+            'email' => 'E-mail',
+            'hours' => 'Horaires',
+            'social' => 'Réseaux sociaux',
+            'map' => 'Carte',
+        ],
+
+        'social_bg' => '/slide/toiture.png',
+        'social_title' => 'Suivez nos actualités',
+        'social_intro' => 'Retrouvez-nous sur les réseaux pour nos chantiers, conseils et nouveautés.',
+
+        'map_title' => 'Nos implantations',
+        'map_intro' => 'Repérez nos agences en un coup d’œil (Bretagne et Bourgogne).',
+
+        'cta_card' => [
+            'kicker' => 'Un projet de rénovation ?',
+            'title' => 'Démarrez dès maintenant',
+            'text' => 'Lancez le simulateur pour une première estimation, ou envoyez votre demande pour être contacté rapidement.',
+            'simulateur_text' => 'Ouvrir le simulateur de devis',
+            'contact_text' => 'Accéder au formulaire de contact',
+        ],
+    ],
+
     'devis' => [
         'title_line1' => 'Vous avez',
         'title_line2' => 'un projet de rénovation ?',

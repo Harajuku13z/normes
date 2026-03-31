@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\HomeSection;
+use App\Models\ServicePage;
 use App\Support\HomePageDefaults;
+use Illuminate\Database\QueryException;
 
 class HomePageService
 {
@@ -35,6 +37,32 @@ class HomePageService
      */
     protected function withDerived(array $data): array
     {
+        $serviceOptions = [];
+        try {
+            $serviceOptions = ServicePage::query()
+                ->where('is_active', true)
+                ->orderBy('service_num')
+                ->orderBy('id')
+                ->pluck('title')
+                ->map(fn ($title) => trim((string) $title))
+                ->filter(fn ($title) => $title !== '')
+                ->unique()
+                ->values()
+                ->all();
+        } catch (QueryException) {
+            // Fallback silently to configured services when DB table is unavailable.
+            $serviceOptions = [];
+        }
+        if ($serviceOptions === []) {
+            $serviceOptions = collect((array) data_get($data, 'services.items', []))
+                ->map(fn ($item) => trim((string) data_get($item, 'title', '')))
+                ->filter(fn ($title) => $title !== '')
+                ->unique()
+                ->values()
+                ->all();
+        }
+        data_set($data, 'service_options', $serviceOptions);
+
         $slides = data_get($data, 'hero.slides');
         if (is_array($slides) && $slides !== []) {
             $slidesJs = [];

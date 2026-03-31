@@ -14,7 +14,7 @@ class AdminContactSettingsController extends Controller
     public function edit(): View
     {
         $defaults = HomePageDefaults::all();
-        $keys = ['devis', 'footer'];
+        $keys = ['contact_page', 'devis', 'footer'];
 
         $saved = HomeSection::query()
             ->whereIn('key', $keys)
@@ -43,7 +43,7 @@ class AdminContactSettingsController extends Controller
             $sections = [];
         }
 
-        foreach (['devis', 'footer'] as $key) {
+        foreach (['contact_page', 'devis', 'footer'] as $key) {
             if (! array_key_exists($key, $sections) || ! is_array($sections[$key])) {
                 continue;
             }
