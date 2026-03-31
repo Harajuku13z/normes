@@ -66,17 +66,30 @@
                 </ul>
             </div>
         @endif
+        @if (session('status'))
+            <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
+                {{ session('status') }}
+            </div>
+        @endif
 
         @if ($step === 1)
             <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                 <h1 class="text-2xl font-black text-slate-900">Infos maison</h1>
-                <p class="mt-1 text-sm text-slate-600">Nom, code postal et surface pour lancer une première estimation.</p>
+                <p class="mt-1 text-sm text-slate-600">Nom, téléphone, email, code postal et surface pour lancer une première estimation.</p>
 
                 <form method="post" action="{{ route('simulateur.step1.store') }}" class="mt-5 grid gap-4 sm:grid-cols-2">
                     @csrf
                     <div class="sm:col-span-2">
                         <label class="mb-1 block text-sm font-semibold">Nom et prénom</label>
                         <input name="nom_prenom" value="{{ old('nom_prenom', data_get($s, 'nom_prenom', '')) }}" required class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold">Téléphone</label>
+                        <input name="telephone" value="{{ old('telephone', data_get($s, 'telephone', '')) }}" required class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-sm font-semibold">Email (optionnel)</label>
+                        <input name="email" type="email" value="{{ old('email', data_get($s, 'email', '')) }}" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm">
                     </div>
                     <div>
                         <label class="mb-1 block text-sm font-semibold">Code postal</label>

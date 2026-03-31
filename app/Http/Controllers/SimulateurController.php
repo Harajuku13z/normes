@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SimulateurLead;
 use App\Models\ServicePage;
 use App\Services\HomePageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -47,6 +49,8 @@ class SimulateurController extends Controller
             'code_postal' => ['required', 'regex:/^\d{5}$/'],
             'surface_m2' => ['required', 'numeric', 'min:10', 'max:5000'],
             'address' => ['nullable', 'string', 'max:255'],
+            'telephone' => ['required', 'string', 'max:30'],
+            'email' => ['nullable', 'email', 'max:190'],
         ]);
 
         $state = (array) $request->session()->get('simulateur_devis', []);
@@ -55,10 +59,13 @@ class SimulateurController extends Controller
             'code_postal' => trim((string) $data['code_postal']),
             'surface_m2' => (string) $data['surface_m2'],
             'address' => trim((string) ($data['address'] ?? ($state['address'] ?? ''))),
+            'telephone' => trim((string) $data['telephone']),
+            'email' => trim((string) ($data['email'] ?? '')),
         ]);
         $request->session()->put('simulateur_devis', $state);
+        $this->upsertLeadFromState($request, $state);
 
-        return redirect()->route('simulateur.step2');
+        return redirect()->route('simulateur.step2')->with('status', 'Vos informations sont enregistrées. Vous pouvez continuer plus tard.');
     }
 
     public function step2(Request $request, HomePageService $homePage): View
@@ -100,6 +107,7 @@ class SimulateurController extends Controller
             'sub_service' => '',
         ]);
         $request->session()->put('simulateur_devis', $state);
+        $this->upsertLeadFromState($request, $state);
 
         return redirect()->route('simulateur.step3');
     }
@@ -158,6 +166,7 @@ class SimulateurController extends Controller
 
         $state['sub_service'] = $subService;
         $request->session()->put('simulateur_devis', $state);
+        $this->upsertLeadFromState($request, $state);
 
         return redirect()->route('simulateur.step4');
     }
@@ -204,6 +213,7 @@ class SimulateurController extends Controller
 
         $state['photos'] = array_values(array_merge($existing, $uploadedPaths));
         $request->session()->put('simulateur_devis', $state);
+        $this->upsertLeadFromState($request, $state);
 
         return redirect()->route('simulateur.step5');
     }
@@ -234,8 +244,10 @@ class SimulateurController extends Controller
         $state = (array) $request->session()->get('simulateur_devis', []);
         $state['telephone'] = trim((string) $data['telephone']);
         $state['email'] = trim((string) ($data['email'] ?? ''));
+        $this->upsertLeadFromState($request, $state, true);
 
         $request->session()->forget('simulateur_devis');
+        $request->session()->forget('simulateur_lead_id');
         $request->session()->flash('simulateur_summary', $state);
 
         return redirect()->route('simulateur.success');
@@ -312,5 +324,45 @@ class SimulateurController extends Controller
         return str_starts_with($path, 'http://') || str_starts_with($path, 'https://')
             ? $path
             : asset(ltrim($path, '/'));
+    }
+
+    /**
+     * Sauvegarde silencieuse du lead pour ne jamais bloquer le parcours simulateur.
+     *
+     * @param  array<string, mixed>  $state
+     */
+    private function upsertLeadFromState(Request $request, array $state, bool $completed = false): void
+    {
+        try {
+            $leadId = $request->session()->get('simulateur_lead_id');
+            $payload = [
+                'nom_prenom' => trim((string) ($state['nom_prenom'] ?? '')) ?: null,
+                'code_postal' => trim((string) ($state['code_postal'] ?? '')) ?: null,
+                'surface_m2' => is_numeric($state['surface_m2'] ?? null) ? (float) $state['surface_m2'] : null,
+                'address' => trim((string) ($state['address'] ?? '')) ?: null,
+                'telephone' => trim((string) ($state['telephone'] ?? '')) ?: null,
+                'email' => trim((string) ($state['email'] ?? '')) ?: null,
+                'service_slug' => trim((string) ($state['service_slug'] ?? '')) ?: null,
+                'service_title' => trim((string) ($state['service_title'] ?? '')) ?: null,
+                'sub_service' => trim((string) ($state['sub_service'] ?? '')) ?: null,
+                'message' => trim((string) ($state['message'] ?? '')) ?: null,
+                'photos' => is_array($state['photos'] ?? null) ? array_values((array) $state['photos']) : null,
+                'status' => $completed ? 'completed' : 'draft',
+                'completed_at' => $completed ? now() : null,
+            ];
+
+            if (is_numeric($leadId)) {
+                $lead = SimulateurLead::query()->find((int) $leadId);
+                if ($lead) {
+                    $lead->update($payload);
+                    return;
+                }
+            }
+
+            $lead = SimulateurLead::query()->create($payload);
+            $request->session()->put('simulateur_lead_id', $lead->id);
+        } catch (QueryException) {
+            // No-op: if migration not applied, simulator UX must still work.
+        }
     }
 }
