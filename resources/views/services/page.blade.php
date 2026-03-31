@@ -333,13 +333,18 @@
                 $accent = 'Sous';
                 $rest = 'prestations';
                 $subCount = count($subServices);
-                $subServicesGridClass = $subCount === 4
-                    ? 'grid gap-6 sm:grid-cols-2 lg:grid-cols-4'
-                    : ($subCount === 6
-                        ? 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3'
-                        : ($subCount > 4
-                            ? 'grid gap-6 sm:grid-cols-2 lg:grid-cols-2'
-                            : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3'));
+                $forcedDesktopCols = trim((string) data_get($ov, 'sub_services.columns_desktop', 'auto'));
+                if (in_array($forcedDesktopCols, ['2', '3', '4'], true)) {
+                    $subServicesGridClass = 'grid gap-6 sm:grid-cols-2 lg:grid-cols-'.$forcedDesktopCols;
+                } else {
+                    $subServicesGridClass = $subCount === 4
+                        ? 'grid gap-6 sm:grid-cols-2 lg:grid-cols-4'
+                        : ($subCount === 6
+                            ? 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3'
+                            : ($subCount > 4
+                                ? 'grid gap-6 sm:grid-cols-2 lg:grid-cols-2'
+                                : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3'));
+                }
                 if ($sectionHeading !== '') {
                     $parts = preg_split('/\s+/', $sectionHeading, 2, PREG_SPLIT_NO_EMPTY);
                     $accent = $parts[0] ?? $sectionHeading;

@@ -187,6 +187,7 @@
                     <div class="mt-2 grid gap-2 sm:grid-cols-2">
                         @php
                             $subCardHeight = old('content_overrides.sub_services.card_height', data_get($ov, 'sub_services.card_height', 'normal'));
+                            $subCardColumns = old('content_overrides.sub_services.columns_desktop', data_get($ov, 'sub_services.columns_desktop', 'auto'));
                         @endphp
                         <label class="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
                             <input type="radio" name="content_overrides[sub_services][card_height]" value="normal" {{ $subCardHeight === 'normal' ? 'checked' : '' }}>
@@ -197,6 +198,16 @@
                             Allongée (texte long)
                         </label>
                     </div>
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Nombre de cartes par ligne (desktop)</label>
+                    <select
+                        name="content_overrides[sub_services][columns_desktop]"
+                        class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                    >
+                        <option value="auto" {{ $subCardColumns === 'auto' ? 'selected' : '' }}>Auto (règle intelligente)</option>
+                        <option value="2" {{ $subCardColumns === '2' ? 'selected' : '' }}>2 par ligne</option>
+                        <option value="3" {{ $subCardColumns === '3' ? 'selected' : '' }}>3 par ligne</option>
+                        <option value="4" {{ $subCardColumns === '4' ? 'selected' : '' }}>4 par ligne</option>
+                    </select>
                     <label class="mt-3 block text-sm font-semibold text-slate-800">Titre réalisations (accent)</label>
                     <input name="content_overrides[realisations][title_accent]" value="{{ old('content_overrides.realisations.title_accent', data_get($ov, 'realisations.title_accent', 'Réalisations')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
                     <label class="mt-3 block text-sm font-semibold text-slate-800">Titre réalisations (suite)</label>
