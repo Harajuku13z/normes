@@ -38,7 +38,7 @@
     $subServiceDocText = trim((string) data_get($ov, 'sub_services.doc_text', 'DOC TECHNIQUE'));
     $subServiceCardHeight = trim((string) data_get($ov, 'sub_services.card_height', 'normal'));
     $subServiceCardClass = $subServiceCardHeight === 'tall'
-        ? 'service-card relative min-h-[400px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5 sm:min-h-[426px]'
+        ? 'service-card relative min-h-[450px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5 sm:min-h-[480px]'
         : 'service-card relative min-h-[300px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5 sm:min-h-[320px]';
     $statsHeadingText = trim((string) data_get($ov, 'stats.heading', 'Chiffres clés'));
     $statsLinkText = trim((string) data_get($ov, 'stats.link_text', 'Voir les avis'));
