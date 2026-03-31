@@ -146,13 +146,22 @@
 @if (is_array(data_get($f, 'social')) && data_get($f, 'social') !== [])
     <section id="reseaux" class="scroll-mt-24 border-t border-slate-200 bg-slate-50/70 py-12 sm:py-16">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col gap-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-soft sm:flex-row sm:items-center sm:justify-between sm:p-8">
+            <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
+                <div class="pointer-events-none absolute -right-14 -top-16 h-40 w-40 rounded-full bg-brand-blue/10 blur-2xl" aria-hidden="true"></div>
+                <div class="pointer-events-none absolute -bottom-14 -left-10 h-36 w-36 rounded-full bg-brand-yellow/20 blur-2xl" aria-hidden="true"></div>
+                <div class="relative z-10 flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                 <div class="min-w-0">
                     <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Réseaux sociaux</p>
                     <h2 class="mt-2 text-2xl font-extrabold text-brand-dark sm:text-3xl">Suivez nos actualités</h2>
                     <p class="mt-2 max-w-xl text-sm text-slate-600 sm:text-base">Retrouvez-nous sur les réseaux pour nos chantiers, conseils et nouveautés.</p>
                 </div>
-                @include('home._social_icons', ['home' => $h, 'socialGradientId' => 'instaGradContactPage', 'socialWrapperClass' => 'flex flex-shrink-0 flex-wrap justify-start gap-3 sm:justify-end'])
+                @include('home._social_icons', [
+                    'home' => $h,
+                    'socialGradientId' => 'instaGradContactPage',
+                    'socialVariant' => 'card',
+                    'socialWrapperClass' => 'flex flex-wrap gap-3 sm:justify-end'
+                ])
+                </div>
             </div>
         </div>
     </section>
