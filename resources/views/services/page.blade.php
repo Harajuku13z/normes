@@ -466,24 +466,23 @@
     </div>
 </section>
 
-<section id="realisations" class="scroll-mt-24 bg-white py-14 sm:py-20">
-    <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-        @php
-            $realisationsTitleAccent = trim((string) data_get($realisationsOverrides, 'title_accent', 'Réalisations'));
-            $realisationsTitleRest = trim((string) data_get($realisationsOverrides, 'title_rest', 'avant / après'));
-            $realisationsIntro = trim((string) data_get($realisationsOverrides, 'intro', 'Faites glisser le curseur pour comparer.'));
-            $realisationsBeforeLabel = trim((string) data_get($realisationsOverrides, 'before_label', 'Avant'));
-            $realisationsAfterLabel = trim((string) data_get($realisationsOverrides, 'after_label', 'Après'));
-            $realisationsEmptyText = trim((string) data_get($realisationsOverrides, 'empty_text', "Aucun chantier avant/après n'a encore été ajouté pour cette page."));
-        @endphp
-        <div class="mb-6">
-            <h2 class="break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
-                <span class="text-brand-blue">{{ $realisationsTitleAccent !== '' ? $realisationsTitleAccent : 'Réalisations' }}</span> {{ $realisationsTitleRest !== '' ? $realisationsTitleRest : 'avant / après' }}
-            </h2>
-            <p class="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">{{ $realisationsIntro }}</p>
-        </div>
+@if ($reals !== [])
+    <section id="realisations" class="scroll-mt-24 bg-white py-14 sm:py-20">
+        <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+            @php
+                $realisationsTitleAccent = trim((string) data_get($realisationsOverrides, 'title_accent', 'Réalisations'));
+                $realisationsTitleRest = trim((string) data_get($realisationsOverrides, 'title_rest', 'avant / après'));
+                $realisationsIntro = trim((string) data_get($realisationsOverrides, 'intro', 'Faites glisser le curseur pour comparer.'));
+                $realisationsBeforeLabel = trim((string) data_get($realisationsOverrides, 'before_label', 'Avant'));
+                $realisationsAfterLabel = trim((string) data_get($realisationsOverrides, 'after_label', 'Après'));
+            @endphp
+            <div class="mb-6">
+                <h2 class="break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
+                    <span class="text-brand-blue">{{ $realisationsTitleAccent !== '' ? $realisationsTitleAccent : 'Réalisations' }}</span> {{ $realisationsTitleRest !== '' ? $realisationsTitleRest : 'avant / après' }}
+                </h2>
+                <p class="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">{{ $realisationsIntro }}</p>
+            </div>
 
-        @if ($reals !== [])
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 @foreach ($reals as $idx => $c)
                     @php
@@ -526,13 +525,9 @@
                     </article>
                 @endforeach
             </div>
-        @else
-            <div class="rounded-3xl border border-slate-200 bg-slate-50 p-6 text-slate-600">
-                {{ $realisationsEmptyText !== '' ? $realisationsEmptyText : "Aucun chantier avant/après n'a encore été ajouté pour cette page." }}
-            </div>
-        @endif
-    </div>
-</section>
+        </div>
+    </section>
+@endif
 
 <section id="avis" class="scroll-mt-24 bg-slate-50/70 py-16 sm:py-20">
     <div class="mx-auto w-[95%] scroll-mt-32 px-4 sm:px-6 lg:px-8">
