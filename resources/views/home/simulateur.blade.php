@@ -17,20 +17,21 @@
                     Saisissez votre adresse pour lancer une première analyse de votre bien. Un conseiller affine ensuite avec vous.
                 </p>
 
-                <form class="mt-6 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end sm:gap-4">
+                <form method="get" action="{{ route('simulateur.start') }}" class="mt-6 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end sm:gap-4">
                     <div>
                         <label for="address" class="mb-2 block text-xs font-extrabold uppercase tracking-wider text-brand-blue/95">
                             {{ data_get($sim, 'label', 'Entrez votre adresse') }}
                         </label>
                         <input
                             id="address"
+                            name="address"
                             type="text"
                             placeholder="{{ data_get($sim, 'placeholder', 'Ex: 6 rue Pierre de Coubertin, Chalon-sur-Saône') }}"
                             class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-brand-dark outline-none transition placeholder:text-slate-400 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/20"
                         >
                     </div>
                     <button
-                        type="button"
+                        type="submit"
                         class="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-blue px-6 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-brand-blue/30"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>

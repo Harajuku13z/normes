@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminAvisSettingsController;
 use App\Http\Controllers\Admin\AdminLayoutSettingsController;
 use App\Http\Controllers\Admin\AdminServicePagesController;
 use App\Http\Controllers\ServicePagesController;
+use App\Http\Controllers\SimulateurController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
@@ -54,6 +55,18 @@ Route::get('/services/{slug}', [ServicePagesController::class, 'show'])->name('s
 
 // Page publique contact (formulaire)
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.page');
+
+// Simulateur de devis (multi-étapes)
+Route::get('/simulateur', [SimulateurController::class, 'start'])->name('simulateur.start');
+Route::get('/simulateur/etape-1', [SimulateurController::class, 'step1'])->name('simulateur.step1');
+Route::post('/simulateur/etape-1', [SimulateurController::class, 'step1Store'])->name('simulateur.step1.store');
+Route::get('/simulateur/etape-2', [SimulateurController::class, 'step2'])->name('simulateur.step2');
+Route::post('/simulateur/etape-2', [SimulateurController::class, 'step2Store'])->name('simulateur.step2.store');
+Route::get('/simulateur/etape-3', [SimulateurController::class, 'step3'])->name('simulateur.step3');
+Route::post('/simulateur/etape-3', [SimulateurController::class, 'step3Store'])->name('simulateur.step3.store');
+Route::get('/simulateur/etape-4', [SimulateurController::class, 'step4'])->name('simulateur.step4');
+Route::post('/simulateur/finaliser', [SimulateurController::class, 'finish'])->name('simulateur.finish');
+Route::get('/simulateur/ok', [SimulateurController::class, 'success'])->name('simulateur.success');
 
 // Admin : pages dédiées aux services
 Route::middleware('admin')->prefix('admin')->group(function () {
