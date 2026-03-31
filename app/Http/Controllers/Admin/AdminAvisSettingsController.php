@@ -84,7 +84,7 @@ class AdminAvisSettingsController extends Controller
     public function fetchGoogle(Request $request): RedirectResponse
     {
         $request->validate([
-            'max_reviews' => ['nullable', 'integer', 'min:1', 'max:20'],
+            'max_reviews' => ['nullable', 'integer', 'min:1', 'max:200'],
         ]);
 
         $defaults = HomePageDefaults::all();
@@ -96,9 +96,9 @@ class AdminAvisSettingsController extends Controller
         $apiKey = trim((string) data_get($avis, 'serapi.api_key', ''));
         $placeId = trim((string) data_get($avis, 'serapi.place_id', ''));
         $engine = trim((string) data_get($avis, 'serapi.engine', 'google_maps_reviews'));
-        $max = (int) $request->input('max_reviews', 8);
+        $max = (int) $request->input('max_reviews', 200);
         if ($max <= 0) {
-            $max = 8;
+            $max = 200;
         }
 
         if ($apiKey === '' || $placeId === '') {
@@ -108,30 +108,68 @@ class AdminAvisSettingsController extends Controller
         }
 
         try {
-            $response = Http::timeout(25)->get('https://serpapi.com/search.json', [
-                'engine' => $engine,
-                'place_id' => $placeId,
-                'api_key' => $apiKey,
-                'hl' => 'fr',
-            ]);
+            $existingTestimonials = collect((array) data_get($avis, 'testimonials', []))
+                ->filter(fn ($it) => is_array($it))
+                ->values();
 
-            if (! $response->ok()) {
-                throw new \RuntimeException('Erreur SerAPI HTTP '.$response->status());
-            }
+            $existingGoogleHashes = $existingTestimonials
+                ->filter(fn ($it) => strtolower(trim((string) data_get($it, 'platform', ''))) === 'google')
+                ->map(function ($it) {
+                    $author = mb_strtolower(trim((string) data_get($it, 'author', '')), 'UTF-8');
+                    $text = mb_strtolower(trim((string) data_get($it, 'text', '')), 'UTF-8');
+                    return sha1($author.'|'.$text);
+                })
+                ->filter()
+                ->values()
+                ->all();
+            $existingGoogleHashSet = array_fill_keys($existingGoogleHashes, true);
 
-            $json = $response->json();
-            $rawReviews = data_get($json, 'reviews');
-            if (! is_array($rawReviews)) {
-                $rawReviews = data_get($json, 'google_reviews');
-            }
-            if (! is_array($rawReviews)) {
-                $rawReviews = data_get($json, 'local_results.reviews');
-            }
-            if (! is_array($rawReviews)) {
-                $rawReviews = [];
-            }
+            $fetchedRaw = [];
+            $nextToken = null;
+            $safetyPageCount = 0;
+            do {
+                $params = [
+                    'engine' => $engine,
+                    'place_id' => $placeId,
+                    'api_key' => $apiKey,
+                    'hl' => 'fr',
+                ];
+                if (is_string($nextToken) && $nextToken !== '') {
+                    $params['next_page_token'] = $nextToken;
+                }
 
-            $mapped = collect($rawReviews)
+                $response = Http::timeout(25)->get('https://serpapi.com/search.json', $params);
+                if (! $response->ok()) {
+                    throw new \RuntimeException('Erreur SerAPI HTTP '.$response->status());
+                }
+                $json = $response->json();
+
+                $rawReviews = data_get($json, 'reviews');
+                if (! is_array($rawReviews)) {
+                    $rawReviews = data_get($json, 'google_reviews');
+                }
+                if (! is_array($rawReviews)) {
+                    $rawReviews = data_get($json, 'local_results.reviews');
+                }
+                if (! is_array($rawReviews)) {
+                    $rawReviews = [];
+                }
+                if ($rawReviews !== []) {
+                    $fetchedRaw = array_merge($fetchedRaw, $rawReviews);
+                }
+
+                $nextToken = data_get($json, 'serpapi_pagination.next_page_token');
+                if (! is_string($nextToken) || trim($nextToken) === '') {
+                    $nextToken = data_get($json, 'next_page_token');
+                }
+                if (! is_string($nextToken) || trim($nextToken) === '') {
+                    $nextToken = null;
+                }
+
+                $safetyPageCount++;
+            } while ($nextToken !== null && $safetyPageCount < 10 && count($fetchedRaw) < ($max * 2));
+
+            $mapped = collect($fetchedRaw)
                 ->map(function ($r) {
                     if (! is_array($r)) {
                         return null;
@@ -151,7 +189,6 @@ class AdminAvisSettingsController extends Controller
                     ];
                 })
                 ->filter()
-                ->take($max)
                 ->values()
                 ->all();
 
@@ -161,7 +198,36 @@ class AdminAvisSettingsController extends Controller
                     ->withErrors(['avis' => 'Aucun avis Google exploitable trouvé via SerAPI.']);
             }
 
-            $avis['testimonials'] = $mapped;
+            $newGoogle = collect($mapped)
+                ->map(function ($it) {
+                    $author = mb_strtolower(trim((string) data_get($it, 'author', '')), 'UTF-8');
+                    $text = mb_strtolower(trim((string) data_get($it, 'text', '')), 'UTF-8');
+                    $hash = sha1($author.'|'.$text);
+                    return ['hash' => $hash, 'item' => $it];
+                })
+                ->filter(function ($row) use (&$existingGoogleHashSet) {
+                    $hash = (string) ($row['hash'] ?? '');
+                    if ($hash === '' || isset($existingGoogleHashSet[$hash])) {
+                        return false;
+                    }
+                    $existingGoogleHashSet[$hash] = true;
+                    return true;
+                })
+                ->map(fn ($row) => $row['item'])
+                ->take($max)
+                ->values()
+                ->all();
+
+            if ($newGoogle === []) {
+                return redirect()
+                    ->route('admin.avis_settings.edit')
+                    ->with('status', 'Aucun nouvel avis Google à importer (déjà synchronisés).');
+            }
+
+            $avis['testimonials'] = array_values(array_merge(
+                $newGoogle,
+                $existingTestimonials->all()
+            ));
             $avis['serapi']['last_sync'] = now()->toDateTimeString();
 
             HomeSection::query()->updateOrCreate(
@@ -171,7 +237,7 @@ class AdminAvisSettingsController extends Controller
 
             return redirect()
                 ->route('admin.avis_settings.edit')
-                ->with('status', 'Avis Google téléchargés et enregistrés.');
+                ->with('status', count($newGoogle).' nouvel(s) avis Google importé(s).');
         } catch (\Throwable $e) {
             return redirect()
                 ->route('admin.avis_settings.edit')

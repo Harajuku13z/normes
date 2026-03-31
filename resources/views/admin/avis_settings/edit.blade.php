@@ -22,12 +22,12 @@
 
     <div class="mb-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
         <h2 class="text-sm font-extrabold text-slate-900">Télécharger les avis Google (SerAPI)</h2>
-        <p class="mt-1 text-xs text-slate-500">Configurez d’abord API key + place_id, puis cliquez sur le bouton.</p>
+        <p class="mt-1 text-xs text-slate-500">Configurez d’abord API key + place_id, puis cliquez : seuls les nouveaux avis Google sont ajoutés (pas de doublons).</p>
         <form method="post" action="{{ route('admin.avis_settings.fetch_google') }}" class="mt-4 flex flex-wrap items-end gap-3">
             @csrf
             <div>
-                <label class="mb-1 block text-xs font-semibold text-slate-600">Nombre max d’avis</label>
-                <input type="number" min="1" max="20" name="max_reviews" value="8" class="w-28 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                <label class="mb-1 block text-xs font-semibold text-slate-600">Nombre max de nouveaux avis</label>
+                <input type="number" min="1" max="200" name="max_reviews" value="200" class="w-36 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
             </div>
             <button type="submit" class="inline-flex items-center rounded-xl bg-sky-600 px-5 py-2.5 text-sm font-extrabold text-white hover:bg-sky-700">
                 Télécharger les avis Google
