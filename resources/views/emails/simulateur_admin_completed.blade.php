@@ -1,13 +1,17 @@
 @php
-    $headerPayload = optional(\App\Models\HomeSection::query()->where('key', 'header')->first())->payload;
-    $logoPath = trim((string) data_get($headerPayload, 'logo', '/logo.png'));
+    $footerPayload = optional(\App\Models\HomeSection::query()->where('key', 'footer')->first())->payload;
+    $logoPath = trim((string) data_get($footerPayload, 'logo', '/logo.png'));
+    $logoAlt = trim((string) data_get($footerPayload, 'logo_alt', 'Normes & Renovation'));
     $logoUrl = (str_starts_with($logoPath, 'http://') || str_starts_with($logoPath, 'https://')) ? $logoPath : url('/'.ltrim($logoPath, '/'));
+    $brandBlue = '#60B4F9';
+    $brandYellow = '#FADF70';
+    $brandDark = '#2F4251';
 @endphp
-<div style="margin:0;padding:24px;background:#f1f5f9;font-family:Arial,sans-serif;color:#0f172a;">
+<div style="margin:0;padding:24px;background:#eef4f8;font-family:Arial,sans-serif;color:#0f172a;">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;">
         <tr>
-            <td style="padding:20px 24px;background:linear-gradient(135deg,#0f172a,#10b981);color:#ffffff;">
-                <img src="{{ $logoUrl }}" alt="Normes & Renovation" style="height:42px;width:auto;display:block;margin-bottom:12px;">
+            <td style="padding:20px 24px;background:linear-gradient(135deg,{{ $brandDark }},{{ $brandBlue }});color:#ffffff;border-bottom:4px solid {{ $brandYellow }};">
+                <img src="{{ $logoUrl }}" alt="{{ $logoAlt !== '' ? $logoAlt : 'Normes & Renovation' }}" style="height:42px;width:auto;display:block;margin-bottom:12px;">
                 <div style="font-size:20px;font-weight:700;">Simulateur complété</div>
                 <div style="font-size:13px;opacity:.92;margin-top:4px;">Un utilisateur a finalisé sa demande complète.</div>
             </td>

@@ -4,16 +4,17 @@
 
 @section('content')
     @php
+        $currentHost = request()->getSchemeAndHttpHost();
         $photos = collect((array) ($lead->photos ?? []))
             ->map(fn ($p) => trim((string) $p))
             ->filter(fn ($p) => $p !== '')
-            ->map(function (string $path): array {
+            ->map(function (string $path) use ($currentHost): array {
                 if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
                     $url = $path;
                 } elseif (str_starts_with($path, 'storage/')) {
-                    $url = asset(ltrim($path, '/'));
+                    $url = $currentHost.'/'.ltrim($path, '/');
                 } else {
-                    $url = asset('storage/'.ltrim($path, '/'));
+                    $url = $currentHost.'/storage/'.ltrim($path, '/');
                 }
                 $lower = strtolower($path);
                 $isImage = str_ends_with($lower, '.jpg') || str_ends_with($lower, '.jpeg') || str_ends_with($lower, '.png') || str_ends_with($lower, '.webp') || str_ends_with($lower, '.gif');
@@ -86,7 +87,9 @@
                     @foreach ($photos as $file)
                         @if ($file['is_image'])
                             <a href="{{ $file['url'] }}" target="_blank" rel="noopener noreferrer" class="block overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                                <img src="{{ $file['url'] }}" alt="Attachment image" class="h-52 w-full object-cover">
+                                <div class="flex h-56 items-center justify-center bg-white p-2">
+                                    <img src="{{ $file['url'] }}" alt="Image jointe" class="max-h-full max-w-full object-contain">
+                                </div>
                             </a>
                         @else
                             <a href="{{ $file['url'] }}" target="_blank" rel="noopener noreferrer" class="inline-flex w-fit items-center rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">
