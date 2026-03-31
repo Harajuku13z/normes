@@ -62,7 +62,7 @@ class SimulateurMailer
         }
 
         $html = View::make('emails.simulateur_admin_step1', ['lead' => $lead])->render();
-        $this->sendHtml($settings, $adminEmail, 'New simulator lead started', $html);
+        $this->sendHtml($settings, $adminEmail, 'Nouveau lead simulateur démarré', $html);
     }
 
     public function sendCompleted(SimulateurLead $lead): void
@@ -74,13 +74,13 @@ class SimulateurMailer
 
         if ($sendAdmin && $adminEmail !== '') {
             $htmlAdmin = View::make('emails.simulateur_admin_completed', ['lead' => $lead])->render();
-            $this->sendHtml($settings, $adminEmail, 'Simulator completed by '.$lead->nom_prenom, $htmlAdmin);
+            $this->sendHtml($settings, $adminEmail, 'Simulateur complété par '.$lead->nom_prenom, $htmlAdmin);
         }
 
         $clientEmail = trim((string) ($lead->email ?? ''));
         if ($sendClient && $clientEmail !== '') {
             $htmlClient = View::make('emails.simulateur_client_confirmation', ['lead' => $lead])->render();
-            $this->sendHtml($settings, $clientEmail, 'Your renovation simulation request is received', $htmlClient);
+            $this->sendHtml($settings, $clientEmail, 'Confirmation de votre demande de simulation', $htmlClient);
         }
     }
 
@@ -94,10 +94,10 @@ class SimulateurMailer
         $settings = $this->settings();
         if ($lead->completed_at) {
             $html = View::make('emails.simulateur_admin_completed', ['lead' => $lead])->render();
-            $subject = 'Simulator completed by '.($lead->nom_prenom ?: 'lead');
+            $subject = 'Simulateur complété par '.($lead->nom_prenom ?: 'un prospect');
         } else {
             $html = View::make('emails.simulateur_admin_step1', ['lead' => $lead])->render();
-            $subject = 'New simulator lead started';
+            $subject = 'Nouveau lead simulateur démarré';
         }
 
         $this->sendHtml($settings, $to, $subject, $html);
@@ -112,7 +112,7 @@ class SimulateurMailer
 
         $settings = $this->settings();
         $html = View::make('emails.simulateur_client_confirmation', ['lead' => $lead])->render();
-        $this->sendHtml($settings, $to, 'Your renovation simulation request is received', $html);
+        $this->sendHtml($settings, $to, 'Confirmation de votre demande de simulation', $html);
     }
 
     /**
