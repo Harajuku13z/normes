@@ -223,16 +223,30 @@
             <div>
                 <h2 class="text-sm font-extrabold text-slate-900">Chiffres (service)</h2>
                 <p class="mt-1 text-xs text-slate-500">Définis le titre (label) et la valeur (nombre/texte) affichés sur la page service.</p>
+                <div class="mt-3 flex flex-wrap items-center gap-2">
+                    <button
+                        type="button"
+                        id="addStatItemBtn"
+                        class="inline-flex items-center rounded-lg bg-sky-600 px-3 py-2 text-xs font-extrabold text-white hover:bg-sky-700"
+                    >
+                        + Ajouter un chiffre
+                    </button>
+                    <span id="statItemCount" class="text-xs font-semibold text-slate-500"></span>
+                </div>
             </div>
-            <div class="grid gap-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4 lg:grid-cols-3">
+            <div id="statItems" class="grid gap-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4 lg:grid-cols-3">
                 @for ($s = 0; $s < 3; $s++)
                     @php
                         $item = is_array($statsItems) ? (data_get($statsItems, $s, []) ?: []) : [];
                         $labelVal = old("service_stats.items.$s.label", (string) data_get($item, 'label', ''));
                         $valueVal = old("service_stats.items.$s.value", (string) data_get($item, 'value', ''));
                         $textVal = old("service_stats.items.$s.text", (string) data_get($item, 'text', ''));
+                        $hasStatContent = trim((string) $labelVal) !== '' || trim((string) $valueVal) !== '' || trim((string) $textVal) !== '';
                     @endphp
-                    <div class="rounded-xl border border-slate-200 bg-white p-4">
+                    <div
+                        class="js-stat-item rounded-xl border border-slate-200 bg-white p-4"
+                        data-has-content="{{ $hasStatContent ? '1' : '0' }}"
+                    >
                         <label class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Titre</label>
                         <input
                             name="service_stats[items][{{ $s }}][label]"
@@ -343,9 +357,19 @@
 
         {{-- Sous-services (6 à 9 cartes) --}}
         <div class="space-y-4 pt-2">
-            <div>
+            <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
                 <h2 class="text-sm font-extrabold text-slate-900">Sous-services (6 à 9 cartes)</h2>
                 <p class="mt-1 text-xs text-slate-500">Titre et texte d’introduction pour toute la section, puis pour chaque carte : titre, sous-titre et image. Les cartes sans titre + image ne s’affichent pas. Pour un PDF commun à tout le service, utilisez la section <span class="font-extrabold text-slate-700">Doc technique</span> juste au-dessus.</p>
+                <div class="mt-3 flex flex-wrap items-center gap-2">
+                    <button
+                        type="button"
+                        id="addSubServiceBtn"
+                        class="inline-flex items-center rounded-lg bg-sky-600 px-3 py-2 text-xs font-extrabold text-white hover:bg-sky-700"
+                    >
+                        + Ajouter un sous-service
+                    </button>
+                    <span id="subServiceCount" class="text-xs font-semibold text-slate-500"></span>
+                </div>
             </div>
 
             <div class="grid gap-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4 lg:grid-cols-2">
@@ -369,15 +393,20 @@
                 </div>
             </div>
 
-            <div class="space-y-4">
+            <div id="subServicesItems" class="space-y-4">
                 @for ($i = 1; $i <= 9; $i++)
                     @php
                         $slot = is_array($subServices) ? (data_get($subServices, $i, []) ?: []) : [];
                         $sTitle = old('sub_services.'.$i.'.title', data_get($slot, 'title', ''));
                         $sSubtitle = old('sub_services.'.$i.'.subtitle', data_get($slot, 'subtitle', ''));
                         $sImage = old('sub_services.'.$i.'.image', data_get($slot, 'image', ''));
+                        $hasSubContent = trim((string) $sTitle) !== '' || trim((string) $sSubtitle) !== '' || trim((string) $sImage) !== '';
                     @endphp
-                    <div class="rounded-xl border border-slate-200 bg-white p-4">
+                    <div
+                        class="js-subservice-item rounded-xl border border-slate-200 bg-white p-4"
+                        data-has-content="{{ $hasSubContent ? '1' : '0' }}"
+                    >
+                        <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.18em] text-slate-500">Carte {{ $i }}</p>
                         <div class="grid gap-4 lg:grid-cols-3 lg:items-start">
                             <div class="space-y-3">
                                 <div>
@@ -446,20 +475,35 @@
 
         {{-- Réalisations avant / après (comparateur) --}}
         <div class="space-y-4 pt-6">
-            <div>
+            <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
                 <h2 class="text-sm font-extrabold text-slate-900">Réalisations (avant / après)</h2>
                 <p class="mt-1 text-xs text-slate-500">Ajoute les photos. Elles seront affichées dans la section “Réalisations” de la page service.</p>
+                <div class="mt-3 flex flex-wrap items-center gap-2">
+                    <button
+                        type="button"
+                        id="addRealisationBtn"
+                        class="inline-flex items-center rounded-lg bg-sky-600 px-3 py-2 text-xs font-extrabold text-white hover:bg-sky-700"
+                    >
+                        + Ajouter une réalisation
+                    </button>
+                    <span id="realisationCount" class="text-xs font-semibold text-slate-500"></span>
+                </div>
             </div>
 
-            <div class="space-y-4">
+            <div id="realisationsItems" class="space-y-4">
                 @for ($j = 1; $j <= 6; $j++)
                     @php
                         $rSlot = is_array($realisations) ? (data_get($realisations, $j, []) ?: []) : [];
                         $rLabel = old('realisations.'.$j.'.label', data_get($rSlot, 'label', ''));
                         $before = old('realisations.'.$j.'.before', data_get($rSlot, 'before', ''));
                         $after = old('realisations.'.$j.'.after', data_get($rSlot, 'after', ''));
+                        $hasRealContent = trim((string) $rLabel) !== '' || trim((string) $before) !== '' || trim((string) $after) !== '';
                     @endphp
-                    <div class="rounded-xl border border-slate-200 bg-white p-4">
+                    <div
+                        class="js-realisation-item rounded-xl border border-slate-200 bg-white p-4"
+                        data-has-content="{{ $hasRealContent ? '1' : '0' }}"
+                    >
+                        <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.18em] text-slate-500">Réalisation {{ $j }}</p>
                         <div class="grid gap-4 lg:grid-cols-2 lg:items-start">
                             <div>
                                 <label class="text-sm font-semibold text-slate-800">Label du bouton (cas {{ $j }})</label>
@@ -564,11 +608,25 @@
             </div>
 
             <div class="grid gap-4">
+                <div class="flex flex-wrap items-center gap-2">
+                    <button
+                        type="button"
+                        id="addPartnerLogoBtn"
+                        class="inline-flex items-center rounded-lg bg-sky-600 px-3 py-2 text-xs font-extrabold text-white hover:bg-sky-700"
+                    >
+                        + Ajouter un logo
+                    </button>
+                    <span id="partnerLogoCount" class="text-xs font-semibold text-slate-500"></span>
+                </div>
                 @for ($k = 1; $k <= 6; $k++)
                     @php
                         $logoVal = old('service_partners.logos.'.$k, (string) data_get($spLogos, $k, ''));
+                        $hasLogoContent = trim((string) $logoVal) !== '';
                     @endphp
-                    <div class="rounded-xl border border-slate-200 bg-white p-4">
+                    <div
+                        class="js-partner-logo-item rounded-xl border border-slate-200 bg-white p-4"
+                        data-has-content="{{ $hasLogoContent ? '1' : '0' }}"
+                    >
                         <div class="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
                             <div>
                                 <label class="text-sm font-semibold text-slate-800">Logo {{ $k }} (URL)</label>
@@ -759,6 +817,67 @@
                         placeholderDiv: placeholderDiv,
                     });
                 });
+            });
+
+            function initProgressiveList({ itemSelector, addBtnId, countId, minVisible }) {
+                const items = Array.from(document.querySelectorAll(itemSelector));
+                if (items.length === 0) return;
+
+                const addBtn = document.getElementById(addBtnId);
+                const count = document.getElementById(countId);
+                const filled = items.filter((item) => item.dataset.hasContent === '1').length;
+                let visible = Math.max(minVisible || 1, filled || 0);
+                visible = Math.min(visible, items.length);
+
+                const render = () => {
+                    items.forEach((item, idx) => {
+                        item.style.display = idx < visible ? '' : 'none';
+                    });
+                    if (count) {
+                        count.textContent = visible + ' / ' + items.length;
+                    }
+                    if (addBtn) {
+                        addBtn.disabled = visible >= items.length;
+                        addBtn.classList.toggle('opacity-50', visible >= items.length);
+                        addBtn.classList.toggle('cursor-not-allowed', visible >= items.length);
+                    }
+                };
+
+                if (addBtn) {
+                    addBtn.addEventListener('click', function () {
+                        if (visible < items.length) {
+                            visible += 1;
+                            render();
+                        }
+                    });
+                }
+
+                render();
+            }
+
+            initProgressiveList({
+                itemSelector: '.js-subservice-item',
+                addBtnId: 'addSubServiceBtn',
+                countId: 'subServiceCount',
+                minVisible: 1,
+            });
+            initProgressiveList({
+                itemSelector: '.js-realisation-item',
+                addBtnId: 'addRealisationBtn',
+                countId: 'realisationCount',
+                minVisible: 1,
+            });
+            initProgressiveList({
+                itemSelector: '.js-partner-logo-item',
+                addBtnId: 'addPartnerLogoBtn',
+                countId: 'partnerLogoCount',
+                minVisible: 1,
+            });
+            initProgressiveList({
+                itemSelector: '.js-stat-item',
+                addBtnId: 'addStatItemBtn',
+                countId: 'statItemCount',
+                minVisible: 1,
             });
 
             // Compteurs caractères SEO (meta)

@@ -72,9 +72,9 @@
                 ['key' => 'instagram', 'label' => 'Instagram', 'placeholder' => 'https://www.instagram.com/...'],
             ];
         @endphp
-        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div id="contact-settings" class="scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <div class="mb-4">
-                <h2 class="text-sm font-extrabold text-slate-900">Réseaux sociaux (footer + page contact)</h2>
+                <h2 class="text-sm font-extrabold text-slate-900">Paramètres page contact — Réseaux sociaux</h2>
                 <p class="mt-1 text-xs text-slate-500">Renseigne les URLs officielles. Ces liens sont utilisés dans le footer et la section Réseaux sociaux de la page Contact.</p>
             </div>
             <div class="grid gap-4 lg:grid-cols-3">
