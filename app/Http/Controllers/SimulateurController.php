@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\SimulateurLead;
 use App\Models\ServicePage;
 use App\Services\HomePageService;
+use App\Services\SimulateurMailer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
@@ -13,10 +14,18 @@ use Illuminate\View\View;
 
 class SimulateurController extends Controller
 {
+    public function __construct(private readonly SimulateurMailer $mailer)
+    {
+    }
+
     public function start(Request $request): RedirectResponse
     {
         $address = trim((string) $request->query('address', ''));
         $postalFromAddress = $this->extractPostalCode($address);
+        $source = trim((string) $request->query('source', ''));
+        if ($source === '') {
+            $source = $this->normalizeSourceFromReferer((string) $request->headers->get('referer', ''));
+        }
 
         $state = (array) $request->session()->get('simulateur_devis', []);
         if ($address !== '') {
@@ -24,6 +33,9 @@ class SimulateurController extends Controller
         }
         if ($postalFromAddress !== null) {
             $state['code_postal'] = $postalFromAddress;
+        }
+        if ($source !== '') {
+            $state['source_page'] = $source;
         }
         $request->session()->put('simulateur_devis', $state);
 
@@ -63,7 +75,18 @@ class SimulateurController extends Controller
             'email' => trim((string) ($data['email'] ?? '')),
         ]);
         $request->session()->put('simulateur_devis', $state);
-        $this->upsertLeadFromState($request, $state);
+        $lead = $this->upsertLeadFromState($request, $state);
+        if ($lead && $lead->admin_notified_started_at === null) {
+            try {
+                $this->mailer->sendAdminStep1($lead);
+                $lead->forceFill([
+                    'admin_notified_started_at' => now(),
+                    'mail_error' => null,
+                ])->save();
+            } catch (\Throwable $e) {
+                $lead->forceFill(['mail_error' => $e->getMessage()])->save();
+            }
+        }
 
         return redirect()->route('simulateur.step2')->with('status', 'Vos informations sont enregistrées. Vous pouvez continuer plus tard.');
     }
@@ -285,7 +308,19 @@ class SimulateurController extends Controller
         $state = (array) $request->session()->get('simulateur_devis', []);
         $state['telephone'] = trim((string) $data['telephone']);
         $state['email'] = trim((string) ($data['email'] ?? ''));
-        $this->upsertLeadFromState($request, $state, true);
+        $lead = $this->upsertLeadFromState($request, $state, true);
+        if ($lead) {
+            try {
+                $this->mailer->sendCompleted($lead);
+                $lead->forceFill([
+                    'admin_notified_completed_at' => now(),
+                    'client_notified_at' => trim((string) $lead->email) !== '' ? now() : $lead->client_notified_at,
+                    'mail_error' => null,
+                ])->save();
+            } catch (\Throwable $e) {
+                $lead->forceFill(['mail_error' => $e->getMessage()])->save();
+            }
+        }
 
         $request->session()->forget('simulateur_devis');
         $request->session()->forget('simulateur_lead_id');
@@ -372,7 +407,7 @@ class SimulateurController extends Controller
      *
      * @param  array<string, mixed>  $state
      */
-    private function upsertLeadFromState(Request $request, array $state, bool $completed = false): void
+    private function upsertLeadFromState(Request $request, array $state, bool $completed = false): ?SimulateurLead
     {
         try {
             $leadId = $request->session()->get('simulateur_lead_id');
@@ -381,6 +416,7 @@ class SimulateurController extends Controller
                 'code_postal' => trim((string) ($state['code_postal'] ?? '')) ?: null,
                 'surface_m2' => is_numeric($state['surface_m2'] ?? null) ? (float) $state['surface_m2'] : null,
                 'address' => trim((string) ($state['address'] ?? '')) ?: null,
+                'source_page' => trim((string) ($state['source_page'] ?? '')) ?: null,
                 'telephone' => trim((string) ($state['telephone'] ?? '')) ?: null,
                 'email' => trim((string) ($state['email'] ?? '')) ?: null,
                 'service_slug' => trim((string) ($state['service_slug'] ?? '')) ?: null,
@@ -406,14 +442,32 @@ class SimulateurController extends Controller
                 $lead = SimulateurLead::query()->find((int) $leadId);
                 if ($lead) {
                     $lead->update($payload);
-                    return;
+                    return $lead->refresh();
                 }
             }
 
             $lead = SimulateurLead::query()->create($payload);
             $request->session()->put('simulateur_lead_id', $lead->id);
+            return $lead;
         } catch (QueryException) {
             // No-op: if migration not applied, simulator UX must still work.
+            return null;
         }
+    }
+
+    private function normalizeSourceFromReferer(string $referer): string
+    {
+        $referer = trim($referer);
+        if ($referer === '') {
+            return '';
+        }
+        $parsed = parse_url($referer);
+        $path = (string) ($parsed['path'] ?? '');
+        $query = (string) ($parsed['query'] ?? '');
+        if ($path === '' && $query === '') {
+            return '';
+        }
+
+        return $path.($query !== '' ? '?'.$query : '');
     }
 }

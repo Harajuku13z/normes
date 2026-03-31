@@ -11,6 +11,7 @@ class SimulateurLead extends Model
         'code_postal',
         'surface_m2',
         'address',
+        'source_page',
         'telephone',
         'email',
         'service_slug',
@@ -22,6 +23,10 @@ class SimulateurLead extends Model
         'photos',
         'status',
         'completed_at',
+        'admin_notified_started_at',
+        'admin_notified_completed_at',
+        'client_notified_at',
+        'mail_error',
     ];
 
     protected $casts = [
@@ -29,6 +34,9 @@ class SimulateurLead extends Model
         'selected_services' => 'array',
         'selected_sub_services' => 'array',
         'completed_at' => 'datetime',
+        'admin_notified_started_at' => 'datetime',
+        'admin_notified_completed_at' => 'datetime',
+        'client_notified_at' => 'datetime',
         'surface_m2' => 'decimal:2',
     ];
 }

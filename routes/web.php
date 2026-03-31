@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminHomepageController;
 use App\Http\Controllers\Admin\AdminContactSettingsController;
 use App\Http\Controllers\Admin\AdminAvisSettingsController;
 use App\Http\Controllers\Admin\AdminLayoutSettingsController;
+use App\Http\Controllers\Admin\AdminSimulateurSettingsController;
 use App\Http\Controllers\Admin\AdminServicePagesController;
 use App\Http\Controllers\ServicePagesController;
 use App\Http\Controllers\SimulateurController;
@@ -42,6 +43,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/avis-settings', [AdminAvisSettingsController::class, 'edit'])->name('admin.avis_settings.edit');
         Route::post('/avis-settings', [AdminAvisSettingsController::class, 'update'])->name('admin.avis_settings.update');
         Route::post('/avis-settings/fetch-google', [AdminAvisSettingsController::class, 'fetchGoogle'])->name('admin.avis_settings.fetch_google');
+        Route::get('/simulateur-settings', [AdminSimulateurSettingsController::class, 'edit'])->name('admin.simulateur_settings.edit');
+        Route::post('/simulateur-settings', [AdminSimulateurSettingsController::class, 'update'])->name('admin.simulateur_settings.update');
     });
 
     Route::middleware('elizo_adminuser')->group(function () {

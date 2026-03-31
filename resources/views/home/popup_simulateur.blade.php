@@ -52,7 +52,7 @@
                 <div class="mt-6 grid gap-3 sm:grid-cols-2">
                     <a
                         id="leadPopupCtaSimulator"
-                        href="{{ route('simulateur.start') }}"
+                        href="{{ route('simulateur.start', ['source' => request()->getPathInfo().'#leadPopup']) }}"
                         class="inline-flex w-full items-center justify-center rounded-xl bg-brand-blue px-5 py-3.5 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 active:scale-[0.99]"
                     >
                         Lancer le simulateur

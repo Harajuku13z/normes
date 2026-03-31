@@ -18,6 +18,7 @@
                 </p>
 
                 <form method="get" action="{{ route('simulateur.start') }}" class="mt-6 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end sm:gap-4">
+                    <input type="hidden" name="source" value="{{ request()->getPathInfo() }}#simulateur-devis">
                     <div>
                         <label for="address" class="mb-2 block text-xs font-extrabold uppercase tracking-wider text-brand-blue/95">
                             {{ data_get($sim, 'label', 'Entrez votre adresse') }}

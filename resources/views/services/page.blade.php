@@ -577,7 +577,7 @@
                             </p>
                             <div class="mt-6 grid w-full gap-3">
                                 <a
-                                    href="{{ route('simulateur.start') }}"
+                                    href="{{ route('simulateur.start', ['source' => request()->getPathInfo()]) }}"
                                     class="inline-flex w-full min-w-0 items-center justify-center rounded-xl bg-brand-blue px-4 py-3 text-center text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 sm:px-5"
                                 >
                                     {{ $ctaCardPrimary !== '' ? $ctaCardPrimary : 'Ouvrir le simulateur de devis' }}
