@@ -84,6 +84,25 @@ class SimulateurMailer
         }
     }
 
+    public function sendAdminManual(SimulateurLead $lead, string $recipientEmail): void
+    {
+        $to = trim($recipientEmail);
+        if ($to === '') {
+            throw new \RuntimeException('Admin recipient email is required.');
+        }
+
+        $settings = $this->settings();
+        if ($lead->completed_at) {
+            $html = View::make('emails.simulateur_admin_completed', ['lead' => $lead])->render();
+            $subject = 'Simulator completed by '.($lead->nom_prenom ?: 'lead');
+        } else {
+            $html = View::make('emails.simulateur_admin_step1', ['lead' => $lead])->render();
+            $subject = 'New simulator lead started';
+        }
+
+        $this->sendHtml($settings, $to, $subject, $html);
+    }
+
     /**
      * @param  array<string, mixed>  $settings
      */

@@ -17,6 +17,7 @@
             $isLayoutSettings = $currentRoute === 'admin.layout_settings.edit' || $currentRoute === 'admin.layout_settings.update';
             $isAvisSettings = $currentRoute === 'admin.avis_settings.edit' || $currentRoute === 'admin.avis_settings.update' || $currentRoute === 'admin.avis_settings.fetch_google';
             $isSimulateurSettings = $currentRoute === 'admin.simulateur_settings.edit' || $currentRoute === 'admin.simulateur_settings.update';
+            $isSimulateurLeads = $currentRoute === 'admin.simulateur_leads.index';
         @endphp
         <div class="w-full flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6 relative z-20">
             <a href="{{ route('admin.dashboard') }}" class="text-lg font-extrabold text-slate-800">Admin — Page d'accueil</a>
@@ -60,7 +61,11 @@
                         </a>
                         <a href="{{ route('admin.simulateur_settings.edit') }}"
                            class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isSimulateurSettings ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
-                            Simulator SMTP & Leads
+                            Simulator SMTP
+                        </a>
+                        <a href="{{ route('admin.simulateur_leads.index') }}"
+                           class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isSimulateurLeads ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
+                            Simulator Leads
                         </a>
                         <a href="{{ route('admin.services_pages.index') }}"
                            class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isServicesPages ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">

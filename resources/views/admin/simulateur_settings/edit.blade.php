@@ -1,6 +1,6 @@
 @extends('admin.layout')
 
-@section('title', 'Simulator SMTP & Leads')
+@section('title', 'Simulator SMTP Settings')
 
 @section('content')
     <div class="space-y-6">
@@ -48,6 +48,7 @@
                     <label class="grid gap-1 text-sm font-semibold text-slate-700">
                         <span>Admin notification email *</span>
                         <input type="email" name="notifications[admin_email]" value="{{ old('notifications.admin_email', data_get($settings, 'notifications.admin_email', '')) }}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">
+                        <small class="text-xs font-medium text-slate-500">All admin alerts are sent to this email.</small>
                     </label>
                 </div>
 
@@ -86,55 +87,6 @@
                     </button>
                 </div>
             </form>
-        </section>
-
-        <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 class="text-xl font-extrabold text-slate-900">Simulator leads (latest 100)</h2>
-            <p class="mt-1 text-sm text-slate-600">In progress and completed forms with date, source page, and mail status/errors.</p>
-
-            <div class="mt-4 overflow-x-auto">
-                <table class="min-w-full text-left text-sm">
-                    <thead>
-                    <tr class="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-500">
-                        <th class="px-3 py-2">Date</th>
-                        <th class="px-3 py-2">Source page</th>
-                        <th class="px-3 py-2">Name</th>
-                        <th class="px-3 py-2">Email / Phone</th>
-                        <th class="px-3 py-2">Status</th>
-                        <th class="px-3 py-2">Mail</th>
-                        <th class="px-3 py-2">Error</th>
-                    </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                    @forelse($leads as $lead)
-                        <tr class="align-top">
-                            <td class="px-3 py-2 text-slate-700">{{ optional($lead->created_at)->format('d/m/Y H:i') }}</td>
-                            <td class="px-3 py-2 text-slate-600">{{ $lead->source_page ?: '-' }}</td>
-                            <td class="px-3 py-2 font-semibold text-slate-800">{{ $lead->nom_prenom ?: '-' }}</td>
-                            <td class="px-3 py-2 text-slate-600">
-                                <div>{{ $lead->email ?: '-' }}</div>
-                                <div>{{ $lead->telephone ?: '-' }}</div>
-                            </td>
-                            <td class="px-3 py-2">
-                                <span class="inline-flex rounded-full px-2 py-1 text-xs font-bold {{ $lead->completed_at ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
-                                    {{ $lead->completed_at ? 'completed' : 'in_progress' }}
-                                </span>
-                            </td>
-                            <td class="px-3 py-2 text-xs text-slate-600">
-                                <div>Admin step1: {{ $lead->admin_notified_started_at ? 'yes' : 'no' }}</div>
-                                <div>Admin done: {{ $lead->admin_notified_completed_at ? 'yes' : 'no' }}</div>
-                                <div>Client: {{ $lead->client_notified_at ? 'yes' : 'no' }}</div>
-                            </td>
-                            <td class="px-3 py-2 text-xs text-rose-700">{{ $lead->mail_error ?: '-' }}</td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="px-3 py-6 text-center text-slate-500">No leads yet.</td>
-                        </tr>
-                    @endforelse
-                    </tbody>
-                </table>
-            </div>
         </section>
     </div>
 @endsection

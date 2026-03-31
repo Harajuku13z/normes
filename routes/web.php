@@ -45,6 +45,8 @@ Route::prefix('admin')->group(function () {
         Route::post('/avis-settings/fetch-google', [AdminAvisSettingsController::class, 'fetchGoogle'])->name('admin.avis_settings.fetch_google');
         Route::get('/simulateur-settings', [AdminSimulateurSettingsController::class, 'edit'])->name('admin.simulateur_settings.edit');
         Route::post('/simulateur-settings', [AdminSimulateurSettingsController::class, 'update'])->name('admin.simulateur_settings.update');
+        Route::get('/simulateur-leads', [AdminSimulateurSettingsController::class, 'leads'])->name('admin.simulateur_leads.index');
+        Route::post('/simulateur-leads/{simulateurLead}/resend-admin-mail', [AdminSimulateurSettingsController::class, 'resendAdminMail'])->name('admin.simulateur_leads.resend_admin_mail');
     });
 
     Route::middleware('elizo_adminuser')->group(function () {

@@ -61,11 +61,14 @@
         </div>
 
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
-            <h2 class="text-lg font-extrabold text-slate-900">Simulator SMTP & Leads</h2>
-            <p class="mt-1 text-sm text-slate-600">Configure SMTP in admin, send HTML emails, and monitor in-progress/completed simulator forms.</p>
+            <h2 class="text-lg font-extrabold text-slate-900">Simulator</h2>
+            <p class="mt-1 text-sm text-slate-600">SMTP config and leads history are now separated into dedicated pages.</p>
             <div class="mt-5 flex flex-wrap gap-2">
                 <a href="{{ route('admin.simulateur_settings.edit') }}" class="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
-                    Open simulator settings
+                    Open SMTP settings
+                </a>
+                <a href="{{ route('admin.simulateur_leads.index') }}" class="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-extrabold text-slate-700 hover:bg-slate-50">
+                    Open leads page
                 </a>
             </div>
         </div>
