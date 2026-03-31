@@ -14,6 +14,7 @@
             $isHomepage = $currentRoute === 'admin.homepage.edit' || $currentRoute === 'admin.homepage.update';
             $isServicesPages = str_starts_with((string) $currentRoute, 'admin.services_pages.');
             $isContactSettings = $currentRoute === 'admin.contact_settings.edit' || $currentRoute === 'admin.contact_settings.update';
+            $isLayoutSettings = $currentRoute === 'admin.layout_settings.edit' || $currentRoute === 'admin.layout_settings.update';
             $isAvisSettings = $currentRoute === 'admin.avis_settings.edit' || $currentRoute === 'admin.avis_settings.update' || $currentRoute === 'admin.avis_settings.fetch_google';
         @endphp
         <div class="w-full flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6 relative z-20">
@@ -47,6 +48,10 @@
                         <a href="{{ route('admin.contact_settings.edit') }}"
                            class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isContactSettings ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
                             Page contact
+                        </a>
+                        <a href="{{ route('admin.layout_settings.edit') }}"
+                           class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isLayoutSettings ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
+                            Header & Footer
                         </a>
                         <a href="{{ route('admin.avis_settings.edit') }}"
                            class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isAvisSettings ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">

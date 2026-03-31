@@ -25,6 +25,17 @@ return [
     'header' => [
         'logo' => '/logo.png',
         'logo_alt' => 'Normes & Renovation',
+        'menu_items' => [
+            ['label' => 'Accueil', 'route' => 'home', 'anchor' => '', 'custom_url' => '', 'style' => ''],
+            ['label' => 'Toiture', 'route' => 'home', 'anchor' => 'services', 'custom_url' => '', 'style' => ''],
+            ['label' => 'Façade', 'route' => 'home', 'anchor' => 'services', 'custom_url' => '', 'style' => ''],
+            ['label' => 'Isolation', 'route' => 'home', 'anchor' => 'services', 'custom_url' => '', 'style' => ''],
+            ['label' => 'Énergie', 'route' => 'home', 'anchor' => 'services', 'custom_url' => '', 'style' => ''],
+            ['label' => 'Le réseau', 'route' => 'home', 'anchor' => 'a-propos', 'custom_url' => '', 'style' => ''],
+            ['label' => 'Réalisations', 'route' => 'home', 'anchor' => 'realisations', 'custom_url' => '', 'style' => ''],
+            ['label' => 'Conseils', 'route' => 'home', 'anchor' => 'conseils', 'custom_url' => '', 'style' => ''],
+            ['label' => 'Devis', 'route' => 'contact.page', 'anchor' => 'devis', 'custom_url' => '', 'style' => 'cta'],
+        ],
         'social' => [
             ['network' => 'facebook', 'url' => '#', 'label' => 'Facebook'],
             ['network' => 'linkedin', 'url' => '#', 'label' => 'LinkedIn'],
@@ -362,6 +373,11 @@ return [
 
     'contact_page' => [
         'hero_bg' => '/slide/toiture.png',
+        'featured_image' => '/slide/toiture.png',
+        'meta_title' => 'Contact | Normes & Rénovation',
+        'meta_description' => 'Contactez-nous pour un devis gratuit, une question sur votre chantier ou nos agences. Réponse sous 48 h en général.',
+        'meta_keywords' => '',
+        'og_image' => '/slide/toiture.png',
         'hero_kicker' => 'Contact',
         'hero_title_line1' => 'Vous avez',
         'hero_title_line2' => 'un projet de rénovation ?',
@@ -499,6 +515,13 @@ return [
         'phone' => '03 85 41 98 86',
         'phone_href' => '+33385419886',
         'email' => 'bourgogne-agence@normesrenovation.fr',
+        'quick_links' => [
+            ['label' => 'Nos services', 'route' => 'home', 'anchor' => 'services', 'custom_url' => ''],
+            ['label' => 'Réalisations', 'route' => 'home', 'anchor' => 'realisations', 'custom_url' => ''],
+            ['label' => 'Agences & carte', 'route' => 'home', 'anchor' => 'agences', 'custom_url' => ''],
+            ['label' => 'Conseils', 'route' => 'home', 'anchor' => 'conseils', 'custom_url' => ''],
+            ['label' => 'Contact / devis', 'route' => 'contact.page', 'anchor' => 'devis', 'custom_url' => ''],
+        ],
         'networks_note' => 'Lundi au vendredi de 8h30 à 17h. En urgence, appelez l\'agence la plus proche.',
         'copyright_name' => 'Normes et Rénovation',
         'bottom_line' => 'Entreprise RGE — Rénovation énergétique —',

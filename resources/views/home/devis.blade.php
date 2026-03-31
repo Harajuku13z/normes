@@ -24,6 +24,9 @@
             </div>
         </div>
 
-        @include('home._devis_form', ['home' => $h])
+        @include('home._devis_form', [
+            'home' => $h,
+            'serviceOptionsPreferred' => $serviceOptionsPreferred ?? [],
+        ])
     </div>
 </section>

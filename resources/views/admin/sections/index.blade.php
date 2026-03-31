@@ -49,5 +49,15 @@
                 </a>
             </div>
         </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+            <h2 class="text-lg font-extrabold text-slate-900">Header & Footer</h2>
+            <p class="mt-1 text-sm text-slate-600">Page dédiée : composer le menu header (routes + ancres) et modifier le footer.</p>
+            <div class="mt-5 flex flex-wrap gap-2">
+                <a href="{{ route('admin.layout_settings.edit') }}" class="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
+                    Modifier Header & Footer
+                </a>
+            </div>
+        </div>
     </div>
 @endsection

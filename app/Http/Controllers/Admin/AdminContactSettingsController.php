@@ -18,7 +18,12 @@ class AdminContactSettingsController extends Controller
     {
         return [
             'hero_bg' => '/slide/toiture.png',
+            'featured_image' => '/slide/toiture.png',
             'hero_kicker' => 'Contact',
+            'meta_title' => 'Contact | Normes & Rénovation',
+            'meta_description' => 'Contactez-nous pour un devis gratuit, une question sur votre chantier ou nos agences. Réponse sous 48 h en général.',
+            'meta_keywords' => '',
+            'og_image' => '/slide/toiture.png',
             'hero_title_line1' => 'Vous avez',
             'hero_title_line2' => 'un projet de rénovation ?',
             'hero_subtitle' => 'Estimation personnalisée & rappel d\'un conseiller',
@@ -51,7 +56,7 @@ class AdminContactSettingsController extends Controller
     public function edit(): View
     {
         $defaults = HomePageDefaults::all();
-        $keys = ['contact_page', 'devis', 'footer'];
+        $keys = ['contact_page', 'devis'];
 
         $saved = HomeSection::query()
             ->whereIn('key', $keys)
@@ -85,7 +90,7 @@ class AdminContactSettingsController extends Controller
             $sections = [];
         }
 
-        foreach (['contact_page', 'devis', 'footer'] as $key) {
+        foreach (['contact_page', 'devis'] as $key) {
             if (! array_key_exists($key, $sections) || ! is_array($sections[$key])) {
                 continue;
             }

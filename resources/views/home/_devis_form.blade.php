@@ -1,18 +1,25 @@
 @php
     $h = $home ?? [];
     $d = data_get($h, 'devis', []);
-    $serviceOptions = collect((array) data_get($h, 'service_options', []))
+    $serviceOptionsPreferred = collect((array) ($serviceOptionsPreferred ?? []))
         ->map(fn ($title) => trim((string) $title))
         ->filter(fn ($title) => $title !== '')
         ->unique()
         ->values()
         ->all();
+    $serviceOptions = collect((array) data_get($h, 'service_options', []))
+        ->map(fn ($title) => trim((string) $title))
+        ->filter(fn ($title) => $title !== '')
+        ->reject(fn ($title) => in_array($title, $serviceOptionsPreferred, true))
+        ->values()
+        ->all();
+    $serviceOptions = array_values(array_merge($serviceOptionsPreferred, $serviceOptions));
 @endphp
 
 <div id="formulaire-contact" class="flex h-full min-h-0 scroll-mt-28 flex-col rounded-2xl border border-slate-200/90 bg-white p-5 text-brand-dark shadow-xl sm:p-7">
     <div class="mb-5 shrink-0 border-b border-slate-100 pb-4">
-        <h3 class="text-xl font-extrabold text-brand-dark">{{ data_get($d, 'form.title') }}</h3>
-        <p class="mt-1 text-sm text-slate-600">{{ data_get($d, 'form.intro') }}</p>
+        <h3 class="text-2xl font-black tracking-tight text-brand-blue sm:text-3xl">{{ data_get($d, 'form.title') }}</h3>
+        <p class="mt-2 inline-block rounded-lg bg-brand-blue/10 px-3 py-1.5 text-sm font-semibold text-brand-dark">{{ data_get($d, 'form.intro') }}</p>
     </div>
     <form class="flex flex-1 flex-col text-brand-dark" action="#" method="post" enctype="multipart/form-data">
         @csrf

@@ -2,6 +2,24 @@
     $h = $home ?? [];
     $f = data_get($h, 'footer', []);
     $logo = \App\Support\HomeView::url(data_get($f, 'logo'));
+    $quickLinks = collect((array) data_get($f, 'quick_links', []))
+        ->filter(fn ($item) => is_array($item))
+        ->map(function (array $item): array {
+            $label = trim((string) data_get($item, 'label', ''));
+            $routeName = trim((string) data_get($item, 'route', ''));
+            $anchor = ltrim(trim((string) data_get($item, 'anchor', '')), '#');
+            $customUrl = trim((string) data_get($item, 'custom_url', ''));
+            if ($customUrl !== '') {
+                $href = $customUrl;
+            } elseif ($routeName !== '' && \Illuminate\Support\Facades\Route::has($routeName)) {
+                $href = route($routeName).($anchor !== '' ? '#'.$anchor : '');
+            } else {
+                $href = '#';
+            }
+            return ['label' => $label, 'href' => $href];
+        })
+        ->filter(fn (array $item) => $item['label'] !== '' && $item['href'] !== '')
+        ->values();
 @endphp
 <footer
     class="footer-hero-bg relative border-t-4 border-brand-blue text-white"
@@ -34,11 +52,16 @@
             <div class="lg:col-span-2">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-brand-yellow">Liens rapides</h3>
                 <ul class="mt-4 space-y-2 text-sm text-white">
-                    <li><a href="#services" class="transition hover:text-white">Nos services</a></li>
-                    <li><a href="#realisations" class="transition hover:text-white">Réalisations</a></li>
-                    <li><a href="#agences" class="transition hover:text-white">Agences &amp; carte</a></li>
-                    <li><a href="#conseils" class="transition hover:text-white">Conseils</a></li>
-                    <li><a href="#devis" class="font-semibold text-brand-blue transition hover:text-white">Contact / devis</a></li>
+                    @foreach ($quickLinks as $link)
+                        <li>
+                            <a
+                                href="{{ $link['href'] }}"
+                                class="{{ str_contains(mb_strtolower($link['label']), 'devis') ? 'font-semibold text-brand-blue transition hover:text-white' : 'transition hover:text-white' }}"
+                            >
+                                {{ $link['label'] }}
+                            </a>
+                        </li>
+                    @endforeach
                 </ul>
             </div>
             <div class="lg:col-span-3">

@@ -204,6 +204,12 @@
         ->filter(fn ($s) => is_array($s) && !empty(data_get($s, 'title')) && !empty(data_get($s, 'image')))
         ->values()
         ->all();
+    $serviceOptionsPreferred = collect($subServicesRaw)
+        ->map(fn ($s) => trim((string) data_get($s, 'title', '')))
+        ->filter(fn ($title) => $title !== '')
+        ->unique()
+        ->values()
+        ->all();
 
     $realsRaw = is_array($page->realisations ?? null) ? $page->realisations : [];
     $reals = collect($realsRaw)
@@ -322,6 +328,12 @@
                 $sectionHeading = trim((string) ($page->sub_services_section_title ?? ''));
                 $accent = 'Sous';
                 $rest = 'prestations';
+                $subCount = count($subServices);
+                $subServicesGridClass = $subCount === 4
+                    ? 'grid gap-6 sm:grid-cols-2 lg:grid-cols-4'
+                    : ($subCount > 4
+                        ? 'grid gap-6 sm:grid-cols-2 lg:grid-cols-2'
+                        : 'grid gap-6 sm:grid-cols-2 lg:grid-cols-3');
                 if ($sectionHeading !== '') {
                     $parts = preg_split('/\s+/', $sectionHeading, 2, PREG_SPLIT_NO_EMPTY);
                     $accent = $parts[0] ?? $sectionHeading;
@@ -339,7 +351,7 @@
                 @endif
             </div>
 
-            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="{{ $subServicesGridClass }}">
                 @foreach (array_slice($subServices, 0, 9) as $s)
                     @php
                         $title = (string) data_get($s, 'title', '');
@@ -581,7 +593,10 @@
 </section>
 
 {{-- Section formulaire identique à la page d'accueil (source unique) --}}
-@include('home.devis', ['home' => $h])
+@include('home.devis', [
+    'home' => $h,
+    'serviceOptionsPreferred' => $serviceOptionsPreferred ?? [],
+])
 
 {{-- Partenaires & certification (juste avant le footer) --}}
 @if (is_array(data_get($h, 'partners.logos', [])) && data_get($h, 'partners.logos', []) !== [])

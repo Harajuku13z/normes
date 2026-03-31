@@ -6,10 +6,24 @@
     $d = data_get($h, 'devis', []);
     $cp = data_get($h, 'contact_page', []);
     $siteName = (string) data_get($h, 'meta.site_name', 'Normes & Rénovation');
-    $metaTitle = 'Contact | '.$siteName;
-    $metaDescription = trim((string) data_get($h, 'meta.description', ''));
+    $metaTitle = trim((string) data_get($cp, 'meta_title', ''));
+    if ($metaTitle === '') {
+        $metaTitle = 'Contact | '.$siteName;
+    }
+    $metaDescription = trim((string) data_get($cp, 'meta_description', ''));
+    if ($metaDescription === '') {
+        $metaDescription = trim((string) data_get($h, 'meta.description', ''));
+    }
     if ($metaDescription === '') {
         $metaDescription = 'Contactez-nous pour un devis gratuit, une question sur votre chantier ou nos agences. Réponse sous 48 h en général.';
+    }
+    $metaKeywords = trim((string) data_get($cp, 'meta_keywords', ''));
+    $metaOgImage = trim((string) data_get($cp, 'og_image', ''));
+    if ($metaOgImage === '') {
+        $metaOgImage = trim((string) data_get($cp, 'featured_image', ''));
+    }
+    if ($metaOgImage === '') {
+        $metaOgImage = trim((string) data_get($h, 'meta.og_image', 'logo.png'));
     }
     $heroBg = HomeView::url((string) data_get($cp, 'hero_bg', 'slide/toiture.png'));
     $heroKicker = (string) data_get($cp, 'hero_kicker', data_get($d, 'contact_heading', 'Contact'));
@@ -56,9 +70,9 @@
     'home' => $h,
     'title' => $metaTitle,
     'description' => $metaDescription,
-    'keywords' => '',
+    'keywords' => $metaKeywords,
     'canonicalUrl' => route('contact.page'),
-    'ogImage' => trim((string) data_get($h, 'meta.og_image', 'logo.png')),
+    'ogImage' => $metaOgImage,
 ])
 <body class="overflow-x-hidden bg-white font-sans text-brand-dark antialiased">
 @include('home.header', ['home' => $h])

@@ -14,14 +14,16 @@ class AdminHomepageController extends Controller
     public function edit(): View
     {
         $defaults = HomePageDefaults::all();
+        $excludedKeys = ['header', 'footer', 'avis', 'contact_page'];
+        $keys = array_values(array_filter(array_keys($defaults), fn ($key) => ! in_array($key, $excludedKeys, true)));
 
         $saved = HomeSection::query()
-            ->whereIn('key', array_keys($defaults))
+            ->whereIn('key', $keys)
             ->get()
             ->keyBy('key');
 
         $merged = [];
-        foreach (array_keys($defaults) as $key) {
+        foreach ($keys as $key) {
             $row = $saved->get($key);
             $base = $defaults[$key];
             $payload = $row && is_array($row->payload) ? $row->payload : [];
@@ -34,14 +36,15 @@ class AdminHomepageController extends Controller
         return view('admin.homepage.index', [
             'merged' => $merged,
             'labels' => HomePageDefaults::labels(),
-            'keys' => array_keys($defaults),
+            'keys' => $keys,
         ]);
     }
 
     public function update(Request $request): RedirectResponse
     {
         $defaults = HomePageDefaults::all();
-        $keys = array_keys($defaults);
+        $excludedKeys = ['header', 'footer', 'avis', 'contact_page'];
+        $keys = array_values(array_filter(array_keys($defaults), fn ($key) => ! in_array($key, $excludedKeys, true)));
 
         $sections = $request->input('sections', []);
         if (! is_array($sections)) {
