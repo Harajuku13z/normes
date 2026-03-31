@@ -10,6 +10,36 @@
 
     $secondaryHref = $contactHref;
     $secondaryText = 'Devis gratuit';
+    $ov = is_array($page->content_overrides ?? null) ? $page->content_overrides : [];
+
+    $introKicker = trim((string) data_get($ov, 'intro.kicker', 'En bref'));
+    $introBadges = collect((array) data_get($ov, 'intro.badges', []))
+        ->map(fn ($v) => trim((string) $v))
+        ->filter(fn ($v) => $v !== '')
+        ->values()
+        ->all();
+    if ($introBadges === []) {
+        $introBadges = ['Sans engagement', 'Réponse sous 48h', 'Devis gratuit'];
+    }
+    $expertiseKicker = trim((string) data_get($ov, 'intro.expertise_kicker', 'Expertise'));
+    $expertiseText = trim((string) data_get($ov, 'intro.expertise_text', 'Intervention soignée · Matériaux protégés · Finitions propres'));
+
+    $navLabels = [
+        'services' => trim((string) data_get($ov, 'subnav.services', 'Services')),
+        'realisations' => trim((string) data_get($ov, 'subnav.realisations', 'Réalisations')),
+        'avis' => trim((string) data_get($ov, 'subnav.avis', 'Avis')),
+        'contact' => trim((string) data_get($ov, 'subnav.contact', 'Contact')),
+    ];
+
+    $processOverrides = is_array(data_get($ov, 'process')) ? data_get($ov, 'process') : [];
+    $realisationsOverrides = is_array(data_get($ov, 'realisations')) ? data_get($ov, 'realisations') : [];
+    $ctaCardOverrides = is_array(data_get($ov, 'cta_card')) ? data_get($ov, 'cta_card') : [];
+    $subServiceCtaText = trim((string) data_get($ov, 'sub_services.cta_text', 'C’EST CE QU’IL ME FAUT'));
+    $subServiceDocText = trim((string) data_get($ov, 'sub_services.doc_text', 'DOC TECHNIQUE'));
+    $statsHeadingText = trim((string) data_get($ov, 'stats.heading', 'Chiffres clés'));
+    $statsLinkText = trim((string) data_get($ov, 'stats.link_text', 'Voir les avis'));
+    $partnersHeadingText = trim((string) data_get($ov, 'partners.heading', 'Partenaires associés'));
+    $partnersLinkText = trim((string) data_get($ov, 'partners.link_text', 'Nous contacter'));
 
     $metaTitle = trim((string) ($page->meta_title ?? ''));
     if ($metaTitle === '') {
@@ -96,7 +126,7 @@
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft ring-1 ring-slate-100 lg:grid lg:grid-cols-[1.05fr_0.95fr]">
                 <div class="p-6 sm:p-8 lg:p-10">
-                    <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-blue">En bref</p>
+                    <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-blue">{{ $introKicker }}</p>
                     <p class="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
                         {{ $introText }}
                     </p>
@@ -113,18 +143,12 @@
                     </div>
 
                     <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2">
-                        <span class="flex items-center gap-1.5 text-xs text-slate-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                            Sans engagement
-                        </span>
-                        <span class="flex items-center gap-1.5 text-xs text-slate-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                            Réponse sous 48h
-                        </span>
-                        <span class="flex items-center gap-1.5 text-xs text-slate-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                            Devis gratuit
-                        </span>
+                        @foreach ($introBadges as $badge)
+                            <span class="flex items-center gap-1.5 text-xs text-slate-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                {{ $badge }}
+                            </span>
+                        @endforeach
                     </div>
                 </div>
 
@@ -133,8 +157,8 @@
                     <div class="absolute inset-0 bg-gradient-to-tr from-brand-dark/85 via-brand-dark/35 to-transparent" aria-hidden="true"></div>
                     <div class="absolute inset-x-0 bottom-0 p-6 sm:p-8">
                         <div class="inline-flex items-center gap-2 rounded-2xl bg-white/10 px-4 py-3 text-white backdrop-blur ring-1 ring-white/15">
-                            <span class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">Expertise</span>
-                            <span class="text-sm font-bold text-white/95">Intervention soignée · Matériaux protégés · Finitions propres</span>
+                            <span class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">{{ $expertiseKicker }}</span>
+                            <span class="text-sm font-bold text-white/95">{{ $expertiseText }}</span>
                         </div>
                     </div>
                 </div>
@@ -158,16 +182,16 @@
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <nav class="flex flex-wrap items-center gap-2 py-3" aria-label="Navigation de la page service">
             <a href="{{ $navServicesAnchor }}" class="{{ $subNavLinkClass }}">
-                Services
+                {{ $navLabels['services'] !== '' ? $navLabels['services'] : 'Services' }}
             </a>
             <a href="#realisations" class="{{ $subNavLinkClass }}">
-                Réalisations
+                {{ $navLabels['realisations'] !== '' ? $navLabels['realisations'] : 'Réalisations' }}
             </a>
             <a href="#avis" class="{{ $subNavLinkClass }}">
-                Avis
+                {{ $navLabels['avis'] !== '' ? $navLabels['avis'] : 'Avis' }}
             </a>
             <a href="#devis" class="{{ $subNavLinkClass }}">
-                Contact
+                {{ $navLabels['contact'] !== '' ? $navLabels['contact'] : 'Contact' }}
             </a>
         </nav>
     </div>
@@ -246,8 +270,8 @@
                 <div class="grid gap-6">
                     <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
                         <div class="flex flex-wrap items-end justify-between gap-3">
-                            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Chiffres clés</p>
-                            <a href="#avis" class="text-xs font-extrabold text-brand-blue hover:underline">Voir les avis</a>
+                            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $statsHeadingText !== '' ? $statsHeadingText : 'Chiffres clés' }}</p>
+                            <a href="#avis" class="text-xs font-extrabold text-brand-blue hover:underline">{{ $statsLinkText !== '' ? $statsLinkText : 'Voir les avis' }}</a>
                         </div>
                         <div class="mt-5 grid gap-4 sm:grid-cols-3">
                             @foreach (array_slice($statsItems, 0, 3) as $it)
@@ -265,8 +289,8 @@
                     @if ($servicePartnersLogos !== [])
                         <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
                             <div class="flex flex-wrap items-end justify-between gap-3">
-                                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Partenaires associés</p>
-                                <a href="#devis" class="text-xs font-extrabold text-brand-blue hover:underline">Nous contacter</a>
+                                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $partnersHeadingText !== '' ? $partnersHeadingText : 'Partenaires associés' }}</p>
+                                <a href="#devis" class="text-xs font-extrabold text-brand-blue hover:underline">{{ $partnersLinkText !== '' ? $partnersLinkText : 'Nous contacter' }}</a>
                             </div>
                             @if ($servicePartnersPhrase !== '')
                                 <p class="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">{{ $servicePartnersPhrase }}</p>
@@ -347,7 +371,7 @@
                                     href="#devis"
                                     class="inline-flex w-fit items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm font-extrabold text-white ring-1 ring-white/20 backdrop-blur transition hover:bg-white/15 hover:ring-white/35"
                                 >
-                                    C’EST CE QU’IL ME FAUT <span aria-hidden="true">⟶</span>
+                                    {{ $subServiceCtaText !== '' ? $subServiceCtaText : 'C’EST CE QU’IL ME FAUT' }} <span aria-hidden="true">⟶</span>
                                 </a>
                                 @if ($techDoc !== '')
                                     <a
@@ -356,7 +380,7 @@
                                         rel="noopener noreferrer"
                                         class="inline-flex w-fit items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm font-extrabold text-white ring-1 ring-white/20 backdrop-blur transition hover:bg-white/15 hover:ring-white/35"
                                     >
-                                        DOC TECHNIQUE <span aria-hidden="true">↗</span>
+                                        {{ $subServiceDocText !== '' ? $subServiceDocText : 'DOC TECHNIQUE' }} <span aria-hidden="true">↗</span>
                                     </a>
                                 @endif
                             </div>
@@ -369,23 +393,41 @@
         {{-- Processus de prise en charge (après les sous-services) --}}
         @php
             $proc = data_get($h, 'processus', []);
-            $procSteps = data_get($proc, 'steps', []);
+            $procSteps = collect((array) data_get($processOverrides, 'steps', []))
+                ->map(function ($s, $idx) {
+                    return [
+                        'num' => trim((string) data_get($s, 'num', (string) ($idx + 1))),
+                        'title' => trim((string) data_get($s, 'title', '')),
+                        'text' => trim((string) data_get($s, 'text', '')),
+                    ];
+                })
+                ->filter(fn ($s) => $s['title'] !== '' || $s['text'] !== '')
+                ->values()
+                ->all();
+            if ($procSteps === []) {
+                $procSteps = (array) data_get($proc, 'steps', []);
+            }
+            $processKicker = trim((string) data_get($processOverrides, 'kicker', 'Processus'));
+            $processTitleAccent = trim((string) data_get($processOverrides, 'title_accent', data_get($proc, 'title_accent', 'Prise en charge')));
+            $processTitleRest = trim((string) data_get($processOverrides, 'title_rest', data_get($proc, 'title_rest', 'en 4 étapes')));
+            $processIntro = trim((string) data_get($processOverrides, 'intro', data_get($proc, 'intro', '')));
+            $processCtaText = trim((string) data_get($processOverrides, 'cta_text', 'Demander un devis'));
         @endphp
         @if (is_array($procSteps) && $procSteps !== [])
             <div class="{{ $subServices !== [] ? 'mt-12' : '' }} rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div class="min-w-0">
-                        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Processus</p>
+                        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $processKicker !== '' ? $processKicker : 'Processus' }}</p>
                         <h2 class="mt-2 break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
-                            {{ trim((string) data_get($proc, 'title_accent', 'Prise en charge')) }}
-                            <span class="text-brand-blue">{{ trim((string) data_get($proc, 'title_rest', 'en 4 étapes')) }}</span>
+                            {{ $processTitleAccent !== '' ? $processTitleAccent : 'Prise en charge' }}
+                            <span class="text-brand-blue">{{ ' '.($processTitleRest !== '' ? $processTitleRest : 'en 4 étapes') }}</span>
                         </h2>
-                        @if (!empty(trim((string) data_get($proc, 'intro'))))
-                            <p class="mt-3 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">{{ data_get($proc, 'intro') }}</p>
+                        @if ($processIntro !== '')
+                            <p class="mt-3 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">{{ $processIntro }}</p>
                         @endif
                     </div>
                     <a href="#devis" class="inline-flex items-center justify-center rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500">
-                        Demander un devis
+                        {{ $processCtaText !== '' ? $processCtaText : 'Demander un devis' }}
                     </a>
                 </div>
 
@@ -411,11 +453,19 @@
 
 <section id="realisations" class="scroll-mt-24 bg-white py-14 sm:py-20">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+        @php
+            $realisationsTitleAccent = trim((string) data_get($realisationsOverrides, 'title_accent', 'Réalisations'));
+            $realisationsTitleRest = trim((string) data_get($realisationsOverrides, 'title_rest', 'avant / après'));
+            $realisationsIntro = trim((string) data_get($realisationsOverrides, 'intro', 'Faites glisser le curseur pour comparer.'));
+            $realisationsBeforeLabel = trim((string) data_get($realisationsOverrides, 'before_label', 'Avant'));
+            $realisationsAfterLabel = trim((string) data_get($realisationsOverrides, 'after_label', 'Après'));
+            $realisationsEmptyText = trim((string) data_get($realisationsOverrides, 'empty_text', "Aucun chantier avant/après n'a encore été ajouté pour cette page."));
+        @endphp
         <div class="mb-6">
             <h2 class="break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
-                <span class="text-brand-blue">Réalisations</span> avant / après
+                <span class="text-brand-blue">{{ $realisationsTitleAccent !== '' ? $realisationsTitleAccent : 'Réalisations' }}</span> {{ $realisationsTitleRest !== '' ? $realisationsTitleRest : 'avant / après' }}
             </h2>
-            <p class="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">Faites glisser le curseur pour comparer.</p>
+            <p class="mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">{{ $realisationsIntro }}</p>
         </div>
 
         @if ($reals !== [])
@@ -444,10 +494,10 @@
                                 aria-label="Après — {{ $cardLabel }}"
                             ></div>
                             <div class="pointer-events-none absolute left-3 top-3 z-10 rounded-lg bg-brand-dark/70 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wide text-white">
-                                Avant
+                                {{ $realisationsBeforeLabel !== '' ? $realisationsBeforeLabel : 'Avant' }}
                             </div>
                             <div class="pointer-events-none absolute right-3 top-3 z-10 rounded-lg bg-brand-blue/85 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wide text-white">
-                                Après
+                                {{ $realisationsAfterLabel !== '' ? $realisationsAfterLabel : 'Après' }}
                             </div>
                             <input
                                 type="range"
@@ -463,7 +513,7 @@
             </div>
         @else
             <div class="rounded-3xl border border-slate-200 bg-slate-50 p-6 text-slate-600">
-                Aucun chantier avant/après n'a encore été ajouté pour cette page.
+                {{ $realisationsEmptyText !== '' ? $realisationsEmptyText : "Aucun chantier avant/après n'a encore été ajouté pour cette page." }}
             </div>
         @endif
     </div>
@@ -480,6 +530,11 @@
                 @php
                     $ctaCardBgPath = trim((string) (data_get($page, 'cta_card_background') ?? ''));
                     $ctaCardBg = $ctaCardBgPath !== '' ? HomeView::url($ctaCardBgPath) : HomeView::url('slide/toiture.png');
+                    $ctaCardKicker = trim((string) data_get($ctaCardOverrides, 'kicker', 'Un projet de rénovation ?'));
+                    $ctaCardTitle = trim((string) data_get($ctaCardOverrides, 'title', 'Démarrez dès maintenant'));
+                    $ctaCardText = trim((string) data_get($ctaCardOverrides, 'text', 'Lancez le simulateur pour une première estimation, ou envoyez votre demande pour être contacté rapidement.'));
+                    $ctaCardPrimary = trim((string) data_get($ctaCardOverrides, 'simulateur_text', 'Ouvrir le simulateur de devis'));
+                    $ctaCardSecondary = trim((string) data_get($ctaCardOverrides, 'contact_text', 'Accéder au formulaire de contact'));
                 @endphp
                 {{-- Fonds en absolute ; contenu en flux pour hauteur auto (mobile : plus de texte rogné) --}}
                 <div class="relative overflow-hidden rounded-2xl border border-white/20 shadow-soft ring-1 ring-black/5 lg:flex lg:h-full lg:min-h-[20rem] lg:flex-col">
@@ -493,26 +548,26 @@
                     <div class="relative z-10 flex w-full flex-col items-center justify-center px-4 py-8 text-center sm:px-6 sm:py-10 lg:flex-1 lg:px-8 lg:py-10">
                         <div class="w-full max-w-md">
                             <p class="text-[0.7rem] font-extrabold uppercase leading-snug tracking-[0.12em] text-brand-yellow sm:text-xs sm:tracking-[0.2em]">
-                                Un projet de rénovation ?
+                                {{ $ctaCardKicker !== '' ? $ctaCardKicker : 'Un projet de rénovation ?' }}
                             </p>
                             <h2 class="mt-2 break-words text-2xl font-extrabold leading-snug text-white sm:text-3xl sm:leading-tight lg:text-4xl">
-                                Démarrez dès maintenant
+                                {{ $ctaCardTitle !== '' ? $ctaCardTitle : 'Démarrez dès maintenant' }}
                             </h2>
                             <p class="mt-3 text-sm leading-relaxed text-slate-100/95 sm:text-base">
-                                Lancez le simulateur pour une première estimation, ou envoyez votre demande pour être contacté rapidement.
+                                {{ $ctaCardText !== '' ? $ctaCardText : 'Lancez le simulateur pour une première estimation, ou envoyez votre demande pour être contacté rapidement.' }}
                             </p>
                             <div class="mt-6 grid w-full gap-3">
                                 <a
                                     href="{{ route('home').'#simulateur-devis' }}"
                                     class="inline-flex w-full min-w-0 items-center justify-center rounded-xl bg-brand-blue px-4 py-3 text-center text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 sm:px-5"
                                 >
-                                    Ouvrir le simulateur de devis
+                                    {{ $ctaCardPrimary !== '' ? $ctaCardPrimary : 'Ouvrir le simulateur de devis' }}
                                 </a>
                                 <a
                                     href="#formulaire-contact"
                                     class="inline-flex w-full min-w-0 items-center justify-center rounded-xl border-2 border-white/45 bg-white/10 px-4 py-3 text-center text-sm font-extrabold text-white shadow-sm backdrop-blur-sm transition hover:bg-white/20 sm:px-5"
                                 >
-                                    Accéder au formulaire de contact
+                                    {{ $ctaCardSecondary !== '' ? $ctaCardSecondary : 'Accéder au formulaire de contact' }}
                                 </a>
                             </div>
                         </div>

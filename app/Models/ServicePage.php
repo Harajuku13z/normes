@@ -25,6 +25,7 @@ class ServicePage extends Model
         'service_partners',
         'technical_doc',
         'service_stats',
+        'content_overrides',
         'cta_text',
         'cta_href',
         'cta_card_background',
@@ -36,6 +37,7 @@ class ServicePage extends Model
         'realisations' => 'array',
         'service_partners' => 'array',
         'service_stats' => 'array',
+        'content_overrides' => 'array',
     ];
 }
 

@@ -3,6 +3,7 @@
     $pageTitle = $isEdit ? 'Modifier la page service' : 'Créer une page service';
     $subServices = is_array($page->sub_services ?? null) ? $page->sub_services : [];
     $realisations = is_array($page->realisations ?? null) ? $page->realisations : [];
+    $ov = is_array($page->content_overrides ?? null) ? $page->content_overrides : [];
 @endphp
 
 @extends('admin.layout')
@@ -129,6 +130,106 @@
                 rows="14"
                 class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm leading-relaxed focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
             >{{ old('body', $page->body ?? '') }}</textarea>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="mb-4">
+                <h2 class="text-sm font-extrabold text-slate-900">Textes de la page service (éditables)</h2>
+                <p class="mt-1 text-xs text-slate-500">Permet de personnaliser les libellés visibles sur la page (hors header/footer).</p>
+            </div>
+
+            <div class="grid gap-4 lg:grid-cols-2">
+                <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                    <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Intro</p>
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Kicker (ex. En bref)</label>
+                    <input name="content_overrides[intro][kicker]" value="{{ old('content_overrides.intro.kicker', data_get($ov, 'intro.kicker', 'En bref')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Badge 1</label>
+                    <input name="content_overrides[intro][badges][0]" value="{{ old('content_overrides.intro.badges.0', data_get($ov, 'intro.badges.0', 'Sans engagement')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Badge 2</label>
+                    <input name="content_overrides[intro][badges][1]" value="{{ old('content_overrides.intro.badges.1', data_get($ov, 'intro.badges.1', 'Réponse sous 48h')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Badge 3</label>
+                    <input name="content_overrides[intro][badges][2]" value="{{ old('content_overrides.intro.badges.2', data_get($ov, 'intro.badges.2', 'Devis gratuit')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                </div>
+
+                <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                    <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Navigation & blocs</p>
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Nav — Services</label>
+                    <input name="content_overrides[subnav][services]" value="{{ old('content_overrides.subnav.services', data_get($ov, 'subnav.services', 'Services')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Nav — Réalisations</label>
+                    <input name="content_overrides[subnav][realisations]" value="{{ old('content_overrides.subnav.realisations', data_get($ov, 'subnav.realisations', 'Réalisations')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Nav — Avis</label>
+                    <input name="content_overrides[subnav][avis]" value="{{ old('content_overrides.subnav.avis', data_get($ov, 'subnav.avis', 'Avis')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Nav — Contact</label>
+                    <input name="content_overrides[subnav][contact]" value="{{ old('content_overrides.subnav.contact', data_get($ov, 'subnav.contact', 'Contact')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                </div>
+            </div>
+
+            <div class="mt-4 grid gap-4 lg:grid-cols-2">
+                <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                    <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Chiffres & partenaires</p>
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Titre bloc chiffres</label>
+                    <input name="content_overrides[stats][heading]" value="{{ old('content_overrides.stats.heading', data_get($ov, 'stats.heading', 'Chiffres clés')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Lien bloc chiffres</label>
+                    <input name="content_overrides[stats][link_text]" value="{{ old('content_overrides.stats.link_text', data_get($ov, 'stats.link_text', 'Voir les avis')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Titre bloc partenaires</label>
+                    <input name="content_overrides[partners][heading]" value="{{ old('content_overrides.partners.heading', data_get($ov, 'partners.heading', 'Partenaires associés')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Lien bloc partenaires</label>
+                    <input name="content_overrides[partners][link_text]" value="{{ old('content_overrides.partners.link_text', data_get($ov, 'partners.link_text', 'Nous contacter')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                </div>
+
+                <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                    <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Cartes & réalisations</p>
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Bouton sous-service</label>
+                    <input name="content_overrides[sub_services][cta_text]" value="{{ old('content_overrides.sub_services.cta_text', data_get($ov, 'sub_services.cta_text', 'C’EST CE QU’IL ME FAUT')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Bouton doc technique</label>
+                    <input name="content_overrides[sub_services][doc_text]" value="{{ old('content_overrides.sub_services.doc_text', data_get($ov, 'sub_services.doc_text', 'DOC TECHNIQUE')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Titre réalisations (accent)</label>
+                    <input name="content_overrides[realisations][title_accent]" value="{{ old('content_overrides.realisations.title_accent', data_get($ov, 'realisations.title_accent', 'Réalisations')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Titre réalisations (suite)</label>
+                    <input name="content_overrides[realisations][title_rest]" value="{{ old('content_overrides.realisations.title_rest', data_get($ov, 'realisations.title_rest', 'avant / après')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Texte intro réalisations</label>
+                    <input name="content_overrides[realisations][intro]" value="{{ old('content_overrides.realisations.intro', data_get($ov, 'realisations.intro', 'Faites glisser le curseur pour comparer.')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <div class="mt-3 grid gap-3 lg:grid-cols-2">
+                        <input name="content_overrides[realisations][before_label]" value="{{ old('content_overrides.realisations.before_label', data_get($ov, 'realisations.before_label', 'Avant')) }}" placeholder="Label Avant" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                        <input name="content_overrides[realisations][after_label]" value="{{ old('content_overrides.realisations.after_label', data_get($ov, 'realisations.after_label', 'Après')) }}" placeholder="Label Après" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Processus</p>
+                <div class="mt-3 grid gap-3 lg:grid-cols-3">
+                    <input name="content_overrides[process][kicker]" value="{{ old('content_overrides.process.kicker', data_get($ov, 'process.kicker', 'Processus')) }}" placeholder="Kicker" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <input name="content_overrides[process][title_accent]" value="{{ old('content_overrides.process.title_accent', data_get($ov, 'process.title_accent', 'Prise en charge')) }}" placeholder="Titre accent" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <input name="content_overrides[process][title_rest]" value="{{ old('content_overrides.process.title_rest', data_get($ov, 'process.title_rest', 'en 4 étapes')) }}" placeholder="Titre suite" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                </div>
+                <textarea name="content_overrides[process][intro]" rows="2" placeholder="Intro processus" class="mt-3 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200">{{ old('content_overrides.process.intro', data_get($ov, 'process.intro', '')) }}</textarea>
+                <input name="content_overrides[process][cta_text]" value="{{ old('content_overrides.process.cta_text', data_get($ov, 'process.cta_text', 'Demander un devis')) }}" placeholder="Texte bouton processus" class="mt-3 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+
+                <div class="mt-4 grid gap-3 lg:grid-cols-2">
+                    @for ($pi = 0; $pi < 4; $pi++)
+                        <div class="rounded-lg border border-slate-200 bg-white p-3">
+                            <p class="text-xs font-extrabold uppercase tracking-wide text-slate-500">Étape {{ $pi + 1 }}</p>
+                            <input name="content_overrides[process][steps][{{ $pi }}][num]" value="{{ old("content_overrides.process.steps.$pi.num", data_get($ov, "process.steps.$pi.num", (string) ($pi + 1))) }}" placeholder="Numéro" class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                            <input name="content_overrides[process][steps][{{ $pi }}][title]" value="{{ old("content_overrides.process.steps.$pi.title", data_get($ov, "process.steps.$pi.title", '')) }}" placeholder="Titre étape" class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                            <textarea name="content_overrides[process][steps][{{ $pi }}][text]" rows="2" placeholder="Texte étape" class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200">{{ old("content_overrides.process.steps.$pi.text", data_get($ov, "process.steps.$pi.text", '')) }}</textarea>
+                        </div>
+                    @endfor
+                </div>
+            </div>
+
+            <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
+                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Carte “Un projet de rénovation ?”</p>
+                <div class="mt-3 grid gap-3 lg:grid-cols-2">
+                    <input name="content_overrides[cta_card][kicker]" value="{{ old('content_overrides.cta_card.kicker', data_get($ov, 'cta_card.kicker', 'Un projet de rénovation ?')) }}" placeholder="Kicker" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <input name="content_overrides[cta_card][title]" value="{{ old('content_overrides.cta_card.title', data_get($ov, 'cta_card.title', 'Démarrez dès maintenant')) }}" placeholder="Titre" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                </div>
+                <textarea name="content_overrides[cta_card][text]" rows="2" placeholder="Texte descriptif" class="mt-3 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200">{{ old('content_overrides.cta_card.text', data_get($ov, 'cta_card.text', 'Lancez le simulateur pour une première estimation, ou envoyez votre demande pour être contacté rapidement.')) }}</textarea>
+                <div class="mt-3 grid gap-3 lg:grid-cols-2">
+                    <input name="content_overrides[cta_card][simulateur_text]" value="{{ old('content_overrides.cta_card.simulateur_text', data_get($ov, 'cta_card.simulateur_text', 'Ouvrir le simulateur de devis')) }}" placeholder="Texte bouton simulateur" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <input name="content_overrides[cta_card][contact_text]" value="{{ old('content_overrides.cta_card.contact_text', data_get($ov, 'cta_card.contact_text', 'Accéder au formulaire de contact')) }}" placeholder="Texte bouton contact" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                </div>
+            </div>
         </div>
 
         <div class="grid gap-4 lg:grid-cols-2">

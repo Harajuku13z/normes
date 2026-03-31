@@ -71,6 +71,7 @@ class AdminServicePagesController extends Controller
             'service_stats.items.*.label' => ['nullable', 'string', 'max:30'],
             'service_stats.items.*.value' => ['nullable', 'string', 'max:30'],
             'service_stats.items.*.text' => ['nullable', 'string', 'max:80'],
+            'content_overrides' => ['nullable', 'array'],
             'cta_text' => ['nullable', 'string', 'max:190'],
             'cta_href' => ['nullable', 'string', 'max:500'],
             'cta_card_background' => ['nullable', 'string', 'max:800'],
@@ -117,6 +118,9 @@ class AdminServicePagesController extends Controller
         if (! Schema::hasColumn('service_pages', 'service_stats')) {
             unset($payload['service_stats']);
         }
+        if (! Schema::hasColumn('service_pages', 'content_overrides')) {
+            unset($payload['content_overrides']);
+        }
 
         ServicePage::query()->create($payload);
 
@@ -158,6 +162,7 @@ class AdminServicePagesController extends Controller
             'service_stats.items.*.label' => ['nullable', 'string', 'max:30'],
             'service_stats.items.*.value' => ['nullable', 'string', 'max:30'],
             'service_stats.items.*.text' => ['nullable', 'string', 'max:80'],
+            'content_overrides' => ['nullable', 'array'],
             'cta_text' => ['nullable', 'string', 'max:190'],
             'cta_href' => ['nullable', 'string', 'max:500'],
             'cta_card_background' => ['nullable', 'string', 'max:800'],
@@ -202,6 +207,9 @@ class AdminServicePagesController extends Controller
         }
         if (! Schema::hasColumn('service_pages', 'service_stats')) {
             unset($payload['service_stats']);
+        }
+        if (! Schema::hasColumn('service_pages', 'content_overrides')) {
+            unset($payload['content_overrides']);
         }
 
         $servicePage->update($payload);
