@@ -30,7 +30,7 @@
                     $value = $merged[$key] ?? [];
                     $label = $labels[$key] ?? $key;
                 @endphp
-                <details class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <details id="section-{{ $key }}" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <summary class="cursor-pointer select-none">
                         <div class="flex items-center justify-between gap-4">
                             <div class="min-w-0">
@@ -112,6 +112,16 @@
         (function () {
             const uploadUrl = @json(route('admin.upload'));
             const csrfToken = @json(csrf_token());
+
+            const openHashSection = () => {
+                const hash = window.location.hash || '';
+                if (!hash.startsWith('#section-')) return;
+                const target = document.querySelector(hash);
+                if (!(target instanceof HTMLDetailsElement)) return;
+                target.open = true;
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            };
+            openHashSection();
 
             function setPreview(previewId, url) {
                 const img = document.getElementById(previewId);
