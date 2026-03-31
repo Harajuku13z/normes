@@ -85,7 +85,6 @@ class SimulateurController extends Controller
 
         $data = $request->validate([
             'service_slug' => ['required', Rule::in($serviceSlugs)],
-            'sub_service' => ['nullable', 'string', 'max:190'],
         ]);
 
         $services = $this->servicesWithSubServices();
@@ -94,40 +93,92 @@ class SimulateurController extends Controller
             return back()->withErrors(['service_slug' => 'Service introuvable.'])->withInput();
         }
 
-        $subService = trim((string) ($data['sub_service'] ?? ''));
-        $allowedSubServices = collect((array) ($selected['sub_services'] ?? []))
-            ->map(fn ($sub) => trim((string) data_get($sub, 'title', '')))
-            ->filter(fn ($title) => $title !== '')
-            ->values()
-            ->all();
-        if ($subService !== '' && ! in_array($subService, $allowedSubServices, true)) {
-            return back()->withErrors(['sub_service' => 'Sous-service invalide pour ce service.'])->withInput();
-        }
-
         $state = (array) $request->session()->get('simulateur_devis', []);
         $state = array_merge($state, [
             'service_slug' => (string) $selected['slug'],
             'service_title' => (string) $selected['title'],
-            'sub_service' => $subService,
+            'sub_service' => '',
         ]);
         $request->session()->put('simulateur_devis', $state);
 
         return redirect()->route('simulateur.step3');
     }
 
-    public function step3(Request $request, HomePageService $homePage): View
+    public function step3(Request $request, HomePageService $homePage): View|RedirectResponse
     {
         $state = (array) $request->session()->get('simulateur_devis', []);
+        $serviceSlug = trim((string) data_get($state, 'service_slug', ''));
+        if ($serviceSlug === '') {
+            return redirect()->route('simulateur.step2');
+        }
+
+        $services = $this->servicesWithSubServices();
+        $selected = collect($services)->firstWhere('slug', $serviceSlug);
+        if (! is_array($selected)) {
+            return redirect()->route('simulateur.step2');
+        }
 
         return view('simulateur.wizard', [
             'home' => $homePage->merged(),
             'step' => 3,
             'state' => $state,
-            'services' => [],
+            'services' => $services,
+            'selectedService' => $selected,
         ]);
     }
 
     public function step3Store(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'sub_service' => ['nullable', 'string', 'max:190'],
+        ]);
+
+        $state = (array) $request->session()->get('simulateur_devis', []);
+        $serviceSlug = trim((string) data_get($state, 'service_slug', ''));
+        if ($serviceSlug === '') {
+            return redirect()->route('simulateur.step2');
+        }
+
+        $services = $this->servicesWithSubServices();
+        $selected = collect($services)->firstWhere('slug', $serviceSlug);
+        if (! is_array($selected)) {
+            return redirect()->route('simulateur.step2');
+        }
+
+        $subService = trim((string) ($data['sub_service'] ?? ''));
+        $allowedSubServices = collect((array) ($selected['sub_services'] ?? []))
+            ->map(fn ($sub) => trim((string) data_get($sub, 'title', '')))
+            ->filter(fn ($title) => $title !== '')
+            ->values()
+            ->all();
+
+        if ($subService !== '' && ! in_array($subService, $allowedSubServices, true)) {
+            return back()->withErrors(['sub_service' => 'Sous-service invalide pour ce service.'])->withInput();
+        }
+
+        $state['sub_service'] = $subService;
+        $request->session()->put('simulateur_devis', $state);
+
+        return redirect()->route('simulateur.step4');
+    }
+
+    public function step4(Request $request, HomePageService $homePage): View|RedirectResponse
+    {
+        $state = (array) $request->session()->get('simulateur_devis', []);
+        $serviceSlug = trim((string) data_get($state, 'service_slug', ''));
+        if ($serviceSlug === '') {
+            return redirect()->route('simulateur.step2');
+        }
+
+        return view('simulateur.wizard', [
+            'home' => $homePage->merged(),
+            'step' => 4,
+            'state' => $state,
+            'services' => [],
+        ]);
+    }
+
+    public function step4Store(Request $request): RedirectResponse
     {
         $data = $request->validate([
             'message' => ['nullable', 'string', 'max:3000'],
@@ -154,16 +205,20 @@ class SimulateurController extends Controller
         $state['photos'] = array_values(array_merge($existing, $uploadedPaths));
         $request->session()->put('simulateur_devis', $state);
 
-        return redirect()->route('simulateur.step4');
+        return redirect()->route('simulateur.step5');
     }
 
-    public function step4(Request $request, HomePageService $homePage): View
+    public function step5(Request $request, HomePageService $homePage): View|RedirectResponse
     {
         $state = (array) $request->session()->get('simulateur_devis', []);
+        $serviceSlug = trim((string) data_get($state, 'service_slug', ''));
+        if ($serviceSlug === '') {
+            return redirect()->route('simulateur.step2');
+        }
 
         return view('simulateur.wizard', [
             'home' => $homePage->merged(),
-            'step' => 4,
+            'step' => 5,
             'state' => $state,
             'services' => [],
         ]);

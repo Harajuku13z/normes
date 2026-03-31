@@ -65,6 +65,8 @@ Route::post('/simulateur/etape-2', [SimulateurController::class, 'step2Store'])-
 Route::get('/simulateur/etape-3', [SimulateurController::class, 'step3'])->name('simulateur.step3');
 Route::post('/simulateur/etape-3', [SimulateurController::class, 'step3Store'])->name('simulateur.step3.store');
 Route::get('/simulateur/etape-4', [SimulateurController::class, 'step4'])->name('simulateur.step4');
+Route::post('/simulateur/etape-4', [SimulateurController::class, 'step4Store'])->name('simulateur.step4.store');
+Route::get('/simulateur/etape-5', [SimulateurController::class, 'step5'])->name('simulateur.step5');
 Route::post('/simulateur/finaliser', [SimulateurController::class, 'finish'])->name('simulateur.finish');
 Route::get('/simulateur/ok', [SimulateurController::class, 'success'])->name('simulateur.success');
 
