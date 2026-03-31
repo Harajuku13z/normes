@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\AdminHomepageController;
 use App\Http\Controllers\Admin\AdminContactSettingsController;
+use App\Http\Controllers\Admin\AdminAvisSettingsController;
 use App\Http\Controllers\Admin\AdminServicePagesController;
 use App\Http\Controllers\ServicePagesController;
 use App\Http\Controllers\HomeController;
@@ -34,6 +35,9 @@ Route::prefix('admin')->group(function () {
         Route::post('/homepage', [AdminHomepageController::class, 'update'])->name('admin.homepage.update');
         Route::get('/contact-settings', [AdminContactSettingsController::class, 'edit'])->name('admin.contact_settings.edit');
         Route::post('/contact-settings', [AdminContactSettingsController::class, 'update'])->name('admin.contact_settings.update');
+        Route::get('/avis-settings', [AdminAvisSettingsController::class, 'edit'])->name('admin.avis_settings.edit');
+        Route::post('/avis-settings', [AdminAvisSettingsController::class, 'update'])->name('admin.avis_settings.update');
+        Route::post('/avis-settings/fetch-google', [AdminAvisSettingsController::class, 'fetchGoogle'])->name('admin.avis_settings.fetch_google');
     });
 
     Route::middleware('elizo_adminuser')->group(function () {
