@@ -40,6 +40,7 @@
     $statsLinkText = trim((string) data_get($ov, 'stats.link_text', 'Voir les avis'));
     $partnersHeadingText = trim((string) data_get($ov, 'partners.heading', 'Partenaires associés'));
     $partnersLinkText = trim((string) data_get($ov, 'partners.link_text', 'Nous contacter'));
+    $avisOverrides = is_array(data_get($ov, 'avis')) ? data_get($ov, 'avis') : [];
 
     $metaTitle = trim((string) ($page->meta_title ?? ''));
     if ($metaTitle === '') {
@@ -523,7 +524,7 @@
     <div class="mx-auto w-[95%] scroll-mt-32 px-4 sm:px-6 lg:px-8">
         <div class="grid gap-6 lg:grid-cols-2 lg:items-stretch">
             <div class="min-w-0">
-                @include('services.avis_only', ['home' => $h])
+                @include('services.avis_only', ['home' => $h, 'avisOverrides' => $avisOverrides])
             </div>
 
             <div class="min-w-0">

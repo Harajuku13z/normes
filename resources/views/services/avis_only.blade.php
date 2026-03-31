@@ -1,4 +1,13 @@
-@php $h = $home ?? []; @endphp
+@php
+    $h = $home ?? [];
+    $ov = is_array($avisOverrides ?? null) ? $avisOverrides : [];
+    $kicker = trim((string) data_get($ov, 'kicker', 'Avis multi-plateformes'));
+    $titleAccent = trim((string) data_get($ov, 'title_accent', (string) data_get($h, 'avis.title_accent')));
+    $titleRest = trim((string) data_get($ov, 'title_rest', (string) data_get($h, 'avis.title_rest')));
+    $intro = trim((string) data_get($ov, 'intro', (string) data_get($h, 'avis.intro')));
+    $googleButton = trim((string) data_get($ov, 'google_button', (string) data_get($h, 'avis.google_button')));
+    $platformInfo = trim((string) data_get($ov, 'platform_info', 'Des retours concrets, provenant de plusieurs plateformes.'));
+@endphp
 
 <div
     id="avis-clients"
@@ -7,12 +16,12 @@
     <div class="flex flex-col gap-5">
         <div>
             <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-blue/10 px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-brand-blue">
-                Avis multi-plateformes
+                {{ $kicker !== '' ? $kicker : 'Avis multi-plateformes' }}
             </div>
             <h2 class="break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
-                <span class="text-brand-blue">{{ data_get($h, 'avis.title_accent') }}</span>{{ data_get($h, 'avis.title_rest') }}
+                <span class="text-brand-blue">{{ $titleAccent }}</span>{{ $titleRest }}
             </h2>
-            <p class="mt-3 break-words text-base text-slate-600 sm:text-lg">{{ data_get($h, 'avis.intro') }}</p>
+            <p class="mt-3 break-words text-base text-slate-600 sm:text-lg">{{ $intro }}</p>
 
             <a
                 href="{{ data_get($h, 'avis.google_url') }}"
@@ -26,13 +35,13 @@
                     <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
-                {{ data_get($h, 'avis.google_button') }}
+                {{ $googleButton }}
             </a>
         </div>
 
         <div class="flex items-center justify-between gap-3">
             <p class="min-w-0 flex-1 break-words text-sm font-semibold text-slate-500">
-                Des retours concrets, provenant de plusieurs plateformes.
+                {{ $platformInfo !== '' ? $platformInfo : 'Des retours concrets, provenant de plusieurs plateformes.' }}
             </p>
             <div class="flex shrink-0 gap-2">
                 <button

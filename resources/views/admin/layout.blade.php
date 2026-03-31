@@ -14,6 +14,7 @@
             $isHomepage = $currentRoute === 'admin.homepage.edit' || $currentRoute === 'admin.homepage.update';
             $isServicesPages = str_starts_with((string) $currentRoute, 'admin.services_pages.');
             $isContactSettings = $isHomepage;
+            $isAvisSettings = $isHomepage;
         @endphp
         <div class="w-full flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6 relative z-20">
             <a href="{{ route('admin.dashboard') }}" class="text-lg font-extrabold text-slate-800">Admin — Page d'accueil</a>
@@ -46,6 +47,10 @@
                         <a href="{{ route('admin.homepage.edit') }}#contact-settings"
                            class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isContactSettings ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
                             Page contact
+                        </a>
+                        <a href="{{ route('admin.homepage.edit') }}#avis-settings"
+                           class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isAvisSettings ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
+                            Avis
                         </a>
                         <a href="{{ route('admin.services_pages.index') }}"
                            class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isServicesPages ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
