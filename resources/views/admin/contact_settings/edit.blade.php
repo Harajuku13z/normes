@@ -28,11 +28,73 @@
                 Textes + visuels spécifiques page contact (section `contact_page`)
             </summary>
             <div class="mt-4">
-                @include('admin.homepage.partials.form', [
-                    'name' => 'sections[contact_page]',
-                    'value' => $merged['contact_page'] ?? [],
-                    'depth' => 0,
-                ])
+                @php
+                    $cp = $merged['contact_page'] ?? [];
+                @endphp
+
+                <div class="grid gap-4 lg:grid-cols-2">
+                    <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                        <p class="text-xs font-extrabold uppercase tracking-wide text-slate-500">Image hero</p>
+                        <input id="cpHeroBg" type="text" name="sections[contact_page][hero_bg]" value="{{ data_get($cp, 'hero_bg') }}" class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+                        <input id="cpHeroBgUpload" type="file" accept="image/*" class="mt-2 w-full text-sm">
+                        <p class="mt-2 text-xs text-slate-500">Upload ou collez une URL image.</p>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                        <p class="text-xs font-extrabold uppercase tracking-wide text-slate-500">Image fond réseaux sociaux</p>
+                        <input id="cpSocialBg" type="text" name="sections[contact_page][social_bg]" value="{{ data_get($cp, 'social_bg') }}" class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+                        <input id="cpSocialBgUpload" type="file" accept="image/*" class="mt-2 w-full text-sm">
+                    </div>
+                </div>
+
+                <div class="mt-4 grid gap-4 lg:grid-cols-2">
+                    <div>
+                        <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Hero kicker</label>
+                        <input type="text" name="sections[contact_page][hero_kicker]" value="{{ data_get($cp, 'hero_kicker') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Hero titre ligne 1</label>
+                        <input type="text" name="sections[contact_page][hero_title_line1]" value="{{ data_get($cp, 'hero_title_line1') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Hero titre ligne 2</label>
+                        <input type="text" name="sections[contact_page][hero_title_line2]" value="{{ data_get($cp, 'hero_title_line2') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Hero sous-titre</label>
+                        <input type="text" name="sections[contact_page][hero_subtitle]" value="{{ data_get($cp, 'hero_subtitle') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+                    </div>
+                    <div class="lg:col-span-2">
+                        <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Hero intro</label>
+                        <textarea name="sections[contact_page][hero_intro]" rows="3" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">{{ data_get($cp, 'hero_intro') }}</textarea>
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Texte bouton hero (formulaire)</label>
+                        <input type="text" name="sections[contact_page][hero_cta_form]" value="{{ data_get($cp, 'hero_cta_form') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Texte bouton hero (téléphone)</label>
+                        <input type="text" name="sections[contact_page][hero_cta_phone]" value="{{ data_get($cp, 'hero_cta_phone') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+                    </div>
+                </div>
+
+                <div class="mt-4 grid gap-4 lg:grid-cols-2">
+                    <div>
+                        <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Titre réseaux sociaux</label>
+                        <input type="text" name="sections[contact_page][social_title]" value="{{ data_get($cp, 'social_title') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Titre carte</label>
+                        <input type="text" name="sections[contact_page][map_title]" value="{{ data_get($cp, 'map_title') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
+                    </div>
+                    <div class="lg:col-span-2">
+                        <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Intro réseaux sociaux</label>
+                        <textarea name="sections[contact_page][social_intro]" rows="2" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">{{ data_get($cp, 'social_intro') }}</textarea>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Intro carte</label>
+                        <textarea name="sections[contact_page][map_intro]" rows="2" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">{{ data_get($cp, 'map_intro') }}</textarea>
+                    </div>
+                </div>
             </div>
         </details>
 
@@ -85,6 +147,32 @@
 
     @push('scripts')
     <script>
+        async function uploadToInput(fileInputId, targetInputId) {
+            const fileInput = document.getElementById(fileInputId);
+            const targetInput = document.getElementById(targetInputId);
+            if (!fileInput || !targetInput) return;
+            fileInput.addEventListener('change', async () => {
+                if (!fileInput.files || !fileInput.files[0]) return;
+                const fd = new FormData();
+                fd.append('file', fileInput.files[0]);
+                try {
+                    const res = await fetch(@json(route('admin.upload')), {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': @json(csrf_token()), 'Accept': 'application/json' },
+                        body: fd,
+                        credentials: 'same-origin',
+                    });
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok || !data.url) throw new Error(data.message || 'Erreur upload');
+                    targetInput.value = data.url;
+                } catch (err) {
+                    alert(String(err));
+                }
+            });
+        }
+        uploadToInput('cpHeroBgUpload', 'cpHeroBg');
+        uploadToInput('cpSocialBgUpload', 'cpSocialBg');
+
         document.getElementById('uploadFormContact')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const form = e.target;
