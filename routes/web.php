@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\HomeAdminController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\AdminHomepageController;
+use App\Http\Controllers\Admin\AdminContactSettingsController;
 use App\Http\Controllers\Admin\AdminServicePagesController;
 use App\Http\Controllers\ServicePagesController;
 use App\Http\Controllers\HomeController;
@@ -31,6 +32,8 @@ Route::prefix('admin')->group(function () {
 
         Route::get('/homepage', [AdminHomepageController::class, 'edit'])->name('admin.homepage.edit');
         Route::post('/homepage', [AdminHomepageController::class, 'update'])->name('admin.homepage.update');
+        Route::get('/contact-settings', [AdminContactSettingsController::class, 'edit'])->name('admin.contact_settings.edit');
+        Route::post('/contact-settings', [AdminContactSettingsController::class, 'update'])->name('admin.contact_settings.update');
     });
 
     Route::middleware('elizo_adminuser')->group(function () {

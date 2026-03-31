@@ -118,56 +118,6 @@
             </div>
         </div>
 
-        @php
-            $footerSocial = data_get($merged, 'footer.social', []);
-            $socialByNetwork = [];
-            if (is_array($footerSocial)) {
-                foreach ($footerSocial as $entry) {
-                    if (! is_array($entry)) {
-                        continue;
-                    }
-                    $network = trim((string) ($entry['network'] ?? ''));
-                    if ($network === '') {
-                        continue;
-                    }
-                    $socialByNetwork[$network] = $entry;
-                }
-            }
-            $socialUiItems = [
-                ['key' => 'facebook', 'label' => 'Facebook', 'placeholder' => 'https://www.facebook.com/...'],
-                ['key' => 'linkedin', 'label' => 'LinkedIn', 'placeholder' => 'https://www.linkedin.com/company/...'],
-                ['key' => 'instagram', 'label' => 'Instagram', 'placeholder' => 'https://www.instagram.com/...'],
-            ];
-        @endphp
-        <div id="contact-settings" class="scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-            <div class="mb-4">
-                <h2 class="text-sm font-extrabold text-slate-900">Paramètres page contact — Réseaux sociaux</h2>
-                <p class="mt-1 text-xs text-slate-500">Renseigne les URLs officielles. Ces liens sont utilisés dans le footer et la section Réseaux sociaux de la page Contact.</p>
-            </div>
-            <div class="grid gap-4 lg:grid-cols-3">
-                @foreach ($socialUiItems as $idx => $net)
-                    @php
-                        $entry = $socialByNetwork[$net['key']] ?? [];
-                        $urlValue = (string) ($entry['url'] ?? '');
-                        $labelValue = (string) ($entry['label'] ?? $net['label'].' Normes & Rénovation');
-                    @endphp
-                    <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
-                        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $net['label'] }}</p>
-                        <input type="hidden" name="sections[footer][social][{{ $idx }}][network]" value="{{ $net['key'] }}">
-                        <input type="hidden" name="sections[footer][social][{{ $idx }}][label]" value="{{ $labelValue }}">
-                        <label class="mt-3 block text-xs font-semibold text-slate-600">Lien</label>
-                        <input
-                            type="url"
-                            name="sections[footer][social][{{ $idx }}][url]"
-                            value="{{ old("sections.footer.social.$idx.url", $urlValue) }}"
-                            placeholder="{{ $net['placeholder'] }}"
-                            class="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
-                        >
-                    </div>
-                @endforeach
-            </div>
-        </div>
-
         <div class="pt-4">
             <button type="submit" class="rounded-xl bg-sky-600 px-6 py-3 text-sm font-extrabold text-white hover:bg-sky-700">
                 Enregistrer

@@ -29,13 +29,10 @@
 
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
             <h2 class="text-lg font-extrabold text-slate-900">Page contact</h2>
-            <p class="mt-1 text-sm text-slate-600">Accès direct aux champs qui alimentent la page contact (hero, coordonnées, réseaux sociaux, formulaire).</p>
+            <p class="mt-1 text-sm text-slate-600">Page dédiée pour modifier les contenus de contact (hero, formulaire, coordonnées, réseaux sociaux).</p>
             <div class="mt-5 flex flex-wrap gap-2">
-                <a href="{{ route('admin.homepage.edit') }}#section-devis" class="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
-                    Hero + Formulaire
-                </a>
-                <a href="{{ route('admin.homepage.edit') }}#section-footer" class="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-extrabold text-slate-700 hover:bg-slate-50">
-                    Adresse + Réseaux
+                <a href="{{ route('admin.contact_settings.edit') }}" class="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
+                    Modifier la page contact
                 </a>
                 <a href="{{ route('contact.page') }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-extrabold text-slate-700 hover:bg-slate-50">
                     Voir la page contact
