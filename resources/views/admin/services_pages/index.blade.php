@@ -39,6 +39,15 @@
                             </span>
                         </td>
                         <td class="px-4 py-3 text-right">
+                            @if ($p->is_active)
+                                <a href="{{ route('service.page', $p->slug) }}" target="_blank" rel="noopener noreferrer" class="mr-2 rounded-lg border border-sky-200 bg-sky-50 px-3 py-1.5 text-sm font-extrabold text-sky-700 hover:bg-sky-100">
+                                    Voir
+                                </a>
+                            @else
+                                <span class="mr-2 inline-flex cursor-not-allowed rounded-lg border border-slate-200 bg-slate-100 px-3 py-1.5 text-sm font-extrabold text-slate-400">
+                                    Voir
+                                </span>
+                            @endif
                             <a href="{{ route('admin.services_pages.edit', $p) }}" class="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-extrabold text-slate-700 hover:bg-slate-50">
                                 Modifier
                             </a>
