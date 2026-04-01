@@ -16,6 +16,7 @@
             $isContactSettings = $currentRoute === 'admin.contact_settings.edit' || $currentRoute === 'admin.contact_settings.update';
             $isLayoutSettings = $currentRoute === 'admin.layout_settings.edit' || $currentRoute === 'admin.layout_settings.update';
             $isAvisSettings = $currentRoute === 'admin.avis_settings.edit' || $currentRoute === 'admin.avis_settings.update' || $currentRoute === 'admin.avis_settings.fetch_google';
+            $isAiServiceSettings = $currentRoute === 'admin.ai_service_settings.edit' || $currentRoute === 'admin.ai_service_settings.update';
             $isSimulateurSettings = $currentRoute === 'admin.simulateur_settings.edit' || $currentRoute === 'admin.simulateur_settings.update';
             $isSimulateurLeads = $currentRoute === 'admin.simulateur_leads.index';
         @endphp
@@ -58,6 +59,10 @@
                         <a href="{{ route('admin.avis_settings.edit') }}"
                            class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isAvisSettings ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
                             Avis
+                        </a>
+                        <a href="{{ route('admin.ai_service_settings.edit') }}"
+                           class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isAiServiceSettings ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
+                            IA Services
                         </a>
                         <a href="{{ route('admin.simulateur_settings.edit') }}"
                            class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isSimulateurSettings ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">

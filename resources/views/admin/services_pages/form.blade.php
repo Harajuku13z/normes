@@ -40,6 +40,32 @@
             </div>
         @endif
 
+        <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-sm font-extrabold text-slate-900">Assistant IA — Génération de fiche service</h2>
+                    <p class="mt-1 text-xs text-slate-500">Saisis un titre + une description courte, puis clique “Générer avec IA”. Les champs ci-dessous seront remplis automatiquement.</p>
+                </div>
+                <a href="{{ route('admin.ai_service_settings.edit') }}" class="inline-flex items-center rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-extrabold text-slate-700 hover:bg-slate-50">
+                    Config IA
+                </a>
+            </div>
+            <div class="mt-3 grid gap-3 lg:grid-cols-[1fr_1fr_auto] lg:items-end">
+                <div>
+                    <label class="text-sm font-semibold text-slate-800">Titre du service (IA)</label>
+                    <input id="aiSourceTitle" type="text" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" placeholder="Ex: Isolation thermique extérieure" />
+                </div>
+                <div>
+                    <label class="text-sm font-semibold text-slate-800">Description courte (IA)</label>
+                    <textarea id="aiSourceDescription" rows="2" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" placeholder="Ex: Solution performante pour améliorer le confort et réduire les consommations."></textarea>
+                </div>
+                <button id="aiGenerateBtn" type="button" class="inline-flex items-center justify-center rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-extrabold text-white hover:bg-sky-700">
+                    Générer avec IA
+                </button>
+            </div>
+            <p id="aiGenerateStatus" class="mt-2 text-xs font-semibold text-slate-500"></p>
+        </div>
+
         <div class="grid gap-4 lg:grid-cols-2">
             <div>
                 <label class="text-sm font-semibold text-slate-800">Slug (URL)</label>
@@ -375,7 +401,7 @@
                 </div>
             </div>
             <div id="statItems" class="grid gap-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4 lg:grid-cols-3">
-                @for ($s = 0; $s < 3; $s++)
+                @for ($s = 0; $s < 4; $s++)
                     @php
                         $item = is_array($statsItems) ? (data_get($statsItems, $s, []) ?: []) : [];
                         $labelVal = old("service_stats.items.$s.label", (string) data_get($item, 'label', ''));
@@ -817,6 +843,7 @@
         (function () {
             const uploadUrl = @json(route('admin.upload'));
             const csrfToken = @json(csrf_token());
+            const aiGenerateUrl = @json(route('admin.services_pages.generate_ai'));
 
                 function showPreviewFromLocalFile({ file, previewImg, placeholderDiv }) {
                     try {
@@ -1029,6 +1056,117 @@
             bindCount({ input: document.getElementById('metaTitleInput'), counter: document.getElementById('metaTitleCount'), softMax: 60 });
             bindCount({ input: document.getElementById('metaDescriptionInput'), counter: document.getElementById('metaDescriptionCount'), softMax: 160 });
             bindCount({ input: document.getElementById('metaKeywordsInput'), counter: document.getElementById('metaKeywordsCount'), softMax: 200 });
+
+            const aiBtn = document.getElementById('aiGenerateBtn');
+            const aiTitle = document.getElementById('aiSourceTitle');
+            const aiDescription = document.getElementById('aiSourceDescription');
+            const aiStatus = document.getElementById('aiGenerateStatus');
+
+            function setField(name, value) {
+                const el = document.querySelector('[name="' + name.replaceAll('"', '\\"') + '"]');
+                if (!el) return;
+                el.value = value ?? '';
+                el.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+
+            function fillGenerated(g) {
+                setField('slug', g.slug || '');
+                setField('service_num', g.service_num || '');
+                setField('meta_title', g.meta_title || '');
+                setField('meta_keywords', g.meta_keywords || '');
+                setField('meta_description', g.meta_description || '');
+                setField('title', g.title || '');
+                setField('subtitle', g.subtitle || '');
+                setField('intro', g.intro || '');
+                setField('body', g.body || '');
+                setField('sub_services_section_title', g.sub_services_section_title || '');
+                setField('sub_services_section_intro', g.sub_services_section_intro || '');
+
+                for (let i = 1; i <= 9; i++) {
+                    const item = Array.isArray(g.sub_services) ? (g.sub_services[i - 1] || {}) : {};
+                    setField(`sub_services[${i}][title]`, item.title || '');
+                    setField(`sub_services[${i}][subtitle]`, item.subtitle || '');
+                }
+
+                setField('content_overrides[intro][kicker]', g?.content_overrides?.intro?.kicker || '');
+                setField('content_overrides[intro][badges][0]', g?.content_overrides?.intro?.badges?.[0] || '');
+                setField('content_overrides[intro][badges][1]', g?.content_overrides?.intro?.badges?.[1] || '');
+                setField('content_overrides[intro][badges][2]', g?.content_overrides?.intro?.badges?.[2] || '');
+
+                setField('content_overrides[subnav][services]', g?.content_overrides?.subnav?.services || 'Services');
+                setField('content_overrides[subnav][realisations]', g?.content_overrides?.subnav?.realisations || 'Réalisations');
+                setField('content_overrides[subnav][avis]', g?.content_overrides?.subnav?.avis || 'Avis');
+                setField('content_overrides[subnav][contact]', g?.content_overrides?.subnav?.contact || 'Contact');
+
+                setField('content_overrides[partners][heading]', g?.content_overrides?.partners?.heading || 'Partenaires associés');
+                setField('content_overrides[partners][link_text]', g?.content_overrides?.partners?.link_text || 'Nous contacter');
+
+                setField('content_overrides[realisations][title_accent]', g?.content_overrides?.realisations?.title_accent || 'Réalisations');
+                setField('content_overrides[realisations][title_rest]', g?.content_overrides?.realisations?.title_rest || 'avant / après');
+                setField('content_overrides[realisations][intro]', g?.content_overrides?.realisations?.intro || '');
+
+                setField('content_overrides[sub_services][cta_text]', g?.content_overrides?.sub_services?.cta_text || 'C’EST CE QU’IL ME FAUT');
+                setField('content_overrides[sub_services][doc_text]', g?.content_overrides?.sub_services?.doc_text || 'DOC TECHNIQUE');
+
+                const steps = g?.content_overrides?.process?.steps || [];
+                for (let i = 0; i < 4; i++) {
+                    const step = steps[i] || {};
+                    setField(`content_overrides[process][steps][${i}][num]`, step.num || String(i + 1));
+                    setField(`content_overrides[process][steps][${i}][title]`, step.title || '');
+                    setField(`content_overrides[process][steps][${i}][text]`, step.text || '');
+                }
+
+                const stats = g?.service_stats?.items || [];
+                for (let i = 0; i < 4; i++) {
+                    const st = stats[i] || {};
+                    setField(`service_stats[items][${i}][label]`, st.label || '');
+                    setField(`service_stats[items][${i}][value]`, st.value || '');
+                    setField(`service_stats[items][${i}][text]`, st.text || '');
+                }
+
+                if (typeof tinymce !== 'undefined' && tinymce.get('serviceBodyEditor')) {
+                    tinymce.get('serviceBodyEditor').setContent(g.body || '');
+                }
+            }
+
+            if (aiBtn && aiTitle && aiDescription && aiStatus) {
+                aiBtn.addEventListener('click', async function () {
+                    const title = String(aiTitle.value || '').trim();
+                    const description = String(aiDescription.value || '').trim();
+                    if (!title || !description) {
+                        aiStatus.textContent = 'Renseigne un titre et une description courte.';
+                        aiStatus.classList.add('text-red-600');
+                        return;
+                    }
+
+                    aiBtn.disabled = true;
+                    aiStatus.textContent = 'Génération IA en cours...';
+                    aiStatus.classList.remove('text-red-600');
+                    try {
+                        const res = await fetch(aiGenerateUrl, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ title, description }),
+                            credentials: 'same-origin',
+                        });
+                        const json = await res.json().catch(() => ({}));
+                        if (!res.ok) {
+                            throw new Error(json.message || 'Erreur IA');
+                        }
+                        fillGenerated(json.generated || {});
+                        aiStatus.textContent = 'Contenu généré avec succès. Pense à vérifier avant enregistrement.';
+                    } catch (e) {
+                        aiStatus.textContent = String(e.message || e || 'Erreur IA');
+                        aiStatus.classList.add('text-red-600');
+                    } finally {
+                        aiBtn.disabled = false;
+                    }
+                });
+            }
         })();
     </script>
 @endsection

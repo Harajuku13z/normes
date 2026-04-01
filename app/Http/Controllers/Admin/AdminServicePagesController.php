@@ -3,11 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\HomeSection;
 use App\Models\ServicePage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class AdminServicePagesController extends Controller
 {
@@ -227,6 +232,236 @@ class AdminServicePagesController extends Controller
         $servicePage->update($payload);
 
         return redirect()->route('admin.services_pages.edit', $servicePage)->with('status', 'Page service enregistrée.');
+    }
+
+    public function generateWithAi(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:190'],
+            'description' => ['required', 'string', 'max:3000'],
+        ]);
+
+        $settings = $this->aiSettings();
+        $apiKey = trim((string) data_get($settings, 'openai.api_key', ''));
+        if ($apiKey === '') {
+            return response()->json([
+                'message' => 'La clé API OpenAI est absente. Configure-la dans Admin > IA Services.',
+            ], 422);
+        }
+
+        $template = trim((string) data_get($settings, 'prompt_template', ''));
+        if ($template === '') {
+            return response()->json([
+                'message' => 'Le prompt IA est vide. Configure-le dans Admin > IA Services.',
+            ], 422);
+        }
+
+        $filledPrompt = str_replace(
+            ['[TITRE]', '[DESCRIPTION]'],
+            [trim((string) $data['title']), trim((string) $data['description'])],
+            $template
+        );
+        $filledPrompt .= "\n\nStructure JSON attendue (respecte exactement ces clés):\n".
+            "{\n".
+            "  \"parametres\": {\"slug\": \"\", \"service_num\": 1},\n".
+            "  \"seo\": {\"meta_title\": \"\", \"meta_keywords\": \"\", \"meta_description\": \"\"},\n".
+            "  \"contenu_page\": {\"titre\": \"\", \"sous_titre\": \"\", \"intro\": \"\", \"description\": \"\"},\n".
+            "  \"sous_services\": {\"titre_section\": \"\", \"sous_titre\": \"\", \"items\": [{\"nom\": \"\", \"description_courte\": \"\"}]},\n".
+            "  \"processus\": {\"etapes\": [{\"titre\": \"\", \"texte\": \"\"}, {\"titre\": \"\", \"texte\": \"\"}, {\"titre\": \"\", \"texte\": \"\"}, {\"titre\": \"\", \"texte\": \"\"}]},\n".
+            "  \"textes_ui\": {\"intro\": {\"kicker\": \"\", \"badge_1\": \"\", \"badge_2\": \"\", \"badge_3\": \"\"}, \"navigation\": {\"services\": \"\", \"realisations\": \"\", \"avis\": \"\", \"contact\": \"\"}},\n".
+            "  \"chiffres\": [{\"titre\": \"\", \"valeur\": \"\", \"texte_court\": \"\"}, {\"titre\": \"\", \"valeur\": \"\", \"texte_court\": \"\"}, {\"titre\": \"\", \"valeur\": \"\", \"texte_court\": \"\"}, {\"titre\": \"\", \"valeur\": \"\", \"texte_court\": \"\"}],\n".
+            "  \"partenaires\": {\"titre_bloc_partenaires\": \"\", \"lien_bloc_partenaires\": \"\"},\n".
+            "  \"realisations\": {\"titre_realisations_accent\": \"\", \"titre_realisations_suite\": \"\", \"texte_intro_realisations\": \"\"},\n".
+            "  \"cta\": {\"bouton_sous_service\": \"\", \"bouton_doc_technique\": \"\"}\n".
+            "}\n";
+
+        $response = Http::withToken($apiKey)
+            ->timeout(60)
+            ->post('https://api.openai.com/v1/chat/completions', [
+                'model' => trim((string) data_get($settings, 'openai.model', 'gpt-4o-mini')),
+                'temperature' => (float) data_get($settings, 'openai.temperature', 0.4),
+                'messages' => [
+                    [
+                        'role' => 'system',
+                        'content' => 'Tu génères uniquement du JSON valide selon la structure demandée.',
+                    ],
+                    [
+                        'role' => 'user',
+                        'content' => $filledPrompt,
+                    ],
+                ],
+                'response_format' => ['type' => 'json_object'],
+            ]);
+
+        if (! $response->ok()) {
+            return response()->json([
+                'message' => 'Erreur IA: '.$response->status().' '.$response->body(),
+            ], 422);
+        }
+
+        $content = (string) data_get($response->json(), 'choices.0.message.content', '');
+        $decoded = $this->decodeAiJson($content);
+        if (! is_array($decoded)) {
+            return response()->json([
+                'message' => 'Réponse IA invalide: JSON introuvable.',
+            ], 422);
+        }
+
+        return response()->json([
+            'generated' => $this->mapGeneratedToForm($decoded, $data),
+        ]);
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function decodeAiJson(string $raw): ?array
+    {
+        $raw = trim($raw);
+        if ($raw === '') {
+            return null;
+        }
+        $decoded = json_decode($raw, true);
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+        if (preg_match('/\{.*\}/s', $raw, $m) === 1) {
+            $decoded2 = json_decode((string) $m[0], true);
+            if (is_array($decoded2)) {
+                return $decoded2;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $decoded
+     * @param  array<string, mixed>  $seed
+     * @return array<string, mixed>
+     */
+    private function mapGeneratedToForm(array $decoded, array $seed): array
+    {
+        $slug = trim((string) data_get($decoded, 'parametres.slug', ''));
+        if ($slug === '') {
+            $slug = Str::slug((string) data_get($seed, 'title', 'service'));
+        }
+
+        $items = collect((array) data_get($decoded, 'sous_services.items', []))
+            ->filter(fn ($it) => is_array($it))
+            ->map(function (array $it): array {
+                return [
+                    'title' => trim((string) data_get($it, 'nom', '')),
+                    'subtitle' => trim((string) data_get($it, 'description_courte', '')),
+                ];
+            })
+            ->filter(fn (array $it) => $it['title'] !== '')
+            ->take(9)
+            ->values()
+            ->all();
+
+        $steps = collect((array) data_get($decoded, 'processus.etapes', []))
+            ->filter(fn ($it) => is_array($it))
+            ->map(function (array $it, int $idx): array {
+                return [
+                    'num' => (string) ($idx + 1),
+                    'title' => trim((string) data_get($it, 'titre', '')),
+                    'text' => trim((string) data_get($it, 'texte', '')),
+                ];
+            })
+            ->take(4)
+            ->values()
+            ->all();
+
+        $stats = collect((array) data_get($decoded, 'chiffres', []))
+            ->filter(fn ($it) => is_array($it))
+            ->map(function (array $it): array {
+                return [
+                    'label' => trim((string) data_get($it, 'titre', '')),
+                    'value' => trim((string) data_get($it, 'valeur', '')),
+                    'text' => trim((string) data_get($it, 'texte_court', '')),
+                ];
+            })
+            ->take(4)
+            ->values()
+            ->all();
+
+        return [
+            'slug' => $slug,
+            'service_num' => (int) data_get($decoded, 'parametres.service_num', 1),
+            'meta_title' => trim((string) data_get($decoded, 'seo.meta_title', '')),
+            'meta_keywords' => trim((string) data_get($decoded, 'seo.meta_keywords', '')),
+            'meta_description' => trim((string) data_get($decoded, 'seo.meta_description', '')),
+            'title' => trim((string) data_get($decoded, 'contenu_page.titre', data_get($seed, 'title', ''))),
+            'subtitle' => trim((string) data_get($decoded, 'contenu_page.sous_titre', '')),
+            'intro' => trim((string) data_get($decoded, 'contenu_page.intro', data_get($seed, 'description', ''))),
+            'body' => trim((string) data_get($decoded, 'contenu_page.description', '')),
+            'sub_services_section_title' => trim((string) data_get($decoded, 'sous_services.titre_section', '')),
+            'sub_services_section_intro' => trim((string) data_get($decoded, 'sous_services.sous_titre', '')),
+            'sub_services' => $items,
+            'content_overrides' => [
+                'intro' => [
+                    'kicker' => trim((string) data_get($decoded, 'textes_ui.intro.kicker', '')),
+                    'badges' => [
+                        trim((string) data_get($decoded, 'textes_ui.intro.badge_1', '')),
+                        trim((string) data_get($decoded, 'textes_ui.intro.badge_2', '')),
+                        trim((string) data_get($decoded, 'textes_ui.intro.badge_3', '')),
+                    ],
+                ],
+                'subnav' => [
+                    'services' => trim((string) data_get($decoded, 'textes_ui.navigation.services', 'Services')),
+                    'realisations' => trim((string) data_get($decoded, 'textes_ui.navigation.realisations', 'Réalisations')),
+                    'avis' => trim((string) data_get($decoded, 'textes_ui.navigation.avis', 'Avis')),
+                    'contact' => trim((string) data_get($decoded, 'textes_ui.navigation.contact', 'Contact')),
+                ],
+                'partners' => [
+                    'heading' => trim((string) data_get($decoded, 'partenaires.titre_bloc_partenaires', 'Partenaires associés')),
+                    'link_text' => trim((string) data_get($decoded, 'partenaires.lien_bloc_partenaires', 'Nous contacter')),
+                ],
+                'realisations' => [
+                    'title_accent' => trim((string) data_get($decoded, 'realisations.titre_realisations_accent', 'Réalisations')),
+                    'title_rest' => trim((string) data_get($decoded, 'realisations.titre_realisations_suite', 'avant / après')),
+                    'intro' => trim((string) data_get($decoded, 'realisations.texte_intro_realisations', '')),
+                ],
+                'sub_services' => [
+                    'cta_text' => trim((string) data_get($decoded, 'cta.bouton_sous_service', 'C’EST CE QU’IL ME FAUT')),
+                    'doc_text' => trim((string) data_get($decoded, 'cta.bouton_doc_technique', 'DOC TECHNIQUE')),
+                ],
+                'process' => [
+                    'kicker' => 'Processus',
+                    'title_accent' => 'Processus',
+                    'title_rest' => 'de prise en charge',
+                    'steps' => $steps,
+                ],
+            ],
+            'service_stats' => [
+                'items' => $stats,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function aiSettings(): array
+    {
+        $row = HomeSection::query()->where('key', 'ai_service_settings')->first();
+        $payload = is_array($row?->payload) ? $row->payload : [];
+
+        $apiKey = '';
+        $encrypted = trim((string) data_get($payload, 'openai.api_key', ''));
+        if ($encrypted !== '') {
+            try {
+                $apiKey = Crypt::decryptString($encrypted);
+            } catch (\Throwable) {
+                $apiKey = '';
+            }
+        }
+
+        data_set($payload, 'openai.api_key', $apiKey);
+        data_set($payload, 'openai.model', trim((string) data_get($payload, 'openai.model', 'gpt-4o-mini')));
+        data_set($payload, 'openai.temperature', (float) data_get($payload, 'openai.temperature', 0.4));
+
+        return $payload;
     }
 }
 

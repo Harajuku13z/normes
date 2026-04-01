@@ -72,5 +72,15 @@
                 </a>
             </div>
         </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+            <h2 class="text-lg font-extrabold text-slate-900">IA Services</h2>
+            <p class="mt-1 text-sm text-slate-600">Configure le prompt IA et la clé API pour générer automatiquement les fiches service et sous-services.</p>
+            <div class="mt-5 flex flex-wrap gap-2">
+                <a href="{{ route('admin.ai_service_settings.edit') }}" class="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
+                    Ouvrir la config IA
+                </a>
+            </div>
+        </div>
     </div>
 @endsection

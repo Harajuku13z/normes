@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\AdminHomepageController;
 use App\Http\Controllers\Admin\AdminContactSettingsController;
 use App\Http\Controllers\Admin\AdminAvisSettingsController;
+use App\Http\Controllers\Admin\AdminAiServiceSettingsController;
 use App\Http\Controllers\Admin\AdminLayoutSettingsController;
 use App\Http\Controllers\Admin\AdminSimulateurSettingsController;
 use App\Http\Controllers\Admin\AdminServicePagesController;
@@ -43,6 +44,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/avis-settings', [AdminAvisSettingsController::class, 'edit'])->name('admin.avis_settings.edit');
         Route::post('/avis-settings', [AdminAvisSettingsController::class, 'update'])->name('admin.avis_settings.update');
         Route::post('/avis-settings/fetch-google', [AdminAvisSettingsController::class, 'fetchGoogle'])->name('admin.avis_settings.fetch_google');
+        Route::get('/ai-service-settings', [AdminAiServiceSettingsController::class, 'edit'])->name('admin.ai_service_settings.edit');
+        Route::post('/ai-service-settings', [AdminAiServiceSettingsController::class, 'update'])->name('admin.ai_service_settings.update');
         Route::get('/simulateur-settings', [AdminSimulateurSettingsController::class, 'edit'])->name('admin.simulateur_settings.edit');
         Route::post('/simulateur-settings', [AdminSimulateurSettingsController::class, 'update'])->name('admin.simulateur_settings.update');
         Route::get('/simulateur-leads', [AdminSimulateurSettingsController::class, 'leads'])->name('admin.simulateur_leads.index');
@@ -84,6 +87,7 @@ Route::middleware('admin')->prefix('admin')->group(function () {
         Route::get('/', [AdminServicePagesController::class, 'index'])->name('index');
         Route::get('/create', [AdminServicePagesController::class, 'create'])->name('create');
         Route::post('/', [AdminServicePagesController::class, 'store'])->name('store');
+        Route::post('/generate-ai', [AdminServicePagesController::class, 'generateWithAi'])->name('generate_ai');
         Route::get('/{servicePage}/edit', [AdminServicePagesController::class, 'edit'])->name('edit');
         Route::put('/{servicePage}', [AdminServicePagesController::class, 'update'])->name('update');
     });
