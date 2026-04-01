@@ -5,7 +5,7 @@
     $metaTitle = 'Services | '.(string) data_get($h, 'meta.site_name', 'Normes & Rénovation');
     $metaDescription = 'Découvrez tous nos services de rénovation énergétique : toiture, façade, isolation, ventilation, photovoltaïque et plus.';
     $metaKeywords = trim((string) data_get($h, 'meta.keywords', ''));
-    $canonicalUrl = route('services.index');
+    $canonicalUrl = route('services.index', [], false);
     $ogImage = trim((string) data_get($h, 'meta.og_image', 'logo.png'));
 @endphp
 
@@ -22,7 +22,41 @@
 <body class="overflow-x-hidden bg-white font-sans text-brand-dark antialiased">
 @include('home.header', ['home' => $h])
 
-<section class="bg-slate-50/70 py-14 sm:py-20">
+<section class="relative isolate overflow-hidden bg-brand-dark py-14 text-white sm:py-20">
+    <div class="pointer-events-none absolute inset-0">
+        <img
+            src="{{ \App\Support\HomeView::url('/slide/toiture.png') }}"
+            alt=""
+            class="h-full w-full object-cover object-center opacity-30"
+            loading="eager"
+            decoding="async"
+        >
+        <div class="absolute inset-0 bg-gradient-to-r from-brand-dark/95 via-brand-dark/85 to-brand-dark/70"></div>
+    </div>
+    <div class="relative mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl">
+            <p class="inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-brand-yellow">
+                Nos prestations
+            </p>
+            <h1 class="mt-4 text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
+                <span class="text-brand-yellow">Nos services</span> de rénovation énergétique
+            </h1>
+            <p class="mt-4 max-w-3xl text-base text-slate-100 sm:text-lg">
+                Parcourez l’ensemble de nos prestations. Chaque fiche service détaille les solutions proposées, les étapes et les documents techniques associés.
+            </p>
+            <div class="mt-7 flex flex-wrap gap-3">
+                <a href="#services-list" class="inline-flex rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500">
+                    Voir les services
+                </a>
+                <a href="#devis" class="inline-flex rounded-xl border-2 border-white/40 bg-white/10 px-5 py-3 text-sm font-extrabold text-white transition hover:border-white hover:bg-white/20">
+                    Demander un devis
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="services-list" class="bg-slate-50/70 py-14 sm:py-20">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <div class="mb-8">
             <h1 class="text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl">
@@ -65,7 +99,7 @@
                         <p class="mt-3 text-sm leading-relaxed text-white/90">
                             {{ $desc }}
                         </p>
-                        <a href="{{ route('service.page', $page->slug) }}" class="mt-5 inline-flex w-fit rounded-xl bg-brand-blue px-4 py-2 text-xs font-extrabold text-white shadow-soft transition hover:bg-brand-dark sm:text-sm">
+                        <a href="{{ route('service.page', $page->slug, false) }}" class="mt-5 inline-flex w-fit rounded-xl bg-brand-blue px-4 py-2 text-xs font-extrabold text-white shadow-soft transition hover:bg-brand-dark sm:text-sm">
                             En savoir plus
                         </a>
                     </div>
@@ -74,6 +108,14 @@
         </div>
     </div>
 </section>
+
+<section class="bg-white py-14 sm:py-20">
+    <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+        @include('services.avis_only', ['home' => $h])
+    </div>
+</section>
+
+@include('home.devis', ['home' => $h])
 
 @include('home.footer', ['home' => $h])
 @include('home.scripts', ['home' => $h])

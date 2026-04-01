@@ -34,7 +34,7 @@
         if ($customUrl !== '') {
             $href = $customUrl;
         } elseif ($routeName !== '' && \Illuminate\Support\Facades\Route::has($routeName)) {
-            $href = route($routeName).($anchor !== '' ? '#'.$anchor : '');
+            $href = route($routeName, [], false).($anchor !== '' ? '#'.$anchor : '');
         } else {
             $href = '#';
         }
@@ -82,7 +82,7 @@
 @endphp
 <header class="sticky top-0 z-[1000] border-b-4 border-brand-blue bg-white/95 shadow-[0_1px_0_rgba(15,23,42,0.06)] backdrop-blur-md">
     <div class="mx-auto flex min-h-[84px] w-[95%] items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="{{ route('home') }}" class="shrink-0">
+        <a href="{{ route('home', [], false) }}" class="shrink-0">
             <img src="{{ $logo }}" alt="{{ $logoAlt }}" class="h-12 w-auto sm:h-14">
         </a>
 

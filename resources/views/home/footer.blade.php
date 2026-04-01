@@ -26,7 +26,7 @@
             if ($customUrl !== '') {
                 $href = $customUrl;
             } elseif ($routeName !== '' && \Illuminate\Support\Facades\Route::has($routeName)) {
-                $href = route($routeName).($anchor !== '' ? '#'.$anchor : '');
+                $href = route($routeName, [], false).($anchor !== '' ? '#'.$anchor : '');
             } else {
                 $href = '#';
             }

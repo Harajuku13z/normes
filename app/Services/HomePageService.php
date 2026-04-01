@@ -104,7 +104,7 @@ class HomePageService
                 }
 
                 $slug = trim((string) data_get($pageData, 'slug', ''));
-                $href = $slug !== '' ? route('service.page', $slug) : '#devis';
+                $href = $slug !== '' ? route('service.page', $slug, false) : '#devis';
 
                 return [
                     'num' => $serviceNum,
