@@ -1,17 +1,27 @@
 @php
+    $defaults = \App\Support\HomePageDefaults::all();
+    $defaultAvis = is_array(data_get($defaults, 'avis', [])) ? data_get($defaults, 'avis', []) : [];
+
     $h = $home ?? [];
     $ov = is_array($avisOverrides ?? null) ? $avisOverrides : [];
     $kicker = trim((string) data_get($ov, 'kicker', 'Avis multi-plateformes'));
-    $titleAccent = trim((string) data_get($ov, 'title_accent', (string) data_get($h, 'avis.title_accent')));
-    $titleRest = trim((string) data_get($ov, 'title_rest', (string) data_get($h, 'avis.title_rest')));
-    $intro = trim((string) data_get($ov, 'intro', (string) data_get($h, 'avis.intro')));
-    $googleButton = trim((string) data_get($ov, 'google_button', (string) data_get($h, 'avis.google_button')));
+    $titleAccent = trim((string) data_get($ov, 'title_accent', (string) data_get($h, 'avis.title_accent', (string) data_get($defaultAvis, 'title_accent', 'Avis'))));
+    $titleRest = trim((string) data_get($ov, 'title_rest', (string) data_get($h, 'avis.title_rest', (string) data_get($defaultAvis, 'title_rest', 'clients'))));
+    $intro = trim((string) data_get($ov, 'intro', (string) data_get($h, 'avis.intro', (string) data_get($defaultAvis, 'intro', ''))));
+    $googleButton = trim((string) data_get($ov, 'google_button', (string) data_get($h, 'avis.google_button', (string) data_get($defaultAvis, 'google_button', 'Voir la fiche'))));
     $platformInfo = trim((string) data_get($ov, 'platform_info', 'Des retours concrets, provenant de plusieurs plateformes.'));
     $testimonials = collect((array) data_get($h, 'avis.testimonials', []))
         ->filter(fn ($t) => is_array($t))
         ->take(5)
         ->values()
         ->all();
+    if ($testimonials === []) {
+        $testimonials = collect((array) data_get($defaultAvis, 'testimonials', []))
+            ->filter(fn ($t) => is_array($t))
+            ->take(5)
+            ->values()
+            ->all();
+    }
 @endphp
 
 <div

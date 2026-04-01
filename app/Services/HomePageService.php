@@ -77,6 +77,10 @@ class HomePageService
                 $fallback = $fallbackItems->first(fn ($item) => (int) data_get($item, 'num', 0) === $serviceNum);
 
                 $title = trim((string) data_get($pageData, 'title', ''));
+                $displayTitle = trim((string) data_get($pageData, 'meta_title', ''));
+                if ($displayTitle === '') {
+                    $displayTitle = $title;
+                }
                 $description = trim((string) data_get($pageData, 'meta_description', ''));
                 if ($description === '') {
                     $description = trim((string) data_get($pageData, 'intro', ''));
@@ -98,7 +102,7 @@ class HomePageService
 
                 return [
                     'num' => $serviceNum,
-                    'title' => $title,
+                    'title' => $displayTitle,
                     'description' => $description,
                     'image' => $image,
                     'href' => $href,
