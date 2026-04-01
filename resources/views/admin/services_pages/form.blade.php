@@ -209,6 +209,26 @@
                     <input name="content_overrides[sub_services][cta_text]" value="{{ old('content_overrides.sub_services.cta_text', data_get($ov, 'sub_services.cta_text', 'C’EST CE QU’IL ME FAUT')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
                     <label class="mt-3 block text-sm font-semibold text-slate-800">Bouton doc technique</label>
                     <input name="content_overrides[sub_services][doc_text]" value="{{ old('content_overrides.sub_services.doc_text', data_get($ov, 'sub_services.doc_text', 'DOC TECHNIQUE')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    @php
+                        $subCardModel = old('content_overrides.sub_services.card_model', data_get($ov, 'sub_services.card_model', 'overlay'));
+                    @endphp
+                    <label class="mt-3 block text-sm font-semibold text-slate-800">Mode visuel des cartes sous-services</label>
+                    <div class="mt-2 grid gap-2 sm:grid-cols-2">
+                        <label class="inline-flex items-start gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
+                            <input type="radio" name="content_overrides[sub_services][card_model]" value="overlay" {{ $subCardModel === 'overlay' ? 'checked' : '' }}>
+                            <span>
+                                <span class="block font-extrabold">Image en fond (défaut)</span>
+                                <span class="block text-xs font-medium text-slate-500">Image pleine carte, texte superposé.</span>
+                            </span>
+                        </label>
+                        <label class="inline-flex items-start gap-2 rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
+                            <input type="radio" name="content_overrides[sub_services][card_model]" value="split" {{ $subCardModel === 'split' ? 'checked' : '' }}>
+                            <span>
+                                <span class="block font-extrabold">Fond blanc séparé</span>
+                                <span class="block text-xs font-medium text-slate-500">Image en haut, texte et boutons en bloc blanc.</span>
+                            </span>
+                        </label>
+                    </div>
                     <label class="mt-3 block text-sm font-semibold text-slate-800">Hauteur des cartes sous-services</label>
                     <div class="mt-2 grid gap-2 sm:grid-cols-2">
                         @php

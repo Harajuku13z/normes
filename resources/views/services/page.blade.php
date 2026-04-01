@@ -37,9 +37,16 @@
     $subServiceCtaText = trim((string) data_get($ov, 'sub_services.cta_text', 'C’EST CE QU’IL ME FAUT'));
     $subServiceDocText = trim((string) data_get($ov, 'sub_services.doc_text', 'DOC TECHNIQUE'));
     $subServiceCardHeight = trim((string) data_get($ov, 'sub_services.card_height', 'normal'));
+    $subServiceCardModel = trim((string) data_get($ov, 'sub_services.card_model', 'overlay'));
+    if (! in_array($subServiceCardModel, ['overlay', 'split'], true)) {
+        $subServiceCardModel = 'overlay';
+    }
     $subServiceCardClass = $subServiceCardHeight === 'tall'
         ? 'service-card relative min-h-[450px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5 sm:min-h-[480px]'
         : 'service-card relative min-h-[300px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5 sm:min-h-[320px]';
+    $subServiceSplitImageClass = $subServiceCardHeight === 'tall'
+        ? 'h-56 w-full object-cover sm:h-64'
+        : 'h-44 w-full object-cover sm:h-48';
     $statsHeadingText = trim((string) data_get($ov, 'stats.heading', 'Chiffres clés'));
     $statsLinkText = trim((string) data_get($ov, 'stats.link_text', 'Voir les avis'));
     $partnersHeadingText = trim((string) data_get($ov, 'partners.heading', 'Partenaires associés'));
@@ -379,48 +386,90 @@
                             ->values()
                             ->all();
                     @endphp
-                    <article class="{{ $subServiceCardClass }}">
-                        <div class="absolute inset-0">
+                    @if ($subServiceCardModel === 'split')
+                        <article class="service-card overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-md">
                             <img
                                 src="{{ $img }}"
                                 alt="{{ $title }}"
-                                class="h-full w-full object-cover transition duration-300"
+                                class="{{ $subServiceSplitImageClass }}"
                                 loading="lazy"
                                 decoding="async"
                             >
-                            <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/95 via-brand-dark/65 to-transparent"></div>
-                        </div>
-                        <div class="absolute inset-x-0 bottom-0 z-10 p-6">
-                            <h3 class="break-words text-2xl font-black leading-snug text-white sm:text-3xl">
-                                {{ $title }}
-                            </h3>
-                            @if ($sub !== '')
-                                <p class="mt-2 break-words text-sm leading-relaxed text-white/90 sm:text-base">
-                                    {{ $sub }}
-                                </p>
-                            @endif
-                            <div class="mt-5 flex flex-wrap items-center gap-2.5">
-                                <a
-                                    href="#devis"
-                                    class="inline-flex w-fit items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm font-extrabold text-white ring-1 ring-white/20 backdrop-blur transition hover:bg-white/15 hover:ring-white/35"
-                                >
-                                    {{ $subServiceCtaText !== '' ? $subServiceCtaText : 'C’EST CE QU’IL ME FAUT' }} <span aria-hidden="true">⟶</span>
-                                </a>
-                                @if ($techDocs !== [])
-                                    @foreach ($techDocs as $docIndex => $docPath)
-                                        <a
-                                            href="{{ HomeView::url($docPath) }}"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            class="inline-flex w-fit items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm font-extrabold text-white ring-1 ring-white/20 backdrop-blur transition hover:bg-white/15 hover:ring-white/35"
-                                        >
-                                            {{ $subServiceDocText !== '' ? $subServiceDocText : 'DOC TECHNIQUE' }}{{ count($techDocs) > 1 ? ' '.($docIndex + 1) : '' }} <span aria-hidden="true">↗</span>
-                                        </a>
-                                    @endforeach
+                            <div class="p-5 sm:p-6">
+                                <h3 class="break-words text-2xl font-black leading-snug text-brand-dark sm:text-3xl">
+                                    {{ $title }}
+                                </h3>
+                                @if ($sub !== '')
+                                    <p class="mt-2 break-words text-sm leading-relaxed text-slate-600 sm:text-base">
+                                        {{ $sub }}
+                                    </p>
                                 @endif
+                                <div class="mt-5 flex flex-wrap items-center gap-2.5">
+                                    <a
+                                        href="#devis"
+                                        class="inline-flex w-fit items-center gap-2 rounded-xl bg-brand-blue px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-sky-500"
+                                    >
+                                        {{ $subServiceCtaText !== '' ? $subServiceCtaText : 'C’EST CE QU’IL ME FAUT' }} <span aria-hidden="true">⟶</span>
+                                    </a>
+                                    @if ($techDocs !== [])
+                                        @foreach ($techDocs as $docIndex => $docPath)
+                                            <a
+                                                href="{{ HomeView::url($docPath) }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-extrabold text-brand-dark transition hover:bg-slate-50"
+                                            >
+                                                {{ $subServiceDocText !== '' ? $subServiceDocText : 'DOC TECHNIQUE' }}{{ count($techDocs) > 1 ? ' '.($docIndex + 1) : '' }} <span aria-hidden="true">↗</span>
+                                            </a>
+                                        @endforeach
+                                    @endif
+                                </div>
                             </div>
-                        </div>
-                    </article>
+                        </article>
+                    @else
+                        <article class="{{ $subServiceCardClass }}">
+                            <div class="absolute inset-0">
+                                <img
+                                    src="{{ $img }}"
+                                    alt="{{ $title }}"
+                                    class="h-full w-full object-cover transition duration-300"
+                                    loading="lazy"
+                                    decoding="async"
+                                >
+                                <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/95 via-brand-dark/65 to-transparent"></div>
+                            </div>
+                            <div class="absolute inset-x-0 bottom-0 z-10 p-6">
+                                <h3 class="break-words text-2xl font-black leading-snug text-white sm:text-3xl">
+                                    {{ $title }}
+                                </h3>
+                                @if ($sub !== '')
+                                    <p class="mt-2 break-words text-sm leading-relaxed text-white/90 sm:text-base">
+                                        {{ $sub }}
+                                    </p>
+                                @endif
+                                <div class="mt-5 flex flex-wrap items-center gap-2.5">
+                                    <a
+                                        href="#devis"
+                                        class="inline-flex w-fit items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm font-extrabold text-white ring-1 ring-white/20 backdrop-blur transition hover:bg-white/15 hover:ring-white/35"
+                                    >
+                                        {{ $subServiceCtaText !== '' ? $subServiceCtaText : 'C’EST CE QU’IL ME FAUT' }} <span aria-hidden="true">⟶</span>
+                                    </a>
+                                    @if ($techDocs !== [])
+                                        @foreach ($techDocs as $docIndex => $docPath)
+                                            <a
+                                                href="{{ HomeView::url($docPath) }}"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                class="inline-flex w-fit items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm font-extrabold text-white ring-1 ring-white/20 backdrop-blur transition hover:bg-white/15 hover:ring-white/35"
+                                            >
+                                                {{ $subServiceDocText !== '' ? $subServiceDocText : 'DOC TECHNIQUE' }}{{ count($techDocs) > 1 ? ' '.($docIndex + 1) : '' }} <span aria-hidden="true">↗</span>
+                                            </a>
+                                        @endforeach
+                                    @endif
+                                </div>
+                            </div>
+                        </article>
+                    @endif
                 @endforeach
             </div>
         @endif
