@@ -81,9 +81,12 @@ class AdminHeaderSettingsController extends Controller
                     'label' => trim((string) data_get($item, 'label', '')),
                     'route' => trim((string) data_get($item, 'route', '')),
                     'anchor' => ltrim(trim((string) data_get($item, 'anchor', '')), '#'),
-                    'custom_url' => trim((string) data_get($item, 'custom_url', '')),
+                    'custom_url' => $this->normalizeCustomUrl(trim((string) data_get($item, 'custom_url', ''))),
                     'style' => trim((string) data_get($item, 'style', '')),
                 ];
+                if ($normalized['route'] === 'services.index') {
+                    $normalized['anchor'] = '';
+                }
 
                 $children = data_get($item, 'children', []);
                 if (is_array($children)) {
@@ -94,8 +97,15 @@ class AdminHeaderSettingsController extends Controller
                                 'label' => trim((string) data_get($child, 'label', '')),
                                 'route' => trim((string) data_get($child, 'route', '')),
                                 'anchor' => ltrim(trim((string) data_get($child, 'anchor', '')), '#'),
-                                'custom_url' => trim((string) data_get($child, 'custom_url', '')),
+                                'custom_url' => $this->normalizeCustomUrl(trim((string) data_get($child, 'custom_url', ''))),
                             ];
+                        })
+                        ->map(function (array $child): array {
+                            if ($child['route'] === 'services.index') {
+                                $child['anchor'] = '';
+                            }
+
+                            return $child;
                         })
                         ->filter(fn (array $child) => $child['label'] !== '' && ($child['route'] !== '' || $child['custom_url'] !== ''))
                         ->values()
@@ -119,6 +129,27 @@ class AdminHeaderSettingsController extends Controller
             })
             ->values()
             ->all();
+    }
+
+    private function normalizeCustomUrl(string $url): string
+    {
+        if ($url === '') {
+            return '';
+        }
+
+        if (str_starts_with($url, '/public/')) {
+            $url = '/'.ltrim(substr($url, 8), '/');
+        }
+
+        if (preg_match('#^https?://[^/]+/public/(.*)$#i', $url, $m) === 1) {
+            $url = '/'.ltrim((string) ($m[1] ?? ''), '/');
+        }
+
+        if (preg_match('#^/services/?#services$#i', $url) === 1) {
+            $url = '/services';
+        }
+
+        return $url;
     }
 }
 

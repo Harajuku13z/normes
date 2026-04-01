@@ -9,6 +9,20 @@
             $routeName = trim((string) data_get($item, 'route', ''));
             $anchor = ltrim(trim((string) data_get($item, 'anchor', '')), '#');
             $customUrl = trim((string) data_get($item, 'custom_url', ''));
+            if ($routeName === 'services.index') {
+                $anchor = '';
+            }
+            if ($customUrl !== '') {
+                if (str_starts_with($customUrl, '/public/')) {
+                    $customUrl = '/'.ltrim(substr($customUrl, 8), '/');
+                }
+                if (preg_match('#^https?://[^/]+/public/(.*)$#i', $customUrl, $m) === 1) {
+                    $customUrl = '/'.ltrim((string) ($m[1] ?? ''), '/');
+                }
+                if (preg_match('#^/services/?#services$#i', $customUrl) === 1) {
+                    $customUrl = '/services';
+                }
+            }
             if ($customUrl !== '') {
                 $href = $customUrl;
             } elseif ($routeName !== '' && \Illuminate\Support\Facades\Route::has($routeName)) {

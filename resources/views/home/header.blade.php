@@ -15,6 +15,21 @@
         $anchor = ltrim(trim((string) data_get($item, 'anchor', '')), '#');
         $customUrl = trim((string) data_get($item, 'custom_url', ''));
         $style = trim((string) data_get($item, 'style', ''));
+        if ($routeName === 'services.index') {
+            $anchor = '';
+        }
+
+        if ($customUrl !== '') {
+            if (str_starts_with($customUrl, '/public/')) {
+                $customUrl = '/'.ltrim(substr($customUrl, 8), '/');
+            }
+            if (preg_match('#^https?://[^/]+/public/(.*)$#i', $customUrl, $m) === 1) {
+                $customUrl = '/'.ltrim((string) ($m[1] ?? ''), '/');
+            }
+            if (preg_match('#^/services/?#services$#i', $customUrl) === 1) {
+                $customUrl = '/services';
+            }
+        }
 
         if ($customUrl !== '') {
             $href = $customUrl;
