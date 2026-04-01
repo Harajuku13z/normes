@@ -18,6 +18,7 @@ class AdminLayoutSettingsController extends Controller
     {
         return [
             ['value' => 'home', 'label' => 'Accueil (/)'],
+            ['value' => 'services.index', 'label' => 'Services (/services)'],
             ['value' => 'contact.page', 'label' => 'Contact (/contact)'],
             ['value' => 'simulateur.start', 'label' => 'Simulateur (/simulateur)'],
         ];

@@ -9,53 +9,59 @@
         $currentPath = '/';
     }
 
+    $buildMenuItem = function (array $item) use ($currentPath, &$buildMenuItem): array {
+        $label = trim((string) data_get($item, 'label', ''));
+        $routeName = trim((string) data_get($item, 'route', ''));
+        $anchor = ltrim(trim((string) data_get($item, 'anchor', '')), '#');
+        $customUrl = trim((string) data_get($item, 'custom_url', ''));
+        $style = trim((string) data_get($item, 'style', ''));
+
+        if ($customUrl !== '') {
+            $href = $customUrl;
+        } elseif ($routeName !== '' && \Illuminate\Support\Facades\Route::has($routeName)) {
+            $href = route($routeName).($anchor !== '' ? '#'.$anchor : '');
+        } else {
+            $href = '#';
+        }
+
+        $hrefNoHash = trim((string) strtok($href, '#'));
+        $isExternal = str_starts_with($hrefNoHash, 'http://') || str_starts_with($hrefNoHash, 'https://');
+        $targetPath = '/';
+        if (! $isExternal && $hrefNoHash !== '') {
+            $parsedPath = parse_url($hrefNoHash, PHP_URL_PATH);
+            $targetPath = is_string($parsedPath) && $parsedPath !== '' ? $parsedPath : '/';
+        }
+
+        $currentNormalized = rtrim($currentPath, '/');
+        $targetNormalized = rtrim($targetPath, '/');
+        if ($currentNormalized === '') {
+            $currentNormalized = '/';
+        }
+        if ($targetNormalized === '') {
+            $targetNormalized = '/';
+        }
+
+        $children = collect((array) data_get($item, 'children', []))
+            ->filter(fn ($child) => is_array($child))
+            ->map(fn ($child) => $buildMenuItem($child))
+            ->filter(fn (array $child) => $child['label'] !== '' && $child['href'] !== '#')
+            ->values()
+            ->all();
+
+        return [
+            'label' => $label,
+            'href' => $href,
+            'style' => $style,
+            'route_name' => $routeName,
+            'is_active' => ! $isExternal && $currentNormalized === $targetNormalized,
+            'children' => $children,
+        ];
+    };
+
     $menuItems = collect((array) data_get($h, 'header.menu_items', []))
         ->filter(fn ($item) => is_array($item))
-        ->map(function (array $item): array {
-            $label = trim((string) data_get($item, 'label', ''));
-            $routeName = trim((string) data_get($item, 'route', ''));
-            $anchor = ltrim(trim((string) data_get($item, 'anchor', '')), '#');
-            $customUrl = trim((string) data_get($item, 'custom_url', ''));
-            $style = trim((string) data_get($item, 'style', ''));
-
-            if ($customUrl !== '') {
-                $href = $customUrl;
-            } elseif ($routeName !== '' && \Illuminate\Support\Facades\Route::has($routeName)) {
-                $href = route($routeName).($anchor !== '' ? '#'.$anchor : '');
-            } else {
-                $href = '#';
-            }
-
-            return [
-                'label' => $label,
-                'href' => $href,
-                'style' => $style,
-                'route_name' => $routeName,
-            ];
-        })
+        ->map(fn ($item) => $buildMenuItem($item))
         ->filter(fn (array $item) => $item['label'] !== '' && $item['href'] !== '#')
-        ->map(function (array $item) use ($currentPath): array {
-            $hrefNoHash = trim((string) strtok($item['href'], '#'));
-            $isExternal = str_starts_with($hrefNoHash, 'http://') || str_starts_with($hrefNoHash, 'https://');
-            $targetPath = '/';
-            if (! $isExternal && $hrefNoHash !== '') {
-                $parsedPath = parse_url($hrefNoHash, PHP_URL_PATH);
-                $targetPath = is_string($parsedPath) && $parsedPath !== '' ? $parsedPath : '/';
-            }
-
-            $currentNormalized = rtrim($currentPath, '/');
-            $targetNormalized = rtrim($targetPath, '/');
-            if ($currentNormalized === '') {
-                $currentNormalized = '/';
-            }
-            if ($targetNormalized === '') {
-                $targetNormalized = '/';
-            }
-
-            $item['is_active'] = ! $isExternal && $currentNormalized === $targetNormalized;
-
-            return $item;
-        })
         ->values()
         ->all();
 @endphp
@@ -67,18 +73,38 @@
 
         <nav class="hidden items-center gap-1 lg:flex xl:gap-2" aria-label="Navigation principale">
             @foreach ($menuItems as $item)
-                <a
-                    href="{{ $item['href'] }}"
-                    class="{{ $item['style'] === 'cta'
-                        ? (($item['is_active'] ?? false)
-                            ? 'nav-cta-contact ml-2 inline-flex items-center rounded-xl bg-sky-700 px-5 py-2.5 text-sm font-extrabold text-white ring-2 ring-brand-yellow/50 transition'
-                            : 'nav-cta-contact ml-2 inline-flex items-center rounded-xl bg-brand-blue px-5 py-2.5 text-sm font-extrabold text-white ring-2 ring-white/20 transition hover:-translate-y-0.5 hover:bg-sky-500 hover:ring-brand-yellow/40')
-                        : (($item['is_active'] ?? false)
-                            ? 'rounded-lg bg-slate-100 px-3 py-2 text-[15px] font-extrabold text-brand-blue ring-1 ring-slate-200 xl:text-[16px]'
-                            : 'rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]') }}"
-                >
-                    {{ $item['label'] }}
-                </a>
+                @if (($item['children'] ?? []) !== [])
+                    <div class="group relative">
+                        <a
+                            href="{{ $item['href'] }}"
+                            class="{{ ($item['is_active'] ?? false)
+                                ? 'rounded-lg bg-slate-100 px-3 py-2 text-[15px] font-extrabold text-brand-blue ring-1 ring-slate-200 xl:text-[16px]'
+                                : 'rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]' }}"
+                        >
+                            {{ $item['label'] }}
+                        </a>
+                        <div class="pointer-events-none invisible absolute left-0 top-full z-[1200] mt-2 min-w-[16rem] rounded-xl border border-slate-200 bg-white p-2 opacity-0 shadow-xl transition group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100">
+                            @foreach ($item['children'] as $child)
+                                <a href="{{ $child['href'] }}" class="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand-blue">
+                                    {{ $child['label'] }}
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                @else
+                    <a
+                        href="{{ $item['href'] }}"
+                        class="{{ $item['style'] === 'cta'
+                            ? (($item['is_active'] ?? false)
+                                ? 'nav-cta-contact ml-2 inline-flex items-center rounded-xl bg-sky-700 px-5 py-2.5 text-sm font-extrabold text-white ring-2 ring-brand-yellow/50 transition'
+                                : 'nav-cta-contact ml-2 inline-flex items-center rounded-xl bg-brand-blue px-5 py-2.5 text-sm font-extrabold text-white ring-2 ring-white/20 transition hover:-translate-y-0.5 hover:bg-sky-500 hover:ring-brand-yellow/40')
+                            : (($item['is_active'] ?? false)
+                                ? 'rounded-lg bg-slate-100 px-3 py-2 text-[15px] font-extrabold text-brand-blue ring-1 ring-slate-200 xl:text-[16px]'
+                                : 'rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]') }}"
+                    >
+                        {{ $item['label'] }}
+                    </a>
+                @endif
             @endforeach
 
             <ul class="ml-3 flex list-none items-center gap-2 border-l border-slate-200 pl-3 xl:ml-4 xl:gap-3 xl:pl-4" aria-label="Réseaux sociaux">
@@ -161,6 +187,15 @@
                 >
                     {{ $item['label'] }}
                 </a>
+                @if (($item['children'] ?? []) !== [])
+                    <div class="ml-4 mb-1 flex flex-col gap-1 border-l border-slate-200 pl-3">
+                        @foreach ($item['children'] as $child)
+                            <a href="{{ $child['href'] }}" class="rounded-lg px-2 py-1.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-brand-blue">
+                                {{ $child['label'] }}
+                            </a>
+                        @endforeach
+                    </div>
+                @endif
             @endforeach
             <div class="mt-4 flex flex-col items-center gap-2 border-t border-slate-100 pt-4 sm:items-start">
                 <p class="text-center text-xs font-bold uppercase tracking-wide text-slate-500 sm:text-left">Suivez-nous</p>

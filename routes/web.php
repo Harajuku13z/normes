@@ -65,6 +65,7 @@ Route::prefix('admin')->group(function () {
 });
 
 // Pages publiques dédiées aux services
+Route::get('/services', [ServicePagesController::class, 'index'])->name('services.index');
 Route::get('/services/{slug}', [ServicePagesController::class, 'show'])->name('service.page');
 
 // Page publique contact (formulaire)

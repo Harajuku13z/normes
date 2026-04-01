@@ -16,10 +16,8 @@
                     $bg = \App\Support\HomeView::url(data_get($item, 'image'));
                     $href = trim((string) data_get($item, 'href', '#devis'));
                     $ctaText = trim((string) data_get($item, 'cta', 'En savoir plus'));
-                    $simulateurHref = trim((string) data_get($item, 'simulateur_href', route('simulateur.start')));
-                    $contactHref = trim((string) data_get($item, 'contact_href', route('contact.page').'#devis'));
                 @endphp
-                <article class="service-card relative h-[340px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md sm:h-[360px] lg:h-[380px]">
+                <article class="service-card relative h-[380px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md sm:h-[410px] lg:h-[440px]">
                     <div class="absolute inset-0">
                         <img
                             src="{{ $bg }}"
@@ -37,17 +35,9 @@
                         <p class="mt-3 text-sm leading-relaxed text-white/90">
                             {{ data_get($item, 'description') }}
                         </p>
-                        <div class="mt-5 flex flex-wrap items-center gap-2.5">
-                            <a href="{{ $href }}" class="inline-flex w-fit rounded-xl bg-brand-blue px-4 py-2 text-xs font-extrabold text-white shadow-soft transition hover:bg-brand-dark sm:text-sm">
-                                {{ $ctaText }}
-                            </a>
-                            <a href="{{ $simulateurHref }}" class="inline-flex w-fit rounded-xl border border-white/35 bg-white/10 px-4 py-2 text-xs font-extrabold text-white backdrop-blur transition hover:bg-white/20 sm:text-sm">
-                                Simulateur
-                            </a>
-                            <a href="{{ $contactHref }}" class="inline-flex w-fit rounded-xl border border-white/35 bg-white/10 px-4 py-2 text-xs font-extrabold text-white backdrop-blur transition hover:bg-white/20 sm:text-sm">
-                                Contact
-                            </a>
-                        </div>
+                        <a href="{{ $href }}" class="mt-5 inline-flex w-fit rounded-xl bg-brand-blue px-4 py-2 text-xs font-extrabold text-white shadow-soft transition hover:bg-brand-dark sm:text-sm">
+                            {{ $ctaText !== '' ? $ctaText : 'En savoir plus' }}
+                        </a>
                     </div>
                 </article>
             @endforeach

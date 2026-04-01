@@ -18,6 +18,7 @@ class AdminHeaderSettingsController extends Controller
     {
         return [
             ['value' => 'home', 'label' => 'Accueil (/)'],
+            ['value' => 'services.index', 'label' => 'Services (/services)'],
             ['value' => 'contact.page', 'label' => 'Contact (/contact)'],
             ['value' => 'simulateur.start', 'label' => 'Simulateur (/simulateur)'],
         ];
@@ -33,6 +34,7 @@ class AdminHeaderSettingsController extends Controller
 
         return view('admin.header_settings.edit', [
             'header' => $header,
+            'menuItems' => $this->normalizeMenuItems((array) data_get($header, 'menu_items', [])),
             'routeOptions' => $this->menuRouteOptions(),
         ]);
     }
@@ -44,25 +46,7 @@ class AdminHeaderSettingsController extends Controller
             $header = [];
         }
 
-        $menuItems = data_get($header, 'menu_items', []);
-        if (! is_array($menuItems)) {
-            $menuItems = [];
-        }
-
-        $menuItems = collect($menuItems)
-            ->filter(fn ($item) => is_array($item))
-            ->map(function (array $item): array {
-                return [
-                    'label' => trim((string) data_get($item, 'label', '')),
-                    'route' => trim((string) data_get($item, 'route', '')),
-                    'anchor' => ltrim(trim((string) data_get($item, 'anchor', '')), '#'),
-                    'custom_url' => trim((string) data_get($item, 'custom_url', '')),
-                    'style' => trim((string) data_get($item, 'style', '')),
-                ];
-            })
-            ->filter(fn (array $item) => $item['label'] !== '' && ($item['route'] !== '' || $item['custom_url'] !== ''))
-            ->values()
-            ->all();
+        $menuItems = $this->normalizeMenuItems((array) data_get($header, 'menu_items', []));
 
         data_set($header, 'logo', trim((string) data_get($header, 'logo', '')));
         data_set($header, 'logo_alt', trim((string) data_get($header, 'logo_alt', '')));
@@ -76,6 +60,49 @@ class AdminHeaderSettingsController extends Controller
         return redirect()
             ->route('admin.header_settings.edit')
             ->with('status', 'Header enregistré.');
+    }
+
+    /**
+     * @param  array<int|string, mixed>  $items
+     * @return array<int, array<string, mixed>>
+     */
+    private function normalizeMenuItems(array $items): array
+    {
+        return collect($items)
+            ->filter(fn ($item) => is_array($item))
+            ->map(function (array $item): array {
+                $normalized = [
+                    'label' => trim((string) data_get($item, 'label', '')),
+                    'route' => trim((string) data_get($item, 'route', '')),
+                    'anchor' => ltrim(trim((string) data_get($item, 'anchor', '')), '#'),
+                    'custom_url' => trim((string) data_get($item, 'custom_url', '')),
+                    'style' => trim((string) data_get($item, 'style', '')),
+                ];
+
+                $children = data_get($item, 'children', []);
+                if (is_array($children)) {
+                    $normalized['children'] = collect($children)
+                        ->filter(fn ($child) => is_array($child))
+                        ->map(function (array $child): array {
+                            return [
+                                'label' => trim((string) data_get($child, 'label', '')),
+                                'route' => trim((string) data_get($child, 'route', '')),
+                                'anchor' => ltrim(trim((string) data_get($child, 'anchor', '')), '#'),
+                                'custom_url' => trim((string) data_get($child, 'custom_url', '')),
+                            ];
+                        })
+                        ->filter(fn (array $child) => $child['label'] !== '' && ($child['route'] !== '' || $child['custom_url'] !== ''))
+                        ->values()
+                        ->all();
+                } else {
+                    $normalized['children'] = [];
+                }
+
+                return $normalized;
+            })
+            ->filter(fn (array $item) => $item['label'] !== '' && ($item['route'] !== '' || $item['custom_url'] !== ''))
+            ->values()
+            ->all();
     }
 }
 

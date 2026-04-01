@@ -43,7 +43,7 @@ class HomePageService
                 ->where('is_active', true)
                 ->orderBy('service_num')
                 ->orderBy('id')
-                ->get(['service_num', 'slug', 'title', 'intro', 'featured_image', 'image', 'cta_text'])
+                ->get(['service_num', 'slug', 'title', 'intro', 'meta_description', 'featured_image', 'image', 'cta_text'])
                 ->all();
         } catch (QueryException) {
             $activeServicePages = [];
@@ -77,7 +77,10 @@ class HomePageService
                 $fallback = $fallbackItems->first(fn ($item) => (int) data_get($item, 'num', 0) === $serviceNum);
 
                 $title = trim((string) data_get($pageData, 'title', ''));
-                $description = trim((string) data_get($pageData, 'intro', ''));
+                $description = trim((string) data_get($pageData, 'meta_description', ''));
+                if ($description === '') {
+                    $description = trim((string) data_get($pageData, 'intro', ''));
+                }
                 if ($description === '') {
                     $description = trim((string) data_get($fallback, 'description', ''));
                 }
@@ -100,8 +103,6 @@ class HomePageService
                     'image' => $image,
                     'href' => $href,
                     'cta' => trim((string) data_get($pageData, 'cta_text', '')) ?: 'En savoir plus',
-                    'simulateur_href' => route('simulateur.start'),
-                    'contact_href' => route('contact.page').'#devis',
                 ];
             })
             ->filter(fn ($item) => trim((string) data_get($item, 'title', '')) !== '')
@@ -118,8 +119,6 @@ class HomePageService
                         'image' => trim((string) data_get($item, 'image', '')),
                         'href' => '#devis',
                         'cta' => trim((string) data_get($item, 'cta', '')) ?: 'En savoir plus',
-                        'simulateur_href' => route('simulateur.start'),
-                        'contact_href' => route('contact.page').'#devis',
                     ];
                 })
                 ->filter(fn ($item) => trim((string) data_get($item, 'title', '')) !== '')
