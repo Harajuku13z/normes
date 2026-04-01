@@ -106,7 +106,17 @@ class AdminHeaderSettingsController extends Controller
 
                 return $normalized;
             })
-            ->filter(fn (array $item) => $item['label'] !== '' && ($item['route'] !== '' || $item['custom_url'] !== ''))
+            ->filter(function (array $item): bool {
+                if ($item['label'] === '') {
+                    return false;
+                }
+
+                $hasDirectLink = $item['route'] !== '' || $item['custom_url'] !== '';
+                $hasChildren = is_array($item['children'] ?? null) && $item['children'] !== [];
+
+                // Allow parent items without direct route when they have children.
+                return $hasDirectLink || $hasChildren;
+            })
             ->values()
             ->all();
     }

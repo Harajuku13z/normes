@@ -61,7 +61,7 @@
     $menuItems = collect((array) data_get($h, 'header.menu_items', []))
         ->filter(fn ($item) => is_array($item))
         ->map(fn ($item) => $buildMenuItem($item))
-        ->filter(fn (array $item) => $item['label'] !== '' && $item['href'] !== '#')
+        ->filter(fn (array $item) => $item['label'] !== '' && ($item['href'] !== '#' || ($item['children'] ?? []) !== []))
         ->values()
         ->all();
 @endphp
@@ -75,14 +75,24 @@
             @foreach ($menuItems as $item)
                 @if (($item['children'] ?? []) !== [])
                     <div class="group relative">
-                        <a
-                            href="{{ $item['href'] }}"
-                            class="{{ ($item['is_active'] ?? false)
+                        @if ($item['href'] === '#')
+                            <span
+                                class="{{ ($item['is_active'] ?? false)
+                                    ? 'inline-flex cursor-default rounded-lg bg-slate-100 px-3 py-2 text-[15px] font-extrabold text-brand-blue ring-1 ring-slate-200 xl:text-[16px]'
+                                    : 'inline-flex cursor-default rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark xl:text-[16px]' }}"
+                            >
+                                {{ $item['label'] }}
+                            </span>
+                        @else
+                            <a
+                                href="{{ $item['href'] }}"
+                                class="{{ ($item['is_active'] ?? false)
                                 ? 'rounded-lg bg-slate-100 px-3 py-2 text-[15px] font-extrabold text-brand-blue ring-1 ring-slate-200 xl:text-[16px]'
                                 : 'rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]' }}"
-                        >
-                            {{ $item['label'] }}
-                        </a>
+                            >
+                                {{ $item['label'] }}
+                            </a>
+                        @endif
                         <div class="pointer-events-none invisible absolute left-0 top-full z-[1200] mt-2 min-w-[16rem] rounded-xl border border-slate-200 bg-white p-2 opacity-0 shadow-xl transition group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100">
                             @foreach ($item['children'] as $child)
                                 <a href="{{ $child['href'] }}" class="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand-blue">
@@ -175,18 +185,28 @@
     <div id="mobileMenu" class="hidden border-t border-slate-100 bg-white lg:hidden">
         <div class="mx-auto flex w-[95%] flex-col gap-0.5 px-4 py-3 sm:px-6">
             @foreach ($menuItems as $item)
-                <a
-                    href="{{ $item['href'] }}"
-                    class="{{ $item['style'] === 'cta'
+                @if ($item['href'] === '#' && ($item['children'] ?? []) !== [])
+                    <span
+                        class="{{ ($item['is_active'] ?? false)
+                            ? 'rounded-lg bg-slate-100 px-3 py-2.5 text-[15px] font-extrabold text-brand-blue ring-1 ring-slate-200'
+                            : 'rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark' }}"
+                    >
+                        {{ $item['label'] }}
+                    </span>
+                @else
+                    <a
+                        href="{{ $item['href'] }}"
+                        class="{{ $item['style'] === 'cta'
                         ? (($item['is_active'] ?? false)
                             ? 'nav-cta-contact mt-2 inline-flex w-full items-center justify-center rounded-xl bg-sky-700 px-4 py-3.5 text-sm font-extrabold text-white ring-2 ring-brand-yellow/50 transition'
                             : 'nav-cta-contact mt-2 inline-flex w-full items-center justify-center rounded-xl bg-brand-blue px-4 py-3.5 text-sm font-extrabold text-white ring-2 ring-brand-blue/30 transition hover:bg-sky-500')
                         : (($item['is_active'] ?? false)
                             ? 'rounded-lg bg-slate-100 px-3 py-2.5 text-[15px] font-extrabold text-brand-blue ring-1 ring-slate-200'
                             : 'rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue') }}"
-                >
-                    {{ $item['label'] }}
-                </a>
+                    >
+                        {{ $item['label'] }}
+                    </a>
+                @endif
                 @if (($item['children'] ?? []) !== [])
                     <div class="ml-4 mb-1 flex flex-col gap-1 border-l border-slate-200 pl-3">
                         @foreach ($item['children'] as $child)
