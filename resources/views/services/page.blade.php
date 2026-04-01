@@ -205,6 +205,80 @@
             }
         @endphp
 
+        @if ($bodyRaw !== '')
+            <div class="grid gap-6 lg:grid-cols-2">
+                @if ($bodyRaw !== '')
+                    <div id="role" class="scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+                        <div
+                            class="service-page-body max-w-none text-base leading-relaxed text-slate-700 sm:text-lg
+                                [&_p]:mb-3 [&_p:last-child]:mb-0
+                                [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6
+                                [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-6
+                                [&_li]:my-1
+                                [&_strong]:font-bold [&_b]:font-bold
+                                [&_a]:font-semibold [&_a]:text-brand-blue [&_a]:underline
+                                [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:text-brand-dark
+                                [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-extrabold [&_h3]:text-brand-dark
+                            "
+                        >
+                            @if ($bodyLooksHtml)
+                                {!! $bodyRaw !!}
+                            @else
+                                {!! nl2br(e($bodyRaw)) !!}
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
+                <div class="grid gap-6">
+                    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
+                        <div class="flex flex-wrap items-end justify-between gap-3">
+                            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $statsHeadingText !== '' ? $statsHeadingText : 'Chiffres clés' }}</p>
+                            <a href="#avis" class="text-xs font-extrabold text-brand-blue hover:underline">{{ $statsLinkText !== '' ? $statsLinkText : 'Voir les avis' }}</a>
+                        </div>
+                        <div class="mt-5 grid gap-4 sm:grid-cols-3">
+                            @foreach (array_slice($statsItems, 0, 3) as $it)
+                                <div class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4 transition hover:shadow-sm">
+                                    <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">{{ data_get($it, 'label') }}</p>
+                                    <p class="mt-2 text-2xl font-black text-brand-dark">{{ data_get($it, 'value') }}</p>
+                                    @if (trim((string) data_get($it, 'text')) !== '')
+                                        <p class="mt-1 text-sm font-semibold text-slate-600">{{ data_get($it, 'text') }}</p>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    @if ($servicePartnersLogos !== [])
+                        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
+                            <div class="flex flex-wrap items-end justify-between gap-3">
+                                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $partnersHeadingText !== '' ? $partnersHeadingText : 'Partenaires associés' }}</p>
+                                <a href="#devis" class="text-xs font-extrabold text-brand-blue hover:underline">{{ $partnersLinkText !== '' ? $partnersLinkText : 'Nous contacter' }}</a>
+                            </div>
+                            @if ($servicePartnersPhrase !== '')
+                                <p class="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">{{ $servicePartnersPhrase }}</p>
+                            @endif
+                            <div class="mt-5 grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
+                                @foreach (array_slice($servicePartnersLogos, 0, 6) as $src)
+                                    <div class="flex min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-sm sm:p-3">
+                                        <img
+                                            src="{{ HomeView::url($src) }}"
+                                            alt="Logo partenaire"
+                                            class="h-9 w-full max-w-full object-contain sm:h-10"
+                                            width="200"
+                                            height="80"
+                                            loading="lazy"
+                                            decoding="async"
+                                        >
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        @endif
+
         @if ($subServices !== [])
             @php
                 $sectionHeading = trim((string) ($page->sub_services_section_title ?? ''));
@@ -344,80 +418,6 @@
                         </article>
                     @endif
                 @endforeach
-            </div>
-        @endif
-
-        @if ($bodyRaw !== '')
-            <div class="{{ $subServices !== [] ? 'mt-10' : '' }} grid gap-6 lg:grid-cols-2">
-                @if ($bodyRaw !== '')
-                    <div id="role" class="scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
-                        <div
-                            class="service-page-body max-w-none text-base leading-relaxed text-slate-700 sm:text-lg
-                                [&_p]:mb-3 [&_p:last-child]:mb-0
-                                [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6
-                                [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-6
-                                [&_li]:my-1
-                                [&_strong]:font-bold [&_b]:font-bold
-                                [&_a]:font-semibold [&_a]:text-brand-blue [&_a]:underline
-                                [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:text-brand-dark
-                                [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-extrabold [&_h3]:text-brand-dark
-                            "
-                        >
-                            @if ($bodyLooksHtml)
-                                {!! $bodyRaw !!}
-                            @else
-                                {!! nl2br(e($bodyRaw)) !!}
-                            @endif
-                        </div>
-                    </div>
-                @endif
-
-                <div class="grid gap-6">
-                    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
-                        <div class="flex flex-wrap items-end justify-between gap-3">
-                            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $statsHeadingText !== '' ? $statsHeadingText : 'Chiffres clés' }}</p>
-                            <a href="#avis" class="text-xs font-extrabold text-brand-blue hover:underline">{{ $statsLinkText !== '' ? $statsLinkText : 'Voir les avis' }}</a>
-                        </div>
-                        <div class="mt-5 grid gap-4 sm:grid-cols-3">
-                            @foreach (array_slice($statsItems, 0, 3) as $it)
-                                <div class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4 transition hover:shadow-sm">
-                                    <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">{{ data_get($it, 'label') }}</p>
-                                    <p class="mt-2 text-2xl font-black text-brand-dark">{{ data_get($it, 'value') }}</p>
-                                    @if (trim((string) data_get($it, 'text')) !== '')
-                                        <p class="mt-1 text-sm font-semibold text-slate-600">{{ data_get($it, 'text') }}</p>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    @if ($servicePartnersLogos !== [])
-                        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
-                            <div class="flex flex-wrap items-end justify-between gap-3">
-                                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $partnersHeadingText !== '' ? $partnersHeadingText : 'Partenaires associés' }}</p>
-                                <a href="#devis" class="text-xs font-extrabold text-brand-blue hover:underline">{{ $partnersLinkText !== '' ? $partnersLinkText : 'Nous contacter' }}</a>
-                            </div>
-                            @if ($servicePartnersPhrase !== '')
-                                <p class="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">{{ $servicePartnersPhrase }}</p>
-                            @endif
-                            <div class="mt-5 grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
-                                @foreach (array_slice($servicePartnersLogos, 0, 6) as $src)
-                                    <div class="flex min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-sm sm:p-3">
-                                        <img
-                                            src="{{ HomeView::url($src) }}"
-                                            alt="Logo partenaire"
-                                            class="h-9 w-full max-w-full object-contain sm:h-10"
-                                            width="200"
-                                            height="80"
-                                            loading="lazy"
-                                            decoding="async"
-                                        >
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-                </div>
             </div>
         @endif
 
