@@ -5,6 +5,10 @@
 
     RewriteEngine On
 
+    # Force /services root through Laravel even if a physical
+    # "public/services" directory exists for static assets.
+    RewriteRule ^services/?$ index.php [L,QSA]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
