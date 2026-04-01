@@ -37,22 +37,25 @@ class HomePageService
      */
     protected function withDerived(array $data): array
     {
-        $serviceOptions = [];
+        $activeServicePages = [];
         try {
-            $serviceOptions = ServicePage::query()
+            $activeServicePages = ServicePage::query()
                 ->where('is_active', true)
                 ->orderBy('service_num')
                 ->orderBy('id')
-                ->pluck('title')
-                ->map(fn ($title) => trim((string) $title))
-                ->filter(fn ($title) => $title !== '')
-                ->unique()
-                ->values()
+                ->get(['service_num', 'slug', 'title', 'intro', 'featured_image', 'image', 'cta_text'])
                 ->all();
         } catch (QueryException) {
-            // Fallback silently to configured services when DB table is unavailable.
-            $serviceOptions = [];
+            $activeServicePages = [];
         }
+
+        $serviceOptions = [];
+        $serviceOptions = collect($activeServicePages)
+            ->map(fn ($page) => trim((string) data_get($page, 'title', '')))
+            ->filter(fn ($title) => $title !== '')
+            ->unique()
+            ->values()
+            ->all();
         if ($serviceOptions === []) {
             $serviceOptions = collect((array) data_get($data, 'services.items', []))
                 ->map(fn ($item) => trim((string) data_get($item, 'title', '')))
@@ -62,6 +65,68 @@ class HomePageService
                 ->all();
         }
         data_set($data, 'service_options', $serviceOptions);
+
+        $fallbackItems = collect((array) data_get($data, 'services.items', []))
+            ->filter(fn ($item) => is_array($item))
+            ->values();
+
+        $serviceCards = collect($activeServicePages)
+            ->map(function ($page) use ($fallbackItems): array {
+                $pageData = is_array($page) ? $page : (method_exists($page, 'toArray') ? $page->toArray() : []);
+                $serviceNum = (int) data_get($pageData, 'service_num', 0);
+                $fallback = $fallbackItems->first(fn ($item) => (int) data_get($item, 'num', 0) === $serviceNum);
+
+                $title = trim((string) data_get($pageData, 'title', ''));
+                $description = trim((string) data_get($pageData, 'intro', ''));
+                if ($description === '') {
+                    $description = trim((string) data_get($fallback, 'description', ''));
+                }
+
+                $image = trim((string) data_get($pageData, 'featured_image', ''));
+                if ($image === '') {
+                    $image = trim((string) data_get($pageData, 'image', ''));
+                }
+                if ($image === '') {
+                    $image = trim((string) data_get($fallback, 'image', ''));
+                }
+
+                $slug = trim((string) data_get($pageData, 'slug', ''));
+                $href = $slug !== '' ? route('service.page', $slug) : '#devis';
+
+                return [
+                    'num' => $serviceNum,
+                    'title' => $title,
+                    'description' => $description,
+                    'image' => $image,
+                    'href' => $href,
+                    'cta' => trim((string) data_get($pageData, 'cta_text', '')) ?: 'En savoir plus',
+                    'simulateur_href' => route('simulateur.start'),
+                    'contact_href' => route('contact.page').'#devis',
+                ];
+            })
+            ->filter(fn ($item) => trim((string) data_get($item, 'title', '')) !== '')
+            ->values()
+            ->all();
+
+        if ($serviceCards === []) {
+            $serviceCards = $fallbackItems
+                ->map(function ($item): array {
+                    return [
+                        'num' => (int) data_get($item, 'num', 0),
+                        'title' => trim((string) data_get($item, 'title', '')),
+                        'description' => trim((string) data_get($item, 'description', '')),
+                        'image' => trim((string) data_get($item, 'image', '')),
+                        'href' => '#devis',
+                        'cta' => trim((string) data_get($item, 'cta', '')) ?: 'En savoir plus',
+                        'simulateur_href' => route('simulateur.start'),
+                        'contact_href' => route('contact.page').'#devis',
+                    ];
+                })
+                ->filter(fn ($item) => trim((string) data_get($item, 'title', '')) !== '')
+                ->values()
+                ->all();
+        }
+        data_set($data, 'services.cards', $serviceCards);
 
         $slides = data_get($data, 'hero.slides');
         if (is_array($slides) && $slides !== []) {

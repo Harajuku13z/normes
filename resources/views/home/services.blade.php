@@ -3,24 +3,21 @@
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <h2 class="mb-3 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">{{ data_get($h, 'services.title_accent') }}</span>{{ data_get($h, 'services.title_rest') }}</h2>
         <p class="mb-6 max-w-3xl text-base text-slate-600 sm:text-lg">{{ data_get($h, 'services.intro') }}</p>
+        @php
+            $serviceCards = collect((array) data_get($h, 'services.cards', []))
+                ->filter(fn ($item) => is_array($item))
+                ->values()
+                ->all();
+        @endphp
         <div id="serviceGrid" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            @foreach (data_get($h, 'services.items', []) as $item)
+            @foreach ($serviceCards as $item)
                 @php
-                    $num = data_get($item, 'num');
-                    $title = data_get($item, 'title');
+                    $title = trim((string) data_get($item, 'title', ''));
                     $bg = \App\Support\HomeView::url(data_get($item, 'image'));
-                    $servicePage = \App\Models\ServicePage::query()
-                        ->where('service_num', (int) $num)
-                        ->where('is_active', true)
-                        ->first();
-
-                    $href = $servicePage ? route('service.page', $servicePage->slug) : '#devis';
-                    if ($servicePage && !empty($servicePage->featured_image)) {
-                        $bg = \App\Support\HomeView::url($servicePage->featured_image);
-                    }
-                    $ctaText = $servicePage && !empty($servicePage->cta_text)
-                        ? $servicePage->cta_text
-                        : data_get($item, 'cta', 'En savoir plus');
+                    $href = trim((string) data_get($item, 'href', '#devis'));
+                    $ctaText = trim((string) data_get($item, 'cta', 'En savoir plus'));
+                    $simulateurHref = trim((string) data_get($item, 'simulateur_href', route('simulateur.start')));
+                    $contactHref = trim((string) data_get($item, 'contact_href', route('contact.page').'#devis'));
                 @endphp
                 <article class="service-card relative h-[340px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md sm:h-[360px] lg:h-[380px]">
                     <div class="absolute inset-0">
@@ -40,9 +37,17 @@
                         <p class="mt-3 text-sm leading-relaxed text-white/90">
                             {{ data_get($item, 'description') }}
                         </p>
-                        <a href="{{ $href }}" class="mt-5 inline-flex w-fit rounded-xl bg-brand-blue px-4 py-2 text-xs font-extrabold text-white shadow-soft transition hover:bg-brand-dark sm:text-sm">
-                            {{ $ctaText }}
-                        </a>
+                        <div class="mt-5 flex flex-wrap items-center gap-2.5">
+                            <a href="{{ $href }}" class="inline-flex w-fit rounded-xl bg-brand-blue px-4 py-2 text-xs font-extrabold text-white shadow-soft transition hover:bg-brand-dark sm:text-sm">
+                                {{ $ctaText }}
+                            </a>
+                            <a href="{{ $simulateurHref }}" class="inline-flex w-fit rounded-xl border border-white/35 bg-white/10 px-4 py-2 text-xs font-extrabold text-white backdrop-blur transition hover:bg-white/20 sm:text-sm">
+                                Simulateur
+                            </a>
+                            <a href="{{ $contactHref }}" class="inline-flex w-fit rounded-xl border border-white/35 bg-white/10 px-4 py-2 text-xs font-extrabold text-white backdrop-blur transition hover:bg-white/20 sm:text-sm">
+                                Contact
+                            </a>
+                        </div>
                     </div>
                 </article>
             @endforeach

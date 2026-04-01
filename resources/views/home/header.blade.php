@@ -4,6 +4,11 @@
     $logoAlt = data_get($h, 'header.logo_alt', 'Normes & Renovation');
 @endphp
 @php
+    $currentPath = '/'.trim(request()->path(), '/');
+    if ($currentPath === '//') {
+        $currentPath = '/';
+    }
+
     $menuItems = collect((array) data_get($h, 'header.menu_items', []))
         ->filter(fn ($item) => is_array($item))
         ->map(function (array $item): array {
@@ -25,14 +30,38 @@
                 'label' => $label,
                 'href' => $href,
                 'style' => $style,
+                'route_name' => $routeName,
             ];
         })
-        ->filter(fn (array $item) => $item['label'] !== '' && $item['href'] !== '')
-        ->values();
+        ->filter(fn (array $item) => $item['label'] !== '' && $item['href'] !== '#')
+        ->map(function (array $item) use ($currentPath): array {
+            $hrefNoHash = trim((string) strtok($item['href'], '#'));
+            $isExternal = str_starts_with($hrefNoHash, 'http://') || str_starts_with($hrefNoHash, 'https://');
+            $targetPath = '/';
+            if (! $isExternal && $hrefNoHash !== '') {
+                $parsedPath = parse_url($hrefNoHash, PHP_URL_PATH);
+                $targetPath = is_string($parsedPath) && $parsedPath !== '' ? $parsedPath : '/';
+            }
+
+            $currentNormalized = rtrim($currentPath, '/');
+            $targetNormalized = rtrim($targetPath, '/');
+            if ($currentNormalized === '') {
+                $currentNormalized = '/';
+            }
+            if ($targetNormalized === '') {
+                $targetNormalized = '/';
+            }
+
+            $item['is_active'] = ! $isExternal && $currentNormalized === $targetNormalized;
+
+            return $item;
+        })
+        ->values()
+        ->all();
 @endphp
 <header class="sticky top-0 z-[1000] border-b-4 border-brand-blue bg-white/95 shadow-[0_1px_0_rgba(15,23,42,0.06)] backdrop-blur-md">
     <div class="mx-auto flex min-h-[84px] w-[95%] items-center justify-between px-4 sm:px-6 lg:px-8">
-        <a href="#top" class="shrink-0">
+        <a href="{{ route('home') }}" class="shrink-0">
             <img src="{{ $logo }}" alt="{{ $logoAlt }}" class="h-12 w-auto sm:h-14">
         </a>
 
@@ -41,8 +70,12 @@
                 <a
                     href="{{ $item['href'] }}"
                     class="{{ $item['style'] === 'cta'
-                        ? 'nav-cta-contact ml-2 inline-flex items-center rounded-xl bg-brand-blue px-5 py-2.5 text-sm font-extrabold text-white ring-2 ring-white/20 transition hover:-translate-y-0.5 hover:bg-sky-500 hover:ring-brand-yellow/40'
-                        : 'rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]' }}"
+                        ? (($item['is_active'] ?? false)
+                            ? 'nav-cta-contact ml-2 inline-flex items-center rounded-xl bg-sky-700 px-5 py-2.5 text-sm font-extrabold text-white ring-2 ring-brand-yellow/50 transition'
+                            : 'nav-cta-contact ml-2 inline-flex items-center rounded-xl bg-brand-blue px-5 py-2.5 text-sm font-extrabold text-white ring-2 ring-white/20 transition hover:-translate-y-0.5 hover:bg-sky-500 hover:ring-brand-yellow/40')
+                        : (($item['is_active'] ?? false)
+                            ? 'rounded-lg bg-slate-100 px-3 py-2 text-[15px] font-extrabold text-brand-blue ring-1 ring-slate-200 xl:text-[16px]'
+                            : 'rounded-lg px-3 py-2 text-[15px] font-semibold text-brand-dark transition hover:bg-slate-50 hover:text-brand-blue xl:text-[16px]') }}"
                 >
                     {{ $item['label'] }}
                 </a>
@@ -119,8 +152,12 @@
                 <a
                     href="{{ $item['href'] }}"
                     class="{{ $item['style'] === 'cta'
-                        ? 'nav-cta-contact mt-2 inline-flex w-full items-center justify-center rounded-xl bg-brand-blue px-4 py-3.5 text-sm font-extrabold text-white ring-2 ring-brand-blue/30 transition hover:bg-sky-500'
-                        : 'rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue' }}"
+                        ? (($item['is_active'] ?? false)
+                            ? 'nav-cta-contact mt-2 inline-flex w-full items-center justify-center rounded-xl bg-sky-700 px-4 py-3.5 text-sm font-extrabold text-white ring-2 ring-brand-yellow/50 transition'
+                            : 'nav-cta-contact mt-2 inline-flex w-full items-center justify-center rounded-xl bg-brand-blue px-4 py-3.5 text-sm font-extrabold text-white ring-2 ring-brand-blue/30 transition hover:bg-sky-500')
+                        : (($item['is_active'] ?? false)
+                            ? 'rounded-lg bg-slate-100 px-3 py-2.5 text-[15px] font-extrabold text-brand-blue ring-1 ring-slate-200'
+                            : 'rounded-lg px-3 py-2.5 text-[15px] font-semibold text-brand-dark hover:bg-slate-50 hover:text-brand-blue') }}"
                 >
                     {{ $item['label'] }}
                 </a>
