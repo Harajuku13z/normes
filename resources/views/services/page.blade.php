@@ -44,9 +44,9 @@
     $subServiceCardClass = $subServiceCardHeight === 'tall'
         ? 'service-card relative min-h-[450px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5 sm:min-h-[480px]'
         : 'service-card relative min-h-[300px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5 sm:min-h-[320px]';
-    $subServiceSplitImageClass = $subServiceCardHeight === 'tall'
-        ? 'h-56 w-full object-cover sm:h-64'
-        : 'h-44 w-full object-cover sm:h-48';
+    $subServiceSplitMediaClass = $subServiceCardHeight === 'tall'
+        ? 'w-full min-h-[18rem] overflow-hidden bg-slate-100 sm:min-h-[20rem]'
+        : 'w-full min-h-[14rem] overflow-hidden bg-slate-100 sm:min-h-[16rem]';
     $statsHeadingText = trim((string) data_get($ov, 'stats.heading', 'Chiffres clés'));
     $statsLinkText = trim((string) data_get($ov, 'stats.link_text', 'Voir les avis'));
     $partnersHeadingText = trim((string) data_get($ov, 'partners.heading', 'Partenaires associés'));
@@ -388,13 +388,15 @@
                     @endphp
                     @if ($subServiceCardModel === 'split')
                         <article class="service-card overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-md">
-                            <img
-                                src="{{ $img }}"
-                                alt="{{ $title }}"
-                                class="{{ $subServiceSplitImageClass }}"
-                                loading="lazy"
-                                decoding="async"
-                            >
+                            <div class="{{ $subServiceSplitMediaClass }}">
+                                <img
+                                    src="{{ $img }}"
+                                    alt="{{ $title }}"
+                                    class="block h-full w-full object-cover object-center"
+                                    loading="lazy"
+                                    decoding="async"
+                                >
+                            </div>
                             <div class="p-5 sm:p-6">
                                 <h3 class="break-words text-2xl font-black leading-snug text-brand-dark sm:text-3xl">
                                     {{ $title }}
