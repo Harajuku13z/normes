@@ -368,7 +368,16 @@
                         $title = (string) data_get($s, 'title', '');
                         $sub = trim((string) data_get($s, 'subtitle', ''));
                         $img = HomeView::url((string) data_get($s, 'image', ''));
-                        $techDoc = trim((string) data_get($s, 'technical_doc', ''));
+                        $techDocs = collect([
+                            trim((string) data_get($s, 'technical_doc', '')),
+                            ...collect((array) data_get($s, 'technical_docs', []))
+                                ->map(fn ($doc) => trim((string) $doc))
+                                ->all(),
+                        ])->filter(fn ($doc) => $doc !== '')
+                            ->unique()
+                            ->take(4)
+                            ->values()
+                            ->all();
                     @endphp
                     <article class="{{ $subServiceCardClass }}">
                         <div class="absolute inset-0">
@@ -397,15 +406,17 @@
                                 >
                                     {{ $subServiceCtaText !== '' ? $subServiceCtaText : 'C’EST CE QU’IL ME FAUT' }} <span aria-hidden="true">⟶</span>
                                 </a>
-                                @if ($techDoc !== '')
-                                    <a
-                                        href="{{ HomeView::url($techDoc) }}"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="inline-flex w-fit items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm font-extrabold text-white ring-1 ring-white/20 backdrop-blur transition hover:bg-white/15 hover:ring-white/35"
-                                    >
-                                        {{ $subServiceDocText !== '' ? $subServiceDocText : 'DOC TECHNIQUE' }} <span aria-hidden="true">↗</span>
-                                    </a>
+                                @if ($techDocs !== [])
+                                    @foreach ($techDocs as $docIndex => $docPath)
+                                        <a
+                                            href="{{ HomeView::url($docPath) }}"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="inline-flex w-fit items-center gap-2 rounded-xl bg-white/10 px-4 py-2.5 text-sm font-extrabold text-white ring-1 ring-white/20 backdrop-blur transition hover:bg-white/15 hover:ring-white/35"
+                                        >
+                                            {{ $subServiceDocText !== '' ? $subServiceDocText : 'DOC TECHNIQUE' }}{{ count($techDocs) > 1 ? ' '.($docIndex + 1) : '' }} <span aria-hidden="true">↗</span>
+                                        </a>
+                                    @endforeach
                                 @endif
                             </div>
                         </div>

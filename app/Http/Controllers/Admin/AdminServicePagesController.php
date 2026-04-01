@@ -62,6 +62,8 @@ class AdminServicePagesController extends Controller
             'sub_services.*.subtitle' => ['nullable', 'string', 'max:300'],
             'sub_services.*.image' => ['nullable', 'string', 'max:800'],
             'sub_services.*.technical_doc' => ['nullable', 'string', 'max:800'],
+            'sub_services.*.technical_docs' => ['nullable', 'array'],
+            'sub_services.*.technical_docs.*' => ['nullable', 'string', 'max:800'],
             'realisations' => ['nullable', 'array'],
             'realisations.*.label' => ['nullable', 'string', 'max:190'],
             'realisations.*.before' => ['nullable', 'string', 'max:800'],
@@ -88,6 +90,9 @@ class AdminServicePagesController extends Controller
             ...$data,
             'is_active' => (bool) ($data['is_active'] ?? true),
         ];
+        if (is_array($data['sub_services'] ?? null)) {
+            $payload['sub_services'] = $this->normalizeSubServices($data['sub_services']);
+        }
 
         if (! Schema::hasColumn('service_pages', 'content_overrides') && array_key_exists('content_overrides', $data)) {
             return back()
@@ -159,6 +164,8 @@ class AdminServicePagesController extends Controller
             'sub_services.*.subtitle' => ['nullable', 'string', 'max:300'],
             'sub_services.*.image' => ['nullable', 'string', 'max:800'],
             'sub_services.*.technical_doc' => ['nullable', 'string', 'max:800'],
+            'sub_services.*.technical_docs' => ['nullable', 'array'],
+            'sub_services.*.technical_docs.*' => ['nullable', 'string', 'max:800'],
             'realisations' => ['nullable', 'array'],
             'realisations.*.label' => ['nullable', 'string', 'max:190'],
             'realisations.*.before' => ['nullable', 'string', 'max:800'],
@@ -185,6 +192,9 @@ class AdminServicePagesController extends Controller
             ...$data,
             'is_active' => (bool) ($data['is_active'] ?? true),
         ];
+        if (is_array($data['sub_services'] ?? null)) {
+            $payload['sub_services'] = $this->normalizeSubServices($data['sub_services']);
+        }
 
         if (! Schema::hasColumn('service_pages', 'content_overrides') && array_key_exists('content_overrides', $data)) {
             return back()
@@ -477,6 +487,40 @@ class AdminServicePagesController extends Controller
         data_set($payload, 'openai.temperature', (float) data_get($payload, 'openai.temperature', 0.4));
 
         return $payload;
+    }
+
+    /**
+     * @param  array<int|string, mixed>  $subServices
+     * @return array<int|string, array<string, mixed>>
+     */
+    private function normalizeSubServices(array $subServices): array
+    {
+        $normalized = [];
+        foreach ($subServices as $idx => $item) {
+            $row = is_array($item) ? $item : [];
+            $legacyDoc = trim((string) data_get($row, 'technical_doc', ''));
+            $docs = collect((array) data_get($row, 'technical_docs', []))
+                ->map(fn ($doc) => trim((string) $doc))
+                ->filter(fn (string $doc) => $doc !== '')
+                ->values();
+
+            if ($legacyDoc !== '') {
+                $docs = collect([$legacyDoc])->merge($docs);
+            }
+
+            $docs = $docs->unique()->take(4)->values();
+
+            $normalized[$idx] = [
+                'title' => trim((string) data_get($row, 'title', '')),
+                'subtitle' => trim((string) data_get($row, 'subtitle', '')),
+                'image' => trim((string) data_get($row, 'image', '')),
+                // Compat: on conserve l'ancien champ utilisé sur certaines pages.
+                'technical_doc' => (string) ($docs->first() ?? ''),
+                'technical_docs' => $docs->all(),
+            ];
+        }
+
+        return $normalized;
     }
 }
 

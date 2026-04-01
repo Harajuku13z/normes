@@ -487,7 +487,7 @@
         <div class="space-y-4 pt-2">
             <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-4">
                 <h2 class="text-sm font-extrabold text-slate-900">Sous-services (6 à 9 cartes)</h2>
-                <p class="mt-1 text-xs text-slate-500">Titre et texte d’introduction pour toute la section, puis pour chaque carte : titre, sous-titre, image et doc technique (optionnel). Le bouton Doc technique n’apparaît que sur les cartes où un document est renseigné.</p>
+                <p class="mt-1 text-xs text-slate-500">Titre et texte d’introduction pour toute la section, puis pour chaque carte : titre, sous-titre, image et un ou plusieurs docs techniques (optionnel).</p>
                 <div class="mt-3 flex flex-wrap items-center gap-2">
                     <button
                         type="button"
@@ -528,8 +528,19 @@
                         $sTitle = old('sub_services.'.$i.'.title', data_get($slot, 'title', ''));
                         $sSubtitle = old('sub_services.'.$i.'.subtitle', data_get($slot, 'subtitle', ''));
                         $sImage = old('sub_services.'.$i.'.image', data_get($slot, 'image', ''));
-                        $sTechDoc = old('sub_services.'.$i.'.technical_doc', data_get($slot, 'technical_doc', ''));
-                        $hasSubContent = trim((string) $sTitle) !== '' || trim((string) $sSubtitle) !== '' || trim((string) $sImage) !== '' || trim((string) $sTechDoc) !== '';
+                        $sLegacyTechDoc = old('sub_services.'.$i.'.technical_doc', data_get($slot, 'technical_doc', ''));
+                        $sTechDocsRaw = old('sub_services.'.$i.'.technical_docs', data_get($slot, 'technical_docs', []));
+                        $sTechDocs = collect([
+                            is_string($sLegacyTechDoc) ? trim($sLegacyTechDoc) : '',
+                            ...collect(is_array($sTechDocsRaw) ? $sTechDocsRaw : [])
+                                ->map(fn ($v) => trim((string) $v))
+                                ->all(),
+                        ])->filter(fn ($v) => $v !== '')
+                            ->unique()
+                            ->take(4)
+                            ->values()
+                            ->all();
+                        $hasSubContent = trim((string) $sTitle) !== '' || trim((string) $sSubtitle) !== '' || trim((string) $sImage) !== '' || $sTechDocs !== [];
                     @endphp
                     <div
                         class="js-subservice-item rounded-xl border border-slate-200 bg-white p-4"
@@ -596,33 +607,57 @@
                                     ></div>
                                 </div>
 
-                                <div class="mt-3 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
-                                    <div>
-                                        <label class="text-sm font-semibold text-slate-800">Doc technique (PDF / JPG) — carte {{ $i }}</label>
-                                        <input
-                                            id="subService{{ $i }}TechnicalDocUrl"
-                                            name="sub_services[{{ $i }}][technical_doc]"
-                                            value="{{ $sTechDoc }}"
-                                            placeholder="/uploads/docs/fiche-technique.pdf"
-                                            class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
-                                        />
-                                        @if (is_string($sTechDoc) && trim($sTechDoc) !== '')
-                                            <a href="{{ \App\Support\HomeView::url($sTechDoc) }}" target="_blank" rel="noopener noreferrer" class="mt-2 inline-flex text-xs font-extrabold text-sky-700 hover:underline">
-                                                Ouvrir le doc actuel ↗
-                                            </a>
-                                        @endif
+                                <div class="mt-3 rounded-xl border border-slate-200 bg-slate-50/70 p-3">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-slate-500">Docs techniques</p>
+                                        <button
+                                            type="button"
+                                            id="addSubService{{ $i }}TechnicalDocBtn"
+                                            class="inline-flex items-center rounded-lg bg-sky-600 px-2.5 py-1.5 text-[11px] font-extrabold text-white hover:bg-sky-700"
+                                        >
+                                            + Ajouter un doc
+                                        </button>
+                                        <span id="subService{{ $i }}TechnicalDocCount" class="text-[11px] font-semibold text-slate-500"></span>
                                     </div>
-                                    <div>
-                                        <label class="text-sm font-semibold text-slate-800">Upload doc</label>
-                                        <input
-                                            id="subService{{ $i }}TechnicalDocFile"
-                                            type="file"
-                                            accept="application/pdf,image/jpeg,image/png,image/webp"
-                                            data-url-target="subService{{ $i }}TechnicalDocUrl"
-                                            data-preview-target=""
-                                            data-placeholder-target=""
-                                            class="mt-2 w-full text-sm"
-                                        />
+
+                                    <div class="mt-3 grid gap-3">
+                                        @for ($d = 0; $d < 4; $d++)
+                                            @php
+                                                $sTechDocVal = (string) ($sTechDocs[$d] ?? '');
+                                                $hasDoc = trim($sTechDocVal) !== '';
+                                            @endphp
+                                            <div class="js-subservice-doc-item-{{ $i }} rounded-lg border border-slate-200 bg-white p-3" data-has-content="{{ $hasDoc ? '1' : '0' }}">
+                                                <div class="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+                                                    <div>
+                                                        <label class="text-sm font-semibold text-slate-800">Doc technique {{ $d + 1 }} (PDF / image)</label>
+                                                        <input
+                                                            id="subService{{ $i }}TechnicalDoc{{ $d }}Url"
+                                                            name="sub_services[{{ $i }}][technical_docs][{{ $d }}]"
+                                                            value="{{ $sTechDocVal }}"
+                                                            placeholder="/uploads/docs/fiche-technique.pdf"
+                                                            class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                                                        />
+                                                        @if ($hasDoc)
+                                                            <a href="{{ \App\Support\HomeView::url($sTechDocVal) }}" target="_blank" rel="noopener noreferrer" class="mt-2 inline-flex text-xs font-extrabold text-sky-700 hover:underline">
+                                                                Ouvrir le doc {{ $d + 1 }} ↗
+                                                            </a>
+                                                        @endif
+                                                    </div>
+                                                    <div>
+                                                        <label class="text-sm font-semibold text-slate-800">Upload doc</label>
+                                                        <input
+                                                            id="subService{{ $i }}TechnicalDoc{{ $d }}File"
+                                                            type="file"
+                                                            accept="application/pdf,image/jpeg,image/png,image/webp"
+                                                            data-url-target="subService{{ $i }}TechnicalDoc{{ $d }}Url"
+                                                            data-preview-target=""
+                                                            data-placeholder-target=""
+                                                            class="mt-2 w-full text-sm"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endfor
                                     </div>
                                 </div>
                             </div>
@@ -1021,6 +1056,14 @@
                 countId: 'subServiceCount',
                 minVisible: 1,
             });
+            @for ($i = 1; $i <= 9; $i++)
+            initProgressiveList({
+                itemSelector: '.js-subservice-doc-item-{{ $i }}',
+                addBtnId: 'addSubService{{ $i }}TechnicalDocBtn',
+                countId: 'subService{{ $i }}TechnicalDocCount',
+                minVisible: 1,
+            });
+            @endfor
             initProgressiveList({
                 itemSelector: '.js-realisation-item',
                 addBtnId: 'addRealisationBtn',
