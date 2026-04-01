@@ -20,6 +20,12 @@ class HomePageService
             $out[$key] = is_array($override)
                 ? array_replace_recursive($default, $override)
                 : $default;
+
+            // For menu collections, we must replace defaults entirely instead of
+            // index-based recursive merge, otherwise deleted default entries remain.
+            if ($key === 'header' && is_array($override) && array_key_exists('menu_items', $override) && is_array($override['menu_items'])) {
+                $out[$key]['menu_items'] = $override['menu_items'];
+            }
         }
 
         foreach ($overrides as $key => $payload) {
