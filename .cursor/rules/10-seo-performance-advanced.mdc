@@ -1,0 +1,41 @@
+---
+description: Exigences SEO technique et performance pour templates, indexabilite, metadonnees et Core Web Vitals.
+alwaysApply: true
+---
+
+# SEO technique
+
+Chaque page strategique doit exposer:
+- `title` unique
+- `meta description` pertinente
+- `canonical` correct
+- `H1` unique et logique
+- balisage Hn coherent
+- contenu indexable cote serveur
+- Open Graph + Twitter cards
+
+Toujours prevoir:
+- `sitemap.xml` a jour
+- `robots.txt` coherent
+- `schema.org` adapte au contexte
+- redirections 301 propres
+- pages 404/410 utiles
+
+Verifier explicitement les risques d'indexation:
+- canonical errone
+- `noindex` involontaire
+- `robots` bloquant des pages utiles
+- duplication / thin content
+- pages orphelines sans liens internes
+- statuts HTTP incoherents
+
+# Performance
+
+Priorite Core Web Vitals: LCP, CLS, INP.
+
+- Optimiser images (WebP/AVIF, dimensions explicites).
+- Preload uniquement les ressources critiques.
+- Utiliser `font-display: swap`.
+- Reduire poids JS/CSS et dependances lourdes.
+- Eviter composants front inutiles sur pages de contenu.
+- Optimiser DB (index, pagination, EXPLAIN) et cache applicatif/HTTP.

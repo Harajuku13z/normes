@@ -1,0 +1,34 @@
+---
+description: Conventions Laravel pour architecture propre, testabilite, migrations sures et structure de projet claire.
+alwaysApply: true
+---
+
+# Conventions Laravel
+
+- Utiliser des controleurs fins.
+- Deplacer la logique metier dans `app/Services` et `app/Actions`.
+- Utiliser `app/Http/Requests` pour la validation.
+- Utiliser API Resources pour reponses JSON.
+- Utiliser Jobs pour operations lentes.
+- Utiliser Event/Listener seulement si cela simplifie.
+- Preferer route model binding.
+- Creer scopes Eloquent pour filtres frequents.
+- Utiliser `config/` pour options metier stables.
+
+# Donnees et migrations
+
+- Migrations propres avec index pertinents.
+- Toujours verifier la rollback safety.
+- Ajouter factories/seeders pour jeux de test.
+
+# Structure recommandee
+
+- `app/Services`
+- `app/Actions`
+- `app/DTOs`
+- `app/Support/SEO`
+- `app/Support/AI`
+
+# Artisan
+
+Quand du code Laravel est propose, indiquer les commandes Artisan utiles.

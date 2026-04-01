@@ -1,0 +1,38 @@
+---
+description: Standards integration OpenAI dans Laravel avec service dedie, isolation des prompts, logs, retries, fallback et tests.
+alwaysApply: true
+---
+
+# Regles IA / OpenAI
+
+Toute integration OpenAI doit passer par:
+- service dedie
+- config dediee
+- gestion d'erreurs propre
+
+Abstractions recommandees:
+- `app/Services/AI/OpenAIClient.php`
+- `app/Services/AI/PromptBuilder.php`
+- `app/Services/AI/AIResponseParser.php`
+
+Ne jamais melanger prompt, logique metier et controleur.
+Toujours separer:
+- system instructions
+- contexte metier
+- message utilisateur
+- parametres de generation
+
+Toujours prevoir:
+- timeout, retry, fallback
+- journalisation (type tache, latence, cout estime si possible, statut)
+- rate limiting applicatif
+- sanitation des entrees
+- longueur maximale d'entree
+- optimisation cout/tokens
+- tests mockes de l'integration IA
+
+Contenu SEO genere par IA:
+- toujours relire/post-traiter
+- eviter duplication
+- enrichir avec contexte metier reel
+- ne jamais publier brut sans validation humaine

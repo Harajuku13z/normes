@@ -274,6 +274,12 @@ class AdminServicePagesController extends Controller
             "  \"realisations\": {\"titre_realisations_accent\": \"\", \"titre_realisations_suite\": \"\", \"texte_intro_realisations\": \"\"},\n".
             "  \"cta\": {\"bouton_sous_service\": \"\", \"bouton_doc_technique\": \"\"}\n".
             "}\n";
+        $filledPrompt .= "\nContraintes de qualite redactionnelle:\n".
+            "- Ecris un francais naturel, fluide, sans tournures robotiques.\n".
+            "- Evite les generalites vides et les repetitions.\n".
+            "- Sois concret, orienté benefices client, et lisible rapidement.\n".
+            "- Pour \"chiffres\", genere 4 blocs si possible, avec au minimum 3 blocs valides (titre + valeur non vides).\n".
+            "- \"texte_court\" est optionnel mais recommande pour contextualiser la valeur.\n";
 
         $response = Http::withToken($apiKey)
             ->timeout(60)
@@ -307,8 +313,16 @@ class AdminServicePagesController extends Controller
             ], 422);
         }
 
+        $generated = $this->mapGeneratedToForm($decoded, $data);
+        $statsCount = count((array) data_get($generated, 'service_stats.items', []));
+        if ($statsCount < 3) {
+            return response()->json([
+                'message' => 'La génération IA est incomplète : au moins 3 chiffres clés valides sont requis (titre + valeur). Relance la génération.',
+            ], 422);
+        }
+
         return response()->json([
-            'generated' => $this->mapGeneratedToForm($decoded, $data),
+            'generated' => $generated,
         ]);
     }
 
@@ -381,6 +395,7 @@ class AdminServicePagesController extends Controller
                     'text' => trim((string) data_get($it, 'texte_court', '')),
                 ];
             })
+            ->filter(fn (array $it) => $it['label'] !== '' && $it['value'] !== '')
             ->take(4)
             ->values()
             ->all();

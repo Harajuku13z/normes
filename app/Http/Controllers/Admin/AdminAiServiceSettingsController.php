@@ -80,6 +80,8 @@ Respecte les consignes suivantes :
 - Optimisé SEO (AIOSEO)
 - Orienté conversion (incite à demander un devis)
 - Français
+- Evite les formulations génériques, répétitives ou artificielles
+- Privilégie des formulations concrètes, lisibles et crédibles
 
 Tu dois générer TOUS les champs suivants :
 
@@ -128,6 +130,7 @@ NAVIGATION
 - Titre
 - Valeur
 - Texte court
+- Au minimum 3 chiffres valides obligatoires (titre + valeur non vides)
 
 8. PARTENAIRES
 - Titre bloc partenaires

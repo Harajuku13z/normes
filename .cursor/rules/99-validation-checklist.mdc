@@ -1,0 +1,29 @@
+---
+description: Checklist de validation finale avant cloture d'une tache Laravel SEO Performance IA.
+alwaysApply: true
+---
+
+# Checklist de validation obligatoire
+
+Avant de considerer une tache terminee, verifier:
+- architecture simple et claire
+- controleurs fins
+- logique metier dans services/actions
+- validation correcte
+- securite de base respectee
+- pas de N+1
+- pages SEO rendues cote serveur
+- title unique
+- meta description presente
+- canonical correct
+- H1 coherent
+- schema.org pertinent
+- sitemap a jour
+- robots.txt coherent
+- maillage interne pense
+- images optimisees
+- scripts non bloquants
+- cache pense
+- tests critiques prevus
+- integration IA isolee et securisee
+- aucune cle secrete en dur

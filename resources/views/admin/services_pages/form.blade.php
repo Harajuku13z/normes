@@ -388,7 +388,7 @@
         <div class="space-y-4 pt-2">
             <div>
                 <h2 class="text-sm font-extrabold text-slate-900">Chiffres (service)</h2>
-                <p class="mt-1 text-xs text-slate-500">Définis le titre (label) et la valeur (nombre/texte) affichés sur la page service.</p>
+                <p class="mt-1 text-xs text-slate-500">Définis le titre (label) et la valeur (nombre/texte) affichés sur la page service. Minimum recommandé : <strong>3 chiffres clés</strong>.</p>
                 <div class="mt-3 flex flex-wrap items-center gap-2">
                     <button
                         type="button"
@@ -417,21 +417,21 @@
                         <input
                             name="service_stats[items][{{ $s }}][label]"
                             value="{{ $labelVal }}"
-                            placeholder="Ex. Avis"
+                            placeholder="Ex. Chantiers realises"
                             class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
                         />
                         <label class="mt-3 block text-xs font-extrabold uppercase tracking-wider text-slate-500">Nombre / Valeur</label>
                         <input
                             name="service_stats[items][{{ $s }}][value]"
                             value="{{ $valueVal }}"
-                            placeholder="Ex. 5.0/5"
+                            placeholder="Ex. +250"
                             class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
                         />
                         <label class="mt-3 block text-xs font-extrabold uppercase tracking-wider text-slate-500">Texte (optionnel)</label>
                         <input
                             name="service_stats[items][{{ $s }}][text]"
                             value="{{ $textVal }}"
-                            placeholder="Ex. +100 avis"
+                            placeholder="Ex. sur les 24 derniers mois"
                             class="mt-2 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
                         />
                     </div>
@@ -1037,7 +1037,7 @@
                 itemSelector: '.js-stat-item',
                 addBtnId: 'addStatItemBtn',
                 countId: 'statItemCount',
-                minVisible: 1,
+                minVisible: 3,
             });
 
             // Compteurs caractères SEO (meta)
