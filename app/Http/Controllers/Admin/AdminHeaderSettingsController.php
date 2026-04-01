@@ -32,6 +32,12 @@ class AdminHeaderSettingsController extends Controller
         $payload = is_array($saved?->payload) ? $saved->payload : [];
         $header = $payload ? array_replace_recursive($base, $payload) : $base;
 
+        // Important: when admin saves menu_items (including empty arrays), do not
+        // rehydrate defaults on next load. Keep DB value as source of truth.
+        if (array_key_exists('menu_items', $payload) && is_array($payload['menu_items'])) {
+            $header['menu_items'] = $payload['menu_items'];
+        }
+
         return view('admin.header_settings.edit', [
             'header' => $header,
             'menuItems' => $this->normalizeMenuItems((array) data_get($header, 'menu_items', [])),

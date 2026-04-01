@@ -43,7 +43,7 @@ class HomePageService
                 ->where('is_active', true)
                 ->orderBy('service_num')
                 ->orderBy('id')
-                ->get(['service_num', 'slug', 'title', 'intro', 'meta_description', 'featured_image', 'image', 'cta_text'])
+                ->get(['service_num', 'slug', 'title', 'intro', 'meta_title', 'meta_description', 'featured_image', 'image', 'cta_text'])
                 ->all();
         } catch (QueryException) {
             $activeServicePages = [];

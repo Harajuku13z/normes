@@ -13,9 +13,9 @@
             @foreach ($serviceCards as $item)
                 @php
                     $title = trim((string) data_get($item, 'title', ''));
+                    $titleDisplay = $title !== '' ? mb_strtoupper($title, 'UTF-8') : '';
                     $bg = \App\Support\HomeView::url(data_get($item, 'image'));
                     $href = trim((string) data_get($item, 'href', '#devis'));
-                    $ctaText = trim((string) data_get($item, 'cta', 'En savoir plus'));
                 @endphp
                 <article class="service-card relative h-[380px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-soft transition hover:-translate-y-0.5 hover:shadow-md sm:h-[410px] lg:h-[440px]">
                     <div class="absolute inset-0">
@@ -30,13 +30,13 @@
                     </div>
                     <div class="absolute inset-x-0 bottom-0 z-10 p-6">
                         <h3 class="text-2xl font-black leading-snug text-white sm:text-3xl">
-                            {{ $title }}
+                            {{ $titleDisplay }}
                         </h3>
                         <p class="mt-3 text-sm leading-relaxed text-white/90">
                             {{ data_get($item, 'description') }}
                         </p>
                         <a href="{{ $href }}" class="mt-5 inline-flex w-fit rounded-xl bg-brand-blue px-4 py-2 text-xs font-extrabold text-white shadow-soft transition hover:bg-brand-dark sm:text-sm">
-                            {{ $ctaText !== '' ? $ctaText : 'En savoir plus' }}
+                            En savoir plus
                         </a>
                     </div>
                 </article>
