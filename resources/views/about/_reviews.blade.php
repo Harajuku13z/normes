@@ -5,7 +5,7 @@
         ->take(3);
     $gUrl = trim((string) ($googleUrl ?? ''));
 @endphp
-<section id="avis-about" class="bg-slate-50 py-20 sm:py-24" aria-labelledby="avis-about-heading">
+<section id="avis-about" class="border-t border-slate-200/90 bg-white py-20 sm:py-24" aria-labelledby="avis-about-heading">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <div class="text-center">
             @if (trim((string) ($avisKicker ?? '')) !== '')

@@ -317,15 +317,6 @@
         </div>
     </section>
 
-    {{-- ═══ AVIS ═══ --}}
-    @include('about._reviews', [
-        'avisKicker' => $avisKicker,
-        'avisTitle' => $avisTitle,
-        'googleReviewsLabel' => $googleReviewsLabel,
-        'googleUrl' => $googleUrl,
-        'testimonials' => $testimonials,
-    ])
-
     {{-- ═══ SATISFACTION + IMAGE ═══ --}}
     <section class="bg-white py-20 sm:py-24" aria-labelledby="satisfaction-heading">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
@@ -363,6 +354,15 @@
             </div>
         </div>
     </section>
+
+    {{-- ═══ AVIS (juste avant mentions légales) ═══ --}}
+    @include('about._reviews', [
+        'avisKicker' => $avisKicker,
+        'avisTitle' => $avisTitle,
+        'googleReviewsLabel' => $googleReviewsLabel,
+        'googleUrl' => $googleUrl,
+        'testimonials' => $testimonials,
+    ])
 
     {{-- ═══ MENTIONS LÉGALES ═══ --}}
     @if ($showLegal)

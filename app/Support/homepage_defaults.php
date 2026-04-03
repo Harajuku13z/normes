@@ -456,6 +456,7 @@ Nous travaillons avec des équipes et des corps de métier complémentaires pour
         'avis_section_kicker' => 'VOS AVIS',
         'avis_section_title' => 'Ce Que Disent Nos Clients',
         'google_reviews_label' => '98 avis Google',
+        'google_url' => 'https://share.google/14Nu70a8PfwWT4P4p',
         'testimonials' => require __DIR__.'/about_testimonials_defaults.php',
         'satisfaction_title' => 'Votre satisfaction est notre priorité',
         'satisfaction_image' => '/nous/equipe.jpeg',
