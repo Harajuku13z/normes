@@ -21,7 +21,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     @endif
                 </span>
-                <strong class="text-4xl font-black tracking-tight {{ $textClass }}">{{ data_get($item, 'value') }}</strong>
+                <strong class="text-4xl font-black tracking-tight {{ $textClass }}" data-countup="{{ data_get($item, 'value') }}">{{ data_get($item, 'value') }}</strong>
                 <span class="mt-1 text-sm font-bold {{ $mutedTextClass }} sm:text-base">{{ data_get($item, 'label') }}</span>
             </article>
         @endforeach
