@@ -95,6 +95,29 @@
             </div>
         </details>
 
+        {{-- ═══ BROCHURE PDF ═══ --}}
+        <details class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" open>
+            <summary class="cursor-pointer select-none text-sm font-extrabold text-slate-900">Brochure PDF franchise</summary>
+            <div class="mt-4 grid gap-4 lg:grid-cols-2">
+                <div class="lg:col-span-2 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Fichier PDF (brochure)</label>
+                    <input id="fpBrochurePdf" type="text" name="sections[franchise_page][brochure_pdf]" value="{{ data_get($fp, 'brochure_pdf') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" placeholder="URL du PDF uploadé">
+                    <input id="fpBrochurePdfUpload" type="file" accept="application/pdf" data-upload-target-input-id="fpBrochurePdf" class="mt-2 w-full text-sm">
+                    @if (data_get($fp, 'brochure_pdf'))
+                        <div class="mt-3 flex items-center gap-3">
+                            <svg class="h-8 w-8 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+                            <a href="{{ data_get($fp, 'brochure_pdf') }}" target="_blank" rel="noopener noreferrer" class="text-sm font-bold text-brand-blue hover:underline">Voir le PDF actuel</a>
+                        </div>
+                    @endif
+                    <p class="mt-1 text-xs text-slate-500">Uploadez un PDF ou collez l'URL. Ce fichier sera proposé au téléchargement sur la page franchise.</p>
+                </div>
+                <div>
+                    <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Texte du bouton</label>
+                    <input type="text" name="sections[franchise_page][brochure_label]" value="{{ data_get($fp, 'brochure_label') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" placeholder="Télécharger la brochure franchise">
+                </div>
+            </div>
+        </details>
+
         {{-- ═══ PILIERS ═══ --}}
         <details class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             <summary class="cursor-pointer select-none text-sm font-extrabold text-slate-900">Piliers « Pourquoi ? »</summary>
@@ -258,7 +281,7 @@
             @csrf
             <div>
                 <label for="fileFranchise" class="mb-1 block text-xs font-semibold text-slate-700">Fichier</label>
-                <input id="fileFranchise" name="file" type="file" accept="image/*" class="text-sm">
+                <input id="fileFranchise" name="file" type="file" accept="image/*,application/pdf" class="text-sm">
             </div>
             <button type="submit" class="rounded-lg bg-white px-4 py-2 text-sm font-bold text-slate-800 ring-1 ring-slate-300 hover:bg-slate-100">Uploader</button>
         </form>

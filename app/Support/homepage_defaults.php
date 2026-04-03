@@ -631,6 +631,9 @@ Nous travaillons avec des équipes et des corps de métier complémentaires pour
         'meta_keywords' => 'franchise, franchisé, Normes Rénovation, agence, rénovation, Bourgogne, Bretagne',
         'og_image' => '',
 
+        'brochure_pdf' => '',
+        'brochure_label' => 'Télécharger la brochure franchise',
+
         'hero_bg' => '',
         'hero_kicker' => 'Franchise 100 % rentable',
         'hero_h1_line1' => 'Devenez franchisé',

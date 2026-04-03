@@ -27,6 +27,9 @@
     $heroCtaPrimary = trim((string) data_get($fp, 'hero_cta_primary', 'Commencer mon dossier'));
     $heroCtaSecondary = trim((string) data_get($fp, 'hero_cta_secondary', 'Voir nos agences'));
 
+    $brochurePdf = trim((string) data_get($fp, 'brochure_pdf', ''));
+    $brochureLabel = trim((string) data_get($fp, 'brochure_label', 'Télécharger la brochure franchise'));
+
     $pillarsKicker = trim((string) data_get($fp, 'pillars_kicker', 'Pourquoi ?'));
     $pillarsTitle = trim((string) data_get($fp, 'pillars_title', 'Pourquoi choisir Normes Rénovation ?'));
     $pillarsSubtitle = trim((string) data_get($fp, 'pillars_subtitle', ''));
@@ -72,6 +75,14 @@
         'light-bulb' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/>',
         'user-group' => '<path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/>',
     ];
+
+    $pillarGradients = [
+        'from-sky-500 to-blue-600',
+        'from-amber-400 to-orange-500',
+        'from-emerald-500 to-teal-600',
+        'from-violet-500 to-purple-600',
+        'from-rose-500 to-pink-600',
+    ];
 @endphp
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
@@ -84,36 +95,46 @@
     'ogImage' => $ogImage,
     'preloadImages' => $preloadImages,
 ])
-<body class="overflow-x-hidden bg-white font-sans text-brand-dark antialiased">
+<body class="overflow-x-hidden bg-slate-900 font-sans text-brand-dark antialiased">
 <a href="#contenu" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[2000] focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-extrabold focus:text-brand-dark focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-blue">Aller au contenu</a>
 @include('home.header', ['home' => $h])
 
 {{-- ═══ HERO ═══ --}}
-<section id="top" class="relative min-h-[440px] overflow-hidden sm:min-h-[500px]">
+<section id="top" class="relative min-h-[520px] overflow-hidden sm:min-h-[580px] lg:min-h-[640px]">
     <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ $heroBg }}');" aria-hidden="true"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/55 to-transparent" aria-hidden="true"></div>
-    <div class="relative z-10 mx-auto flex min-h-[440px] w-[95%] flex-col justify-end gap-5 px-4 py-8 sm:min-h-[500px] sm:px-6 sm:py-10 lg:px-8">
+    <div class="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-brand-dark/70 to-brand-blue/30" aria-hidden="true"></div>
+    <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 20% 80%, rgba(56,189,248,.4) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(250,204,21,.3) 0%, transparent 50%);" aria-hidden="true"></div>
+    <div class="relative z-10 mx-auto flex min-h-[520px] w-[95%] flex-col justify-end gap-5 px-4 py-10 sm:min-h-[580px] sm:px-6 sm:py-14 lg:min-h-[640px] lg:px-8">
         <div class="max-w-3xl text-white">
-            <div class="rounded-3xl border border-white/15 bg-brand-dark/35 p-6 shadow-soft backdrop-blur-md sm:p-8">
+            <div class="rounded-3xl border border-white/10 bg-white/5 p-7 shadow-2xl backdrop-blur-xl sm:p-10">
                 @if ($heroKicker !== '')
-                    <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">{{ $heroKicker }}</p>
+                    <p class="mb-4 inline-flex items-center gap-2 rounded-full bg-brand-yellow/20 px-4 py-1.5 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">
+                        <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292Z"/></svg>
+                        {{ $heroKicker }}
+                    </p>
                 @endif
-                <h1 class="mb-4 text-2xl font-black leading-[1.06] tracking-tight drop-shadow-md sm:text-4xl lg:text-5xl">
+                <h1 class="mb-5 text-3xl font-black leading-[1.05] tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl">
                     <span>{{ $heroH1Line1 }}</span>
                     @if ($heroH1Accent !== '')
-                        <span class="text-brand-blue"> {{ $heroH1Accent }}</span>
+                        <br><span class="bg-gradient-to-r from-brand-blue to-sky-400 bg-clip-text text-transparent">{{ $heroH1Accent }}</span>
                     @endif
                 </h1>
                 @if ($heroIntro !== '')
-                    <p class="max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">{{ $heroIntro }}</p>
+                    <p class="max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg">{{ $heroIntro }}</p>
                 @endif
-                <div class="mt-6 flex flex-wrap gap-3">
-                    <a href="#candidature" class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
+                <div class="mt-7 flex flex-wrap gap-3">
+                    <a href="#candidature" class="rounded-xl bg-gradient-to-r from-brand-blue to-sky-500 px-6 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-brand-blue/25 transition hover:shadow-xl hover:shadow-brand-blue/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
                         {{ $heroCtaPrimary }}
                     </a>
-                    <a href="{{ $agencesHref }}" class="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:bg-yellow-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
+                    <a href="{{ $agencesHref }}" class="rounded-xl bg-brand-yellow px-6 py-3.5 text-sm font-extrabold text-brand-dark shadow-lg shadow-brand-yellow/20 transition hover:bg-yellow-300 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
                         {{ $heroCtaSecondary }}
                     </a>
+                    @if ($brochurePdf !== '')
+                        <a href="{{ $brochurePdf }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-extrabold text-white backdrop-blur-sm transition hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow">
+                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                            {{ $brochureLabel }}
+                        </a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -124,33 +145,34 @@
 
     {{-- ═══ PILIERS ═══ --}}
     @if ($pillars !== [])
-    <section class="border-b border-slate-200 bg-white py-16 sm:py-20" aria-labelledby="pourquoi-heading">
-        <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+    <section class="relative overflow-hidden bg-gradient-to-b from-slate-900 to-slate-800 py-20 sm:py-24" aria-labelledby="pourquoi-heading">
+        <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 50% 0%, rgba(56,189,248,.25) 0%, transparent 60%);" aria-hidden="true"></div>
+        <div class="relative z-10 mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="mx-auto max-w-3xl text-center">
                 @if ($pillarsKicker !== '')
                     <p id="pourquoi-heading" class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-blue">{{ $pillarsKicker }}</p>
                 @endif
                 @if ($pillarsTitle !== '')
-                    <h2 class="mt-3 text-2xl font-black tracking-tight text-brand-dark sm:text-3xl lg:text-4xl">{{ $pillarsTitle }}</h2>
+                    <h2 class="mt-3 text-2xl font-black tracking-tight text-white sm:text-3xl lg:text-4xl">{{ $pillarsTitle }}</h2>
                 @endif
                 @if ($pillarsSubtitle !== '')
-                    <p class="mt-4 text-base text-slate-600 sm:text-lg">{{ $pillarsSubtitle }}</p>
+                    <p class="mt-4 text-base text-slate-400 sm:text-lg">{{ $pillarsSubtitle }}</p>
                 @endif
             </div>
-            <ul class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            <ul class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                 @foreach ($pillars as $idx => $pillar)
                     @php
                         $iconKey = trim((string) data_get($pillar, 'icon', ''));
                         $iconSvg = $iconMap[$iconKey] ?? $iconMap['shield-check'];
-                        $colors = ['bg-sky-50 text-brand-blue', 'bg-amber-50 text-amber-600', 'bg-emerald-50 text-emerald-600', 'bg-violet-50 text-violet-600', 'bg-rose-50 text-rose-600'];
-                        $color = $colors[$idx % count($colors)];
+                        $gradient = $pillarGradients[$idx % count($pillarGradients)];
                     @endphp
-                    <li class="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                        <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl {{ $color }} transition group-hover:scale-110">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">{!! $iconSvg !!}</svg>
+                    <li class="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition hover:-translate-y-1 hover:border-white/20 hover:bg-white/10">
+                        <div class="absolute -right-6 -top-6 h-20 w-20 rounded-full bg-gradient-to-br {{ $gradient }} opacity-20 blur-xl transition group-hover:opacity-40" aria-hidden="true"></div>
+                        <span class="relative inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br {{ $gradient }} shadow-lg transition group-hover:scale-110">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 text-white">{!! $iconSvg !!}</svg>
                         </span>
-                        <h3 class="mt-4 text-base font-extrabold text-brand-dark">{{ data_get($pillar, 'title', '') }}</h3>
-                        <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ data_get($pillar, 'text', '') }}</p>
+                        <h3 class="relative mt-4 text-base font-extrabold text-white">{{ data_get($pillar, 'title', '') }}</h3>
+                        <p class="relative mt-2 text-sm leading-relaxed text-slate-400">{{ data_get($pillar, 'text', '') }}</p>
                     </li>
                 @endforeach
             </ul>
@@ -159,28 +181,37 @@
     @endif
 
     {{-- ═══ IMPLANTATION + CHIFFRES ═══ --}}
-    <section class="bg-slate-50 py-16 sm:py-20" aria-labelledby="implantation-heading">
-        <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+    <section class="relative overflow-hidden bg-gradient-to-br from-brand-blue via-sky-600 to-blue-700 py-20 sm:py-24" aria-labelledby="implantation-heading">
+        <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 0% 100%, rgba(250,204,21,.4) 0%, transparent 50%), radial-gradient(circle at 100% 0%, rgba(255,255,255,.15) 0%, transparent 50%);" aria-hidden="true"></div>
+        <div class="relative z-10 mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
                 <div>
-                    <h2 id="implantation-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl lg:text-4xl">
-                        {{ $implTitle1 }} <span class="text-brand-blue">{{ $implAccent1 }}</span> et <span class="text-brand-blue">{{ $implAccent2 }}</span>
+                    <h2 id="implantation-heading" class="text-2xl font-black tracking-tight text-white sm:text-3xl lg:text-4xl">
+                        {{ $implTitle1 }} <span class="text-brand-yellow">{{ $implAccent1 }}</span> et <span class="text-brand-yellow">{{ $implAccent2 }}</span>
                     </h2>
                     @if ($implText !== '')
-                        <p class="mt-5 text-base leading-relaxed text-slate-600 lg:text-lg">{{ $implText }}</p>
+                        <p class="mt-5 text-base leading-relaxed text-white/80 lg:text-lg">{{ $implText }}</p>
                     @endif
-                    <a href="{{ $agencesHref }}" class="mt-7 inline-flex items-center gap-2 rounded-xl bg-brand-dark px-5 py-3 text-sm font-extrabold text-white shadow-md transition hover:bg-slate-800">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
-                        {{ $implCta }}
-                    </a>
+                    <div class="mt-7 flex flex-wrap gap-3">
+                        <a href="{{ $agencesHref }}" class="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-extrabold text-brand-blue shadow-lg transition hover:bg-slate-50 hover:shadow-xl">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+                            {{ $implCta }}
+                        </a>
+                        @if ($brochurePdf !== '')
+                            <a href="{{ $brochurePdf }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-xl border-2 border-white/30 px-6 py-3 text-sm font-extrabold text-white transition hover:border-white/60 hover:bg-white/10">
+                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                                {{ $brochureLabel }}
+                            </a>
+                        @endif
+                    </div>
                 </div>
                 @if ($stats !== [])
                     <div class="grid gap-4 sm:grid-cols-3">
-                        @foreach ($stats as $stat)
-                            <div class="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:shadow-md">
-                                <p class="text-3xl font-black text-brand-blue">{{ data_get($stat, 'value', '') }}</p>
-                                <p class="mt-1 text-xs font-extrabold uppercase tracking-wide text-slate-500">{{ data_get($stat, 'label', '') }}</p>
-                                <p class="mt-2 text-sm text-slate-600">{{ data_get($stat, 'text', '') }}</p>
+                        @foreach ($stats as $idx => $stat)
+                            <div class="group rounded-2xl border border-white/15 bg-white/10 p-6 text-center backdrop-blur-sm transition hover:bg-white/20">
+                                <p class="text-3xl font-black text-brand-yellow transition group-hover:scale-110">{{ data_get($stat, 'value', '') }}</p>
+                                <p class="mt-1 text-xs font-extrabold uppercase tracking-wide text-white/70">{{ data_get($stat, 'label', '') }}</p>
+                                <p class="mt-2 text-sm text-white/60">{{ data_get($stat, 'text', '') }}</p>
                             </div>
                         @endforeach
                     </div>
@@ -191,7 +222,8 @@
 
     {{-- ═══ RÉSEAU FRANCHISÉS ═══ --}}
     @if ($networkItems !== [])
-    <section class="bg-white py-16 sm:py-20" aria-labelledby="franchises-heading">
+    <section class="relative overflow-hidden bg-gradient-to-b from-slate-50 to-white py-20 sm:py-24" aria-labelledby="franchises-heading">
+        <div class="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-brand-blue via-brand-yellow to-brand-blue" aria-hidden="true"></div>
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="mx-auto max-w-3xl text-center">
                 <h2 id="franchises-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl lg:text-4xl">{{ $networkTitle }}</h2>
@@ -200,22 +232,31 @@
                 @endif
             </div>
             <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                @php
+                    $cardBgs = [
+                        'from-sky-500 to-blue-600',
+                        'from-amber-400 to-orange-500',
+                        'from-emerald-500 to-teal-600',
+                        'from-violet-500 to-purple-600',
+                    ];
+                @endphp
                 @foreach ($networkItems as $idx => $item)
-                    <li class="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-br from-slate-50 to-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
-                        <span class="absolute -right-2 -top-2 text-[4rem] font-black leading-none text-slate-100/60">{{ $idx + 1 }}</span>
+                    @php $bg = $cardBgs[$idx % count($cardBgs)]; @endphp
+                    <li class="group relative overflow-hidden rounded-2xl bg-gradient-to-br {{ $bg }} p-6 shadow-lg transition hover:-translate-y-1 hover:shadow-2xl">
+                        <span class="absolute -right-3 -top-3 text-[4.5rem] font-black leading-none text-white/10">{{ str_pad((string) ($idx + 1), 2, '0', STR_PAD_LEFT) }}</span>
                         <div class="relative">
-                            <h3 class="text-base font-extrabold text-brand-dark">{{ data_get($item, 'title', '') }}</h3>
-                            <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ data_get($item, 'text', '') }}</p>
+                            <h3 class="text-base font-extrabold text-white">{{ data_get($item, 'title', '') }}</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-white/80">{{ data_get($item, 'text', '') }}</p>
                         </div>
                     </li>
                 @endforeach
             </ul>
             @if ($testimonialText !== '')
-                <figure class="mx-auto mt-14 max-w-3xl rounded-2xl border border-brand-blue/15 bg-gradient-to-br from-sky-50/60 to-white p-8 shadow-sm sm:p-10">
-                    <svg class="mb-4 h-8 w-8 text-brand-blue/30" fill="currentColor" viewBox="0 0 32 32" aria-hidden="true"><path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z"/></svg>
-                    <blockquote class="text-lg font-medium leading-relaxed text-brand-dark">{{ $testimonialText }}</blockquote>
+                <figure class="mx-auto mt-14 max-w-3xl overflow-hidden rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 p-8 shadow-xl sm:p-10">
+                    <svg class="mb-4 h-8 w-8 text-brand-blue/50" fill="currentColor" viewBox="0 0 32 32" aria-hidden="true"><path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z"/></svg>
+                    <blockquote class="text-lg font-medium leading-relaxed text-white/90">{{ $testimonialText }}</blockquote>
                     @if ($testimonialAuthor !== '')
-                        <figcaption class="mt-5 text-sm font-bold text-brand-blue">{{ $testimonialAuthor }}</figcaption>
+                        <figcaption class="mt-5 text-sm font-bold text-brand-yellow">— {{ $testimonialAuthor }}</figcaption>
                     @endif
                 </figure>
             @endif
@@ -225,23 +266,25 @@
 
     {{-- ═══ ÉTAPES TIMELINE ═══ --}}
     @if ($steps !== [])
-    <section class="border-t border-slate-200 bg-slate-50 py-16 sm:py-20" aria-labelledby="etapes-heading">
-        <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+    <section class="relative overflow-hidden bg-gradient-to-b from-slate-800 to-slate-900 py-20 sm:py-24" aria-labelledby="etapes-heading">
+        <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22 width=%2280%22 height=%2280%22><circle cx=%2240%22 cy=%2240%22 r=%221%22 fill=%22%23ffffff%22/></svg>');" aria-hidden="true"></div>
+        <div class="relative z-10 mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="mx-auto max-w-3xl text-center">
-                <h2 id="etapes-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl lg:text-4xl">{{ $stepsTitle }}</h2>
+                <h2 id="etapes-heading" class="text-2xl font-black tracking-tight text-white sm:text-3xl lg:text-4xl">{{ $stepsTitle }}</h2>
                 @if ($stepsSubtitle !== '')
-                    <p class="mt-3 text-base text-slate-600 sm:text-lg">{{ $stepsSubtitle }}</p>
+                    <p class="mt-3 text-base text-slate-400 sm:text-lg">{{ $stepsSubtitle }}</p>
                 @endif
             </div>
             <ol class="relative mx-auto mt-14 max-w-4xl">
-                <div class="absolute left-6 top-0 hidden h-full w-0.5 bg-gradient-to-b from-brand-blue via-brand-blue/40 to-slate-200 sm:block" aria-hidden="true"></div>
+                <div class="absolute left-6 top-0 hidden h-full w-0.5 bg-gradient-to-b from-brand-blue via-brand-yellow to-brand-blue sm:block" aria-hidden="true"></div>
                 @foreach ($steps as $idx => $step)
+                    @php $isEven = $idx % 2 === 0; @endphp
                     <li class="relative mb-10 pl-0 sm:pl-16 last:mb-0">
-                        <span class="absolute left-0 top-0 hidden h-12 w-12 items-center justify-center rounded-full border-4 border-white bg-brand-blue text-sm font-black text-white shadow-md sm:inline-flex">{{ $idx + 1 }}</span>
-                        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md sm:p-7">
-                            <span class="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-yellow text-xs font-black text-brand-dark sm:hidden">{{ $idx + 1 }}</span>
-                            <h3 class="text-base font-extrabold text-brand-dark sm:text-lg">{{ data_get($step, 'title', '') }}</h3>
-                            <p class="mt-2 text-sm leading-relaxed text-slate-600 sm:text-base">{{ data_get($step, 'text', '') }}</p>
+                        <span class="absolute left-0 top-0 hidden h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br {{ $isEven ? 'from-brand-blue to-sky-500' : 'from-brand-yellow to-amber-400' }} text-sm font-black {{ $isEven ? 'text-white' : 'text-brand-dark' }} shadow-lg sm:inline-flex">{{ $idx + 1 }}</span>
+                        <div class="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition hover:border-white/20 hover:bg-white/10 sm:p-7">
+                            <span class="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br {{ $isEven ? 'from-brand-blue to-sky-500' : 'from-brand-yellow to-amber-400' }} text-xs font-black {{ $isEven ? 'text-white' : 'text-brand-dark' }} sm:hidden">{{ $idx + 1 }}</span>
+                            <h3 class="text-base font-extrabold text-white sm:text-lg">{{ data_get($step, 'title', '') }}</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-400 sm:text-base">{{ data_get($step, 'text', '') }}</p>
                         </div>
                     </li>
                 @endforeach
@@ -258,22 +301,23 @@
             ->values()
             ->all();
     @endphp
-    <section id="avis-clients" class="border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-white py-16 sm:py-20" aria-labelledby="faq-heading">
+    <section id="avis-clients" class="relative overflow-hidden bg-gradient-to-br from-sky-50 via-white to-amber-50 py-20 sm:py-24" aria-labelledby="faq-heading">
+        <div class="absolute left-0 top-0 h-1 w-full bg-gradient-to-r from-brand-yellow via-brand-blue to-brand-yellow" aria-hidden="true"></div>
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-            <div class="grid gap-6 lg:grid-cols-3 lg:items-stretch">
+            <div class="grid gap-8 lg:grid-cols-3 lg:items-stretch">
 
                 {{-- ── Colonne 1 : FAQ ── --}}
                 <div class="flex min-w-0 flex-col">
                     <h2 id="faq-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">{{ $faqTitle }}</h2>
                     @if ($faqItems !== [])
-                        <div class="mt-6 flex-1 divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                        <div class="mt-6 flex-1 divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md">
                             @foreach ($faqItems as $item)
                                 <details class="group">
-                                    <summary class="flex cursor-pointer items-center justify-between gap-3 px-5 py-4 text-left text-sm font-extrabold text-brand-dark transition hover:bg-slate-50 [&::-webkit-details-marker]:hidden">
+                                    <summary class="flex cursor-pointer items-center justify-between gap-3 px-5 py-4 text-left text-sm font-extrabold text-brand-dark transition hover:bg-sky-50 [&::-webkit-details-marker]:hidden">
                                         <span>{{ data_get($item, 'q', '') }}</span>
-                                        <svg class="h-4 w-4 shrink-0 text-slate-400 transition group-open:rotate-45" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                                        <svg class="h-4 w-4 shrink-0 text-brand-blue transition group-open:rotate-45" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                                     </summary>
-                                    <div class="px-5 pb-4 text-sm leading-relaxed text-slate-600">{{ data_get($item, 'a', '') }}</div>
+                                    <div class="bg-sky-50/50 px-5 pb-4 text-sm leading-relaxed text-slate-600">{{ data_get($item, 'a', '') }}</div>
                                 </details>
                             @endforeach
                         </div>
@@ -283,11 +327,11 @@
                 {{-- ── Colonne 2 : Carousel avis ── --}}
                 <div class="flex min-w-0 flex-col gap-4">
                     <div>
-                        <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-brand-blue/10 px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-brand-blue">
+                        <div class="mb-3 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-blue to-sky-500 px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-white shadow-sm">
                             Avis multi-plateformes
                         </div>
                         <h3 class="break-words text-2xl font-extrabold leading-tight text-brand-dark sm:text-3xl">
-                            <span class="text-brand-blue">{{ data_get($h, 'avis.title_accent', 'Avis') }}</span>{{ data_get($h, 'avis.title_rest', 'clients') }}
+                            <span class="bg-gradient-to-r from-brand-blue to-sky-500 bg-clip-text text-transparent">{{ data_get($h, 'avis.title_accent', 'Avis') }}</span> {{ data_get($h, 'avis.title_rest', 'clients') }}
                         </h3>
                         <p class="mt-2 break-words text-sm text-slate-600">{{ data_get($h, 'avis.intro', '') }}</p>
                         <a href="{{ data_get($h, 'avis.google_url', '#') }}" target="_blank" rel="noopener noreferrer"
@@ -314,7 +358,7 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 rounded-2xl border border-slate-200 bg-white">
+                    <div class="flex-1 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md">
                         <div id="avisStack" style="display:grid">
                             @foreach ($testimonials as $t)
                                 @php
@@ -357,7 +401,7 @@
                 </div>
 
                 {{-- ── Colonne 3 : Image « Clients satisfaits » ── --}}
-                <div class="relative hidden min-h-[280px] overflow-hidden rounded-2xl lg:block">
+                <div class="relative hidden min-h-[280px] overflow-hidden rounded-2xl shadow-xl lg:block">
                     <img
                         src="{{ \App\Support\HomeView::url('/nous/equipe.jpeg') }}"
                         alt="Équipe Normes & Rénovation"
@@ -409,23 +453,37 @@
     </script>
 
     {{-- ═══ FORMULAIRE CANDIDATURE ═══ --}}
-    <section id="candidature" class="scroll-mt-24 bg-brand-dark py-16 text-white sm:py-20">
-        <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+    <section id="candidature" class="relative scroll-mt-24 overflow-hidden bg-gradient-to-br from-slate-900 via-brand-dark to-slate-800 py-20 text-white sm:py-24">
+        <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(circle at 30% 70%, rgba(56,189,248,.3) 0%, transparent 50%), radial-gradient(circle at 80% 30%, rgba(250,204,21,.2) 0%, transparent 50%);" aria-hidden="true"></div>
+        <div class="relative z-10 mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="grid gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
                 <div class="flex flex-col justify-center">
                     @if ($formKicker !== '')
                         <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">{{ $formKicker }}</p>
                     @endif
                     <h2 class="mt-3 text-3xl font-black tracking-tight sm:text-4xl">
-                        <span class="text-brand-blue">{{ $formTitle }}</span>
+                        <span class="bg-gradient-to-r from-brand-blue to-sky-400 bg-clip-text text-transparent">{{ $formTitle }}</span>
                     </h2>
                     @if ($formIntro !== '')
-                        <p class="mt-4 text-sm leading-relaxed text-white/85 sm:text-base">{{ $formIntro }}</p>
+                        <p class="mt-4 text-sm leading-relaxed text-white/80 sm:text-base">{{ $formIntro }}</p>
                     @endif
-                    <div class="mt-10 space-y-5 rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-sm">
+
+                    @if ($brochurePdf !== '')
+                        <a href="{{ $brochurePdf }}" target="_blank" rel="noopener noreferrer" class="mt-6 inline-flex w-fit items-center gap-3 rounded-2xl border border-white/15 bg-white/5 p-5 backdrop-blur-sm transition hover:border-white/30 hover:bg-white/10">
+                            <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg">
+                                <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/></svg>
+                            </span>
+                            <div>
+                                <p class="text-sm font-extrabold text-white">{{ $brochureLabel }}</p>
+                                <p class="text-xs text-white/60">PDF — Informations complètes sur la franchise</p>
+                            </div>
+                        </a>
+                    @endif
+
+                    <div class="mt-8 space-y-5 rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
                         <div>
                             <p class="text-xs font-extrabold uppercase tracking-wide text-brand-yellow">Adresse</p>
-                            <p class="mt-1 text-sm text-white/90">{{ $hqAddress }}</p>
+                            <p class="mt-1 text-sm text-white/80">{{ $hqAddress }}</p>
                         </div>
                         <div>
                             <p class="text-xs font-extrabold uppercase tracking-wide text-brand-yellow">E-mail</p>
@@ -438,7 +496,7 @@
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-white/20 bg-white p-6 text-brand-dark shadow-xl sm:p-8">
+                <div class="rounded-2xl border border-white/20 bg-white p-6 text-brand-dark shadow-2xl sm:p-8">
                     @if (session('franchise_status'))
                         <div class="mb-6 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-900" role="status">
                             <svg class="h-5 w-5 shrink-0 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
@@ -496,7 +554,7 @@
                                 <textarea id="fr_msg" name="message" rows="4" placeholder="Parlez-nous de votre projet, de votre expérience et de vos disponibilités." class="w-full resize-y rounded-lg border border-slate-200 px-3 py-2.5 text-sm transition focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">{{ old('message') }}</textarea>
                             </div>
                         </div>
-                        <button type="submit" class="w-full rounded-xl bg-brand-blue px-4 py-3.5 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 sm:text-base">
+                        <button type="submit" class="w-full rounded-xl bg-gradient-to-r from-brand-blue to-sky-500 px-4 py-3.5 text-sm font-extrabold text-white shadow-lg shadow-brand-blue/25 transition hover:shadow-xl sm:text-base">
                             {{ $formSubmit }}
                         </button>
                         @if ($formRgpd !== '')
