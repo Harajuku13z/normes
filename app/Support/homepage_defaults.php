@@ -32,7 +32,7 @@ return [
             ['label' => 'Isolation', 'route' => 'home', 'anchor' => 'services', 'custom_url' => '', 'style' => ''],
             ['label' => 'Énergie', 'route' => 'home', 'anchor' => 'services', 'custom_url' => '', 'style' => ''],
             ['label' => 'Le réseau', 'route' => 'home', 'anchor' => 'a-propos', 'custom_url' => '', 'style' => ''],
-            ['label' => 'Réalisations', 'route' => 'home', 'anchor' => 'realisations', 'custom_url' => '', 'style' => ''],
+            ['label' => 'Réalisations', 'route' => 'realisations.page', 'anchor' => '', 'custom_url' => '', 'style' => ''],
             ['label' => 'Conseils', 'route' => 'home', 'anchor' => 'conseils', 'custom_url' => '', 'style' => ''],
             ['label' => 'Devis', 'route' => 'contact.page', 'anchor' => 'devis', 'custom_url' => '', 'style' => 'cta'],
         ],
@@ -479,6 +479,18 @@ Nous travaillons avec des équipes et des corps de métier complémentaires pour
             'tva_label' => 'Numéro d’identification TVA',
             'tva' => 'FR96 900 571 696',
         ],
+    ],
+
+    'realisations_page' => [
+        'meta_title' => 'Réalisations | Normes & Rénovation',
+        'meta_description' => 'Photos et descriptions de chantiers menés par Normes & Rénovation : toiture, façade, isolation, rénovation énergétique et travaux durables.',
+        'meta_keywords' => '',
+        'og_image' => '/slide/toiture.png',
+        'hero_bg' => '/slide/toiture.png',
+        'hero_kicker' => 'Chantiers',
+        'hero_h1_primary' => 'Nos réalisations',
+        'hero_h1_accent' => 'en images',
+        'hero_intro' => 'Retrouvez ici une sélection de projets : contexte, travaux réalisés et résultat. Chaque chantier est unique — contactez-nous pour étudier le vôtre.',
     ],
 
     'devis' => [

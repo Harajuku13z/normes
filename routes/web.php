@@ -1,24 +1,28 @@
 <?php
 
-use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\AdminUserAuthController;
-use App\Http\Controllers\Admin\HomeAdminController;
-use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\Admin\UploadController;
-use App\Http\Controllers\Admin\AdminHomepageController;
-use App\Http\Controllers\Admin\AdminContactSettingsController;
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\Admin\AdminAboutPageController;
-use App\Http\Controllers\Admin\AdminAvisSettingsController;
 use App\Http\Controllers\Admin\AdminAiServiceSettingsController;
-use App\Http\Controllers\Admin\AdminLayoutSettingsController;
+use App\Http\Controllers\Admin\AdminAvisSettingsController;
+use App\Http\Controllers\Admin\AdminContactSettingsController;
 use App\Http\Controllers\Admin\AdminHeaderSettingsController;
-use App\Http\Controllers\Admin\AdminSimulateurSettingsController;
+use App\Http\Controllers\Admin\AdminHomepageController;
+use App\Http\Controllers\Admin\AdminLayoutSettingsController;
+use App\Http\Controllers\Admin\AdminRealisationsHubController;
+use App\Http\Controllers\Admin\AdminRealisationsPageController;
 use App\Http\Controllers\Admin\AdminServicePagesController;
+use App\Http\Controllers\Admin\AdminSimulateurSettingsController;
+use App\Http\Controllers\Admin\AdminUserAuthController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\HomeAdminController;
+use App\Http\Controllers\Admin\PortfolioProjectController;
+use App\Http\Controllers\Admin\UploadController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RealisationsController;
 use App\Http\Controllers\ServicePagesController;
 use App\Http\Controllers\SimulateurController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\AboutController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -44,6 +48,15 @@ Route::prefix('admin')->group(function () {
         Route::post('/contact-settings', [AdminContactSettingsController::class, 'update'])->name('admin.contact_settings.update');
         Route::get('/about-settings', [AdminAboutPageController::class, 'edit'])->name('admin.about_settings.edit');
         Route::post('/about-settings', [AdminAboutPageController::class, 'update'])->name('admin.about_settings.update');
+        Route::get('/realisations', [AdminRealisationsHubController::class, 'index'])->name('admin.realisations.index');
+        Route::get('/realisations/page', [AdminRealisationsPageController::class, 'edit'])->name('admin.realisations.page.edit');
+        Route::post('/realisations/page', [AdminRealisationsPageController::class, 'update'])->name('admin.realisations.page.update');
+        Route::get('/portfolio-projects', [PortfolioProjectController::class, 'index'])->name('admin.portfolio_projects.index');
+        Route::get('/portfolio-projects/create', [PortfolioProjectController::class, 'create'])->name('admin.portfolio_projects.create');
+        Route::post('/portfolio-projects', [PortfolioProjectController::class, 'store'])->name('admin.portfolio_projects.store');
+        Route::get('/portfolio-projects/{portfolio_project}/edit', [PortfolioProjectController::class, 'edit'])->name('admin.portfolio_projects.edit');
+        Route::put('/portfolio-projects/{portfolio_project}', [PortfolioProjectController::class, 'update'])->name('admin.portfolio_projects.update');
+        Route::delete('/portfolio-projects/{portfolio_project}', [PortfolioProjectController::class, 'destroy'])->name('admin.portfolio_projects.destroy');
         Route::get('/layout-settings', [AdminLayoutSettingsController::class, 'edit'])->name('admin.layout_settings.edit');
         Route::post('/layout-settings', [AdminLayoutSettingsController::class, 'update'])->name('admin.layout_settings.update');
         Route::get('/header-settings', [AdminHeaderSettingsController::class, 'edit'])->name('admin.header_settings.edit');
@@ -77,6 +90,9 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact.page'
 
 // Page À propos
 Route::get('/a-propos', [AboutController::class, 'index'])->name('about.page');
+
+// Réalisations (portfolio)
+Route::get('/realisations', [RealisationsController::class, 'index'])->name('realisations.page');
 
 // Simulateur de devis (multi-étapes)
 Route::get('/simulateur', [SimulateurController::class, 'start'])->name('simulateur.start');

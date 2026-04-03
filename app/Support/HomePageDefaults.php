@@ -9,16 +9,26 @@ final class HomePageDefaults
      */
     public static function all(): array
     {
+        /** @var array<string, mixed> $base */
+        $base = require __DIR__.'/homepage_defaults.php';
+
         $path = resource_path('data/homepage.json');
         if (is_file($path)) {
             $decoded = json_decode((string) file_get_contents($path), true);
             if (is_array($decoded)) {
+                // Le JSON prime, mais on complète avec les clés absentes du fichier PHP
+                // (nouvelles sections comme realisations_page sans rééditer tout le JSON).
+                foreach ($base as $key => $value) {
+                    if (! array_key_exists($key, $decoded)) {
+                        $decoded[$key] = $value;
+                    }
+                }
+
                 return $decoded;
             }
         }
 
-        /** @var array<string, mixed> */
-        return require __DIR__.'/homepage_defaults.php';
+        return $base;
     }
 
     /**
@@ -45,6 +55,7 @@ final class HomePageDefaults
             'avis' => 'Avis clients',
             'contact_page' => 'Page contact (textes)',
             'about_page' => 'Page À propos',
+            'realisations_page' => 'Page Réalisations (hero & SEO)',
             'devis' => 'Contact & devis',
             'blog' => 'Blog / conseils',
             'partners' => 'Partenaires',

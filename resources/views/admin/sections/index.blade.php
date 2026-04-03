@@ -20,6 +20,19 @@
         </div>
 
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+            <h2 class="text-lg font-extrabold text-slate-900">Réalisations</h2>
+            <p class="mt-1 text-sm text-slate-600">Page <code class="text-xs">/realisations</code> : hero, SEO et projets avec galeries photos.</p>
+            <div class="mt-5 flex flex-wrap gap-2">
+                <a href="{{ route('admin.realisations.index') }}" class="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
+                    Gérer les réalisations
+                </a>
+                <a href="{{ route('realisations.page') }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-extrabold text-slate-700 hover:bg-slate-50">
+                    Voir /realisations
+                </a>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
             <h2 class="text-lg font-extrabold text-slate-900">Pages services</h2>
             <p class="mt-1 text-sm text-slate-600">Créer / modifier les pages “Traitement et démoussage…” et autres services.</p>
             <a href="{{ route('admin.services_pages.index') }}" class="mt-5 inline-flex w-fit items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
