@@ -72,6 +72,32 @@ class PortfolioProject extends Model
         return $this->hasMany(PortfolioProjectImage::class)->orderBy('sort_order')->orderBy('id');
     }
 
+    /**
+     * Accepte l'id (toujours valide) ou le slug si la colonne existe (SEO / anciens liens).
+     *
+     * @param  mixed  $value
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        $value = trim((string) $value);
+        if ($value === '') {
+            return null;
+        }
+
+        if (Schema::hasColumn($this->getTable(), 'slug')) {
+            $bySlug = static::query()->where('slug', $value)->first();
+            if ($bySlug !== null) {
+                return $bySlug;
+            }
+        }
+
+        if (ctype_digit($value)) {
+            return static::query()->whereKey((int) $value)->first();
+        }
+
+        return null;
+    }
+
     public static function makeUniqueSlugFromTitle(string $title, ?int $exceptId = null): string
     {
         $base = Str::slug($title);

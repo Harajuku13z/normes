@@ -93,7 +93,7 @@ Route::get('/a-propos', [AboutController::class, 'index'])->name('about.page');
 
 // Réalisations (portfolio)
 Route::get('/realisations', [RealisationsController::class, 'index'])->name('realisations.page');
-Route::get('/realisations/{portfolio_project:slug}', [RealisationsController::class, 'show'])->name('realisations.show');
+Route::get('/realisations/{portfolio_project}', [RealisationsController::class, 'show'])->name('realisations.show');
 
 // Simulateur de devis (multi-étapes)
 Route::get('/simulateur', [SimulateurController::class, 'start'])->name('simulateur.start');

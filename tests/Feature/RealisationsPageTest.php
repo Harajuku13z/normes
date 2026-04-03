@@ -61,9 +61,22 @@ class RealisationsPageTest extends TestCase
         $response->assertSee(route('realisations.page', [], false), false);
     }
 
-    public function test_unknown_realisation_slug_returns_not_found(): void
+    public function test_unknown_realisation_returns_not_found(): void
     {
+        $this->get('/realisations/999999')->assertNotFound();
         $this->get('/realisations/n-existe-pas-xyz')->assertNotFound();
+    }
+
+    public function test_realisation_detail_resolves_by_numeric_id(): void
+    {
+        $project = PortfolioProject::factory()->create([
+            'title' => 'Projet par id',
+            'slug' => 'projet-par-id',
+            'description' => 'Contenu.',
+            'sort_order' => 0,
+        ]);
+
+        $this->get('/realisations/'.$project->id)->assertOk()->assertSee('Projet par id', false);
     }
 
     public function test_realisations_index_heals_null_slug_before_generating_urls(): void
