@@ -23,14 +23,28 @@
     <form method="post" action="{{ route('admin.about_settings.update') }}" class="space-y-5">
         @csrf
 
+        @php
+            $reelsForEditor = data_get($merged, 'reels', []);
+            if (! is_array($reelsForEditor)) {
+                $reelsForEditor = [];
+            }
+            $mergedForForm = $merged;
+            unset($mergedForForm['reels']);
+        @endphp
+
+        @include('admin.about_settings.partials.reels_editor', [
+            'reels' => $reelsForEditor,
+            'namePrefix' => 'sections[about_page][reels]',
+        ])
+
         <details class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" open>
             <summary class="cursor-pointer select-none text-sm font-extrabold text-slate-900">
-                Section <span class="font-mono text-xs font-normal text-slate-500">about_page</span>
+                Autres champs <span class="font-mono text-xs font-normal text-slate-500">about_page</span>
             </summary>
             <div class="mt-4">
                 @include('admin.homepage.partials.form', [
                     'name' => 'sections[about_page]',
-                    'value' => $merged,
+                    'value' => $mergedForForm,
                     'depth' => 0,
                 ])
             </div>
@@ -52,7 +66,18 @@
                 const img = document.getElementById(previewId);
                 if (!img) return;
                 img.src = url;
+                img.classList.remove('hidden');
                 img.style.display = 'block';
+            }
+
+            function setVideoPreview(previewId, url) {
+                const vid = document.getElementById(previewId);
+                if (!vid || vid.tagName !== 'VIDEO') return;
+                vid.src = url;
+                vid.classList.remove('hidden');
+                vid.style.display = '';
+                const ph = document.getElementById(previewId + '_placeholder');
+                if (ph) ph.style.display = 'none';
             }
 
             document.addEventListener('change', async (e) => {
@@ -60,6 +85,7 @@
                 if (!input || input.type !== 'file') return;
                 const uploadTargetInputId = input.dataset.uploadTargetInputId;
                 const uploadTargetPreviewId = input.dataset.uploadTargetPreviewId;
+                const uploadTargetPreviewVideoId = input.dataset.uploadTargetPreviewVideoId;
                 if (!uploadTargetInputId) return;
 
                 const file = input.files && input.files[0];
@@ -87,7 +113,8 @@
 
                     const targetInput = document.getElementById(uploadTargetInputId);
                     if (targetInput) targetInput.value = url;
-                    if (uploadTargetPreviewId) setPreview(uploadTargetPreviewId, url);
+                    if (uploadTargetPreviewVideoId) setVideoPreview(uploadTargetPreviewVideoId, url);
+                    else if (uploadTargetPreviewId) setPreview(uploadTargetPreviewId, url);
                 } catch (err) {
                     alert(String(err));
                 } finally {

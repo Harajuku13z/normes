@@ -8,14 +8,20 @@ use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class UploadController extends Controller
 {
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            // Supporte images (pour le site) + PDF (doc technique)
-            'file' => ['required', 'file', 'mimetypes:application/pdf,image/jpeg,image/png,image/webp', 'max:20480'],
+            // Images, PDF, vidéos courtes (reels) — max ~100 Mo pour les vidéos
+            'file' => [
+                'required',
+                'file',
+                'mimetypes:application/pdf,image/jpeg,image/png,image/webp,video/mp4,video/quicktime,video/webm',
+                'max:102400',
+            ],
         ]);
 
         $file = $request->file('file');
@@ -24,9 +30,34 @@ class UploadController extends Controller
 
         $isPdf = $clientExt === 'pdf' || $mime === 'application/pdf';
 
-        $targetExt = $isPdf
-            ? 'pdf'
-            : (in_array($clientExt, ['jpg', 'jpeg', 'png', 'webp'], true) ? ($clientExt === 'jpeg' ? 'jpg' : $clientExt) : 'jpg');
+        $isVideo = str_starts_with($mime, 'video/')
+            || in_array($clientExt, ['mp4', 'mov', 'webm', 'qt'], true);
+
+        $isImage = ! $isPdf && ! $isVideo
+            && in_array($clientExt, ['jpg', 'jpeg', 'png', 'webp'], true);
+
+        if (! $isPdf && ! $isVideo && ! $isImage) {
+            throw ValidationException::withMessages([
+                'file' => ['Type de fichier non pris en charge (images JPEG/PNG/WebP, PDF, vidéo MP4/MOV/WebM).'],
+            ]);
+        }
+
+        $targetExt = 'bin';
+        if ($isPdf) {
+            $targetExt = 'pdf';
+        } elseif ($isVideo) {
+            if (in_array($clientExt, ['mov', 'qt'], true) || $mime === 'video/quicktime') {
+                $targetExt = 'mov';
+            } elseif ($clientExt === 'webm' || $mime === 'video/webm') {
+                $targetExt = 'webm';
+            } else {
+                $targetExt = 'mp4';
+            }
+        } else {
+            $targetExt = in_array($clientExt, ['jpg', 'jpeg', 'png', 'webp'], true)
+                ? ($clientExt === 'jpeg' ? 'jpg' : $clientExt)
+                : 'jpg';
+        }
 
         $filename = Str::random(24).'.'.$targetExt;
         $relativePath = 'uploads/'.$filename;
@@ -35,7 +66,7 @@ class UploadController extends Controller
         $fullPath = $publicDir.DIRECTORY_SEPARATOR.$filename;
 
         $saved = false;
-        if (! $isPdf) {
+        if ($isImage) {
             $saved = $this->saveWithInterventionIfAvailable($file, $fullPath);
         }
 
