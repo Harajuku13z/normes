@@ -146,7 +146,11 @@ class AdminHeaderSettingsController extends Controller
             $url = '/'.ltrim((string) ($m[1] ?? ''), '/');
         }
 
-        if (preg_match('#^/services/?#services$#i', $url) === 1) {
+        // Literal hash in path must be escaped (\#) when delimiter is '#'.
+        if (preg_match('#^/services/?\#services$#i', $url) === 1) {
+            $url = '/services';
+        }
+        if (preg_match('#^https?://[^/]+/services/?\#services$#i', $url) === 1) {
             $url = '/services';
         }
 

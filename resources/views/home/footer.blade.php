@@ -19,7 +19,10 @@
                 if (preg_match('#^https?://[^/]+/public/(.*)$#i', $customUrl, $m) === 1) {
                     $customUrl = '/'.ltrim((string) ($m[1] ?? ''), '/');
                 }
-                if (preg_match('#^/services/?#services$#i', $customUrl) === 1) {
+                if (preg_match('#^/services/?\#services$#i', $customUrl) === 1) {
+                    $customUrl = '/services';
+                }
+                if (preg_match('#^https?://[^/]+/services/?\#services$#i', $customUrl) === 1) {
                     $customUrl = '/services';
                 }
             }
