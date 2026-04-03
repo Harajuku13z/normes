@@ -500,6 +500,9 @@ Nous travaillons avec des équipes et des corps de métier complémentaires pour
         'subtitle' => 'Estimation personnalisée & rappel d\'un conseiller',
         'intro' => 'Visualisez les grandes lignes de votre projet (toiture, surfaces, état du bien) — un interlocuteur vous rappelle pour affiner chiffrage et aides.',
         'response_note' => 'Réponse sous 48h en général — sans engagement.',
+        'team_image' => '/nous/camion-chantier.png',
+        'team_image_title' => 'Nous sommes là pour vous accompagner',
+        'team_image_text' => 'Une équipe de professionnels certifiés RGE, à votre écoute pour chaque étape de votre projet de rénovation.',
         'mobile_form_cta' => 'Remplir le formulaire',
         'contact_heading' => 'Contact agences',
         'agencies_contact' => [

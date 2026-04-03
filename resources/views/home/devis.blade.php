@@ -14,14 +14,17 @@
                 <a href="#formulaire-contact" class="mt-5 inline-flex rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-lg transition hover:bg-sky-500 lg:hidden">{{ data_get($d, 'mobile_form_cta') }}</a>
             </div>
 
-            <div class="relative overflow-hidden rounded-2xl">
-                <img src="{{ \App\Support\HomeView::url('/nous/camion-chantier.png') }}" alt="Camion Normes & Rénovation sur chantier" class="w-full object-cover" loading="lazy" decoding="async">
-                <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/40 to-transparent"></div>
-                <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-                    <p class="text-lg font-extrabold text-white sm:text-xl">Nous sommes là pour vous accompagner</p>
-                    <p class="mt-1 text-sm leading-relaxed text-slate-200">Une équipe de professionnels certifiés RGE, à votre écoute pour chaque étape de votre projet de rénovation.</p>
+            @php $teamImg = trim((string) data_get($d, 'team_image', '/nous/camion-chantier.png')); @endphp
+            @if ($teamImg !== '')
+                <div class="relative overflow-hidden rounded-2xl">
+                    <img src="{{ \App\Support\HomeView::url($teamImg) }}" alt="Normes & Rénovation — sur le terrain" class="w-full object-cover" loading="lazy" decoding="async">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/40 to-transparent"></div>
+                    <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6">
+                        <p class="text-lg font-extrabold text-white sm:text-xl">{{ data_get($d, 'team_image_title', 'Nous sommes là pour vous accompagner') }}</p>
+                        <p class="mt-1 text-sm leading-relaxed text-slate-200">{{ data_get($d, 'team_image_text', 'Une équipe de professionnels certifiés RGE, à votre écoute pour chaque étape de votre projet de rénovation.') }}</p>
+                    </div>
                 </div>
-            </div>
+            @endif
 
             <div class="rounded-2xl border border-white/20 bg-white/10 p-5 sm:p-6 lg:shrink-0">
                 <p class="text-xs font-bold uppercase tracking-wide text-sky-300">{{ data_get($sim, 'kicker') }}</p>
