@@ -7,6 +7,8 @@
     $metaKeywords = trim((string) data_get($h, 'meta.keywords', ''));
     $canonicalUrl = route('services.index', [], false);
     $ogImage = trim((string) data_get($h, 'meta.og_image', 'logo.png'));
+    $heroBg = HomeView::url('slide/toiture.png');
+    $contactHref = route('contact.page', [], false).'#devis';
 @endphp
 
 <!DOCTYPE html>
@@ -22,51 +24,48 @@
 <body class="overflow-x-hidden bg-white font-sans text-brand-dark antialiased">
 @include('home.header', ['home' => $h])
 
-<section class="relative isolate overflow-hidden bg-brand-dark py-14 text-white sm:py-20">
-    <div class="pointer-events-none absolute inset-0">
-        <img
-            src="{{ \App\Support\HomeView::url('/slide/toiture.png') }}"
-            alt=""
-            class="h-full w-full object-cover object-center opacity-30"
-            loading="eager"
-            decoding="async"
-        >
-        <div class="absolute inset-0 bg-gradient-to-r from-brand-dark/95 via-brand-dark/85 to-brand-dark/70"></div>
-    </div>
-    <div class="relative mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-        <div class="max-w-4xl">
-            <p class="inline-flex items-center rounded-full bg-white/10 px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-brand-yellow">
-                Nos prestations
-            </p>
-            <h1 class="mt-4 text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
-                <span class="text-brand-yellow">Nos services</span> de rénovation énergétique
-            </h1>
-            <p class="mt-4 max-w-3xl text-base text-slate-100 sm:text-lg">
-                Parcourez l’ensemble de nos prestations. Chaque fiche service détaille les solutions proposées, les étapes et les documents techniques associés.
-            </p>
-            <div class="mt-7 flex flex-wrap gap-3">
-                <a href="#services-list" class="inline-flex rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500">
-                    Voir les services
-                </a>
-                <a href="#devis" class="inline-flex rounded-xl border-2 border-white/40 bg-white/10 px-5 py-3 text-sm font-extrabold text-white transition hover:border-white hover:bg-white/20">
-                    Demander un devis
-                </a>
+<section id="top" class="relative min-h-[520px] overflow-hidden sm:min-h-[620px]">
+    <div
+        class="absolute inset-0 bg-cover bg-center"
+        style="background-image: url('{{ $heroBg }}');"
+        aria-hidden="true"
+    ></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/55 to-transparent" aria-hidden="true"></div>
+
+    <div class="relative z-10 mx-auto flex min-h-[520px] w-[95%] flex-col justify-end gap-6 px-4 py-10 sm:min-h-[620px] sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
+        <div class="max-w-3xl text-white">
+            <div class="rounded-3xl border border-white/15 bg-brand-dark/35 p-6 shadow-soft backdrop-blur-md sm:p-8">
+                <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">
+                    Nos prestations
+                </p>
+                <h1 class="mb-4 text-4xl font-black leading-[1.02] tracking-tight drop-shadow sm:text-5xl">
+                    Nos services de rénovation énergétique
+                </h1>
+                <p class="mb-2 max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">
+                    Parcourez l’ensemble de nos prestations. Chaque fiche service détaille les solutions proposées, les étapes et les documents techniques associés.
+                </p>
+
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <a
+                        href="#services-list"
+                        class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500"
+                    >
+                        Voir les services
+                    </a>
+                    <a
+                        href="{{ $contactHref }}"
+                        class="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:bg-yellow-300"
+                    >
+                        Devis gratuit
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
-<section id="services-list" class="bg-slate-50/70 py-14 sm:py-20">
+<section id="services-list" class="scroll-mt-24 bg-slate-50/70 py-14 sm:py-20">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-        <div class="mb-8">
-            <h1 class="text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl">
-                <span class="text-brand-blue">Nos services</span> de rénovation
-            </h1>
-            <p class="mt-3 max-w-3xl text-base text-slate-600 sm:text-lg">
-                Parcourez l’ensemble de nos prestations. Chaque fiche service détaille les solutions proposées, les étapes et les documents techniques associés.
-            </p>
-        </div>
-
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($pages as $page)
                 @php
