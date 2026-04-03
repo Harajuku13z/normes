@@ -11,7 +11,7 @@
         <div>
             <h1 class="text-2xl font-extrabold text-slate-900">Admin — Homepage</h1>
             <p class="mt-1 max-w-2xl text-sm text-slate-600">
-                Modifiez les blocs de la page d’accueil via des formulaires. Les valeurs sont enregistrées dans `home_sections`.
+                Modifiez les blocs de la page d’accueil via des formulaires. Les valeurs sont enregistrées dans `home_sections`. La page <strong>À propos</strong> (<code class="text-xs">/a-propos</code>) se modifie dans le menu <a href="{{ route('admin.about_settings.edit') }}" class="font-semibold text-sky-700 hover:underline">Page À propos</a>.
             </p>
         </div>
         <div class="mt-4 flex flex-wrap gap-2">

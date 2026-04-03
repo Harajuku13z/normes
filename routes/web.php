@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\Admin\AdminHomepageController;
 use App\Http\Controllers\Admin\AdminContactSettingsController;
+use App\Http\Controllers\Admin\AdminAboutPageController;
 use App\Http\Controllers\Admin\AdminAvisSettingsController;
 use App\Http\Controllers\Admin\AdminAiServiceSettingsController;
 use App\Http\Controllers\Admin\AdminLayoutSettingsController;
@@ -41,6 +42,8 @@ Route::prefix('admin')->group(function () {
         Route::post('/homepage', [AdminHomepageController::class, 'update'])->name('admin.homepage.update');
         Route::get('/contact-settings', [AdminContactSettingsController::class, 'edit'])->name('admin.contact_settings.edit');
         Route::post('/contact-settings', [AdminContactSettingsController::class, 'update'])->name('admin.contact_settings.update');
+        Route::get('/about-settings', [AdminAboutPageController::class, 'edit'])->name('admin.about_settings.edit');
+        Route::post('/about-settings', [AdminAboutPageController::class, 'update'])->name('admin.about_settings.update');
         Route::get('/layout-settings', [AdminLayoutSettingsController::class, 'edit'])->name('admin.layout_settings.edit');
         Route::post('/layout-settings', [AdminLayoutSettingsController::class, 'update'])->name('admin.layout_settings.update');
         Route::get('/header-settings', [AdminHeaderSettingsController::class, 'edit'])->name('admin.header_settings.edit');

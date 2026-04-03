@@ -14,7 +14,7 @@ class AdminHomepageController extends Controller
     public function edit(): View
     {
         $defaults = HomePageDefaults::all();
-        $excludedKeys = ['header', 'footer', 'avis', 'contact_page'];
+        $excludedKeys = ['header', 'footer', 'avis', 'contact_page', 'about_page'];
         $keys = array_values(array_filter(array_keys($defaults), fn ($key) => ! in_array($key, $excludedKeys, true)));
 
         $saved = HomeSection::query()
@@ -43,7 +43,7 @@ class AdminHomepageController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $defaults = HomePageDefaults::all();
-        $excludedKeys = ['header', 'footer', 'avis', 'contact_page'];
+        $excludedKeys = ['header', 'footer', 'avis', 'contact_page', 'about_page'];
         $keys = array_values(array_filter(array_keys($defaults), fn ($key) => ! in_array($key, $excludedKeys, true)));
 
         $sections = $request->input('sections', []);

@@ -14,6 +14,7 @@
             $isHomepage = $currentRoute === 'admin.homepage.edit' || $currentRoute === 'admin.homepage.update';
             $isServicesPages = str_starts_with((string) $currentRoute, 'admin.services_pages.');
             $isContactSettings = $currentRoute === 'admin.contact_settings.edit' || $currentRoute === 'admin.contact_settings.update';
+            $isAboutSettings = $currentRoute === 'admin.about_settings.edit' || $currentRoute === 'admin.about_settings.update';
             $isLayoutSettings = $currentRoute === 'admin.layout_settings.edit' || $currentRoute === 'admin.layout_settings.update';
             $isHeaderSettings = $currentRoute === 'admin.header_settings.edit' || $currentRoute === 'admin.header_settings.update';
             $isAvisSettings = $currentRoute === 'admin.avis_settings.edit' || $currentRoute === 'admin.avis_settings.update' || $currentRoute === 'admin.avis_settings.fetch_google';
@@ -52,6 +53,10 @@
                         <a href="{{ route('admin.contact_settings.edit') }}"
                            class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isContactSettings ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
                             Page contact
+                        </a>
+                        <a href="{{ route('admin.about_settings.edit') }}"
+                           class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isAboutSettings ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
+                            Page À propos
                         </a>
                         <a href="{{ route('admin.layout_settings.edit') }}"
                            class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isLayoutSettings ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
