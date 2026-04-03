@@ -43,7 +43,7 @@
     <div class="mt-8 flex items-stretch gap-4">
 
         {{-- Card Google Business (md+) --}}
-        <div class="hidden shrink-0 flex-col items-center justify-center rounded-2xl bg-white px-5 py-6 shadow-sm md:flex" style="min-width: 160px">
+        <div class="hidden shrink-0 flex-col items-center justify-center rounded-2xl bg-white px-5 py-6 shadow-sm md:flex" style="min-width:160px">
             <img src="{{ \App\Support\HomeView::url($sidebarIcon) }}" alt="Normes et Rénovation" class="h-10 w-10 rounded-lg object-contain" loading="lazy" decoding="async">
             <p class="mt-2 text-center text-[10px] font-extrabold uppercase tracking-wide text-brand-dark">Normes et Rénovation</p>
             <p class="mt-1 text-sm text-yellow-500">★★★★★</p>
@@ -64,8 +64,8 @@
                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
             </button>
 
-            <div class="overflow-hidden rounded-xl">
-                <div id="svcAvisTrack" class="flex transition-transform duration-500 ease-in-out">
+            <div id="svcAvisViewport" class="overflow-hidden rounded-xl">
+                <div id="svcAvisTrack" class="flex" style="transition:transform .5s ease">
                     @foreach ($testimonials as $idx => $t)
                         @php
                             $platform = (string) data_get($t, 'platform', 'google');
@@ -74,7 +74,7 @@
                             $initial  = mb_strtoupper(mb_substr($author, 0, 1));
                             $color    = $initialColors[$idx % count($initialColors)];
                         @endphp
-                        <article class="svc-avis-slide w-full shrink-0 px-1.5 sm:w-1/2 lg:w-1/3">
+                        <article class="svc-avis-slide shrink-0 px-1.5" style="box-sizing:border-box">
                             <div class="flex h-full flex-col rounded-xl bg-white p-4 shadow-sm">
                                 <div class="mb-2 flex items-center gap-2.5">
                                     <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full {{ $color }} text-xs font-extrabold text-white">{{ $initial }}</span>
@@ -107,65 +107,76 @@
         </div>
     </div>
 
-
 </div>
 
 <script>
-(function () {
+document.addEventListener('DOMContentLoaded', function () {
+    var viewport = document.getElementById('svcAvisViewport');
     var track = document.getElementById('svcAvisTrack');
     var slides = track ? Array.from(track.querySelectorAll('.svc-avis-slide')) : [];
     var prev = document.getElementById('svcAvisPrev');
     var next = document.getElementById('svcAvisNext');
     var section = document.getElementById('svc-avis-clients');
     var n = slides.length;
-    if (!n || !track) return;
+    if (!n || !track || !viewport) return;
 
-    var current = 0;
+    var currentPage = 0;
     var timer = null;
 
     function getVisible() {
-        var w = window.innerWidth;
-        if (w >= 1024) return 3;
-        if (w >= 640) return 2;
+        var w = viewport.offsetWidth;
+        if (w >= 768) return 3;
+        if (w >= 480) return 2;
         return 1;
+    }
+
+    function layout() {
+        var vis = getVisible();
+        var slideW = viewport.offsetWidth / vis;
+        for (var i = 0; i < n; i++) slides[i].style.width = slideW + 'px';
+        track.style.width = (slideW * n) + 'px';
     }
 
     function getTotalPages() {
         return Math.ceil(n / getVisible());
     }
 
-    function moveTo(pageIdx) {
+    function goTo(page) {
+        layout();
         var vis = getVisible();
         var total = getTotalPages();
-        current = ((pageIdx % total) + total) % total;
-        var firstSlide = current * vis;
-        var pct = firstSlide * (100 / n);
-        track.style.transform = 'translateX(-' + pct + '%)';
+        currentPage = ((page % total) + total) % total;
+        var offset = currentPage * vis * (viewport.offsetWidth / vis);
+        track.style.transform = 'translateX(-' + offset + 'px)';
     }
-
-    function advance() { moveTo(current + 1); }
 
     function startAuto() {
         if (timer) return;
-        timer = setInterval(advance, 4000);
+        timer = setInterval(function () { goTo(currentPage + 1); }, 4000);
     }
+
     function stopAuto() {
         if (!timer) return;
         clearInterval(timer);
         timer = null;
     }
 
-    if (prev) prev.addEventListener('click', function () { stopAuto(); moveTo(current - 1); startAuto(); });
-    if (next) next.addEventListener('click', function () { stopAuto(); moveTo(current + 1); startAuto(); });
+    if (prev) prev.addEventListener('click', function () { stopAuto(); goTo(currentPage - 1); startAuto(); });
+    if (next) next.addEventListener('click', function () { stopAuto(); goTo(currentPage + 1); startAuto(); });
 
     if (section) {
         section.addEventListener('mouseenter', stopAuto);
         section.addEventListener('mouseleave', startAuto);
     }
 
-    window.addEventListener('resize', function () { moveTo(current); });
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () { goTo(currentPage); }, 100);
+    });
 
-    moveTo(0);
+    layout();
+    goTo(0);
     startAuto();
-})();
+});
 </script>
