@@ -18,6 +18,7 @@ class RealisationsPageTest extends TestCase
         $response->assertSee('Nos réalisations', false);
         $response->assertSee('<h1', false);
         $response->assertSee('id="projets"', false);
+        $response->assertSee('id="devis"', false);
     }
 
     public function test_realisations_route_name(): void

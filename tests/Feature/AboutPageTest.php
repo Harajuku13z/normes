@@ -22,7 +22,8 @@ class AboutPageTest extends TestCase
         $response->assertSee('Fabienne Commeau', false);
         $response->assertSee('900 571 696', false);
         $response->assertSee('Formulaire de contact', false);
-        $response->assertSee('id="nous-contacter"', false);
+        $response->assertSee('id="devis"', false);
+        $response->assertSee('id="formulaire-contact"', false);
     }
 
     public function test_canonical_about_route_registered(): void

@@ -23,7 +23,6 @@
     $heroH1Primary = trim((string) data_get($rp, 'hero_h1_primary', 'Nos réalisations'));
     $heroH1Accent = trim((string) data_get($rp, 'hero_h1_accent', 'en images'));
     $heroIntro = trim((string) data_get($rp, 'hero_intro', ''));
-    $contactHref = route('contact.page', [], false).'#devis';
     $canonicalPath = route('realisations.page', [], false);
 @endphp
 <!DOCTYPE html>
@@ -70,7 +69,7 @@
                     <a href="#projets" class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
                         Voir les projets
                     </a>
-                    <a href="{{ $contactHref }}" class="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:bg-yellow-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
+                    <a href="#devis" class="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:bg-yellow-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
                         Demander un devis
                     </a>
                 </div>
@@ -138,6 +137,8 @@
         </div>
     </section>
 </main>
+
+@include('home.devis', ['home' => $h])
 
 @php
     $realisationsLd = [

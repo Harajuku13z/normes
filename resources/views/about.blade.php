@@ -56,8 +56,6 @@
 
     $mediationText = trim((string) data_get($ap, 'mediation_text', 'Conformément à la réglementation, notre établissement a désigné le Centre de la Médiation de la Consommation de Conciliateurs de Justice (CM2C) comme médiateur de la consommation. En cas de réclamation non résolue, vous pouvez le contacter directement à l\'adresse https://www.cm2c.net.'));
 
-    $taglineBottom = trim((string) data_get($ap, 'tagline_bottom', 'Spécialiste en solutions de rénovation électrique, thermique et hygrométrique pour la maison.'));
-
     $f = data_get($h, 'footer', []);
     if (! is_array($f)) {
         $f = [];
@@ -149,7 +147,7 @@
                     <a href="{{ $contactHref }}" class="inline-flex rounded-2xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-lg transition hover:-translate-y-0.5 hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
                         Devis gratuit
                     </a>
-                    <a href="#nous-contacter" class="inline-flex rounded-2xl border border-white/35 bg-white/10 px-5 py-3 text-sm font-extrabold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/18 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
+                    <a href="#devis" class="inline-flex rounded-2xl border border-white/35 bg-white/10 px-5 py-3 text-sm font-extrabold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/18 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
                         Nous contacter
                     </a>
                 </div>
@@ -469,25 +467,10 @@
         </section>
     @endif
 
-    {{-- ═══ CTA contact en bas (lien formulaire + coordonnées discrètes) ═══ --}}
-    @include('about._footer-cta-contact', [
-        'phone' => $footerPhone,
-        'phoneHref' => $footerPhoneHref,
-        'email' => $footerEmail,
-        'contactHref' => $contactHref,
-    ])
-
-    {{-- ═══ TAGLINE ═══ --}}
-    @if ($taglineBottom !== '')
-        <section class="bg-brand-dark py-8 text-center text-white sm:py-10">
-            <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-                <p class="mx-auto max-w-3xl text-sm font-medium leading-relaxed text-white/80 sm:text-base">
-                    {{ $taglineBottom }}
-                </p>
-            </div>
-        </section>
-    @endif
+    {{-- ═══ Bloc contact / devis (identique à l’accueil : formulaire complet) ═══ --}}
 </main>
+
+@include('home.devis', ['home' => $h])
 
 @php
     $aboutLd = [
