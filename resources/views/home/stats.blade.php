@@ -16,6 +16,7 @@
                 $prefix = $hasNewFormat ? data_get($item, 'prefix', '') : preg_replace('/[\d.,\s].*/', '', (string) data_get($item, 'value', ''));
                 $suffix = $hasNewFormat ? data_get($item, 'suffix', '') : preg_replace('/^.*[\d.,\s]/', '', (string) data_get($item, 'value', ''));
                 $displayFull = $prefix . $number . $suffix;
+                $shouldAnimate = (bool) data_get($item, 'animate', true);
             @endphp
             <article class="flex flex-col items-center rounded-2xl border border-white/15 bg-white px-4 py-7 text-center shadow-soft ring-1 ring-white/10 sm:py-8">
                 <span class="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl {{ $iconWrapClass }} {{ $textClass }} ring-1" aria-hidden="true">
@@ -25,13 +26,17 @@
                         <i class="fa-solid fa-chart-line text-2xl"></i>
                     @endif
                 </span>
-                <strong
-                    class="text-4xl font-black tracking-tight {{ $textClass }}"
-                    data-countup="{{ $number }}"
-                    data-countup-prefix="{{ $prefix }}"
-                    data-countup-suffix="{{ $suffix }}"
-                >{{ $prefix }}0{{ $suffix }}</strong>
-                <noscript><strong class="text-4xl font-black tracking-tight {{ $textClass }}">{{ $displayFull }}</strong></noscript>
+                @if ($shouldAnimate)
+                    <strong
+                        class="text-4xl font-black tracking-tight {{ $textClass }}"
+                        data-countup="{{ $number }}"
+                        data-countup-prefix="{{ $prefix }}"
+                        data-countup-suffix="{{ $suffix }}"
+                    >{{ $prefix }}0{{ $suffix }}</strong>
+                    <noscript><strong class="text-4xl font-black tracking-tight {{ $textClass }}">{{ $displayFull }}</strong></noscript>
+                @else
+                    <strong class="text-4xl font-black tracking-tight {{ $textClass }}">{{ $displayFull }}</strong>
+                @endif
                 <span class="mt-1 text-sm font-bold {{ $mutedTextClass }} sm:text-base">{{ data_get($item, 'label') }}</span>
             </article>
         @endforeach

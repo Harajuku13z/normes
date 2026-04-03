@@ -15,7 +15,7 @@
             </div>
 
             <div class="relative overflow-hidden rounded-2xl">
-                <img src="{{ \App\Support\HomeView::url('/nous/equipe.jpeg') }}" alt="L'équipe Normes & Rénovation à votre service" class="h-full w-full object-cover" style="max-height:260px" loading="lazy" decoding="async">
+                <img src="{{ \App\Support\HomeView::url('/nous/equipe.jpeg') }}" alt="L'équipe Normes & Rénovation à votre service" class="w-full object-cover" loading="lazy" decoding="async">
                 <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/40 to-transparent"></div>
                 <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6">
                     <p class="text-lg font-extrabold text-white sm:text-xl">Nous sommes là pour vous accompagner</p>

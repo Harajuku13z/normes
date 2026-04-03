@@ -313,10 +313,10 @@ return [
 
     'stats' => [
         'items' => [
-            ['number' => '5000', 'prefix' => '+', 'suffix' => '', 'label' => 'Chantiers réalisés', 'icon' => 'fa-solid fa-building'],
-            ['number' => '98', 'prefix' => '', 'suffix' => '%', 'label' => 'Satisfaction client', 'icon' => 'fa-solid fa-star'],
-            ['number' => '48', 'prefix' => '', 'suffix' => 'h', 'label' => 'Prise en charge rapide', 'icon' => 'fa-solid fa-clock'],
-            ['number' => '100', 'prefix' => '', 'suffix' => '%', 'label' => 'Devis gratuit', 'icon' => 'fa-solid fa-file-lines'],
+            ['number' => '5000', 'prefix' => '+', 'suffix' => '', 'label' => 'Chantiers réalisés', 'icon' => 'fa-solid fa-building', 'animate' => true],
+            ['number' => '98', 'prefix' => '', 'suffix' => '%', 'label' => 'Satisfaction client', 'icon' => 'fa-solid fa-star', 'animate' => true],
+            ['number' => '48', 'prefix' => '', 'suffix' => 'h', 'label' => 'Prise en charge rapide', 'icon' => 'fa-solid fa-clock', 'animate' => false],
+            ['number' => '100', 'prefix' => '', 'suffix' => '%', 'label' => 'Devis gratuit', 'icon' => 'fa-solid fa-file-lines', 'animate' => false],
         ],
     ],
 

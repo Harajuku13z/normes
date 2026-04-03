@@ -100,8 +100,15 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-3 rounded-lg bg-white px-3 py-2 text-center text-xs text-slate-500 ring-1 ring-slate-200">
-                Aperçu : <strong class="text-base text-brand-blue">{{ $prefix }}{{ $number }}{{ $suffix }}</strong> — {{ data_get($item, 'label', '...') }}
+            <div class="mt-3 flex items-center justify-between rounded-lg bg-white px-3 py-2 ring-1 ring-slate-200">
+                <div class="text-xs text-slate-500">
+                    Aperçu : <strong class="text-base text-brand-blue">{{ $prefix }}{{ $number }}{{ $suffix }}</strong> — {{ data_get($item, 'label', '...') }}
+                </div>
+                <label class="inline-flex items-center gap-2 text-xs font-bold text-slate-600">
+                    <input type="hidden" name="{{ $name }}[items][{{ $idx }}][animate]" value="0">
+                    <input type="checkbox" name="{{ $name }}[items][{{ $idx }}][animate]" value="1" {{ (bool) data_get($item, 'animate', true) ? 'checked' : '' }} class="h-4 w-4 rounded border-slate-300 text-brand-blue">
+                    Animer
+                </label>
             </div>
         </div>
     @endforeach
