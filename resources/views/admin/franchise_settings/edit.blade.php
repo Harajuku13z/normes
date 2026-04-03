@@ -40,9 +40,15 @@
                     <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Meta description</label>
                     <textarea name="sections[franchise_page][meta_description]" rows="2" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">{{ data_get($fp, 'meta_description') }}</textarea>
                 </div>
-                <div>
-                    <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Image OG</label>
-                    <input type="text" name="sections[franchise_page][og_image]" value="{{ data_get($fp, 'og_image') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" placeholder="/slide/toiture.png">
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Image Open Graph</label>
+                    <input id="fpOgImage" type="text" name="sections[franchise_page][og_image]" value="{{ data_get($fp, 'og_image') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" placeholder="/slide/toiture.png">
+                    <input id="fpOgImageUpload" type="file" accept="image/*" data-upload-target-input-id="fpOgImage" data-upload-target-preview-id="fpOgImagePreview" class="mt-2 w-full text-sm">
+                    @if (data_get($fp, 'og_image'))
+                        <img id="fpOgImagePreview" src="{{ \App\Support\HomeView::url(data_get($fp, 'og_image')) }}" alt="Aperçu OG" class="mt-3 h-20 w-auto rounded-lg border border-slate-200 object-cover shadow-sm">
+                    @else
+                        <img id="fpOgImagePreview" src="" alt="Aperçu OG" class="mt-3 hidden h-20 w-auto rounded-lg border border-slate-200 object-cover shadow-sm">
+                    @endif
                 </div>
             </div>
         </details>
@@ -51,9 +57,16 @@
         <details class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" open>
             <summary class="cursor-pointer select-none text-sm font-extrabold text-slate-900">Hero</summary>
             <div class="mt-4 grid gap-4 lg:grid-cols-2">
-                <div class="lg:col-span-2">
-                    <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Image de fond</label>
-                    <input type="text" name="sections[franchise_page][hero_bg]" value="{{ data_get($fp, 'hero_bg') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" placeholder="URL ou chemin /slide/...">
+                <div class="lg:col-span-2 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Image de fond hero</label>
+                    <input id="fpHeroBg" type="text" name="sections[franchise_page][hero_bg]" value="{{ data_get($fp, 'hero_bg') }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" placeholder="URL ou chemin /slide/...">
+                    <input id="fpHeroBgUpload" type="file" accept="image/*" data-upload-target-input-id="fpHeroBg" data-upload-target-preview-id="fpHeroBgPreview" class="mt-2 w-full text-sm">
+                    @if (data_get($fp, 'hero_bg'))
+                        <img id="fpHeroBgPreview" src="{{ \App\Support\HomeView::url(data_get($fp, 'hero_bg')) }}" alt="Aperçu hero" class="mt-3 h-32 w-auto rounded-lg border border-slate-200 object-cover shadow-sm">
+                    @else
+                        <img id="fpHeroBgPreview" src="" alt="Aperçu hero" class="mt-3 hidden h-32 w-auto rounded-lg border border-slate-200 object-cover shadow-sm">
+                    @endif
+                    <p class="mt-1 text-xs text-slate-500">Uploadez une image ou collez une URL. L'URL sera remplie automatiquement après upload.</p>
                 </div>
                 <div>
                     <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Kicker</label>
@@ -236,6 +249,89 @@
             <button type="submit" class="rounded-xl bg-sky-600 px-6 py-3 text-sm font-extrabold text-white hover:bg-sky-700">Enregistrer</button>
         </div>
     </form>
+
+    {{-- ═══ UPLOADER GÉNÉRIQUE ═══ --}}
+    <div class="mt-8 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-5">
+        <p class="text-sm font-extrabold text-slate-900">Uploader une image</p>
+        <p class="mt-1 text-xs text-slate-600">Uploadez ici, puis collez l'URL retournée dans le champ voulu (hero, OG, etc.).</p>
+        <form id="uploadFormFranchise" class="mt-4 flex flex-wrap items-end gap-3">
+            @csrf
+            <div>
+                <label for="fileFranchise" class="mb-1 block text-xs font-semibold text-slate-700">Fichier</label>
+                <input id="fileFranchise" name="file" type="file" accept="image/*" class="text-sm">
+            </div>
+            <button type="submit" class="rounded-lg bg-white px-4 py-2 text-sm font-bold text-slate-800 ring-1 ring-slate-300 hover:bg-slate-100">Uploader</button>
+        </form>
+        <pre id="uploadOutFranchise" class="mt-3 hidden whitespace-pre-wrap break-all rounded-lg bg-white p-3 text-xs text-slate-800 ring-1 ring-slate-200"></pre>
+    </div>
+
+    <script>
+        (function () {
+            var uploadUrl = @json(route('admin.upload'));
+            var csrfToken = @json(csrf_token());
+
+            // Upload automatique quand on choisit un fichier dans un champ file avec data-upload-target-input-id
+            document.addEventListener('change', async function (e) {
+                var input = e.target;
+                if (!input || input.type !== 'file') return;
+                var targetInputId = input.dataset.uploadTargetInputId;
+                var targetPreviewId = input.dataset.uploadTargetPreviewId;
+                if (!targetInputId) return;
+                var file = input.files && input.files[0];
+                if (!file) return;
+                var fd = new FormData();
+                fd.append('file', file);
+                try {
+                    var res = await fetch(uploadUrl, {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+                        body: fd,
+                        credentials: 'same-origin'
+                    });
+                    var data = await res.json().catch(function () { return {}; });
+                    if (!res.ok) throw new Error(data.message || 'Erreur upload');
+                    var url = data.url;
+                    if (!url) throw new Error('URL upload manquante');
+                    var targetInput = document.getElementById(targetInputId);
+                    if (targetInput) targetInput.value = url;
+                    if (targetPreviewId) {
+                        var img = document.getElementById(targetPreviewId);
+                        if (img) { img.src = url; img.classList.remove('hidden'); img.style.display = 'block'; }
+                    }
+                } catch (err) {
+                    alert(String(err));
+                } finally {
+                    input.value = '';
+                }
+            });
+
+            // Upload générique (formulaire en bas)
+            var genericForm = document.getElementById('uploadFormFranchise');
+            if (genericForm) {
+                genericForm.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+                    var fd = new FormData(genericForm);
+                    var out = document.getElementById('uploadOutFranchise');
+                    out.classList.add('hidden');
+                    try {
+                        var res = await fetch(uploadUrl, {
+                            method: 'POST',
+                            headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+                            body: fd,
+                            credentials: 'same-origin'
+                        });
+                        var data = await res.json().catch(function () { return {}; });
+                        if (!res.ok) throw new Error(data.message || 'Erreur upload');
+                        out.textContent = data.url || JSON.stringify(data);
+                        out.classList.remove('hidden');
+                    } catch (err) {
+                        out.textContent = String(err);
+                        out.classList.remove('hidden');
+                    }
+                });
+            }
+        })();
+    </script>
 
     <script>
         (function () {
