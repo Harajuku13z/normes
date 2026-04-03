@@ -22,15 +22,12 @@
             ->values()
             ->all();
     }
-    $perPage = 3;
-    $totalPages = max(1, (int) ceil(count($testimonials) / $perPage));
 
     $initialColors = ['bg-indigo-500', 'bg-rose-500', 'bg-amber-500', 'bg-emerald-500', 'bg-violet-500', 'bg-sky-500'];
 @endphp
 
-<div id="avis-clients" class="rounded-2xl bg-sky-50 p-6 sm:p-8">
+<div id="svc-avis-clients" class="rounded-2xl bg-sky-50 p-6 sm:p-8">
 
-    {{-- Titre --}}
     <h2 class="text-2xl font-black leading-tight text-brand-dark sm:text-3xl">
         Ce que nos clients <span class="text-brand-blue">{{ $titleAccent }}</span>
     </h2>
@@ -43,18 +40,11 @@
         <p class="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">{{ $intro }}</p>
     @endif
 
-    {{-- Grille : card Google + avis --}}
     <div class="mt-8 flex items-stretch gap-4">
 
-        {{-- Card Google Business --}}
+        {{-- Card Google Business (md+) --}}
         <div class="hidden shrink-0 flex-col items-center justify-center rounded-2xl bg-white px-5 py-6 shadow-sm md:flex" style="min-width: 160px">
-            <img
-                src="{{ \App\Support\HomeView::url($sidebarIcon) }}"
-                alt="Normes et Rénovation"
-                class="h-10 w-10 rounded-lg object-contain"
-                loading="lazy"
-                decoding="async"
-            >
+            <img src="{{ \App\Support\HomeView::url($sidebarIcon) }}" alt="Normes et Rénovation" class="h-10 w-10 rounded-lg object-contain" loading="lazy" decoding="async">
             <p class="mt-2 text-center text-[10px] font-extrabold uppercase tracking-wide text-brand-dark">Normes et Rénovation</p>
             <p class="mt-1 text-sm text-yellow-500">★★★★★</p>
             <p class="mt-0.5 text-[11px] text-slate-500">{{ $googleReviewsLabel }}</p>
@@ -64,29 +54,28 @@
         </div>
 
         {{-- Carousel --}}
-        <div class="relative min-w-0 flex-1">
-            <button id="avisPrev" type="button" aria-label="Avis précédents"
+        <div class="relative min-w-0 flex-1" id="svcAvisCarousel">
+            <button id="svcAvisPrev" type="button" aria-label="Avis précédents"
                 class="absolute -left-2.5 top-1/2 z-10 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-md transition hover:border-brand-blue hover:text-brand-blue active:scale-95">
                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
-            <button id="avisNext" type="button" aria-label="Avis suivants"
+            <button id="svcAvisNext" type="button" aria-label="Avis suivants"
                 class="absolute -right-2.5 top-1/2 z-10 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-md transition hover:border-brand-blue hover:text-brand-blue active:scale-95">
                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
             </button>
 
-            <div id="avisStack" class="overflow-hidden" style="display:grid">
-                @for ($page = 0; $page < $totalPages; $page++)
-                    @php $pageItems = array_slice($testimonials, $page * $perPage, $perPage); @endphp
-                    <div class="avis-page grid gap-3 sm:grid-cols-2 lg:grid-cols-3" style="grid-area:1/1; opacity:0; pointer-events:none; transition:opacity .4s ease" aria-hidden="true">
-                        @foreach ($pageItems as $pIdx => $t)
-                            @php
-                                $platform = (string) data_get($t, 'platform', 'google');
-                                $author   = (string) data_get($t, 'author', '');
-                                $text     = (string) data_get($t, 'text', '');
-                                $initial  = mb_strtoupper(mb_substr($author, 0, 1));
-                                $color    = $initialColors[($page * $perPage + $pIdx) % count($initialColors)];
-                            @endphp
-                            <article class="flex flex-col rounded-xl bg-white p-4 shadow-sm">
+            <div class="overflow-hidden rounded-xl">
+                <div id="svcAvisTrack" class="flex transition-transform duration-500 ease-in-out">
+                    @foreach ($testimonials as $idx => $t)
+                        @php
+                            $platform = (string) data_get($t, 'platform', 'google');
+                            $author   = (string) data_get($t, 'author', '');
+                            $text     = (string) data_get($t, 'text', '');
+                            $initial  = mb_strtoupper(mb_substr($author, 0, 1));
+                            $color    = $initialColors[$idx % count($initialColors)];
+                        @endphp
+                        <article class="svc-avis-slide w-full shrink-0 px-1.5 sm:w-1/2 lg:w-1/3">
+                            <div class="flex h-full flex-col rounded-xl bg-white p-4 shadow-sm">
                                 <div class="mb-2 flex items-center gap-2.5">
                                     <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full {{ $color }} text-xs font-extrabold text-white">{{ $initial }}</span>
                                     <div class="min-w-0 flex-1">
@@ -110,57 +99,71 @@
                                 </div>
                                 <p class="mb-2 flex-1 text-xs leading-relaxed text-slate-600 line-clamp-3">{{ $text }}</p>
                                 <a href="{{ $googleUrl }}" target="_blank" rel="noopener noreferrer" class="text-[11px] font-bold text-brand-blue hover:underline">Lire la suite</a>
-                            </article>
-                        @endforeach
-                    </div>
-                @endfor
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>
 
-    {{-- CTA --}}
-    <div class="mt-6">
-        <a href="{{ route('contact.page') }}" class="inline-flex items-center rounded-xl bg-brand-dark px-5 py-3 text-xs font-extrabold uppercase tracking-wide text-white shadow-md transition hover:bg-slate-800">
-            Contactez-nous
-        </a>
-    </div>
 
-    <script>
-    (function () {
-        var pages = Array.from(document.querySelectorAll('.avis-page'));
-        var prev = document.getElementById('avisPrev');
-        var next = document.getElementById('avisNext');
-        var n = pages.length;
-        if (!n) return;
-        var current = 0, timer = null;
-        var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        function show(idx) {
-            current = ((idx % n) + n) % n;
-            pages.forEach(function (p, i) {
-                var a = i === current;
-                p.style.opacity = a ? '1' : '0';
-                p.style.pointerEvents = a ? 'auto' : 'none';
-                p.setAttribute('aria-hidden', a ? 'false' : 'true');
-            });
-        }
-
-        function startAuto() { if (reduced || timer) return; timer = setInterval(function () { show(current + 1); }, 6000); }
-        function stopAuto() { if (!timer) return; clearInterval(timer); timer = null; }
-
-        var section = document.getElementById('avis-clients');
-        var initialized = false;
-        function init() { if (initialized) return; initialized = true; show(0); startAuto(); }
-
-        if (prev) prev.addEventListener('click', function () { stopAuto(); show(current - 1); startAuto(); });
-        if (next) next.addEventListener('click', function () { stopAuto(); show(current + 1); startAuto(); });
-
-        if (section) { section.addEventListener('mouseenter', stopAuto); section.addEventListener('mouseleave', startAuto); }
-
-        if ('IntersectionObserver' in window && section) {
-            new IntersectionObserver(function (e, o) { e.forEach(function (entry) { if (entry.isIntersecting) { init(); o.disconnect(); } }); }, { threshold: 0.05, rootMargin: '0px 0px 200px 0px' }).observe(section);
-        }
-        setTimeout(init, 3000);
-    })();
-    </script>
 </div>
+
+<script>
+(function () {
+    var track = document.getElementById('svcAvisTrack');
+    var slides = track ? Array.from(track.querySelectorAll('.svc-avis-slide')) : [];
+    var prev = document.getElementById('svcAvisPrev');
+    var next = document.getElementById('svcAvisNext');
+    var section = document.getElementById('svc-avis-clients');
+    var n = slides.length;
+    if (!n || !track) return;
+
+    var current = 0;
+    var timer = null;
+
+    function getVisible() {
+        var w = window.innerWidth;
+        if (w >= 1024) return 3;
+        if (w >= 640) return 2;
+        return 1;
+    }
+
+    function getMaxIndex() {
+        return Math.max(0, n - getVisible());
+    }
+
+    function moveTo(idx) {
+        var maxIdx = getMaxIndex();
+        current = idx < 0 ? maxIdx : (idx > maxIdx ? 0 : idx);
+        var pct = current * (100 / n);
+        track.style.transform = 'translateX(-' + pct + '%)';
+    }
+
+    function advance() { moveTo(current + 1); }
+
+    function startAuto() {
+        if (timer) return;
+        timer = setInterval(advance, 4000);
+    }
+    function stopAuto() {
+        if (!timer) return;
+        clearInterval(timer);
+        timer = null;
+    }
+
+    if (prev) prev.addEventListener('click', function () { stopAuto(); moveTo(current - 1); startAuto(); });
+    if (next) next.addEventListener('click', function () { stopAuto(); moveTo(current + 1); startAuto(); });
+
+    if (section) {
+        section.addEventListener('mouseenter', stopAuto);
+        section.addEventListener('mouseleave', startAuto);
+    }
+
+    window.addEventListener('resize', function () { moveTo(current); });
+
+    moveTo(0);
+    startAuto();
+})();
+</script>
