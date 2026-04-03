@@ -18,7 +18,8 @@
                         <i class="fa-solid fa-chart-line text-2xl"></i>
                     @endif
                 </span>
-                <strong class="text-4xl font-black tracking-tight {{ $textClass }}" data-countup="{{ data_get($item, 'value') }}">{{ data_get($item, 'value') }}</strong>
+                <strong class="text-4xl font-black tracking-tight {{ $textClass }}" data-countup="{{ data_get($item, 'value') }}">0</strong>
+                <noscript><strong class="text-4xl font-black tracking-tight {{ $textClass }}">{{ data_get($item, 'value') }}</strong></noscript>
                 <span class="mt-1 text-sm font-bold {{ $mutedTextClass }} sm:text-base">{{ data_get($item, 'label') }}</span>
             </article>
         @endforeach
