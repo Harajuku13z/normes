@@ -88,8 +88,13 @@
     }
 
     $satisfactionTitle = trim((string) data_get($ap, 'satisfaction_title', 'Votre satisfaction est notre priorité'));
-    $satisfactionImageRaw = trim((string) data_get($ap, 'satisfaction_image', ''));
-    $satisfactionImageAlt = trim((string) data_get($ap, 'satisfaction_image_alt', ''));
+    $satisfactionImgVal = data_get($ap, 'satisfaction_image', '');
+    if (! is_string($satisfactionImgVal)) {
+        $satisfactionImgVal = '';
+    }
+    $satisfactionImageRaw = trim($satisfactionImgVal);
+    $satisfactionImageAltVal = data_get($ap, 'satisfaction_image_alt', '');
+    $satisfactionImageAlt = is_string($satisfactionImageAltVal) ? trim($satisfactionImageAltVal) : '';
     $satisfactionImage = $satisfactionImageRaw !== '' ? HomeView::url($satisfactionImageRaw) : '';
 
     $reelsKicker = trim((string) data_get($ap, 'reels_section_kicker', 'Nos réalisations'));
@@ -320,18 +325,18 @@
     {{-- ═══ SATISFACTION + IMAGE ═══ --}}
     <section class="bg-white py-20 sm:py-24" aria-labelledby="satisfaction-heading">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-            <div class="overflow-hidden rounded-2xl bg-slate-50 lg:grid lg:grid-cols-2">
+            <div class="overflow-hidden rounded-2xl bg-slate-50 lg:grid lg:grid-cols-2 lg:items-stretch">
                 @if ($satisfactionImage !== '')
-                    <div class="relative">
+                    {{-- Hauteur explicite : un parent avec seulement un img en position absolue peut avoir 0 px de haut en grille --}}
+                    <div class="relative min-h-[280px] w-full sm:min-h-[340px] lg:min-h-[360px] lg:h-full">
                         <img
                             src="{{ $satisfactionImage }}"
                             alt="{{ $satisfactionImageAlt !== '' ? $satisfactionImageAlt : $satisfactionTitle }}"
-                            class="h-full w-full object-cover lg:absolute lg:inset-0"
+                            class="absolute inset-0 h-full w-full object-cover"
                             width="800"
                             height="600"
                             loading="lazy"
                             decoding="async"
-                            style="min-height:280px"
                         >
                     </div>
                 @endif
