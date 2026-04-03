@@ -181,7 +181,7 @@
             $bodyLooksHtml = $bodyRaw !== '' && preg_match('/<[a-z][\s\S]*>/i', $bodyRaw) === 1;
         @endphp
 
-        {{-- Description du service : toujours avant les sous-services --}}
+        {{-- Sous-services d’abord, puis description / chiffres / partenaires --}}
         @php
             $servicePartners = is_array($page->service_partners ?? null) ? $page->service_partners : [];
             $servicePartnersPhrase = trim((string) data_get($servicePartners, 'phrase', ''));
@@ -204,80 +204,6 @@
                 ];
             }
         @endphp
-
-        @if ($bodyRaw !== '')
-            <div class="grid gap-6 lg:grid-cols-2">
-                @if ($bodyRaw !== '')
-                    <div id="role" class="scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
-                        <div
-                            class="service-page-body max-w-none text-base leading-relaxed text-slate-700 sm:text-lg
-                                [&_p]:mb-3 [&_p:last-child]:mb-0
-                                [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6
-                                [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-6
-                                [&_li]:my-1
-                                [&_strong]:font-bold [&_b]:font-bold
-                                [&_a]:font-semibold [&_a]:text-brand-blue [&_a]:underline
-                                [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:text-brand-dark
-                                [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-extrabold [&_h3]:text-brand-dark
-                            "
-                        >
-                            @if ($bodyLooksHtml)
-                                {!! $bodyRaw !!}
-                            @else
-                                {!! nl2br(e($bodyRaw)) !!}
-                            @endif
-                        </div>
-                    </div>
-                @endif
-
-                <div class="grid gap-6">
-                    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
-                        <div class="flex flex-wrap items-end justify-between gap-3">
-                            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $statsHeadingText !== '' ? $statsHeadingText : 'Chiffres clés' }}</p>
-                            <a href="#avis" class="text-xs font-extrabold text-brand-blue hover:underline">{{ $statsLinkText !== '' ? $statsLinkText : 'Voir les avis' }}</a>
-                        </div>
-                        <div class="mt-5 grid gap-4 sm:grid-cols-3">
-                            @foreach (array_slice($statsItems, 0, 3) as $it)
-                                <div class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4 transition hover:shadow-sm">
-                                    <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">{{ data_get($it, 'label') }}</p>
-                                    <p class="mt-2 text-2xl font-black text-brand-dark">{{ data_get($it, 'value') }}</p>
-                                    @if (trim((string) data_get($it, 'text')) !== '')
-                                        <p class="mt-1 text-sm font-semibold text-slate-600">{{ data_get($it, 'text') }}</p>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    @if ($servicePartnersLogos !== [])
-                        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
-                            <div class="flex flex-wrap items-end justify-between gap-3">
-                                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $partnersHeadingText !== '' ? $partnersHeadingText : 'Partenaires associés' }}</p>
-                                <a href="#devis" class="text-xs font-extrabold text-brand-blue hover:underline">{{ $partnersLinkText !== '' ? $partnersLinkText : 'Nous contacter' }}</a>
-                            </div>
-                            @if ($servicePartnersPhrase !== '')
-                                <p class="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">{{ $servicePartnersPhrase }}</p>
-                            @endif
-                            <div class="mt-5 grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
-                                @foreach (array_slice($servicePartnersLogos, 0, 6) as $src)
-                                    <div class="flex min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-sm sm:p-3">
-                                        <img
-                                            src="{{ HomeView::url($src) }}"
-                                            alt="Logo partenaire"
-                                            class="h-9 w-full max-w-full object-contain sm:h-10"
-                                            width="200"
-                                            height="80"
-                                            loading="lazy"
-                                            decoding="async"
-                                        >
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        @endif
 
         @if ($subServices !== [])
             @php
@@ -303,7 +229,7 @@
                     $rest = isset($parts[1]) ? $parts[1] : '';
                 }
             @endphp
-            <div id="etapes" class="{{ $bodyRaw !== '' ? 'mt-10' : '' }} mb-6 scroll-mt-32">
+            <div id="etapes" class="mb-6 scroll-mt-32">
                 <h2 class="break-words text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
                     <span class="text-brand-blue">{{ $accent }}</span>{{ $rest !== '' ? ' '.$rest : '' }}
                 </h2>
@@ -421,6 +347,80 @@
             </div>
         @endif
 
+        @if ($bodyRaw !== '')
+            <div class="{{ $subServices !== [] ? 'mt-10' : '' }} grid gap-6 lg:grid-cols-2">
+                @if ($bodyRaw !== '')
+                    <div id="role" class="scroll-mt-32 rounded-3xl border border-slate-200 bg-white p-6 sm:p-8">
+                        <div
+                            class="service-page-body max-w-none text-base leading-relaxed text-slate-700 sm:text-lg
+                                [&_p]:mb-3 [&_p:last-child]:mb-0
+                                [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6
+                                [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-6
+                                [&_li]:my-1
+                                [&_strong]:font-bold [&_b]:font-bold
+                                [&_a]:font-semibold [&_a]:text-brand-blue [&_a]:underline
+                                [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-extrabold [&_h2]:text-brand-dark
+                                [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-extrabold [&_h3]:text-brand-dark
+                            "
+                        >
+                            @if ($bodyLooksHtml)
+                                {!! $bodyRaw !!}
+                            @else
+                                {!! nl2br(e($bodyRaw)) !!}
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
+                <div class="grid gap-6">
+                    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
+                        <div class="flex flex-wrap items-end justify-between gap-3">
+                            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $statsHeadingText !== '' ? $statsHeadingText : 'Chiffres clés' }}</p>
+                            <a href="#avis" class="text-xs font-extrabold text-brand-blue hover:underline">{{ $statsLinkText !== '' ? $statsLinkText : 'Voir les avis' }}</a>
+                        </div>
+                        <div class="mt-5 grid gap-4 sm:grid-cols-3">
+                            @foreach (array_slice($statsItems, 0, 3) as $it)
+                                <div class="group rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4 transition hover:shadow-sm">
+                                    <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-slate-500">{{ data_get($it, 'label') }}</p>
+                                    <p class="mt-2 text-2xl font-black text-brand-dark">{{ data_get($it, 'value') }}</p>
+                                    @if (trim((string) data_get($it, 'text')) !== '')
+                                        <p class="mt-1 text-sm font-semibold text-slate-600">{{ data_get($it, 'text') }}</p>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    @if ($servicePartnersLogos !== [])
+                        <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
+                            <div class="flex flex-wrap items-end justify-between gap-3">
+                                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $partnersHeadingText !== '' ? $partnersHeadingText : 'Partenaires associés' }}</p>
+                                <a href="#devis" class="text-xs font-extrabold text-brand-blue hover:underline">{{ $partnersLinkText !== '' ? $partnersLinkText : 'Nous contacter' }}</a>
+                            </div>
+                            @if ($servicePartnersPhrase !== '')
+                                <p class="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base">{{ $servicePartnersPhrase }}</p>
+                            @endif
+                            <div class="mt-5 grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-3">
+                                @foreach (array_slice($servicePartnersLogos, 0, 6) as $src)
+                                    <div class="flex min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-sm sm:p-3">
+                                        <img
+                                            src="{{ HomeView::url($src) }}"
+                                            alt="Logo partenaire"
+                                            class="h-9 w-full max-w-full object-contain sm:h-10"
+                                            width="200"
+                                            height="80"
+                                            loading="lazy"
+                                            decoding="async"
+                                        >
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        @endif
+
         @php
             $introText = trim((string) ($page->intro ?? ''));
             if ($introText === '') {
@@ -430,7 +430,7 @@
             $featuredUrl = $featured !== '' ? HomeView::url($featured) : ($bg ?: HomeView::url('slide/toiture.png'));
         @endphp
         @if ($introText !== '')
-            <div class="{{ $subServices !== [] ? 'mt-10' : '' }}">
+            <div class="{{ ($subServices !== [] || $bodyRaw !== '') ? 'mt-10' : '' }}">
                 <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft ring-1 ring-slate-100 lg:grid lg:grid-cols-[1.05fr_0.95fr]">
                     <div class="p-6 sm:p-8 lg:p-10">
                         <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-blue">{{ $introKicker }}</p>
@@ -473,7 +473,7 @@
             </div>
         @endif
 
-        {{-- Processus de prise en charge (après les sous-services) --}}
+        {{-- Processus de prise en charge (après contenu principal) --}}
         @php
             $proc = data_get($h, 'processus', []);
             $procSteps = collect((array) data_get($processOverrides, 'steps', []))
@@ -497,7 +497,7 @@
             $processCtaText = trim((string) data_get($processOverrides, 'cta_text', 'Demander un devis'));
         @endphp
         @if (is_array($procSteps) && $procSteps !== [])
-            <div class="{{ $subServices !== [] ? 'mt-12' : '' }} rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
+            <div class="{{ ($subServices !== [] || $bodyRaw !== '') ? 'mt-12' : '' }} rounded-3xl border border-slate-200 bg-white p-6 shadow-soft sm:p-8">
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div class="min-w-0">
                         <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $processKicker !== '' ? $processKicker : 'Processus' }}</p>
