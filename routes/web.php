@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\HomeAdminController;
 use App\Http\Controllers\Admin\PortfolioProjectController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\FranchiseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RealisationsController;
 use App\Http\Controllers\ServicePagesController;
@@ -90,6 +91,12 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact.page'
 
 // Page À propos
 Route::get('/a-propos', [AboutController::class, 'index'])->name('about.page');
+
+// Franchise (candidature)
+Route::get('/franchise', [FranchiseController::class, 'index'])->name('franchise.page');
+Route::post('/franchise', [FranchiseController::class, 'store'])
+    ->middleware('throttle:8,1')
+    ->name('franchise.store');
 
 // Réalisations (portfolio)
 Route::get('/realisations', [RealisationsController::class, 'index'])->name('realisations.page');

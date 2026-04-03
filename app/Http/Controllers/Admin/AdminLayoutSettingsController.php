@@ -23,6 +23,7 @@ class AdminLayoutSettingsController extends Controller
             ['value' => 'realisations.page', 'label' => 'Réalisations (/realisations)'],
             ['value' => 'contact.page', 'label' => 'Contact (/contact)'],
             ['value' => 'simulateur.start', 'label' => 'Simulateur (/simulateur)'],
+            ['value' => 'franchise.page', 'label' => 'Franchise (/franchise)'],
         ];
     }
 

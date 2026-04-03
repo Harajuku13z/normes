@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    /*
+    | Destinataire des candidatures franchise (sinon e-mail footer site / MAIL_FROM_ADDRESS).
+    */
+    'franchise_notify_email' => env('FRANCHISE_NOTIFY_EMAIL'),
+
 ];
