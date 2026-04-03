@@ -601,6 +601,7 @@ Nous travaillons avec des équipes et des corps de métier complémentaires pour
         'quick_links' => [
             ['label' => 'Nos services', 'route' => 'home', 'anchor' => 'services', 'custom_url' => ''],
             ['label' => 'Réalisations', 'route' => 'home', 'anchor' => 'realisations', 'custom_url' => ''],
+            ['label' => 'Franchise', 'route' => 'franchise.page', 'anchor' => '', 'custom_url' => ''],
             ['label' => 'Agences & carte', 'route' => 'home', 'anchor' => 'agences', 'custom_url' => ''],
             ['label' => 'Conseils', 'route' => 'home', 'anchor' => 'conseils', 'custom_url' => ''],
             ['label' => 'Contact / devis', 'route' => 'contact.page', 'anchor' => 'devis', 'custom_url' => ''],

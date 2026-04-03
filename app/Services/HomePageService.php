@@ -6,6 +6,7 @@ use App\Models\HomeSection;
 use App\Models\ServicePage;
 use App\Support\HomePageDefaults;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Route;
 
 class HomePageService
 {
@@ -34,7 +35,60 @@ class HomePageService
             }
         }
 
-        return $this->withDerived($out);
+        return $this->withDerived($this->ensureFranchiseInHeaderMenu($out));
+    }
+
+    /**
+     * If the header menu was saved in DB before the franchise route existed, menu_items
+     * replace defaults entirely and "Franchise" is missing. Inject it once if absent.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected function ensureFranchiseInHeaderMenu(array $data): array
+    {
+        if (! Route::has('franchise.page')) {
+            return $data;
+        }
+
+        $items = data_get($data, 'header.menu_items');
+        if (! is_array($items)) {
+            return $data;
+        }
+
+        $hasFranchise = collect($items)->contains(function ($item) {
+            return is_array($item) && trim((string) data_get($item, 'route', '')) === 'franchise.page';
+        });
+
+        if ($hasFranchise) {
+            return $data;
+        }
+
+        $franchiseItem = [
+            'label' => 'Franchise',
+            'route' => 'franchise.page',
+            'anchor' => '',
+            'custom_url' => '',
+            'style' => '',
+        ];
+
+        $newItems = [];
+        $inserted = false;
+        foreach ($items as $item) {
+            $newItems[] = $item;
+            if (is_array($item) && trim((string) data_get($item, 'route', '')) === 'realisations.page') {
+                $newItems[] = $franchiseItem;
+                $inserted = true;
+            }
+        }
+
+        if (! $inserted) {
+            $newItems[] = $franchiseItem;
+        }
+
+        data_set($data, 'header.menu_items', $newItems);
+
+        return $data;
     }
 
     /**

@@ -111,12 +111,14 @@
                                 {{ $item['label'] }}
                             </a>
                         @endif
-                        <div class="pointer-events-none invisible absolute left-0 top-full z-[1200] mt-2 min-w-[16rem] rounded-xl border border-slate-200 bg-white p-2 opacity-0 shadow-xl transition group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100">
-                            @foreach ($item['children'] as $child)
-                                <a href="{{ $child['href'] }}" class="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand-blue">
-                                    {{ $child['label'] }}
-                                </a>
-                            @endforeach
+                        <div class="pointer-events-none invisible absolute left-0 top-[calc(100%-0.5rem)] z-[1200] min-w-[16rem] pt-2 opacity-0 transition duration-150 group-hover:pointer-events-auto group-hover:visible group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:visible group-focus-within:opacity-100">
+                            <div class="rounded-xl border border-slate-200 bg-white p-2 shadow-xl">
+                                @foreach ($item['children'] as $child)
+                                    <a href="{{ $child['href'] }}" class="block rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:text-brand-blue">
+                                        {{ $child['label'] }}
+                                    </a>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 @else
