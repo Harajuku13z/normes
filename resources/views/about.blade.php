@@ -91,6 +91,67 @@
     $satisfactionImageAltVal = data_get($ap, 'satisfaction_image_alt', '');
     $satisfactionImageAlt = is_string($satisfactionImageAltVal) ? trim($satisfactionImageAltVal) : '';
     $satisfactionImage = $satisfactionImageRaw !== '' ? HomeView::url($satisfactionImageRaw) : '';
+    $satisfactionImageForCard = $satisfactionImage !== '' ? $satisfactionImage : $expertiseImage;
+
+    $aboutTripleFeatures = [
+        [
+            'heading_id' => 'expertise-heading',
+            'kicker' => 'Savoir-faire',
+            'kicker_class' => 'inline-block rounded-full bg-brand-blue/10 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.2em] text-brand-blue',
+            'title' => $expertiseTitle,
+            'body' => $expertiseText,
+            'image' => $expertiseImage,
+            'image_alt' => 'Rénovation de toiture — expertise Normes et Rénovation',
+            'ctas' => [
+                [
+                    'href' => $servicesHref,
+                    'label' => 'Découvrir nos services',
+                    'class' => 'inline-flex items-center gap-2 rounded-xl bg-brand-blue px-4 py-2.5 text-sm font-extrabold text-white shadow-md transition hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2',
+                    'external' => false,
+                ],
+            ],
+        ],
+        [
+            'heading_id' => 'eco-heading',
+            'kicker' => 'Environnement',
+            'kicker_class' => 'inline-block rounded-full bg-emerald-50 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.2em] text-emerald-700',
+            'title' => $ecoTitle,
+            'body' => $ecoText,
+            'image' => $ecoImage,
+            'image_alt' => 'Équipe Normes et Rénovation — solutions durables',
+            'ctas' => [
+                [
+                    'href' => $contactHref,
+                    'label' => 'Demander un devis',
+                    'class' => 'inline-flex items-center gap-2 rounded-xl bg-brand-dark px-4 py-2.5 text-sm font-extrabold text-white shadow-md transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2',
+                    'external' => false,
+                ],
+            ],
+        ],
+        [
+            'heading_id' => 'satisfaction-heading',
+            'kicker' => 'Satisfaction',
+            'kicker_class' => 'inline-block rounded-full bg-brand-blue/10 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.2em] text-brand-blue',
+            'title' => $satisfactionTitle,
+            'body' => $mediationText,
+            'image' => $satisfactionImageForCard,
+            'image_alt' => $satisfactionImageAlt !== '' ? $satisfactionImageAlt : 'Satisfaction client et médiation Normes et Rénovation',
+            'ctas' => [
+                [
+                    'href' => $contactHref,
+                    'label' => 'Demander un devis',
+                    'class' => 'inline-flex items-center gap-2 rounded-xl bg-brand-dark px-4 py-2.5 text-sm font-extrabold text-white shadow-md transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2',
+                    'external' => false,
+                ],
+                [
+                    'href' => 'https://www.cm2c.net',
+                    'label' => 'Site du médiateur CM2C',
+                    'class' => 'inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-extrabold text-brand-dark shadow-sm transition hover:border-brand-blue/30 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2',
+                    'external' => true,
+                ],
+            ],
+        ],
+    ];
 
     $legal = data_get($ap, 'legal', []);
     if (! is_array($legal)) {
@@ -264,93 +325,52 @@
         </div>
     </section>
 
-    {{-- ═══ EXPERTISE ═══ --}}
-    <section class="bg-slate-50 py-12 sm:py-16" aria-labelledby="expertise-heading">
-        <div class="mx-auto grid w-[95%] items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:px-8">
-            <div class="order-2 lg:order-1">
-                <p class="inline-block rounded-full bg-brand-blue/10 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.2em] text-brand-blue">Savoir-faire</p>
-                @include('about._heading-two-tone', [
-                    'title' => $expertiseTitle,
-                    'as' => 'h2',
-                    'id' => 'expertise-heading',
-                    'class' => 'mt-4 text-2xl font-black leading-tight tracking-tight text-brand-dark sm:text-3xl',
-                    'variant' => 'light',
-                ])
-                <p class="mt-4 text-base leading-relaxed text-slate-600">{{ $expertiseText }}</p>
-                <a href="{{ $servicesHref }}" class="mt-6 inline-flex items-center gap-2 rounded-xl bg-brand-blue px-5 py-2.5 text-sm font-extrabold text-white shadow-lg shadow-brand-blue/25 transition hover:-translate-y-0.5 hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2">
-                    Découvrir nos services <span aria-hidden="true">&rarr;</span>
-                </a>
-            </div>
-            <div class="order-1 lg:order-2">
-                <div class="overflow-hidden rounded-2xl shadow-xl shadow-slate-900/10">
-                    <img src="{{ $expertiseImage }}" alt="Rénovation de toiture — expertise Normes et Rénovation" class="aspect-[4/3] w-full object-cover" width="800" height="600" loading="lazy" decoding="async">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {{-- ═══ ÉCO ═══ --}}
-    <section class="bg-white py-12 sm:py-16" aria-labelledby="eco-heading">
-        <div class="mx-auto grid w-[95%] items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:px-8">
-            <div>
-                <div class="overflow-hidden rounded-2xl shadow-xl shadow-slate-900/10">
-                    <img src="{{ $ecoImage }}" alt="Équipe Normes et Rénovation" class="aspect-[4/3] w-full object-cover" width="800" height="600" loading="lazy" decoding="async">
-                </div>
-            </div>
-            <div>
-                <p class="inline-block rounded-full bg-emerald-50 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.2em] text-emerald-700">Environnement</p>
-                @include('about._heading-two-tone', [
-                    'title' => $ecoTitle,
-                    'as' => 'h2',
-                    'id' => 'eco-heading',
-                    'class' => 'mt-4 text-2xl font-black leading-tight tracking-tight text-brand-dark sm:text-3xl',
-                    'variant' => 'light',
-                ])
-                <p class="mt-4 text-base leading-relaxed text-slate-600">{{ $ecoText }}</p>
-                <a href="{{ $contactHref }}" class="mt-6 inline-flex items-center gap-2 rounded-xl bg-brand-dark px-5 py-2.5 text-sm font-extrabold text-white shadow-lg shadow-slate-900/15 transition hover:-translate-y-0.5 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2">
-                    Demander un devis <span aria-hidden="true">&rarr;</span>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    {{-- ═══ SATISFACTION + IMAGE ═══ --}}
-    <section class="bg-white py-12 sm:py-16" aria-labelledby="satisfaction-heading">
+    {{-- ═══ SAVOIR-FAIRE + ENVIRONNEMENT + SATISFACTION (3 col., type sous-services « split » : image haut, texte bas) ═══ --}}
+    <section class="bg-slate-50 py-12 sm:py-16" aria-label="Savoir-faire, environnement et satisfaction client">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-            <div class="overflow-hidden rounded-2xl bg-slate-50 lg:grid lg:grid-cols-2 lg:items-center lg:gap-0">
-                @if ($satisfactionImage !== '')
-                    <div class="overflow-hidden">
-                        <img
-                            src="{{ $satisfactionImage }}"
-                            alt="{{ $satisfactionImageAlt !== '' ? $satisfactionImageAlt : $satisfactionTitle }}"
-                            class="aspect-[4/3] w-full object-cover lg:aspect-[5/4] lg:min-h-[280px]"
-                            width="960"
-                            height="720"
-                            loading="lazy"
-                            decoding="async"
-                        >
-                    </div>
-                @endif
-                <div class="{{ $satisfactionImage === '' ? 'lg:col-span-2' : '' }} flex flex-col justify-center p-5 sm:p-7 lg:p-8">
-                    <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-blue text-white" aria-hidden="true">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                    </div>
-                    @include('about._heading-two-tone', [
-                        'title' => $satisfactionTitle,
-                        'as' => 'h2',
-                        'id' => 'satisfaction-heading',
-                        'class' => 'mt-4 text-xl font-black tracking-tight text-brand-dark sm:text-2xl',
-                        'variant' => 'light',
-                    ])
-                    <p class="mt-3 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
-                        {!! nl2br(e($mediationText)) !!}
-                    </p>
-                    <div class="mt-7">
-                        <a href="https://www.cm2c.net" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-extrabold text-brand-dark shadow-sm transition hover:-translate-y-0.5 hover:border-brand-blue/30 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2" target="_blank" rel="noopener noreferrer">
-                            Site du médiateur CM2C <span aria-hidden="true">&rarr;</span>
-                        </a>
-                    </div>
-                </div>
+            <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                @foreach ($aboutTripleFeatures as $feat)
+                    <article
+                        class="feature-split-card flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-md"
+                        aria-labelledby="{{ $feat['heading_id'] }}"
+                    >
+                        <div class="relative w-full min-h-[14rem] shrink-0 overflow-hidden bg-slate-100 sm:min-h-[16rem]">
+                            <img
+                                src="{{ $feat['image'] }}"
+                                alt="{{ $feat['image_alt'] }}"
+                                class="absolute inset-0 h-full w-full object-cover object-center"
+                                width="800"
+                                height="600"
+                                loading="lazy"
+                                decoding="async"
+                            >
+                        </div>
+                        <div class="flex flex-1 flex-col p-5 sm:p-6">
+                            <p class="{{ $feat['kicker_class'] }}">{{ $feat['kicker'] }}</p>
+                            @include('about._heading-two-tone', [
+                                'title' => $feat['title'],
+                                'as' => 'h3',
+                                'id' => $feat['heading_id'],
+                                'class' => 'mt-3 text-xl font-black leading-snug tracking-tight text-brand-dark sm:text-2xl',
+                                'variant' => 'light',
+                            ])
+                            <div class="mt-3 flex-1 text-sm leading-relaxed text-slate-600 sm:text-[0.9375rem]">
+                                {!! nl2br(e($feat['body'])) !!}
+                            </div>
+                            <div class="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                                @foreach ($feat['ctas'] as $cta)
+                                    <a
+                                        href="{{ $cta['href'] }}"
+                                        class="{{ $cta['class'] }}"
+                                        @if (! empty($cta['external'])) target="_blank" rel="noopener noreferrer" @endif
+                                    >
+                                        {{ $cta['label'] }} <span aria-hidden="true">&rarr;</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    </article>
+                @endforeach
             </div>
         </div>
     </section>
