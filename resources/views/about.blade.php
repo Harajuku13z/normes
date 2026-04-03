@@ -23,8 +23,8 @@
     $servicesHref = route('services.index', [], false);
 
     $heroKicker = trim((string) data_get($ap, 'hero_kicker', 'Notre entreprise'));
-    $heroTitle = trim((string) data_get($ap, 'hero_title', 'Construisez avec nous, bâtissez l’avenir'));
-    $heroIntro = trim((string) data_get($ap, 'hero_intro', 'Normes et Rénovation est une entreprise spécialisée dans la rénovation de maison, offrant des solutions complètes pour traiter l’humidité, améliorer l’efficacité énergétique et assurer la durabilité de votre habitation.'));
+    $heroTitle = trim((string) data_get($ap, 'hero_title', 'Construisez avec nous, bâtissez l\'avenir'));
+    $heroIntro = trim((string) data_get($ap, 'hero_intro', 'Normes et Rénovation est une entreprise spécialisée dans la rénovation de maison, offrant des solutions complètes pour traiter l\'humidité, améliorer l\'efficacité énergétique et assurer la durabilité de votre habitation.'));
 
     $pillarsKicker = trim((string) data_get($ap, 'pillars_kicker', 'Expertise et durabilité'));
     $pillarsTitle = trim((string) data_get($ap, 'pillars_title', 'Un partenaire fiable à chaque étape'));
@@ -39,14 +39,14 @@
     }
 
     $expertiseTitle = trim((string) data_get($ap, 'expertise_title', 'Expertise complète en rénovation'));
-    $expertiseText = trim((string) data_get($ap, 'expertise_text', 'Normes et Rénovation se spécialise dans une gamme étendue de services de rénovation, incluant la gestion de l’humidité, l’amélioration de l’efficacité énergétique et la sécurité des installations électriques. Nous offrons des solutions sur mesure pour répondre aux besoins spécifiques de chaque projet.'));
+    $expertiseText = trim((string) data_get($ap, 'expertise_text', 'Normes et Rénovation se spécialise dans une gamme étendue de services de rénovation, incluant la gestion de l\'humidité, l\'amélioration de l\'efficacité énergétique et la sécurité des installations électriques. Nous offrons des solutions sur mesure pour répondre aux besoins spécifiques de chaque projet.'));
     $expertiseImage = HomeView::url((string) data_get($ap, 'expertise_image', '/slide/toiture.png'));
 
     $ecoTitle = trim((string) data_get($ap, 'eco_title', 'Solutions écologiques et durables'));
-    $ecoText = trim((string) data_get($ap, 'eco_text', 'Nous privilégions des solutions respectueuses de l’environnement, telles que les traitements hydrofuges pour façades et les systèmes de ventilation innovants. Nous nous engageons à utiliser des technologies durables qui améliorent le confort tout en réduisant l’empreinte écologique.'));
+    $ecoText = trim((string) data_get($ap, 'eco_text', 'Nous privilégions des solutions respectueuses de l\'environnement, telles que les traitements hydrofuges pour façades et les systèmes de ventilation innovants. Nous nous engageons à utiliser des technologies durables qui améliorent le confort tout en réduisant l\'empreinte écologique.'));
     $ecoImage = HomeView::url((string) data_get($ap, 'eco_image', '/nous/equipe.jpeg'));
 
-    $mediationText = trim((string) data_get($ap, 'mediation_text', 'Conformément à la réglementation, notre établissement a désigné le Centre de la Médiation de la Consommation de Conciliateurs de Justice (CM2C) comme médiateur de la consommation. En cas de réclamation non résolue, vous pouvez le contacter directement à l’adresse https://www.cm2c.net.'));
+    $mediationText = trim((string) data_get($ap, 'mediation_text', 'Conformément à la réglementation, notre établissement a désigné le Centre de la Médiation de la Consommation de Conciliateurs de Justice (CM2C) comme médiateur de la consommation. En cas de réclamation non résolue, vous pouvez le contacter directement à l\'adresse https://www.cm2c.net.'));
 
     $taglineBottom = trim((string) data_get($ap, 'tagline_bottom', 'Spécialiste en solutions de rénovation électrique, thermique et hygrométrique pour la maison.'));
 
@@ -83,6 +83,13 @@
     $satisfactionImageRaw = trim((string) data_get($ap, 'satisfaction_image', ''));
     $satisfactionImageAlt = trim((string) data_get($ap, 'satisfaction_image_alt', ''));
     $satisfactionImage = $satisfactionImageRaw !== '' ? HomeView::url($satisfactionImageRaw) : '';
+
+    $reelsKicker = trim((string) data_get($ap, 'reels_section_kicker', 'Nos réalisations'));
+    $reelsTitle = trim((string) data_get($ap, 'reels_section_title', 'Découvrez notre savoir-faire en vidéo'));
+    $reels = data_get($ap, 'reels', []);
+    if (! is_array($reels)) {
+        $reels = [];
+    }
 
     $legal = data_get($ap, 'legal', []);
     if (! is_array($legal)) {
@@ -146,26 +153,47 @@
 </section>
 
 <main id="contenu" class="scroll-mt-24">
-    <section class="relative bg-white py-16 sm:py-24" aria-labelledby="pillars-heading">
-        <div class="pointer-events-none absolute inset-x-0 top-0 h-full max-h-[420px] bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(14,165,233,0.08),transparent)]" aria-hidden="true"></div>
-        <div class="relative mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-            @if ($pillarsKicker !== '')
-                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ mb_strtoupper($pillarsKicker, 'UTF-8') }}</p>
-            @endif
-            <h2 id="pillars-heading" class="mt-3 max-w-3xl text-3xl font-black leading-tight tracking-tight text-brand-dark sm:text-4xl">
-                {{ $pillarsTitle }}
-            </h2>
-            <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                @foreach ($pillars as $p)
+
+    {{-- ═══ REELS VIDÉO ═══ --}}
+    @include('about._reels', [
+        'reels' => $reels,
+        'reelsKicker' => $reelsKicker,
+        'reelsTitle' => $reelsTitle,
+    ])
+
+    {{-- ═══ PILIERS ═══ --}}
+    <section class="bg-white py-20 sm:py-24" aria-labelledby="pillars-heading">
+        <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                @if ($pillarsKicker !== '')
+                    <p class="text-xs font-extrabold uppercase tracking-[0.25em] text-brand-blue">{{ mb_strtoupper($pillarsKicker, 'UTF-8') }}</p>
+                @endif
+                <h2 id="pillars-heading" class="mx-auto mt-3 max-w-2xl text-3xl font-black leading-tight tracking-tight text-brand-dark sm:text-4xl">
+                    {{ $pillarsTitle }}
+                </h2>
+                <div class="mx-auto mt-4 h-1 w-16 rounded-full bg-brand-blue"></div>
+            </div>
+
+            @php
+                $pillarIcons = [
+                    '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>',
+                    '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/></svg>',
+                    '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>',
+                    '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>',
+                ];
+            @endphp
+
+            <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                @foreach ($pillars as $idx => $p)
                     @if (is_array($p))
-                        <div class="group relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm ring-1 ring-slate-100 transition duration-300 hover:-translate-y-1 hover:border-brand-blue/25 hover:shadow-lg">
-                            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-blue via-sky-400 to-brand-yellow opacity-90 transition group-hover:opacity-100" aria-hidden="true"></div>
-                            <div class="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand-blue/12 to-sky-500/10 text-sm font-black tabular-nums text-brand-blue ring-1 ring-brand-blue/10">
-                                {{ $loop->iteration }}
+                        <div class="group relative rounded-2xl border border-slate-100 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-blue/5">
+                            <div class="absolute inset-x-0 top-0 h-0.5 rounded-t-2xl bg-gradient-to-r from-brand-blue to-sky-400 opacity-0 transition-opacity group-hover:opacity-100" aria-hidden="true"></div>
+                            <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-blue/10 text-brand-blue transition-colors group-hover:bg-brand-blue group-hover:text-white">
+                                {!! $pillarIcons[$idx] ?? $pillarIcons[0] !!}
                             </div>
-                            <h3 class="text-lg font-extrabold leading-snug text-brand-dark">{{ data_get($p, 'title') }}</h3>
+                            <h3 class="text-lg font-extrabold text-brand-dark">{{ data_get($p, 'title') }}</h3>
                             @if (trim((string) data_get($p, 'text')) !== '')
-                                <p class="mt-3 text-sm leading-relaxed text-slate-600">{{ data_get($p, 'text') }}</p>
+                                <p class="mt-2.5 text-sm leading-relaxed text-slate-500">{{ data_get($p, 'text') }}</p>
                             @endif
                         </div>
                     @endif
@@ -174,6 +202,7 @@
         </div>
     </section>
 
+    {{-- ═══ BANDEAU CONTACT ═══ --}}
     @include('about._contact-strip', [
         'stripTitle' => $contactStripTitle,
         'phone' => $footerPhone,
@@ -183,46 +212,49 @@
         'compact' => false,
     ])
 
-    <section class="border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-white py-16 sm:py-24" aria-labelledby="expertise-heading">
-        <div class="mx-auto grid w-[95%] gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8">
+    {{-- ═══ EXPERTISE ═══ --}}
+    <section class="bg-slate-50 py-20 sm:py-24" aria-labelledby="expertise-heading">
+        <div class="mx-auto grid w-[95%] items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:px-8">
             <div class="order-2 lg:order-1">
-                <div class="inline-flex items-center gap-2 rounded-full bg-brand-blue/10 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-brand-blue">Savoir-faire</div>
-                <h2 id="expertise-heading" class="mt-4 text-3xl font-black leading-tight tracking-tight text-brand-dark sm:text-4xl">
+                <p class="inline-block rounded-full bg-brand-blue/10 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.2em] text-brand-blue">Savoir-faire</p>
+                <h2 id="expertise-heading" class="mt-5 text-3xl font-black leading-tight tracking-tight text-brand-dark sm:text-4xl">
                     {{ $expertiseTitle }}
                 </h2>
                 <p class="mt-5 text-base leading-relaxed text-slate-600 sm:text-lg">{{ $expertiseText }}</p>
+                <a href="{{ $servicesHref }}" class="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-blue px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-brand-blue/25 transition hover:-translate-y-0.5 hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2">
+                    Découvrir nos services <span aria-hidden="true">&rarr;</span>
+                </a>
             </div>
             <div class="order-1 lg:order-2">
-                <div class="relative">
-                    <div class="absolute -inset-3 rounded-[1.7rem] bg-gradient-to-br from-brand-blue/20 via-transparent to-brand-yellow/15 blur-sm" aria-hidden="true"></div>
-                    <div class="relative overflow-hidden rounded-3xl border border-slate-200/80 shadow-[0_24px_50px_-12px_rgba(15,23,42,0.18)] ring-1 ring-slate-200/60">
-                        <img src="{{ $expertiseImage }}" alt="Rénovation de toiture et habitat — expertise Normes et Rénovation" class="aspect-[4/3] h-full w-full object-cover" width="800" height="600" loading="lazy" decoding="async">
-                    </div>
+                <div class="overflow-hidden rounded-2xl shadow-xl shadow-slate-900/10">
+                    <img src="{{ $expertiseImage }}" alt="Rénovation de toiture — expertise Normes et Rénovation" class="aspect-[4/3] w-full object-cover" width="800" height="600" loading="lazy" decoding="async">
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="bg-white py-16 sm:py-24" aria-labelledby="eco-heading">
-        <div class="mx-auto grid w-[95%] gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8">
+    {{-- ═══ ÉCO ═══ --}}
+    <section class="bg-white py-20 sm:py-24" aria-labelledby="eco-heading">
+        <div class="mx-auto grid w-[95%] items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:px-8">
             <div>
-                <div class="relative">
-                    <div class="absolute -inset-3 rounded-[1.7rem] bg-gradient-to-tr from-emerald-400/15 via-transparent to-brand-blue/15 blur-sm" aria-hidden="true"></div>
-                    <div class="relative overflow-hidden rounded-3xl border border-slate-200/80 shadow-[0_24px_50px_-12px_rgba(15,23,42,0.18)] ring-1 ring-slate-200/60">
-                        <img src="{{ $ecoImage }}" alt="Équipe et engagements Normes et Rénovation" class="aspect-[4/3] h-full w-full object-cover" width="800" height="600" loading="lazy" decoding="async">
-                    </div>
+                <div class="overflow-hidden rounded-2xl shadow-xl shadow-slate-900/10">
+                    <img src="{{ $ecoImage }}" alt="Équipe Normes et Rénovation" class="aspect-[4/3] w-full object-cover" width="800" height="600" loading="lazy" decoding="async">
                 </div>
             </div>
             <div>
-                <div class="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-emerald-800">Environnement</div>
-                <h2 id="eco-heading" class="mt-4 text-3xl font-black leading-tight tracking-tight text-brand-dark sm:text-4xl">
+                <p class="inline-block rounded-full bg-emerald-50 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.2em] text-emerald-700">Environnement</p>
+                <h2 id="eco-heading" class="mt-5 text-3xl font-black leading-tight tracking-tight text-brand-dark sm:text-4xl">
                     {{ $ecoTitle }}
                 </h2>
                 <p class="mt-5 text-base leading-relaxed text-slate-600 sm:text-lg">{{ $ecoText }}</p>
+                <a href="{{ $contactHref }}" class="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-dark px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-slate-900/15 transition hover:-translate-y-0.5 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2">
+                    Demander un devis <span aria-hidden="true">&rarr;</span>
+                </a>
             </div>
         </div>
     </section>
 
+    {{-- ═══ AVIS ═══ --}}
     @include('about._reviews', [
         'avisKicker' => $avisKicker,
         'avisTitle' => $avisTitle,
@@ -231,133 +263,144 @@
         'testimonials' => $testimonials,
     ])
 
-    <section class="border-t border-slate-200/80 bg-slate-50/80 py-14 sm:py-20" aria-labelledby="satisfaction-heading">
+    {{-- ═══ SATISFACTION + IMAGE ═══ --}}
+    <section class="bg-white py-20 sm:py-24" aria-labelledby="satisfaction-heading">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-            <div class="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-6 shadow-[0_20px_45px_-18px_rgba(15,23,42,0.12)] ring-1 ring-slate-100 sm:p-10">
-                <div class="pointer-events-none absolute -right-16 top-1/2 h-48 w-48 -translate-y-1/2 rounded-full bg-brand-blue/[0.06] blur-3xl" aria-hidden="true"></div>
+            <div class="overflow-hidden rounded-2xl bg-slate-50 lg:grid lg:grid-cols-2">
                 @if ($satisfactionImage !== '')
-                    <div class="relative grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-10">
-                        <div class="order-2 lg:order-1">
-                            <div class="relative">
-                                <div class="absolute -inset-2 rounded-[1.35rem] bg-gradient-to-br from-brand-blue/15 via-transparent to-brand-yellow/10 blur-sm" aria-hidden="true"></div>
-                                <div class="relative overflow-hidden rounded-2xl border border-slate-200/80 shadow-md ring-1 ring-slate-100">
-                                    <img
-                                        src="{{ $satisfactionImage }}"
-                                        alt="{{ $satisfactionImageAlt !== '' ? $satisfactionImageAlt : 'Illustration — '.$satisfactionTitle }}"
-                                        class="aspect-[4/3] h-full w-full object-cover sm:aspect-auto sm:min-h-[240px] sm:max-h-[360px] lg:max-h-[400px]"
-                                        width="800"
-                                        height="600"
-                                        loading="lazy"
-                                        decoding="async"
-                                    >
-                                </div>
-                            </div>
-                        </div>
-                        <div class="order-1 min-w-0 lg:order-2">
-                            <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6 lg:flex-col lg:gap-5">
-                                <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-blue to-sky-600 text-white shadow-lg" aria-hidden="true">
-                                    <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <h2 id="satisfaction-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">
-                                        {{ $satisfactionTitle }}
-                                    </h2>
-                                    <p class="mt-4 text-sm leading-relaxed text-slate-600 sm:text-base">
-                                        {!! nl2br(e($mediationText)) !!}
-                                    </p>
-                                    <a href="https://www.cm2c.net" class="mt-6 inline-flex items-center gap-2 rounded-xl bg-brand-blue px-4 py-2.5 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2" target="_blank" rel="noopener noreferrer">
-                                        Consulter le site du médiateur CM2C
-                                        <span aria-hidden="true">→</span>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @else
-                    <div class="relative flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
-                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-blue to-sky-600 text-white shadow-lg" aria-hidden="true">
-                            <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                        </div>
-                        <div class="min-w-0 flex-1">
-                            <h2 id="satisfaction-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">
-                                {{ $satisfactionTitle }}
-                            </h2>
-                            <p class="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
-                                {!! nl2br(e($mediationText)) !!}
-                            </p>
-                            <a href="https://www.cm2c.net" class="mt-6 inline-flex items-center gap-2 rounded-xl bg-brand-blue px-4 py-2.5 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2" target="_blank" rel="noopener noreferrer">
-                                Consulter le site du médiateur CM2C
-                                <span aria-hidden="true">→</span>
-                            </a>
-                        </div>
+                    <div class="relative">
+                        <img
+                            src="{{ $satisfactionImage }}"
+                            alt="{{ $satisfactionImageAlt !== '' ? $satisfactionImageAlt : $satisfactionTitle }}"
+                            class="h-full w-full object-cover lg:absolute lg:inset-0"
+                            width="800"
+                            height="600"
+                            loading="lazy"
+                            decoding="async"
+                            style="min-height:280px"
+                        >
                     </div>
                 @endif
+                <div class="{{ $satisfactionImage === '' ? 'lg:col-span-2' : '' }} flex flex-col justify-center p-8 sm:p-12 lg:p-14">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-blue text-white" aria-hidden="true">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    </div>
+                    <h2 id="satisfaction-heading" class="mt-5 text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">
+                        {{ $satisfactionTitle }}
+                    </h2>
+                    <p class="mt-4 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
+                        {!! nl2br(e($mediationText)) !!}
+                    </p>
+                    <div class="mt-7">
+                        <a href="https://www.cm2c.net" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-extrabold text-brand-dark shadow-sm transition hover:-translate-y-0.5 hover:border-brand-blue/30 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2" target="_blank" rel="noopener noreferrer">
+                            Site du médiateur CM2C <span aria-hidden="true">&rarr;</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
+    {{-- ═══ MENTIONS LÉGALES ═══ --}}
     @if ($showLegal)
-        <section class="border-t border-slate-200/80 bg-white py-16 sm:py-20" aria-labelledby="legal-heading">
+        <section class="bg-slate-50 py-20 sm:py-24" aria-labelledby="legal-heading">
             <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-                <h2 id="legal-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">
-                    {{ trim((string) data_get($legal, 'title', 'Mentions légales')) }}
-                </h2>
-                <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:gap-8">
-                    <div class="rounded-2xl border border-slate-200/90 bg-slate-50/80 p-6 ring-1 ring-slate-100 sm:p-8">
-                        <h3 class="text-xs font-extrabold uppercase tracking-[0.15em] text-brand-blue">
-                            {{ trim((string) data_get($legal, 'siege_title', 'Siège social')) }}
-                        </h3>
+                <div class="flex items-center gap-3">
+                    <div class="h-8 w-1 rounded-full bg-brand-blue"></div>
+                    <h2 id="legal-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">
+                        {{ trim((string) data_get($legal, 'title', 'Mentions légales')) }}
+                    </h2>
+                </div>
+
+                <div class="mt-10 grid gap-6 sm:grid-cols-2">
+                    {{-- Siège --}}
+                    <div class="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8">
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-blue/10 text-brand-blue">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </div>
+                            <h3 class="text-xs font-extrabold uppercase tracking-[0.15em] text-slate-400">
+                                {{ trim((string) data_get($legal, 'siege_title', 'Siège social')) }}
+                            </h3>
+                        </div>
                         @if ($footerCompany !== '')
-                            <p class="mt-4 text-lg font-bold text-brand-dark">{{ $footerCompany }}</p>
+                            <p class="mt-5 text-base font-bold text-brand-dark">{{ $footerCompany }}</p>
                         @endif
                         @if ($footerAddressLines !== [])
-                            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                            <p class="mt-1 text-sm leading-relaxed text-slate-500">
                                 @foreach ($footerAddressLines as $line)
                                     {{ $line }}@if (! $loop->last)<br>@endif
                                 @endforeach
                             </p>
                         @endif
                     </div>
-                    <div class="rounded-2xl border border-slate-200/90 bg-slate-50/80 p-6 ring-1 ring-slate-100 sm:p-8">
-                        <h3 class="text-xs font-extrabold uppercase tracking-[0.15em] text-brand-blue">
-                            {{ trim((string) data_get($legal, 'contact_title', 'Contact')) }}
-                        </h3>
+
+                    {{-- Contact --}}
+                    <div class="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8">
+                        <div class="flex items-center gap-3">
+                            <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-blue/10 text-brand-blue">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </div>
+                            <h3 class="text-xs font-extrabold uppercase tracking-[0.15em] text-slate-400">
+                                {{ trim((string) data_get($legal, 'contact_title', 'Contact')) }}
+                            </h3>
+                        </div>
                         @if ($footerPhone !== '')
-                            <p class="mt-4 text-sm text-slate-600">Téléphone</p>
-                            <a href="{{ $footerPhoneHref !== '' ? 'tel:'.preg_replace('#^tel:#i', '', $footerPhoneHref) : '#' }}" class="mt-1 inline-block text-lg font-extrabold text-brand-blue transition hover:text-sky-600">{{ $footerPhone }}</a>
+                            <p class="mt-5 text-xs font-semibold uppercase tracking-wide text-slate-400">Téléphone</p>
+                            <a href="{{ $footerPhoneHref !== '' ? 'tel:'.preg_replace('#^tel:#i', '', $footerPhoneHref) : '#' }}" class="text-lg font-extrabold text-brand-blue transition hover:text-sky-600">{{ $footerPhone }}</a>
                         @endif
                         @if ($footerEmail !== '')
-                            <p class="mt-4 text-sm text-slate-600">E-mail</p>
-                            <a href="mailto:{{ $footerEmail }}" class="mt-1 inline-block break-all text-sm font-semibold text-brand-dark underline-offset-2 transition hover:text-brand-blue hover:underline">{{ $footerEmail }}</a>
+                            <p class="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-400">E-mail</p>
+                            <a href="mailto:{{ $footerEmail }}" class="break-all text-sm font-bold text-brand-dark transition hover:text-brand-blue">{{ $footerEmail }}</a>
                         @endif
                     </div>
                 </div>
-                <div class="mt-8 rounded-2xl border border-slate-200/90 bg-white p-6 shadow-sm ring-1 ring-slate-100 sm:p-8">
-                    <h3 class="text-xs font-extrabold uppercase tracking-[0.15em] text-brand-blue">
-                        {{ trim((string) data_get($legal, 'representative_title', 'Représentant légal')) }}
-                    </h3>
+
+                {{-- Représentant + identifiants --}}
+                <div class="mt-6 rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8">
+                    <div class="flex items-center gap-3">
+                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-blue/10 text-brand-blue">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        </div>
+                        <h3 class="text-xs font-extrabold uppercase tracking-[0.15em] text-slate-400">
+                            {{ trim((string) data_get($legal, 'representative_title', 'Représentant légal')) }}
+                        </h3>
+                    </div>
                     @if (trim((string) data_get($legal, 'representative_text')) !== '')
-                        <p class="mt-4 text-sm leading-relaxed text-slate-600">{{ data_get($legal, 'representative_text') }}</p>
+                        <p class="mt-4 text-sm text-slate-600">{{ data_get($legal, 'representative_text') }}</p>
                     @endif
-                    <ul class="mt-6 grid gap-3 text-sm leading-relaxed text-slate-600 sm:grid-cols-1 lg:grid-cols-2">
+                    <div class="mt-6 grid gap-3 sm:grid-cols-2">
                         @if (trim((string) data_get($legal, 'rcs_label')) !== '' && trim((string) data_get($legal, 'rcs_number')) !== '')
-                            <li class="rounded-xl bg-slate-50/90 px-4 py-3 ring-1 ring-slate-100"><span class="font-bold text-brand-dark">{{ data_get($legal, 'rcs_label') }}</span><span class="mt-1 block text-slate-600">N° d’inscription : {{ data_get($legal, 'rcs_number') }}</span></li>
+                            <div class="rounded-xl bg-slate-50 px-4 py-3">
+                                <p class="text-xs font-bold uppercase tracking-wide text-slate-400">{{ data_get($legal, 'rcs_label') }}</p>
+                                <p class="mt-1 font-mono text-sm text-brand-dark">{{ data_get($legal, 'rcs_number') }}</p>
+                            </div>
                         @endif
                         @if (trim((string) data_get($legal, 'siren_label')) !== '' && trim((string) data_get($legal, 'siren')) !== '')
-                            <li class="rounded-xl bg-slate-50/90 px-4 py-3 ring-1 ring-slate-100"><span class="font-bold text-brand-dark">{{ data_get($legal, 'siren_label') }}</span><span class="mt-1 block font-mono text-slate-700">{{ data_get($legal, 'siren') }}</span></li>
+                            <div class="rounded-xl bg-slate-50 px-4 py-3">
+                                <p class="text-xs font-bold uppercase tracking-wide text-slate-400">{{ data_get($legal, 'siren_label') }}</p>
+                                <p class="mt-1 font-mono text-sm text-brand-dark">{{ data_get($legal, 'siren') }}</p>
+                            </div>
                         @endif
                         @if (trim((string) data_get($legal, 'siret_label')) !== '' && trim((string) data_get($legal, 'siret')) !== '')
-                            <li class="rounded-xl bg-slate-50/90 px-4 py-3 ring-1 ring-slate-100"><span class="font-bold text-brand-dark">{{ data_get($legal, 'siret_label') }}</span><span class="mt-1 block font-mono text-slate-700">{{ data_get($legal, 'siret') }}</span></li>
+                            <div class="rounded-xl bg-slate-50 px-4 py-3">
+                                <p class="text-xs font-bold uppercase tracking-wide text-slate-400">{{ data_get($legal, 'siret_label') }}</p>
+                                <p class="mt-1 font-mono text-sm text-brand-dark">{{ data_get($legal, 'siret') }}</p>
+                            </div>
                         @endif
                         @if (trim((string) data_get($legal, 'tva_label')) !== '' && trim((string) data_get($legal, 'tva')) !== '')
-                            <li class="rounded-xl bg-slate-50/90 px-4 py-3 ring-1 ring-slate-100 lg:col-span-2"><span class="font-bold text-brand-dark">{{ data_get($legal, 'tva_label') }}</span><span class="mt-1 block font-mono text-slate-700">TVA intracommunautaire : {{ data_get($legal, 'tva') }}</span></li>
+                            <div class="rounded-xl bg-slate-50 px-4 py-3">
+                                <p class="text-xs font-bold uppercase tracking-wide text-slate-400">{{ data_get($legal, 'tva_label') }}</p>
+                                <p class="mt-1 font-mono text-sm text-brand-dark">{{ data_get($legal, 'tva') }}</p>
+                            </div>
                         @endif
-                    </ul>
+                    </div>
                 </div>
             </div>
         </section>
     @endif
 
+    {{-- ═══ BANDEAU CONTACT COMPACT ═══ --}}
     @include('about._contact-strip', [
         'stripTitle' => $contactStripCompactTitle,
         'phone' => $footerPhone,
@@ -367,11 +410,11 @@
         'compact' => true,
     ])
 
+    {{-- ═══ TAGLINE ═══ --}}
     @if ($taglineBottom !== '')
-        <section class="relative overflow-hidden bg-gradient-to-br from-brand-dark via-brand-dark to-slate-900 py-12 text-center text-white sm:py-14">
-            <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,transparent_40%,rgba(14,165,233,0.07)_50%,transparent_60%)]" aria-hidden="true"></div>
-            <div class="relative mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-                <p class="mx-auto max-w-3xl text-sm font-semibold leading-relaxed text-white/92 sm:text-base">
+        <section class="bg-brand-dark py-12 text-center text-white sm:py-14">
+            <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+                <p class="mx-auto max-w-3xl text-sm font-medium leading-relaxed text-white/80 sm:text-base">
                     {{ $taglineBottom }}
                 </p>
             </div>
