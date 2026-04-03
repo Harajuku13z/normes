@@ -20,6 +20,7 @@ class AdminLayoutSettingsController extends Controller
             ['value' => 'home', 'label' => 'Accueil (/)'],
             ['value' => 'services.index', 'label' => 'Services (/services)'],
             ['value' => 'about.page', 'label' => 'À propos (/a-propos)'],
+            ['value' => 'realisations.page', 'label' => 'Réalisations (/realisations)'],
             ['value' => 'contact.page', 'label' => 'Contact (/contact)'],
             ['value' => 'simulateur.start', 'label' => 'Simulateur (/simulateur)'],
         ];
@@ -70,13 +71,18 @@ class AdminLayoutSettingsController extends Controller
                 $menuItems = collect($menuItems)
                     ->filter(fn ($item) => is_array($item))
                     ->map(function (array $item): array {
-                        return [
+                        $normalized = [
                             'label' => trim((string) data_get($item, 'label', '')),
                             'route' => trim((string) data_get($item, 'route', '')),
                             'anchor' => ltrim(trim((string) data_get($item, 'anchor', '')), '#'),
                             'custom_url' => trim((string) data_get($item, 'custom_url', '')),
                             'style' => trim((string) data_get($item, 'style', '')),
                         ];
+                        if (in_array($normalized['route'], ['services.index', 'realisations.page'], true)) {
+                            $normalized['anchor'] = '';
+                        }
+
+                        return $normalized;
                     })
                     ->filter(fn (array $item) => $item['label'] !== '' && ($item['route'] !== '' || $item['custom_url'] !== ''))
                     ->values()

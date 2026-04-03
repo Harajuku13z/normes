@@ -20,6 +20,7 @@ class AdminHeaderSettingsController extends Controller
             ['value' => 'home', 'label' => 'Accueil (/)'],
             ['value' => 'services.index', 'label' => 'Services (/services)'],
             ['value' => 'about.page', 'label' => 'À propos (/a-propos)'],
+            ['value' => 'realisations.page', 'label' => 'Réalisations (/realisations)'],
             ['value' => 'contact.page', 'label' => 'Contact (/contact)'],
             ['value' => 'simulateur.start', 'label' => 'Simulateur (/simulateur)'],
         ];
@@ -85,7 +86,7 @@ class AdminHeaderSettingsController extends Controller
                     'custom_url' => $this->normalizeCustomUrl(trim((string) data_get($item, 'custom_url', ''))),
                     'style' => trim((string) data_get($item, 'style', '')),
                 ];
-                if ($normalized['route'] === 'services.index') {
+                if (in_array($normalized['route'], ['services.index', 'realisations.page'], true)) {
                     $normalized['anchor'] = '';
                 }
 
@@ -102,7 +103,7 @@ class AdminHeaderSettingsController extends Controller
                             ];
                         })
                         ->map(function (array $child): array {
-                            if ($child['route'] === 'services.index') {
+                            if (in_array($child['route'], ['services.index', 'realisations.page'], true)) {
                                 $child['anchor'] = '';
                             }
 

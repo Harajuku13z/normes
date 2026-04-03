@@ -94,10 +94,10 @@
                     Les réalisations seront publiées prochainement.
                 </p>
             @else
-                <div class="mt-12 space-y-16 sm:space-y-20">
+                <div class="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-x-8 lg:gap-y-12">
                     @foreach ($projects as $project)
                         <article
-                            class="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8"
+                            class="flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8"
                             aria-labelledby="projet-{{ $project->id }}-title"
                         >
                             <h3 id="projet-{{ $project->id }}-title" class="text-xl font-black tracking-tight text-brand-dark sm:text-2xl">
@@ -110,7 +110,7 @@
                             @endif
 
                             @if ($project->images->isNotEmpty())
-                                <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                                <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
                                     @foreach ($project->images as $img)
                                         @php
                                             $src = HomeView::url((string) $img->path);
