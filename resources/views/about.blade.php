@@ -49,6 +49,43 @@
     $mediationText = trim((string) data_get($ap, 'mediation_text', 'Conformément à la réglementation, notre établissement a désigné le Centre de la Médiation de la Consommation de Conciliateurs de Justice (CM2C) comme médiateur de la consommation. En cas de réclamation non résolue, vous pouvez le contacter directement à l’adresse https://www.cm2c.net.'));
 
     $taglineBottom = trim((string) data_get($ap, 'tagline_bottom', 'Spécialiste en solutions de rénovation électrique, thermique et hygrométrique pour la maison.'));
+
+    $f = data_get($h, 'footer', []);
+    if (! is_array($f)) {
+        $f = [];
+    }
+    $footerPhone = trim((string) data_get($f, 'phone', ''));
+    $footerPhoneHref = trim((string) data_get($f, 'phone_href', ''));
+    $footerEmail = trim((string) data_get($f, 'email', ''));
+    $footerCompany = trim((string) data_get($f, 'company', ''));
+    $footerAddressLines = data_get($f, 'address_lines', []);
+    if (! is_array($footerAddressLines)) {
+        $footerAddressLines = [];
+    }
+
+    $contactStripTitle = trim((string) data_get($ap, 'contact_strip_title', 'NOUS CONTACTEZ'));
+    $contactStripCompactTitle = trim((string) data_get($ap, 'contact_strip_compact_title', $contactStripTitle));
+
+    $avisKicker = trim((string) data_get($ap, 'avis_section_kicker', 'VOS AVIS'));
+    $avisTitle = trim((string) data_get($ap, 'avis_section_title', 'Ce que disent nos clients'));
+    $googleReviewsLabel = trim((string) data_get($ap, 'google_reviews_label', ''));
+    $googleUrl = trim((string) data_get($ap, 'google_url', ''));
+    if ($googleUrl === '') {
+        $googleUrl = trim((string) data_get($h, 'avis.google_url', data_get($h, 'floating.google_url', '')));
+    }
+
+    $testimonials = data_get($ap, 'testimonials');
+    if (! is_array($testimonials) || $testimonials === []) {
+        $testimonials = require base_path('app/Support/about_testimonials_defaults.php');
+    }
+
+    $satisfactionTitle = trim((string) data_get($ap, 'satisfaction_title', 'Votre satisfaction est notre priorité'));
+
+    $legal = data_get($ap, 'legal', []);
+    if (! is_array($legal)) {
+        $legal = [];
+    }
+    $showLegal = (bool) data_get($legal, 'show', true);
 @endphp
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
@@ -76,7 +113,7 @@
         <div class="max-w-3xl text-white">
             <div class="rounded-3xl border border-white/15 bg-brand-dark/35 p-6 shadow-soft backdrop-blur-md sm:p-8">
                 @if ($heroKicker !== '')
-                    <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">{{ strtoupper($heroKicker) }}</p>
+                    <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">{{ mb_strtoupper($heroKicker, 'UTF-8') }}</p>
                 @endif
                 <h1 class="mb-4 text-3xl font-black leading-[1.06] tracking-tight drop-shadow sm:text-4xl lg:text-5xl">
                     {{ $heroTitle }}
@@ -91,6 +128,9 @@
                     <a href="{{ $contactHref }}" class="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:bg-yellow-300">
                         Devis gratuit
                     </a>
+                    <a href="#nous-contacter" class="rounded-xl border border-white/40 bg-white/10 px-5 py-3 text-sm font-extrabold text-white shadow-soft backdrop-blur transition hover:bg-white/20">
+                        Nous contacter
+                    </a>
                 </div>
             </div>
         </div>
@@ -101,7 +141,7 @@
     <section class="bg-white py-14 sm:py-20" aria-labelledby="pillars-heading">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             @if ($pillarsKicker !== '')
-                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ strtoupper($pillarsKicker) }}</p>
+                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ mb_strtoupper($pillarsKicker, 'UTF-8') }}</p>
             @endif
             <h2 id="pillars-heading" class="mt-2 max-w-3xl text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl">
                 {{ $pillarsTitle }}
@@ -121,6 +161,15 @@
         </div>
     </section>
 
+    @include('about._contact-strip', [
+        'stripTitle' => $contactStripTitle,
+        'phone' => $footerPhone,
+        'phoneHref' => $footerPhoneHref,
+        'email' => $footerEmail,
+        'contactHref' => $contactHref,
+        'compact' => false,
+    ])
+
     <section class="border-t border-slate-200/80 bg-slate-50/70 py-14 sm:py-20" aria-labelledby="expertise-heading">
         <div class="mx-auto grid w-[95%] gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-14 lg:px-8">
             <div class="order-2 lg:order-1">
@@ -130,7 +179,7 @@
                 <p class="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">{{ $expertiseText }}</p>
             </div>
             <div class="order-1 overflow-hidden rounded-3xl border border-slate-200 shadow-soft lg:order-2">
-                <img src="{{ $expertiseImage }}" alt="" class="aspect-[4/3] h-full w-full object-cover" width="800" height="600" loading="lazy" decoding="async">
+                <img src="{{ $expertiseImage }}" alt="Rénovation de toiture et habitat — expertise Normes et Rénovation" class="aspect-[4/3] h-full w-full object-cover" width="800" height="600" loading="lazy" decoding="async">
             </div>
         </div>
     </section>
@@ -149,12 +198,18 @@
         </div>
     </section>
 
-    @include('home.avis', ['home' => $h])
+    @include('about._reviews', [
+        'avisKicker' => $avisKicker,
+        'avisTitle' => $avisTitle,
+        'googleReviewsLabel' => $googleReviewsLabel,
+        'googleUrl' => $googleUrl,
+        'testimonials' => $testimonials,
+    ])
 
     <section class="border-t border-slate-200/80 bg-slate-50/70 py-12 sm:py-16" aria-labelledby="satisfaction-heading">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <h2 id="satisfaction-heading" class="text-2xl font-extrabold text-brand-dark sm:text-3xl">
-                Votre satisfaction est notre priorité
+                {{ $satisfactionTitle }}
             </h2>
             <p class="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
                 {!! nl2br(e($mediationText)) !!}
@@ -163,6 +218,75 @@
             </p>
         </div>
     </section>
+
+    @if ($showLegal)
+        <section class="border-t border-slate-200/80 bg-white py-14 sm:py-16" aria-labelledby="legal-heading">
+            <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+                <h2 id="legal-heading" class="text-2xl font-extrabold text-brand-dark sm:text-3xl">
+                    {{ trim((string) data_get($legal, 'title', 'Mentions légales')) }}
+                </h2>
+                <div class="mt-8 grid gap-10 sm:grid-cols-2 lg:gap-14">
+                    <div>
+                        <h3 class="text-sm font-extrabold uppercase tracking-wide text-brand-blue">
+                            {{ trim((string) data_get($legal, 'siege_title', 'Siège social')) }}
+                        </h3>
+                        @if ($footerCompany !== '')
+                            <p class="mt-3 font-semibold text-brand-dark">{{ $footerCompany }}</p>
+                        @endif
+                        @if ($footerAddressLines !== [])
+                            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+                                @foreach ($footerAddressLines as $line)
+                                    {{ $line }}@if (! $loop->last)<br>@endif
+                                @endforeach
+                            </p>
+                        @endif
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-extrabold uppercase tracking-wide text-brand-blue">
+                            {{ trim((string) data_get($legal, 'contact_title', 'Contact')) }}
+                        </h3>
+                        @if ($footerPhone !== '')
+                            <p class="mt-3 text-sm text-slate-600">Téléphone : <a href="{{ $footerPhoneHref !== '' ? 'tel:'.preg_replace('#^tel:#i', '', $footerPhoneHref) : '#' }}" class="font-semibold text-brand-blue hover:underline">{{ $footerPhone }}</a></p>
+                        @endif
+                        @if ($footerEmail !== '')
+                            <p class="mt-2 text-sm text-slate-600">E-mail : <a href="mailto:{{ $footerEmail }}" class="break-all font-semibold text-brand-blue hover:underline">{{ $footerEmail }}</a></p>
+                        @endif
+                    </div>
+                </div>
+                <div class="mt-10 border-t border-slate-200 pt-10">
+                    <h3 class="text-sm font-extrabold uppercase tracking-wide text-brand-blue">
+                        {{ trim((string) data_get($legal, 'representative_title', 'Représentant légal')) }}
+                    </h3>
+                    @if (trim((string) data_get($legal, 'representative_text')) !== '')
+                        <p class="mt-3 text-sm leading-relaxed text-slate-600">{{ data_get($legal, 'representative_text') }}</p>
+                    @endif
+                    <ul class="mt-4 space-y-2 text-sm leading-relaxed text-slate-600">
+                        @if (trim((string) data_get($legal, 'rcs_label')) !== '' && trim((string) data_get($legal, 'rcs_number')) !== '')
+                            <li><span class="font-semibold text-brand-dark">{{ data_get($legal, 'rcs_label') }}</span> — numéro d’inscription : {{ data_get($legal, 'rcs_number') }}</li>
+                        @endif
+                        @if (trim((string) data_get($legal, 'siren_label')) !== '' && trim((string) data_get($legal, 'siren')) !== '')
+                            <li><span class="font-semibold text-brand-dark">{{ data_get($legal, 'siren_label') }}</span> : {{ data_get($legal, 'siren') }}</li>
+                        @endif
+                        @if (trim((string) data_get($legal, 'siret_label')) !== '' && trim((string) data_get($legal, 'siret')) !== '')
+                            <li><span class="font-semibold text-brand-dark">{{ data_get($legal, 'siret_label') }}</span> : {{ data_get($legal, 'siret') }}</li>
+                        @endif
+                        @if (trim((string) data_get($legal, 'tva_label')) !== '' && trim((string) data_get($legal, 'tva')) !== '')
+                            <li><span class="font-semibold text-brand-dark">{{ data_get($legal, 'tva_label') }}</span> — numéro de TVA intracommunautaire : {{ data_get($legal, 'tva') }}</li>
+                        @endif
+                    </ul>
+                </div>
+            </div>
+        </section>
+    @endif
+
+    @include('about._contact-strip', [
+        'stripTitle' => $contactStripCompactTitle,
+        'phone' => $footerPhone,
+        'phoneHref' => $footerPhoneHref,
+        'email' => $footerEmail,
+        'contactHref' => $contactHref,
+        'compact' => true,
+    ])
 
     @if ($taglineBottom !== '')
         <section class="bg-brand-dark py-10 text-center text-white sm:py-12">
