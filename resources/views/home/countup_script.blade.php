@@ -1,105 +1,94 @@
 <script>
 (function () {
-    function init() {
+    function run() {
         var els = document.querySelectorAll('[data-countup]');
         if (!els.length) return;
-        var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        function parseOld(raw) {
-            var m = raw.match(/^([^\d]*)([\d\s.,]+)([^\d]*)$/);
-            if (!m) return null;
-            return { prefix: m[1], numStr: m[2].replace(/\s/g, ''), suffix: m[3] };
+        function parseValue(el) {
+            var raw = (el.getAttribute('data-countup') || '').trim();
+            if (!raw) return null;
+
+            var prefix, suffix, numStr;
+
+            if (el.hasAttribute('data-countup-prefix')) {
+                prefix = el.getAttribute('data-countup-prefix') || '';
+                suffix = el.getAttribute('data-countup-suffix') || '';
+                numStr = raw.replace(/\s/g, '');
+            } else {
+                var m = raw.match(/^([^\d]*)([\d\s.,]+)([^\d]*)$/);
+                if (!m) return null;
+                prefix = m[1];
+                numStr = m[2].replace(/\s/g, '');
+                suffix = m[3];
+            }
+
+            var hasDec = numStr.indexOf(',') > -1 || numStr.indexOf('.') > -1;
+            var sep = numStr.indexOf(',') > -1 ? ',' : '.';
+            var target = parseFloat(numStr.replace(',', '.'));
+            if (isNaN(target)) return null;
+
+            var decimals = hasDec ? (numStr.split(sep)[1] || '').length : 0;
+            var useSpacer = numStr.replace(/[.,]/g, '').length >= 4;
+            var pad = parseInt(el.getAttribute('data-countup-pad') || '0', 10);
+
+            return { prefix: prefix, suffix: suffix, target: target, hasDec: hasDec, sep: sep, decimals: decimals, useSpacer: useSpacer, pad: pad, raw: raw };
+        }
+
+        function format(val, p) {
+            var s = p.hasDec ? val.toFixed(p.decimals).replace('.', p.sep) : Math.round(val).toString();
+            if (p.useSpacer && !p.hasDec) s = s.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            if (p.pad > 0 && !p.hasDec) { while (s.length < p.pad) s = '0' + s; }
+            return s;
         }
 
         function animate(el) {
-            if (el.dataset.countupDone) return;
-            el.dataset.countupDone = '1';
-
-            var raw = (el.dataset.countup || '').trim();
-            var hasAttrs = el.hasAttribute('data-countup-prefix');
-            var prefix, suffix, numStr;
-
-            if (hasAttrs) {
-                prefix = el.dataset.countupPrefix || '';
-                suffix = el.dataset.countupSuffix || '';
-                numStr = raw.replace(/\s/g, '');
-            } else {
-                var parsed = parseOld(raw);
-                if (!parsed) { el.textContent = raw; return; }
-                prefix = parsed.prefix;
-                suffix = parsed.suffix;
-                numStr = parsed.numStr;
-            }
-
-            var hasDecimal = numStr.indexOf(',') !== -1 || numStr.indexOf('.') !== -1;
-            var sep = numStr.indexOf(',') !== -1 ? ',' : '.';
-            var target = parseFloat(numStr.replace(',', '.'));
-
-            if (isNaN(target) || target === 0) {
-                el.textContent = prefix + raw + suffix;
+            var p = parseValue(el);
+            if (!p || p.target === 0) {
+                el.textContent = p ? p.prefix + p.raw + p.suffix : el.getAttribute('data-countup');
                 return;
             }
 
-            var decimals = hasDecimal ? (numStr.split(sep)[1] || '').length : 0;
-            var useSpacer = numStr.replace(/[.,]/g, '').length >= 4;
-            var pad = parseInt(el.dataset.countupPad || '0', 10);
+            el.textContent = p.prefix + '0' + p.suffix;
 
-            if (reduced) { el.textContent = prefix + numStr + suffix; return; }
+            var duration = Math.min(2200, Math.max(800, p.target * 10));
+            var start = -1;
 
-            el.textContent = prefix + '0' + suffix;
-
-            var duration = Math.min(2200, Math.max(900, target * 12));
-            var start = performance.now();
-
-            function format(val) {
-                var s = hasDecimal ? val.toFixed(decimals).replace('.', sep) : Math.round(val).toString();
-                if (useSpacer && !hasDecimal) s = s.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-                if (pad > 0 && !hasDecimal) { while (s.length < pad) s = '0' + s; }
-                return s;
-            }
-
-            function step(now) {
-                var t = Math.min((now - start) / duration, 1);
+            function step(ts) {
+                if (start < 0) start = ts;
+                var t = Math.min((ts - start) / duration, 1);
                 var ease = 1 - Math.pow(1 - t, 3);
-                el.textContent = prefix + format(ease * target) + suffix;
+                el.textContent = p.prefix + format(ease * p.target, p) + p.suffix;
                 if (t < 1) requestAnimationFrame(step);
             }
+
             requestAnimationFrame(step);
         }
 
-        function isInView(el) {
+        function isVisible(el) {
             var r = el.getBoundingClientRect();
-            return r.top < window.innerHeight + 150 && r.bottom > -150;
+            return r.top < window.innerHeight + 50 && r.bottom > -50;
         }
 
-        function checkAll() {
-            els.forEach(function (el) {
-                if (!el.dataset.countupDone && isInView(el)) animate(el);
-            });
+        function check() {
+            for (var i = 0; i < els.length; i++) {
+                if (!els[i]._cuDone && isVisible(els[i])) {
+                    els[i]._cuDone = true;
+                    animate(els[i]);
+                }
+            }
         }
 
-        if ('IntersectionObserver' in window) {
-            var io = new IntersectionObserver(function (entries) {
-                entries.forEach(function (e) {
-                    if (e.isIntersecting) { animate(e.target); io.unobserve(e.target); }
-                });
-            }, { threshold: 0, rootMargin: '0px 0px 150px 0px' });
-            els.forEach(function (el) { io.observe(el); });
-        }
-
-        checkAll();
-
-        var scrollTimer;
-        window.addEventListener('scroll', function () {
-            clearTimeout(scrollTimer);
-            scrollTimer = setTimeout(checkAll, 80);
-        }, { passive: true });
+        window.addEventListener('scroll', check, { passive: true });
+        window.addEventListener('resize', check, { passive: true });
+        check();
+        setTimeout(check, 300);
+        setTimeout(check, 1000);
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', run);
     } else {
-        init();
+        run();
     }
 })();
 </script>
