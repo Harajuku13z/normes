@@ -18,7 +18,7 @@
 @if ($reelCount > 0)
 <section aria-label="Reels et réalisations Normes et Rénovation">
 
-    {{-- ══ MOBILE : plein écran type TikTok ══ --}}
+    {{-- ══ MOBILE : plein écran — 1re vidéo chargée, les autres en lazy (pas de lib lourde) ══ --}}
     <div class="relative h-[100svh] lg:hidden">
         <div class="reels-scroll h-full snap-y snap-mandatory overflow-y-auto" id="reels-mobile">
             @foreach ($validReels as $idx => $reel)
@@ -28,19 +28,23 @@
                     $caption  = trim((string) data_get($reel, 'caption', ''));
                     $videoUrl = $videoRaw !== '' ? HomeView::url($videoRaw) : '';
                     $imageUrl = $imageRaw !== '' ? HomeView::url($imageRaw) : '';
-                    $posterUrl = ($videoUrl !== '' && $imageUrl !== '') ? $imageUrl : '';
+                    $posterUrl = ($videoUrl !== '' && $imageUrl !== '') ? $imageUrl : ($imageUrl !== '' ? $imageUrl : '');
                 @endphp
                 <div class="reel-slide relative h-[100svh] w-full snap-start" data-index="{{ $idx }}">
                     @if ($videoUrl !== '')
                         <video
                             class="absolute inset-0 h-full w-full object-cover"
-                            src="{{ $videoUrl }}"
+                            @if ($idx === 0)
+                                src="{{ $videoUrl }}"
+                            @else
+                                data-lazy-src="{{ $videoUrl }}"
+                            @endif
                             @if ($posterUrl !== '') poster="{{ $posterUrl }}" @endif
-                            {{ $idx === 0 ? 'autoplay' : '' }}
                             muted
                             loop
                             playsinline
-                            preload="{{ $idx === 0 ? 'auto' : 'none' }}"
+                            preload="{{ $idx === 0 ? 'metadata' : 'none' }}"
+                            @if ($idx === 0) autoplay @endif
                         ></video>
                     @else
                         <img
@@ -84,8 +88,8 @@
         </div>
     </div>
 
-    {{-- ══ DESKTOP : grille ══ --}}
-    <div class="hidden bg-brand-dark py-20 sm:py-24 lg:block">
+    {{-- ══ DESKTOP : pas d'autoplay au chargement — src injectée à l'entrée dans le viewport ══ --}}
+    <div id="reels-desktop-grid" class="hidden bg-brand-dark py-20 sm:py-24 lg:block">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 @if (trim((string) ($reelsKicker ?? '')) !== '')
@@ -106,17 +110,17 @@
                         $imageUrl = $imageRaw !== '' ? HomeView::url($imageRaw) : '';
                         $posterUrl = ($videoUrl !== '' && $imageUrl !== '') ? $imageUrl : '';
                     @endphp
-                    <div class="group relative aspect-[9/16] overflow-hidden rounded-2xl bg-slate-800">
+                    <div class="reel-desk-cell group relative aspect-[9/16] overflow-hidden rounded-2xl bg-slate-800">
                         @if ($videoUrl !== '')
                             <video
-                                class="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                                src="{{ $videoUrl }}"
+                                class="reel-video-desktop h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                                data-lazy-src="{{ $videoUrl }}"
+                                data-loaded="0"
                                 @if ($posterUrl !== '') poster="{{ $posterUrl }}" @endif
-                                autoplay
                                 muted
                                 loop
                                 playsinline
-                                preload="metadata"
+                                preload="none"
                             ></video>
                         @else
                             <img
@@ -150,32 +154,61 @@
 
 <script>
 document.addEventListener('DOMContentLoaded',function(){
-    var c=document.getElementById('reels-mobile');
-    if(!c)return;
-    var slides=c.querySelectorAll('.reel-slide');
-    var dots=document.querySelectorAll('#reels-dots .reel-dot');
-    var hint=document.getElementById('reels-swipe-hint');
+    function hydrateVideo(v){
+        var ds=v.getAttribute('data-lazy-src');
+        if(!ds)return;
+        if(v.getAttribute('data-loaded')==='1')return;
+        v.src=ds;
+        v.removeAttribute('data-lazy-src');
+        v.setAttribute('data-loaded','1');
+    }
 
-    var obs=new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-            if(!e.isIntersecting)return;
-            var idx=parseInt(e.target.dataset.index,10);
-            dots.forEach(function(d,i){
-                d.classList.toggle('bg-white',i===idx);
-                d.classList.toggle('scale-125',i===idx);
-                d.classList.toggle('bg-white/40',i!==idx);
-                d.classList.toggle('scale-100',i!==idx);
+    var c=document.getElementById('reels-mobile');
+    if(c){
+        var slides=c.querySelectorAll('.reel-slide');
+        var dots=document.querySelectorAll('#reels-dots .reel-dot');
+        var hint=document.getElementById('reels-swipe-hint');
+        var obs=new IntersectionObserver(function(entries){
+            entries.forEach(function(e){
+                if(!e.isIntersecting)return;
+                var idx=parseInt(e.target.dataset.index,10);
+                dots.forEach(function(d,i){
+                    d.classList.toggle('bg-white',i===idx);
+                    d.classList.toggle('scale-125',i===idx);
+                    d.classList.toggle('bg-white/40',i!==idx);
+                    d.classList.toggle('scale-100',i!==idx);
+                });
+                if(hint)hint.style.display=idx===0?'':'none';
+                slides.forEach(function(s,i){
+                    var v=s.querySelector('video');
+                    if(!v)return;
+                    if(i===idx){
+                        hydrateVideo(v);
+                        v.play().catch(function(){});
+                    }else{
+                        v.pause();
+                    }
+                });
             });
-            if(hint)hint.style.display=idx===0?'':'none';
-            slides.forEach(function(s,i){
-                var v=s.querySelector('video');
-                if(!v)return;
-                if(i===idx){v.play().catch(function(){});}
-                else{v.pause();}
+        },{root:c,threshold:0.6});
+        slides.forEach(function(s){obs.observe(s);});
+    }
+
+    document.querySelectorAll('.reel-video-desktop').forEach(function(v){
+        var cell=v.closest('.reel-desk-cell');
+        if(!cell)return;
+        var io=new IntersectionObserver(function(entries){
+            entries.forEach(function(en){
+                if(en.isIntersecting){
+                    hydrateVideo(v);
+                    v.play().catch(function(){});
+                }else{
+                    v.pause();
+                }
             });
-        });
-    },{root:c,threshold:0.6});
-    slides.forEach(function(s){obs.observe(s);});
+        },{root:null,rootMargin:'0px 0px 80px 0px',threshold:0.15});
+        io.observe(cell);
+    });
 });
 </script>
 @endif

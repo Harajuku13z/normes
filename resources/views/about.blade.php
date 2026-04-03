@@ -71,9 +71,6 @@
         $footerAddressLines = [];
     }
 
-    $contactStripTitle = trim((string) data_get($ap, 'contact_strip_title', 'NOUS CONTACTEZ'));
-    $contactStripCompactTitle = trim((string) data_get($ap, 'contact_strip_compact_title', $contactStripTitle));
-
     $avisKicker = trim((string) data_get($ap, 'avis_section_kicker', 'VOS AVIS'));
     $avisTitle = trim((string) data_get($ap, 'avis_section_title', 'Ce que disent nos clients'));
     $googleReviewsLabel = trim((string) data_get($ap, 'google_reviews_label', ''));
@@ -270,16 +267,6 @@
         </div>
     </section>
 
-    {{-- ═══ BANDEAU CONTACT ═══ --}}
-    @include('about._contact-strip', [
-        'stripTitle' => $contactStripTitle,
-        'phone' => $footerPhone,
-        'phoneHref' => $footerPhoneHref,
-        'email' => $footerEmail,
-        'contactHref' => $contactHref,
-        'compact' => false,
-    ])
-
     {{-- ═══ EXPERTISE ═══ --}}
     <section class="bg-slate-50 py-20 sm:py-24" aria-labelledby="expertise-heading">
         <div class="mx-auto grid w-[95%] items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:px-8">
@@ -325,16 +312,15 @@
     {{-- ═══ SATISFACTION + IMAGE ═══ --}}
     <section class="bg-white py-20 sm:py-24" aria-labelledby="satisfaction-heading">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-            <div class="overflow-hidden rounded-2xl bg-slate-50 lg:grid lg:grid-cols-2 lg:items-stretch">
+            <div class="overflow-hidden rounded-2xl bg-slate-50 lg:grid lg:grid-cols-2 lg:items-center lg:gap-0">
                 @if ($satisfactionImage !== '')
-                    {{-- Hauteur explicite : un parent avec seulement un img en position absolue peut avoir 0 px de haut en grille --}}
-                    <div class="relative min-h-[280px] w-full sm:min-h-[340px] lg:min-h-[360px] lg:h-full">
+                    <div class="overflow-hidden">
                         <img
                             src="{{ $satisfactionImage }}"
                             alt="{{ $satisfactionImageAlt !== '' ? $satisfactionImageAlt : $satisfactionTitle }}"
-                            class="absolute inset-0 h-full w-full object-cover"
-                            width="800"
-                            height="600"
+                            class="aspect-[4/3] w-full object-cover lg:aspect-[5/4] lg:min-h-[380px]"
+                            width="960"
+                            height="720"
                             loading="lazy"
                             decoding="async"
                         >
@@ -468,14 +454,12 @@
         </section>
     @endif
 
-    {{-- ═══ BANDEAU CONTACT COMPACT ═══ --}}
-    @include('about._contact-strip', [
-        'stripTitle' => $contactStripCompactTitle,
+    {{-- ═══ CTA contact en bas (lien formulaire + coordonnées discrètes) ═══ --}}
+    @include('about._footer-cta-contact', [
         'phone' => $footerPhone,
         'phoneHref' => $footerPhoneHref,
         'email' => $footerEmail,
         'contactHref' => $contactHref,
-        'compact' => true,
     ])
 
     {{-- ═══ TAGLINE ═══ --}}
