@@ -9,6 +9,13 @@
                 $iconWrapClass = $isOdd ? 'bg-brand-blue/10 ring-brand-blue/15' : 'bg-brand-dark/10 ring-brand-dark/15';
                 $iconClass = trim((string) data_get($item, 'icon', 'fa-solid fa-chart-line'));
                 $isFa = str_starts_with($iconClass, 'fa-') || str_contains($iconClass, 'fa ');
+
+                // Support both old format (value="+5000") and new format (number/prefix/suffix)
+                $hasNewFormat = isset($item['number']);
+                $number = $hasNewFormat ? data_get($item, 'number', '0') : preg_replace('/[^\d.,]/', '', (string) data_get($item, 'value', '0'));
+                $prefix = $hasNewFormat ? data_get($item, 'prefix', '') : preg_replace('/[\d.,\s].*/', '', (string) data_get($item, 'value', ''));
+                $suffix = $hasNewFormat ? data_get($item, 'suffix', '') : preg_replace('/^.*[\d.,\s]/', '', (string) data_get($item, 'value', ''));
+                $displayFull = $prefix . $number . $suffix;
             @endphp
             <article class="flex flex-col items-center rounded-2xl border border-white/15 bg-white px-4 py-7 text-center shadow-soft ring-1 ring-white/10 sm:py-8">
                 <span class="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl {{ $iconWrapClass }} {{ $textClass }} ring-1" aria-hidden="true">
@@ -18,8 +25,13 @@
                         <i class="fa-solid fa-chart-line text-2xl"></i>
                     @endif
                 </span>
-                <strong class="text-4xl font-black tracking-tight {{ $textClass }}" data-countup="{{ data_get($item, 'value') }}">0</strong>
-                <noscript><strong class="text-4xl font-black tracking-tight {{ $textClass }}">{{ data_get($item, 'value') }}</strong></noscript>
+                <strong
+                    class="text-4xl font-black tracking-tight {{ $textClass }}"
+                    data-countup="{{ $number }}"
+                    data-countup-prefix="{{ $prefix }}"
+                    data-countup-suffix="{{ $suffix }}"
+                >{{ $prefix }}0{{ $suffix }}</strong>
+                <noscript><strong class="text-4xl font-black tracking-tight {{ $textClass }}">{{ $displayFull }}</strong></noscript>
                 <span class="mt-1 text-sm font-bold {{ $mutedTextClass }} sm:text-base">{{ data_get($item, 'label') }}</span>
             </article>
         @endforeach

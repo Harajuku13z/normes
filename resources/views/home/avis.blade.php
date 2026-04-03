@@ -130,14 +130,16 @@
         return 1;
     }
 
-    function getMaxIndex() {
-        return Math.max(0, n - getVisible());
+    function getTotalPages() {
+        return Math.ceil(n / getVisible());
     }
 
-    function moveTo(idx) {
-        var maxIdx = getMaxIndex();
-        current = idx < 0 ? maxIdx : (idx > maxIdx ? 0 : idx);
-        var pct = current * (100 / n);
+    function moveTo(pageIdx) {
+        var vis = getVisible();
+        var total = getTotalPages();
+        current = ((pageIdx % total) + total) % total;
+        var firstSlide = current * vis;
+        var pct = firstSlide * (100 / n);
         track.style.transform = 'translateX(-' + pct + '%)';
     }
 
