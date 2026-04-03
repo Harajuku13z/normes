@@ -5,16 +5,20 @@
         ->take(3);
     $gUrl = trim((string) ($googleUrl ?? ''));
 @endphp
-<section id="avis-about" class="border-t border-slate-200/90 bg-white py-20 sm:py-24" aria-labelledby="avis-about-heading">
+<section id="avis-about" class="border-t border-slate-200/90 bg-white py-12 sm:py-16" aria-labelledby="avis-about-heading">
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         <div class="text-center">
             @if (trim((string) ($avisKicker ?? '')) !== '')
                 <p class="text-xs font-extrabold uppercase tracking-[0.25em] text-brand-blue">{{ $avisKicker }}</p>
             @endif
-            <h2 id="avis-about-heading" class="mx-auto mt-3 max-w-xl text-3xl font-black leading-tight tracking-tight text-brand-dark sm:text-4xl">
-                {{ $avisTitle ?? '' }}
-            </h2>
-            <div class="mx-auto mt-4 h-1 w-16 rounded-full bg-brand-blue"></div>
+            @include('about._heading-two-tone', [
+                'title' => trim((string) ($avisTitle ?? '')),
+                'as' => 'h2',
+                'id' => 'avis-about-heading',
+                'class' => 'mx-auto mt-3 max-w-xl text-2xl font-black leading-tight tracking-tight text-brand-dark sm:text-3xl',
+                'variant' => 'light',
+            ])
+            <div class="mx-auto mt-3 h-1 w-16 rounded-full bg-brand-blue"></div>
 
             @if ($gUrl !== '')
                 <div class="mt-6 flex flex-wrap items-center justify-center gap-4">
@@ -41,14 +45,14 @@
             @endif
         </div>
 
-        <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div class="mt-9 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             @foreach ($items as $t)
                 @php
                     $author = (string) data_get($t, 'author');
                     $when = trim((string) data_get($t, 'time_ago', ''));
                     $text = (string) data_get($t, 'text');
                 @endphp
-                <article class="group flex flex-col rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-blue/5">
+                <article class="group flex flex-col rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-blue/5">
                     <div class="flex items-center gap-3.5">
                         <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-blue text-sm font-black text-white">
                             {{ mb_strtoupper(mb_substr($author, 0, 1)) }}

@@ -35,7 +35,7 @@
     $showCompanyStory = $companyStoryHeading !== '' || $companyStoryBody !== '' || $companyStoryImage !== '';
 
     $pillarsKicker = trim((string) data_get($ap, 'pillars_kicker', 'Expertise et durabilité'));
-    $pillarsTitle = trim((string) data_get($ap, 'pillars_title', 'Un partenaire fiable à chaque étape'));
+    $pillarsTitle = trim((string) data_get($ap, 'pillars_title', 'Un partenaire fiable|à chaque étape'));
     $pillars = data_get($ap, 'pillars', []);
     if (! is_array($pillars) || $pillars === []) {
         $pillars = [
@@ -50,7 +50,7 @@
     $expertiseText = trim((string) data_get($ap, 'expertise_text', 'Normes et Rénovation se spécialise dans une gamme étendue de services de rénovation, incluant la gestion de l\'humidité, l\'amélioration de l\'efficacité énergétique et la sécurité des installations électriques. Nous offrons des solutions sur mesure pour répondre aux besoins spécifiques de chaque projet.'));
     $expertiseImage = HomeView::url((string) data_get($ap, 'expertise_image', '/slide/toiture.png'));
 
-    $ecoTitle = trim((string) data_get($ap, 'eco_title', 'Solutions écologiques et durables'));
+    $ecoTitle = trim((string) data_get($ap, 'eco_title', 'Solutions écologiques|et durables'));
     $ecoText = trim((string) data_get($ap, 'eco_text', 'Nous privilégions des solutions respectueuses de l\'environnement, telles que les traitements hydrofuges pour façades et les systèmes de ventilation innovants. Nous nous engageons à utiliser des technologies durables qui améliorent le confort tout en réduisant l\'empreinte écologique.'));
     $ecoImage = HomeView::url((string) data_get($ap, 'eco_image', '/nous/equipe.jpeg'));
 
@@ -72,7 +72,7 @@
     }
 
     $avisKicker = trim((string) data_get($ap, 'avis_section_kicker', 'VOS AVIS'));
-    $avisTitle = trim((string) data_get($ap, 'avis_section_title', 'Ce que disent nos clients'));
+    $avisTitle = trim((string) data_get($ap, 'avis_section_title', 'Ce que disent|nos clients'));
     $googleReviewsLabel = trim((string) data_get($ap, 'google_reviews_label', ''));
     $googleUrl = trim((string) data_get($ap, 'google_url', ''));
     if ($googleUrl === '') {
@@ -84,7 +84,7 @@
         $testimonials = require base_path('app/Support/about_testimonials_defaults.php');
     }
 
-    $satisfactionTitle = trim((string) data_get($ap, 'satisfaction_title', 'Votre satisfaction est notre priorité'));
+    $satisfactionTitle = trim((string) data_get($ap, 'satisfaction_title', 'Votre satisfaction|est notre priorité'));
     $satisfactionImgVal = data_get($ap, 'satisfaction_image', '');
     if (! is_string($satisfactionImgVal)) {
         $satisfactionImgVal = '';
@@ -114,7 +114,7 @@
 <a href="#contenu" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[2000] focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-extrabold focus:text-brand-dark focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-blue">Aller au contenu</a>
 @include('home.header', ['home' => $h])
 
-<section id="top" class="relative min-h-[520px] overflow-hidden sm:min-h-[620px]">
+<section id="top" class="relative min-h-[440px] overflow-hidden sm:min-h-[500px]">
     <div
         class="absolute inset-0 bg-cover bg-center"
         style="background-image: url('{{ $heroBg }}');"
@@ -123,7 +123,7 @@
     <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/95 via-brand-dark/50 to-brand-dark/20" aria-hidden="true"></div>
     <div class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-brand-dark/40 to-transparent" aria-hidden="true"></div>
 
-    <div class="relative z-10 mx-auto flex min-h-[520px] w-[95%] flex-col justify-end gap-6 px-4 py-10 sm:min-h-[620px] sm:px-6 lg:px-8">
+    <div class="relative z-10 mx-auto flex min-h-[440px] w-[95%] flex-col justify-end gap-5 px-4 py-8 sm:min-h-[500px] sm:px-6 sm:py-10 lg:px-8">
         <div class="max-w-3xl text-white">
             <div class="relative rounded-3xl border border-white/20 bg-brand-dark/45 p-6 shadow-[0_28px_60px_-18px_rgba(0,0,0,0.55)] backdrop-blur-xl ring-1 ring-white/10 sm:p-8">
                 <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-brand-yellow/15 blur-2xl" aria-hidden="true"></div>
@@ -133,9 +133,12 @@
                         {{ mb_strtoupper($heroKicker, 'UTF-8') }}
                     </p>
                 @endif
-                <h1 class="mb-4 text-3xl font-black leading-[1.06] tracking-tight text-white drop-shadow-md sm:text-4xl lg:text-[2.75rem]">
-                    {{ $heroTitle }}
-                </h1>
+                @include('about._heading-two-tone', [
+                    'title' => $heroTitle,
+                    'as' => 'h1',
+                    'class' => 'mb-4 text-2xl font-black leading-[1.08] tracking-tight text-white drop-shadow-md sm:text-3xl lg:text-4xl',
+                    'variant' => 'hero',
+                ])
                 <p class="mb-2 max-w-2xl text-base leading-relaxed text-white/88 sm:text-lg">
                     {{ $heroIntro }}
                 </p>
@@ -161,12 +164,12 @@
     @if ($showCompanyStory)
         <section
             id="qui-sommes-nous"
-            class="scroll-mt-24 border-b border-slate-200/90 bg-white py-16 sm:py-20"
+            class="scroll-mt-24 border-b border-slate-200/90 bg-white py-10 sm:py-14"
             @if ($companyStoryHeading !== '') aria-labelledby="company-story-heading" @else aria-label="{{ $companyStoryKicker !== '' ? $companyStoryKicker : 'Présentation de l’entreprise' }}" @endif
         >
             <div @class([
                 'mx-auto w-[95%] px-4 sm:px-6 lg:px-8',
-                'grid items-center gap-10 lg:grid-cols-2 lg:gap-16' => $companyStoryImage !== '',
+                'grid items-center gap-8 lg:grid-cols-2 lg:gap-12' => $companyStoryImage !== '',
                 'max-w-3xl' => $companyStoryImage === '',
             ])>
                 <div @class(['order-2 lg:order-1', 'mx-auto text-center lg:text-left' => $companyStoryImage === ''])>
@@ -174,12 +177,16 @@
                         <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ mb_strtoupper($companyStoryKicker, 'UTF-8') }}</p>
                     @endif
                     @if ($companyStoryHeading !== '')
-                        <h2 id="company-story-heading" class="mt-3 text-3xl font-black leading-tight tracking-tight text-brand-dark sm:text-4xl">
-                            {{ $companyStoryHeading }}
-                        </h2>
+                        @include('about._heading-two-tone', [
+                            'title' => $companyStoryHeading,
+                            'as' => 'h2',
+                            'id' => 'company-story-heading',
+                            'class' => 'mt-3 text-2xl font-black leading-tight tracking-tight text-brand-dark sm:text-3xl',
+                            'variant' => 'light',
+                        ])
                     @endif
                     @if ($companyStoryBody !== '')
-                        <div class="mt-6 max-w-none space-y-4 text-left text-base leading-relaxed text-slate-600 sm:text-lg">
+                        <div class="mt-5 max-w-none space-y-3 text-left text-base leading-relaxed text-slate-600 sm:text-base">
                             {!! nl2br(e($companyStoryBody)) !!}
                         </div>
                     @endif
@@ -198,7 +205,7 @@
                             <img
                                 src="{{ $companyStoryImage }}"
                                 alt="{{ $companyStoryImageAlt !== '' ? $companyStoryImageAlt : $companyStoryHeading }}"
-                                class="aspect-[4/3] w-full object-cover sm:aspect-[5/4] lg:min-h-[320px]"
+                                class="aspect-[4/3] w-full object-cover sm:aspect-[5/4] lg:min-h-[240px]"
                                 width="960"
                                 height="768"
                                 loading="eager"
@@ -215,16 +222,20 @@
     {{-- Reels vidéo (Vimeo) : réactiver en incluant about._reels + vars reels* dans le @php ci-dessus --}}
 
     {{-- ═══ PILIERS ═══ --}}
-    <section class="bg-white py-20 sm:py-24" aria-labelledby="pillars-heading">
+    <section class="bg-white py-12 sm:py-16" aria-labelledby="pillars-heading">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 @if ($pillarsKicker !== '')
                     <p class="text-xs font-extrabold uppercase tracking-[0.25em] text-brand-blue">{{ mb_strtoupper($pillarsKicker, 'UTF-8') }}</p>
                 @endif
-                <h2 id="pillars-heading" class="mx-auto mt-3 max-w-2xl text-3xl font-black leading-tight tracking-tight text-brand-dark sm:text-4xl">
-                    {{ $pillarsTitle }}
-                </h2>
-                <div class="mx-auto mt-4 h-1 w-16 rounded-full bg-brand-blue"></div>
+                @include('about._heading-two-tone', [
+                    'title' => $pillarsTitle,
+                    'as' => 'h2',
+                    'id' => 'pillars-heading',
+                    'class' => 'mx-auto mt-3 max-w-2xl text-2xl font-black leading-tight tracking-tight text-brand-dark sm:text-3xl',
+                    'variant' => 'light',
+                ])
+                <div class="mx-auto mt-3 h-1 w-16 rounded-full bg-brand-blue"></div>
             </div>
 
             @php
@@ -236,10 +247,10 @@
                 ];
             @endphp
 
-            <div class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="mt-9 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 @foreach ($pillars as $idx => $p)
                     @if (is_array($p))
-                        <div class="group relative rounded-2xl border border-slate-100 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-blue/5">
+                        <div class="group relative rounded-2xl border border-slate-100 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-blue/5">
                             <div class="absolute inset-x-0 top-0 h-0.5 rounded-t-2xl bg-gradient-to-r from-brand-blue to-sky-400 opacity-0 transition-opacity group-hover:opacity-100" aria-hidden="true"></div>
                             <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-brand-blue/10 text-brand-blue transition-colors group-hover:bg-brand-blue group-hover:text-white">
                                 {!! $pillarIcons[$idx] ?? $pillarIcons[0] !!}
@@ -256,15 +267,19 @@
     </section>
 
     {{-- ═══ EXPERTISE ═══ --}}
-    <section class="bg-slate-50 py-20 sm:py-24" aria-labelledby="expertise-heading">
-        <div class="mx-auto grid w-[95%] items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:px-8">
+    <section class="bg-slate-50 py-12 sm:py-16" aria-labelledby="expertise-heading">
+        <div class="mx-auto grid w-[95%] items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:px-8">
             <div class="order-2 lg:order-1">
                 <p class="inline-block rounded-full bg-brand-blue/10 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.2em] text-brand-blue">Savoir-faire</p>
-                <h2 id="expertise-heading" class="mt-5 text-3xl font-black leading-tight tracking-tight text-brand-dark sm:text-4xl">
-                    {{ $expertiseTitle }}
-                </h2>
-                <p class="mt-5 text-base leading-relaxed text-slate-600 sm:text-lg">{{ $expertiseText }}</p>
-                <a href="{{ $servicesHref }}" class="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-blue px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-brand-blue/25 transition hover:-translate-y-0.5 hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2">
+                @include('about._heading-two-tone', [
+                    'title' => $expertiseTitle,
+                    'as' => 'h2',
+                    'id' => 'expertise-heading',
+                    'class' => 'mt-4 text-2xl font-black leading-tight tracking-tight text-brand-dark sm:text-3xl',
+                    'variant' => 'light',
+                ])
+                <p class="mt-4 text-base leading-relaxed text-slate-600">{{ $expertiseText }}</p>
+                <a href="{{ $servicesHref }}" class="mt-6 inline-flex items-center gap-2 rounded-xl bg-brand-blue px-5 py-2.5 text-sm font-extrabold text-white shadow-lg shadow-brand-blue/25 transition hover:-translate-y-0.5 hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2">
                     Découvrir nos services <span aria-hidden="true">&rarr;</span>
                 </a>
             </div>
@@ -277,8 +292,8 @@
     </section>
 
     {{-- ═══ ÉCO ═══ --}}
-    <section class="bg-white py-20 sm:py-24" aria-labelledby="eco-heading">
-        <div class="mx-auto grid w-[95%] items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:px-8">
+    <section class="bg-white py-12 sm:py-16" aria-labelledby="eco-heading">
+        <div class="mx-auto grid w-[95%] items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-12 lg:px-8">
             <div>
                 <div class="overflow-hidden rounded-2xl shadow-xl shadow-slate-900/10">
                     <img src="{{ $ecoImage }}" alt="Équipe Normes et Rénovation" class="aspect-[4/3] w-full object-cover" width="800" height="600" loading="lazy" decoding="async">
@@ -286,11 +301,15 @@
             </div>
             <div>
                 <p class="inline-block rounded-full bg-emerald-50 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.2em] text-emerald-700">Environnement</p>
-                <h2 id="eco-heading" class="mt-5 text-3xl font-black leading-tight tracking-tight text-brand-dark sm:text-4xl">
-                    {{ $ecoTitle }}
-                </h2>
-                <p class="mt-5 text-base leading-relaxed text-slate-600 sm:text-lg">{{ $ecoText }}</p>
-                <a href="{{ $contactHref }}" class="mt-8 inline-flex items-center gap-2 rounded-xl bg-brand-dark px-6 py-3 text-sm font-extrabold text-white shadow-lg shadow-slate-900/15 transition hover:-translate-y-0.5 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2">
+                @include('about._heading-two-tone', [
+                    'title' => $ecoTitle,
+                    'as' => 'h2',
+                    'id' => 'eco-heading',
+                    'class' => 'mt-4 text-2xl font-black leading-tight tracking-tight text-brand-dark sm:text-3xl',
+                    'variant' => 'light',
+                ])
+                <p class="mt-4 text-base leading-relaxed text-slate-600">{{ $ecoText }}</p>
+                <a href="{{ $contactHref }}" class="mt-6 inline-flex items-center gap-2 rounded-xl bg-brand-dark px-5 py-2.5 text-sm font-extrabold text-white shadow-lg shadow-slate-900/15 transition hover:-translate-y-0.5 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2">
                     Demander un devis <span aria-hidden="true">&rarr;</span>
                 </a>
             </div>
@@ -298,7 +317,7 @@
     </section>
 
     {{-- ═══ SATISFACTION + IMAGE ═══ --}}
-    <section class="bg-white py-20 sm:py-24" aria-labelledby="satisfaction-heading">
+    <section class="bg-white py-12 sm:py-16" aria-labelledby="satisfaction-heading">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="overflow-hidden rounded-2xl bg-slate-50 lg:grid lg:grid-cols-2 lg:items-center lg:gap-0">
                 @if ($satisfactionImage !== '')
@@ -306,7 +325,7 @@
                         <img
                             src="{{ $satisfactionImage }}"
                             alt="{{ $satisfactionImageAlt !== '' ? $satisfactionImageAlt : $satisfactionTitle }}"
-                            class="aspect-[4/3] w-full object-cover lg:aspect-[5/4] lg:min-h-[380px]"
+                            class="aspect-[4/3] w-full object-cover lg:aspect-[5/4] lg:min-h-[280px]"
                             width="960"
                             height="720"
                             loading="lazy"
@@ -314,14 +333,18 @@
                         >
                     </div>
                 @endif
-                <div class="{{ $satisfactionImage === '' ? 'lg:col-span-2' : '' }} flex flex-col justify-center p-8 sm:p-12 lg:p-14">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-brand-blue text-white" aria-hidden="true">
+                <div class="{{ $satisfactionImage === '' ? 'lg:col-span-2' : '' }} flex flex-col justify-center p-5 sm:p-7 lg:p-8">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-blue text-white" aria-hidden="true">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                     </div>
-                    <h2 id="satisfaction-heading" class="mt-5 text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">
-                        {{ $satisfactionTitle }}
-                    </h2>
-                    <p class="mt-4 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
+                    @include('about._heading-two-tone', [
+                        'title' => $satisfactionTitle,
+                        'as' => 'h2',
+                        'id' => 'satisfaction-heading',
+                        'class' => 'mt-4 text-xl font-black tracking-tight text-brand-dark sm:text-2xl',
+                        'variant' => 'light',
+                    ])
+                    <p class="mt-3 max-w-xl text-sm leading-relaxed text-slate-600 sm:text-base">
                         {!! nl2br(e($mediationText)) !!}
                     </p>
                     <div class="mt-7">
@@ -345,18 +368,22 @@
 
     {{-- ═══ MENTIONS LÉGALES ═══ --}}
     @if ($showLegal)
-        <section class="bg-slate-50 py-20 sm:py-24" aria-labelledby="legal-heading">
+        <section class="bg-slate-50 py-12 sm:py-16" aria-labelledby="legal-heading">
             <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center gap-3">
-                    <div class="h-8 w-1 rounded-full bg-brand-blue"></div>
-                    <h2 id="legal-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">
-                        {{ trim((string) data_get($legal, 'title', 'Mentions légales')) }}
-                    </h2>
+                    <div class="h-7 w-1 rounded-full bg-brand-blue"></div>
+                    @include('about._heading-two-tone', [
+                        'title' => trim((string) data_get($legal, 'title', 'Mentions légales')),
+                        'as' => 'h2',
+                        'id' => 'legal-heading',
+                        'class' => 'text-xl font-black tracking-tight text-brand-dark sm:text-2xl',
+                        'variant' => 'light',
+                    ])
                 </div>
 
-                <div class="mt-10 grid gap-6 sm:grid-cols-2">
+                <div class="mt-7 grid gap-5 sm:grid-cols-2">
                     {{-- Siège --}}
-                    <div class="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8">
+                    <div class="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-7">
                         <div class="flex items-center gap-3">
                             <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-blue/10 text-brand-blue">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -378,7 +405,7 @@
                     </div>
 
                     {{-- Contact --}}
-                    <div class="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8">
+                    <div class="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-7">
                         <div class="flex items-center gap-3">
                             <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-blue/10 text-brand-blue">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
@@ -399,7 +426,7 @@
                 </div>
 
                 {{-- Représentant + identifiants --}}
-                <div class="mt-6 rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8">
+                <div class="mt-5 rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-7">
                     <div class="flex items-center gap-3">
                         <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-blue/10 text-brand-blue">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
@@ -452,7 +479,7 @@
 
     {{-- ═══ TAGLINE ═══ --}}
     @if ($taglineBottom !== '')
-        <section class="bg-brand-dark py-12 text-center text-white sm:py-14">
+        <section class="bg-brand-dark py-8 text-center text-white sm:py-10">
             <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
                 <p class="mx-auto max-w-3xl text-sm font-medium leading-relaxed text-white/80 sm:text-base">
                     {{ $taglineBottom }}

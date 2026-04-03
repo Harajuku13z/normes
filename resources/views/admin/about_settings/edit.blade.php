@@ -7,7 +7,7 @@
         <div>
             <h1 class="text-2xl font-extrabold text-slate-900">Admin — {{ $label }}</h1>
             <p class="mt-1 max-w-2xl text-sm text-slate-600">
-                Contenus de la route <code class="rounded bg-slate-100 px-1 text-xs">/a-propos</code> : hero, piliers, expertise, avis, médiation, mentions légales, etc. Les valeurs sont enregistrées dans <code class="rounded bg-slate-100 px-1 text-xs">home_sections</code> (clé <code class="rounded bg-slate-100 px-1 text-xs">about_page</code>).
+                Contenus de la route <code class="rounded bg-slate-100 px-1 text-xs">/a-propos</code> : hero, piliers, expertise, avis, médiation, mentions légales, etc. Les valeurs sont enregistrées dans <code class="rounded bg-slate-100 px-1 text-xs">home_sections</code> (clé <code class="rounded bg-slate-100 px-1 text-xs">about_page</code>). Pour un <strong>titre en deux couleurs</strong> (comme sur l’accueil), utilisez <code class="rounded bg-slate-100 px-1 text-xs">partie une | partie deux</code> ou une virgule <code class="rounded bg-slate-100 px-1 text-xs">partie une, partie deux</code> (hero : 1<sup>re</sup> partie blanche, 2<sup>e</sup> en bleu ; blocs clairs : 1<sup>re</sup> en bleu, 2<sup>e</sup> en foncé).
             </p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
