@@ -6,6 +6,7 @@ use Database\Factories\PortfolioProjectFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class PortfolioProject extends Model
@@ -25,6 +26,42 @@ class PortfolioProject extends Model
         return [
             'sort_order' => 'integer',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::saving(function (PortfolioProject $project): void {
+            if (! filled($project->slug) && filled($project->title)) {
+                $project->slug = static::makeUniqueSlugFromTitle(
+                    $project->title,
+                    $project->exists ? $project->id : null
+                );
+            }
+        });
+    }
+
+    /**
+     * Persist slugs for rows missing one (ex. avant migration ou imports).
+     */
+    public static function ensureMissingSlugsPersisted(): void
+    {
+        $table = (new static)->getTable();
+        if (! Schema::hasColumn($table, 'slug')) {
+            return;
+        }
+
+        static::query()
+            ->where(function ($q): void {
+                $q->whereNull('slug')->orWhere('slug', '');
+            })
+            ->orderBy('id')
+            ->each(function (PortfolioProject $project): void {
+                $project->slug = static::makeUniqueSlugFromTitle(
+                    $project->title,
+                    $project->id
+                );
+                $project->saveQuietly();
+            });
     }
 
     /**

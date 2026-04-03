@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\PortfolioProject;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class RealisationsPageTest extends TestCase
@@ -63,5 +64,26 @@ class RealisationsPageTest extends TestCase
     public function test_unknown_realisation_slug_returns_not_found(): void
     {
         $this->get('/realisations/n-existe-pas-xyz')->assertNotFound();
+    }
+
+    public function test_realisations_index_heals_null_slug_before_generating_urls(): void
+    {
+        $id = DB::table('portfolio_projects')->insertGetId([
+            'title' => 'Projet slug manquant',
+            'slug' => null,
+            'description' => null,
+            'sort_order' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $response = $this->get('/realisations');
+
+        $response->assertOk();
+        $response->assertSee('Voir plus', false);
+
+        $slug = PortfolioProject::query()->whereKey($id)->value('slug');
+        $this->assertNotNull($slug);
+        $this->assertNotSame('', $slug);
     }
 }

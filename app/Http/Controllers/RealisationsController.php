@@ -10,6 +10,8 @@ class RealisationsController extends Controller
 {
     public function index(HomePageService $homePage): View
     {
+        PortfolioProject::ensureMissingSlugsPersisted();
+
         $projects = PortfolioProject::query()
             ->with(['images'])
             ->orderBy('sort_order')
