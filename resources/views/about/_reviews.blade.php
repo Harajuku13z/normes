@@ -1,7 +1,8 @@
 @php
     $items = collect($testimonials ?? [])
         ->filter(fn ($t) => is_array($t) && trim((string) data_get($t, 'author')) !== '' && trim((string) data_get($t, 'text')) !== '')
-        ->values();
+        ->values()
+        ->take(3);
     $gUrl = trim((string) ($googleUrl ?? ''));
 @endphp
 <section id="avis-about" class="relative border-t border-slate-200/80 bg-gradient-to-b from-slate-100/90 via-white to-white py-16 sm:py-24" aria-labelledby="avis-about-heading">
@@ -41,7 +42,7 @@
             @endif
         </div>
 
-        <div class="mt-12 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        <div class="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
             @foreach ($items as $t)
                 @php
                     $author = (string) data_get($t, 'author');

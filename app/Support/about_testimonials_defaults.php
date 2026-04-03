@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Avis affichés sur la page À propos (modifiable via section admin `about_page` > testimonials).
+ * Avis affichés sur la page À propos (max. 3 visibles côté site ; modifiable via admin `about_page` > testimonials).
  *
  * @return list<array{author:string, time_ago?:string, text:string}>
  */
@@ -20,35 +20,5 @@ return [
         'author' => 'Roseline Genet',
         'time_ago' => 'Il y a 1 an',
         'text' => 'Merci à Salvator, Thomas, Christophe, David et Anthony, et le personnel administratif. Tous ensemble, une très bonne équipe.',
-    ],
-    [
-        'author' => 'Odette Charbonnier',
-        'time_ago' => 'Il y a 1 an',
-        'text' => 'Remerciements à David et Anthony pour leurs conseils et leur professionnalisme, ainsi qu\'à Thomas et Christophe pour leur travail, sans oublier Ramzy.',
-    ],
-    [
-        'author' => 'Christophe',
-        'time_ago' => 'Il y a 1 an',
-        'text' => 'Entreprise sérieuse et travail de qualité. Anthony et David sympas et professionnels. À recommander.',
-    ],
-    [
-        'author' => 'Jimmy Soares',
-        'time_ago' => 'Il y a 1 an',
-        'text' => 'Satisfait : travail très propre et professionnel, je recommande.',
-    ],
-    [
-        'author' => 'Bernadette Grillot',
-        'time_ago' => 'Il y a 1 an',
-        'text' => 'Christophe, Thomas et Anthony ont été parfaits dans leur travail et très professionnels. Merci au personnel des bureaux pour leur aide précieuse. Entreprise à recommander sans problème. Mme et M. Grillot.',
-    ],
-    [
-        'author' => 'Fred Boudard',
-        'time_ago' => 'Il y a 1 an',
-        'text' => 'J\'ai pu rencontrer un technicien de la société : super contact, super sympa, je recommande.',
-    ],
-    [
-        'author' => 'Ludwig Rems',
-        'time_ago' => 'Il y a 1 an',
-        'text' => 'Très professionnel.',
     ],
 ];
