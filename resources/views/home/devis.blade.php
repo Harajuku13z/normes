@@ -20,8 +20,8 @@
                     <img src="{{ \App\Support\HomeView::url($teamImg) }}" alt="Normes & Rénovation — sur le terrain" class="w-full object-cover" loading="lazy" decoding="async">
                     <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/40 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-                        <p class="text-lg font-extrabold text-white sm:text-xl">{{ data_get($d, 'team_image_title', 'Nous sommes là pour vous accompagner') }}</p>
-                        <p class="mt-1 text-sm leading-relaxed text-slate-200">{{ data_get($d, 'team_image_text', 'Une équipe de professionnels certifiés RGE, à votre écoute pour chaque étape de votre projet de rénovation.') }}</p>
+                        <p class="text-lg font-extrabold text-white sm:text-xl">{{ data_get($d, 'team_caption', 'Nous sommes là pour vous accompagner') }}</p>
+                        <p class="mt-1 text-sm leading-relaxed text-slate-200">{{ data_get($d, 'team_caption_detail', 'Une équipe de professionnels certifiés RGE, à votre écoute pour chaque étape de votre projet de rénovation.') }}</p>
                     </div>
                 </div>
             @endif
