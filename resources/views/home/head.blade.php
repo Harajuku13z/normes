@@ -35,6 +35,13 @@
     <meta property="og:site_name" content="{{ data_get($h, 'meta.site_name') }}">
     <meta name="theme-color" content="{{ data_get($h, 'meta.theme_color', '#2F4251') }}">
     <link rel="icon" type="image/png" href="{{ data_get($h, 'meta.favicon', '/iconne.png') }}">
+    @if (isset($preloadImages) && is_array($preloadImages) && $preloadImages !== [])
+        @foreach (array_slice($preloadImages, 0, 8) as $preloadHref)
+            @if (is_string($preloadHref) && trim($preloadHref) !== '')
+                <link rel="preload" as="image" href="{{ trim($preloadHref) }}">
+            @endif
+        @endforeach
+    @endif
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>

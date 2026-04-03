@@ -25,6 +25,21 @@
     $heroH1Accent = trim((string) data_get($rp, 'hero_h1_accent', 'en images'));
     $heroIntro = trim((string) data_get($rp, 'hero_intro', ''));
     $canonicalPath = route('realisations.page', [], false);
+
+    $preloadImages = [$heroBg];
+    foreach ($projects ?? [] as $proj) {
+        if (! $proj->relationLoaded('images')) {
+            continue;
+        }
+        foreach ($proj->images->take(2) as $im) {
+            $u = HomeView::url((string) $im->path);
+            if ($u !== '') {
+                $preloadImages[] = $u;
+            }
+        }
+    }
+    $preloadImages = array_values(array_unique(array_filter($preloadImages)));
+    $preloadImages = array_slice($preloadImages, 0, 8);
 @endphp
 <!DOCTYPE html>
 <html lang="fr" class="scroll-smooth">
@@ -35,6 +50,7 @@
     'keywords' => $metaKeywords,
     'canonicalUrl' => $canonicalUrl,
     'ogImage' => $ogImage,
+    'preloadImages' => $preloadImages,
 ])
 <body class="overflow-x-hidden bg-white font-sans text-brand-dark antialiased">
 <a href="#contenu" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[2000] focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-extrabold focus:text-brand-dark focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-blue">Aller au contenu</a>
@@ -81,7 +97,7 @@
 
 <main id="contenu" class="scroll-mt-24">
     <section id="projets" class="scroll-mt-24 bg-slate-50 py-12 sm:py-16" aria-labelledby="realisations-list-heading">
-        <div class="mx-auto w-[95%] max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-blue">Galerie</p>
                 <h2 id="realisations-list-heading" class="mx-auto mt-3 max-w-2xl text-2xl font-black leading-tight tracking-tight text-brand-dark sm:text-3xl">
@@ -96,7 +112,7 @@
                 </p>
             @else
                 <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-8 md:gap-y-10 lg:gap-x-10">
-                    @foreach ($projects as $project)
+                    @foreach ($projects as $projectIndex => $project)
                         <article
                             class="flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8"
                             aria-labelledby="projet-{{ $project->id }}-title"
@@ -114,36 +130,51 @@
                                 </p>
                             @endif
 
-                            @if ($project->images->isNotEmpty())
-                                <div class="mt-6 grid grid-cols-3 gap-2 sm:gap-4">
-                                    @foreach ($project->images->take(3) as $img)
+                            @php
+                                $previewImages = $project->images->take(3);
+                                $thumbCount = $previewImages->count();
+                            @endphp
+                            @if ($thumbCount > 0)
+                                <div class="mt-6 grid grid-cols-2 gap-1.5 sm:gap-2 md:grid-cols-4 md:gap-3">
+                                    @foreach ($previewImages as $imgIndex => $img)
                                         @php
                                             $src = HomeView::url((string) $img->path);
                                             $alt = trim((string) $img->alt) !== '' ? $img->alt : $project->title;
+                                            $eagerThumb = $projectIndex === 0 && $imgIndex < 3;
                                         @endphp
-                                        <figure class="overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200/80">
+                                        <figure class="min-w-0 overflow-hidden rounded-lg bg-slate-100 ring-1 ring-slate-200/80">
                                             <img
                                                 src="{{ $src }}"
                                                 alt="{{ $alt }}"
                                                 class="aspect-[4/3] w-full object-cover"
-                                                width="400"
-                                                height="300"
-                                                loading="lazy"
+                                                width="240"
+                                                height="180"
+                                                loading="{{ $eagerThumb ? 'eager' : 'lazy' }}"
                                                 decoding="async"
+                                                @if ($projectIndex === 0 && $imgIndex === 0) fetchpriority="high" @endif
                                             >
                                         </figure>
                                     @endforeach
+                                    @for ($i = $thumbCount; $i < 3; $i++)
+                                        <div class="aspect-[4/3] min-h-0 rounded-lg bg-slate-50 ring-1 ring-slate-100/90" aria-hidden="true"></div>
+                                    @endfor
+                                    <a
+                                        href="{{ route('realisations.show', $project) }}"
+                                        class="flex min-h-0 min-w-0 flex-col items-center justify-center rounded-lg bg-brand-blue px-2 py-4 text-center text-base font-extrabold leading-tight text-white shadow-soft transition hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 sm:px-3 sm:py-6 sm:text-lg md:text-xl"
+                                    >
+                                        Voir plus
+                                    </a>
+                                </div>
+                            @else
+                                <div class="mt-6 mt-auto pt-2">
+                                    <a
+                                        href="{{ route('realisations.show', $project) }}"
+                                        class="inline-flex items-center rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2"
+                                    >
+                                        Voir plus
+                                    </a>
                                 </div>
                             @endif
-
-                            <div class="mt-6 mt-auto pt-2">
-                                <a
-                                    href="{{ route('realisations.show', $project) }}"
-                                    class="inline-flex items-center rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2"
-                                >
-                                    Voir plus
-                                </a>
-                            </div>
                         </article>
                     @endforeach
                 </div>
