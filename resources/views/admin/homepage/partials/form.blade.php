@@ -22,11 +22,14 @@
                 $childDepth = $depth + 1;
                 $lowerKey = mb_strtolower((string) $k);
 
+                // Textes alternatifs (ex. satisfaction_image_alt, og_image_alt) contiennent
+                // « image » mais ne sont pas des fichiers — ne pas utiliser l'uploader média.
                 $isImageKey =
-                    str_contains($lowerKey, 'image') ||
+                    (str_contains($lowerKey, 'image') ||
                     str_contains($lowerKey, 'logo') ||
                     str_contains($lowerKey, 'bg') ||
-                    str_contains($lowerKey, 'icon');
+                    str_contains($lowerKey, 'icon'))
+                    && ! str_ends_with($lowerKey, '_alt');
 
                 $isTextAreaKey =
                     str_contains($lowerKey, 'body') ||
