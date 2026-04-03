@@ -80,6 +80,9 @@
     }
 
     $satisfactionTitle = trim((string) data_get($ap, 'satisfaction_title', 'Votre satisfaction est notre priorité'));
+    $satisfactionImageRaw = trim((string) data_get($ap, 'satisfaction_image', ''));
+    $satisfactionImageAlt = trim((string) data_get($ap, 'satisfaction_image_alt', ''));
+    $satisfactionImage = $satisfactionImageRaw !== '' ? HomeView::url($satisfactionImageRaw) : '';
 
     $legal = data_get($ap, 'legal', []);
     if (! is_array($legal)) {
@@ -232,23 +235,63 @@
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-6 shadow-[0_20px_45px_-18px_rgba(15,23,42,0.12)] ring-1 ring-slate-100 sm:p-10">
                 <div class="pointer-events-none absolute -right-16 top-1/2 h-48 w-48 -translate-y-1/2 rounded-full bg-brand-blue/[0.06] blur-3xl" aria-hidden="true"></div>
-                <div class="relative flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
-                    <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-blue to-sky-600 text-white shadow-lg" aria-hidden="true">
-                        <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                @if ($satisfactionImage !== '')
+                    <div class="relative grid gap-8 lg:grid-cols-2 lg:items-center lg:gap-10">
+                        <div class="order-2 lg:order-1">
+                            <div class="relative">
+                                <div class="absolute -inset-2 rounded-[1.35rem] bg-gradient-to-br from-brand-blue/15 via-transparent to-brand-yellow/10 blur-sm" aria-hidden="true"></div>
+                                <div class="relative overflow-hidden rounded-2xl border border-slate-200/80 shadow-md ring-1 ring-slate-100">
+                                    <img
+                                        src="{{ $satisfactionImage }}"
+                                        alt="{{ $satisfactionImageAlt !== '' ? $satisfactionImageAlt : 'Illustration — '.$satisfactionTitle }}"
+                                        class="aspect-[4/3] h-full w-full object-cover sm:aspect-auto sm:min-h-[240px] sm:max-h-[360px] lg:max-h-[400px]"
+                                        width="800"
+                                        height="600"
+                                        loading="lazy"
+                                        decoding="async"
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                        <div class="order-1 min-w-0 lg:order-2">
+                            <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-6 lg:flex-col lg:gap-5">
+                                <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-blue to-sky-600 text-white shadow-lg" aria-hidden="true">
+                                    <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <h2 id="satisfaction-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">
+                                        {{ $satisfactionTitle }}
+                                    </h2>
+                                    <p class="mt-4 text-sm leading-relaxed text-slate-600 sm:text-base">
+                                        {!! nl2br(e($mediationText)) !!}
+                                    </p>
+                                    <a href="https://www.cm2c.net" class="mt-6 inline-flex items-center gap-2 rounded-xl bg-brand-blue px-4 py-2.5 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2" target="_blank" rel="noopener noreferrer">
+                                        Consulter le site du médiateur CM2C
+                                        <span aria-hidden="true">→</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="min-w-0 flex-1">
-                        <h2 id="satisfaction-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">
-                            {{ $satisfactionTitle }}
-                        </h2>
-                        <p class="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
-                            {!! nl2br(e($mediationText)) !!}
-                        </p>
-                        <a href="https://www.cm2c.net" class="mt-6 inline-flex items-center gap-2 rounded-xl bg-brand-blue px-4 py-2.5 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2" target="_blank" rel="noopener noreferrer">
-                            Consulter le site du médiateur CM2C
-                            <span aria-hidden="true">→</span>
-                        </a>
+                @else
+                    <div class="relative flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
+                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-blue to-sky-600 text-white shadow-lg" aria-hidden="true">
+                            <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h2 id="satisfaction-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">
+                                {{ $satisfactionTitle }}
+                            </h2>
+                            <p class="mt-4 max-w-3xl text-sm leading-relaxed text-slate-600 sm:text-base">
+                                {!! nl2br(e($mediationText)) !!}
+                            </p>
+                            <a href="https://www.cm2c.net" class="mt-6 inline-flex items-center gap-2 rounded-xl bg-brand-blue px-4 py-2.5 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2" target="_blank" rel="noopener noreferrer">
+                                Consulter le site du médiateur CM2C
+                                <span aria-hidden="true">→</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
     </section>

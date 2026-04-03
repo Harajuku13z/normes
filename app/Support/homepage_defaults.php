@@ -441,6 +441,8 @@ return [
         'google_reviews_label' => '98 avis Google',
         'testimonials' => require __DIR__.'/about_testimonials_defaults.php',
         'satisfaction_title' => 'Votre satisfaction est notre priorité',
+        'satisfaction_image' => '',
+        'satisfaction_image_alt' => 'Satisfaction client et accompagnement Normes et Rénovation',
         'mediation_text' => 'Conformément à la réglementation, notre établissement a désigné le Centre de la Médiation de la Consommation de Conciliateurs de Justice (CM2C) comme médiateur de la consommation. En cas de réclamation non résolue, vous pouvez le contacter directement à l’adresse https://www.cm2c.net.',
         'tagline_bottom' => 'Spécialiste en solution de rénovation électrique, thermique et hygrométrique pour la maison.',
         'legal' => [
