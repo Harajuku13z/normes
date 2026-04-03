@@ -94,13 +94,6 @@
     $satisfactionImageAlt = is_string($satisfactionImageAltVal) ? trim($satisfactionImageAltVal) : '';
     $satisfactionImage = $satisfactionImageRaw !== '' ? HomeView::url($satisfactionImageRaw) : '';
 
-    $reelsKicker = trim((string) data_get($ap, 'reels_section_kicker', 'Nos réalisations'));
-    $reelsTitle = trim((string) data_get($ap, 'reels_section_title', 'Découvrez notre savoir-faire en vidéo'));
-    $reels = data_get($ap, 'reels', []);
-    if (! is_array($reels)) {
-        $reels = [];
-    }
-
     $legal = data_get($ap, 'legal', []);
     if (! is_array($legal)) {
         $legal = [];
@@ -219,12 +212,7 @@
         </section>
     @endif
 
-    {{-- ═══ REELS VIDÉO ═══ --}}
-    @include('about._reels', [
-        'reels' => $reels,
-        'reelsKicker' => $reelsKicker,
-        'reelsTitle' => $reelsTitle,
-    ])
+    {{-- Reels vidéo (Vimeo) : réactiver en incluant about._reels + vars reels* dans le @php ci-dessus --}}
 
     {{-- ═══ PILIERS ═══ --}}
     <section class="bg-white py-20 sm:py-24" aria-labelledby="pillars-heading">
