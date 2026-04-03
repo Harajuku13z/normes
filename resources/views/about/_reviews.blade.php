@@ -6,18 +6,18 @@
 @endphp
 <section id="avis-about" class="relative border-t border-slate-200/80 bg-gradient-to-b from-slate-100/90 via-white to-white py-16 sm:py-24" aria-labelledby="avis-about-heading">
     <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-blue/25 to-transparent" aria-hidden="true"></div>
-    <div class="mx-auto w-[95%] max-w-6xl px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
         @if (trim((string) ($avisKicker ?? '')) !== '')
             <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ $avisKicker }}</p>
         @endif
         <div class="mt-3 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div class="max-w-2xl">
+            <div class="min-w-0 flex-1">
                 <h2 id="avis-about-heading" class="text-3xl font-black leading-[1.1] tracking-tight text-brand-dark sm:text-4xl lg:text-[2.5rem]">
                     {{ $avisTitle ?? '' }}
                 </h2>
             </div>
             @if ($gUrl !== '')
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+                <div class="flex shrink-0 flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
                     @if (trim((string) ($googleReviewsLabel ?? '')) !== '')
                         <div class="inline-flex items-center gap-3 rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm ring-1 ring-slate-100">
                             <span class="flex text-yellow-500" aria-hidden="true">

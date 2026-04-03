@@ -110,7 +110,7 @@
     <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/95 via-brand-dark/50 to-brand-dark/20" aria-hidden="true"></div>
     <div class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-brand-dark/40 to-transparent" aria-hidden="true"></div>
 
-    <div class="relative z-10 mx-auto flex min-h-[520px] w-[95%] max-w-6xl flex-col justify-end gap-6 px-4 py-10 sm:min-h-[620px] sm:px-6 lg:px-8">
+    <div class="relative z-10 mx-auto flex min-h-[520px] w-[95%] flex-col justify-end gap-6 px-4 py-10 sm:min-h-[620px] sm:px-6 lg:px-8">
         <div class="max-w-3xl text-white">
             <div class="relative rounded-3xl border border-white/20 bg-brand-dark/45 p-6 shadow-[0_28px_60px_-18px_rgba(0,0,0,0.55)] backdrop-blur-xl ring-1 ring-white/10 sm:p-8">
                 <div class="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-brand-yellow/15 blur-2xl" aria-hidden="true"></div>
@@ -145,7 +145,7 @@
 <main id="contenu" class="scroll-mt-24">
     <section class="relative bg-white py-16 sm:py-24" aria-labelledby="pillars-heading">
         <div class="pointer-events-none absolute inset-x-0 top-0 h-full max-h-[420px] bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(14,165,233,0.08),transparent)]" aria-hidden="true"></div>
-        <div class="relative mx-auto w-[95%] max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="relative mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             @if ($pillarsKicker !== '')
                 <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ mb_strtoupper($pillarsKicker, 'UTF-8') }}</p>
             @endif
@@ -181,7 +181,7 @@
     ])
 
     <section class="border-t border-slate-200/80 bg-gradient-to-b from-slate-50 to-white py-16 sm:py-24" aria-labelledby="expertise-heading">
-        <div class="mx-auto grid w-[95%] max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8">
+        <div class="mx-auto grid w-[95%] gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8">
             <div class="order-2 lg:order-1">
                 <div class="inline-flex items-center gap-2 rounded-full bg-brand-blue/10 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-brand-blue">Savoir-faire</div>
                 <h2 id="expertise-heading" class="mt-4 text-3xl font-black leading-tight tracking-tight text-brand-dark sm:text-4xl">
@@ -201,7 +201,7 @@
     </section>
 
     <section class="bg-white py-16 sm:py-24" aria-labelledby="eco-heading">
-        <div class="mx-auto grid w-[95%] max-w-6xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8">
+        <div class="mx-auto grid w-[95%] gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-8">
             <div>
                 <div class="relative">
                     <div class="absolute -inset-3 rounded-[1.7rem] bg-gradient-to-tr from-emerald-400/15 via-transparent to-brand-blue/15 blur-sm" aria-hidden="true"></div>
@@ -229,7 +229,7 @@
     ])
 
     <section class="border-t border-slate-200/80 bg-slate-50/80 py-14 sm:py-20" aria-labelledby="satisfaction-heading">
-        <div class="mx-auto w-[95%] max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="relative overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-6 shadow-[0_20px_45px_-18px_rgba(15,23,42,0.12)] ring-1 ring-slate-100 sm:p-10">
                 <div class="pointer-events-none absolute -right-16 top-1/2 h-48 w-48 -translate-y-1/2 rounded-full bg-brand-blue/[0.06] blur-3xl" aria-hidden="true"></div>
                 <div class="relative flex flex-col gap-5 sm:flex-row sm:items-start sm:gap-8">
@@ -255,7 +255,7 @@
 
     @if ($showLegal)
         <section class="border-t border-slate-200/80 bg-white py-16 sm:py-20" aria-labelledby="legal-heading">
-            <div class="mx-auto w-[95%] max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
                 <h2 id="legal-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">
                     {{ trim((string) data_get($legal, 'title', 'Mentions légales')) }}
                 </h2>
@@ -327,9 +327,11 @@
     @if ($taglineBottom !== '')
         <section class="relative overflow-hidden bg-gradient-to-br from-brand-dark via-brand-dark to-slate-900 py-12 text-center text-white sm:py-14">
             <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(105deg,transparent_40%,rgba(14,165,233,0.07)_50%,transparent_60%)]" aria-hidden="true"></div>
-            <p class="relative mx-auto max-w-3xl px-4 text-sm font-semibold leading-relaxed text-white/92 sm:text-base">
-                {{ $taglineBottom }}
-            </p>
+            <div class="relative mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+                <p class="mx-auto max-w-3xl text-sm font-semibold leading-relaxed text-white/92 sm:text-base">
+                    {{ $taglineBottom }}
+                </p>
+            </div>
         </section>
     @endif
 </main>

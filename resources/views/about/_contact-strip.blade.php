@@ -22,7 +22,7 @@
             <div class="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-brand-blue/20 blur-3xl" aria-hidden="true"></div>
             <div class="pointer-events-none absolute -bottom-32 -left-16 h-72 w-72 rounded-full bg-brand-yellow/10 blur-3xl" aria-hidden="true"></div>
         @endif
-        <div class="relative z-10 mx-auto w-[95%] max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="relative z-10 mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <h2 class="{{ $compact
                 ? 'text-center text-xl font-black uppercase tracking-[0.12em] text-brand-dark sm:text-2xl'
                 : 'text-center text-2xl font-black uppercase tracking-[0.12em] text-white sm:text-3xl' }}">
