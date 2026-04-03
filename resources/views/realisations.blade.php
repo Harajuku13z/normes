@@ -81,7 +81,7 @@
 
 <main id="contenu" class="scroll-mt-24">
     <section id="projets" class="scroll-mt-24 bg-slate-50 py-12 sm:py-16" aria-labelledby="realisations-list-heading">
-        <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
+        <div class="mx-auto w-[95%] max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-blue">Galerie</p>
                 <h2 id="realisations-list-heading" class="mx-auto mt-3 max-w-2xl text-2xl font-black leading-tight tracking-tight text-brand-dark sm:text-3xl">
@@ -95,10 +95,10 @@
                     Les réalisations seront publiées prochainement.
                 </p>
             @else
-                <div class="mx-auto mt-12 max-w-5xl space-y-12 sm:space-y-14">
+                <div class="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-x-8 md:gap-y-10 lg:gap-x-10">
                     @foreach ($projects as $project)
                         <article
-                            class="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8"
+                            class="flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8"
                             aria-labelledby="projet-{{ $project->id }}-title"
                         >
                             <h3 id="projet-{{ $project->id }}-title" class="text-xl font-black tracking-tight text-brand-dark sm:text-2xl">
@@ -136,7 +136,7 @@
                                 </div>
                             @endif
 
-                            <div class="mt-6">
+                            <div class="mt-6 mt-auto pt-2">
                                 <a
                                     href="{{ route('realisations.show', $project) }}"
                                     class="inline-flex items-center rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2"
