@@ -11,7 +11,7 @@
         <div>
             <h2 class="text-lg font-extrabold text-slate-900">Reels — bannières verticales (page À propos)</h2>
             <p class="mt-2 max-w-2xl text-sm leading-relaxed text-slate-600">
-                Jusqu’à <strong>4 emplacements</strong>. Pour chaque emplacement, choisis une <strong>vidéo</strong> (MP4 ou MOV, idéalement sans piste audio — la lecture est <strong>muette</strong> sur le site) <strong>ou</strong> une <strong>photo</strong> à la place. Tu peux coller une URL ou envoyer un fichier.
+                Jusqu’à <strong>4 emplacements</strong>. Colle l’URL de ta vidéo <strong>Vimeo</strong> (ex. <code class="rounded bg-white px-1 text-xs">https://vimeo.com/123456789</code>) : la diffusion et l’optimisation sont gérées par Vimeo. <strong>Ou</strong> mets une <strong>photo</strong> seule si tu n’as pas de vidéo. Les anciens fichiers MP4/MOV restent pris en charge si besoin.
             </p>
         </div>
         <a href="{{ route('about.page') }}#contenu" target="_blank" rel="noopener noreferrer" class="shrink-0 rounded-lg bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
@@ -31,65 +31,32 @@
                 $fieldIdVideo = 'reel_video_'.$slot;
                 $fieldIdImage = 'reel_image_'.$slot;
                 $previewIdImage = 'reel_img_preview_'.$slot;
-                $previewIdVideo = 'reel_vid_preview_'.$slot;
 
                 $imagePreviewUrl = $imageVal !== '' ? HomeView::url($imageVal) : '';
-                $videoPreviewUrl = $videoVal !== '' ? HomeView::url($videoVal) : '';
             @endphp
 
             <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm ring-1 ring-slate-100">
                 <p class="text-sm font-extrabold text-slate-800">
-                    Emplacement {{ $slot + 1 }} <span class="font-normal text-slate-500">— priorité à la vidéo si les deux sont remplis</span>
+                    Emplacement {{ $slot + 1 }} <span class="font-normal text-slate-500">— priorité à la vidéo Vimeo si les deux sont remplis</span>
                 </p>
 
                 <div class="mt-4 grid gap-6 lg:grid-cols-2">
-                    {{-- Vidéo --}}
+                    {{-- Lien Vimeo --}}
                     <div>
-                        <label class="text-xs font-extrabold uppercase tracking-wide text-slate-500">Vidéo (MP4 / MOV)</label>
-                        <div class="mt-2 flex flex-wrap items-start gap-4">
-                            <div class="w-full min-w-0 flex-1 sm:w-auto sm:min-w-[200px]">
-                                @if ($videoPreviewUrl !== '')
-                                    <video
-                                        id="{{ $previewIdVideo }}"
-                                        src="{{ $videoPreviewUrl }}"
-                                        class="h-40 w-full max-w-[200px] rounded-lg border border-slate-200 bg-slate-900 object-cover"
-                                        muted
-                                        loop
-                                        playsinline
-                                        controls
-                                    ></video>
-                                @else
-                                    <video
-                                        id="{{ $previewIdVideo }}"
-                                        class="hidden h-40 w-full max-w-[200px] rounded-lg border border-slate-200 bg-slate-900 object-cover"
-                                        muted
-                                        loop
-                                        playsinline
-                                        controls
-                                    ></video>
-                                    <p id="{{ $previewIdVideo }}_placeholder" class="flex h-40 max-w-[200px] items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-center text-xs text-slate-500">
-                                        Aperçu vidéo après upload ou URL
-                                    </p>
-                                @endif
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <input
-                                    id="{{ $fieldIdVideo }}"
-                                    type="text"
-                                    name="{{ $baseName }}[video]"
-                                    value="{{ $videoVal }}"
-                                    placeholder="/uploads/….mp4 ou https://…"
-                                    class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
-                                >
-                                <input
-                                    type="file"
-                                    class="js-admin-media-upload mt-2 w-full text-sm"
-                                    accept="video/mp4,video/quicktime,video/webm,.mp4,.mov"
-                                    data-upload-target-input-id="{{ $fieldIdVideo }}"
-                                    data-upload-target-preview-video-id="{{ $previewIdVideo }}"
-                                >
-                                <p class="mt-1 text-xs text-slate-500">Fichiers : MP4, MOV (max. ~100 Mo selon serveur).</p>
-                            </div>
+                        <label class="text-xs font-extrabold uppercase tracking-wide text-slate-500">Lien vidéo Vimeo</label>
+                        <div class="mt-2">
+                            <input
+                                id="{{ $fieldIdVideo }}"
+                                type="url"
+                                name="{{ $baseName }}[video]"
+                                value="{{ $videoVal }}"
+                                placeholder="https://vimeo.com/..."
+                                autocomplete="off"
+                                class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                            >
+                            <p class="mt-2 text-xs text-slate-500">
+                                Utilise le lien de la page Vimeo de ta vidéo. Pour une vidéo non répertoriée, inclut le hash si Vimeo le propose dans l’URL ou l’iframe.
+                            </p>
                         </div>
                     </div>
 

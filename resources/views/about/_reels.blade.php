@@ -1,5 +1,6 @@
 @php
     use App\Support\HomeView;
+    use App\Support\VimeoEmbed;
 
     $validReels = collect($reels ?? [])
         ->filter(function ($r) {
@@ -18,7 +19,7 @@
 @if ($reelCount > 0)
 <section aria-label="Reels et réalisations Normes et Rénovation">
 
-    {{-- ══ MOBILE : plein écran — 1re vidéo chargée, les autres en lazy (pas de lib lourde) ══ --}}
+    {{-- ══ MOBILE : plein écran — Vimeo iframe (lazy après la 1re slide) ══ --}}
     <div class="relative h-[100svh] lg:hidden">
         <div class="reels-scroll h-full snap-y snap-mandatory overflow-y-auto" id="reels-mobile">
             @foreach ($validReels as $idx => $reel)
@@ -26,18 +27,34 @@
                     $videoRaw = trim((string) data_get($reel, 'video', ''));
                     $imageRaw = trim((string) data_get($reel, 'image', ''));
                     $caption  = trim((string) data_get($reel, 'caption', ''));
-                    $videoUrl = $videoRaw !== '' ? HomeView::url($videoRaw) : '';
+                    $vimeoMeta = VimeoEmbed::parse($videoRaw);
+                    $directFile = $videoRaw !== '' && $vimeoMeta === null && VimeoEmbed::isDirectFileUrl($videoRaw);
+                    $directVideoUrl = $directFile ? HomeView::url($videoRaw) : '';
                     $imageUrl = $imageRaw !== '' ? HomeView::url($imageRaw) : '';
-                    $posterUrl = ($videoUrl !== '' && $imageUrl !== '') ? $imageUrl : ($imageUrl !== '' ? $imageUrl : '');
+                    $posterUrl = ($directVideoUrl !== '' && $imageUrl !== '') ? $imageUrl : ($imageUrl !== '' ? $imageUrl : '');
+                    $vimeoSrc = $vimeoMeta !== null ? VimeoEmbed::iframeSrc($vimeoMeta, $idx === 0) : '';
                 @endphp
                 <div class="reel-slide relative h-[100svh] w-full snap-start" data-index="{{ $idx }}">
-                    @if ($videoUrl !== '')
+                    @if ($vimeoMeta !== null)
+                        <iframe
+                            class="reel-iframe pointer-events-none absolute inset-0 h-full w-full border-0"
+                            title="{{ $caption !== '' ? $caption : 'Vidéo Vimeo Normes et Rénovation' }}"
+                            @if ($idx === 0)
+                                src="{{ $vimeoSrc }}"
+                            @else
+                                data-src="{{ $vimeoSrc }}"
+                            @endif
+                            allow="autoplay; fullscreen; picture-in-picture"
+                            loading="{{ $idx === 0 ? 'eager' : 'lazy' }}"
+                            style="object-fit:cover;-webkit-transform:scale(1.05);transform:scale(1.05);"
+                        ></iframe>
+                    @elseif ($directVideoUrl !== '')
                         <video
                             class="absolute inset-0 h-full w-full object-cover"
                             @if ($idx === 0)
-                                src="{{ $videoUrl }}"
+                                src="{{ $directVideoUrl }}"
                             @else
-                                data-lazy-src="{{ $videoUrl }}"
+                                data-lazy-src="{{ $directVideoUrl }}"
                             @endif
                             @if ($posterUrl !== '') poster="{{ $posterUrl }}" @endif
                             muted
@@ -88,7 +105,7 @@
         </div>
     </div>
 
-    {{-- ══ DESKTOP : pas d'autoplay au chargement — src injectée à l'entrée dans le viewport ══ --}}
+    {{-- ══ DESKTOP : iframes Vimeo chargées à l’entrée dans le viewport ══ --}}
     <div id="reels-desktop-grid" class="hidden bg-brand-dark py-20 sm:py-24 lg:block">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="text-center">
@@ -106,15 +123,27 @@
                         $videoRaw = trim((string) data_get($reel, 'video', ''));
                         $imageRaw = trim((string) data_get($reel, 'image', ''));
                         $caption  = trim((string) data_get($reel, 'caption', ''));
-                        $videoUrl = $videoRaw !== '' ? HomeView::url($videoRaw) : '';
+                        $vimeoMeta = VimeoEmbed::parse($videoRaw);
+                        $directFile = $videoRaw !== '' && $vimeoMeta === null && VimeoEmbed::isDirectFileUrl($videoRaw);
+                        $directVideoUrl = $directFile ? HomeView::url($videoRaw) : '';
                         $imageUrl = $imageRaw !== '' ? HomeView::url($imageRaw) : '';
-                        $posterUrl = ($videoUrl !== '' && $imageUrl !== '') ? $imageUrl : '';
+                        $posterUrl = ($directVideoUrl !== '' && $imageUrl !== '') ? $imageUrl : '';
                     @endphp
                     <div class="reel-desk-cell group relative aspect-[9/16] overflow-hidden rounded-2xl bg-slate-800">
-                        @if ($videoUrl !== '')
+                        @if ($vimeoMeta !== null)
+                            <iframe
+                                class="reel-iframe-desktop pointer-events-none h-full w-full max-w-none border-0"
+                                title="{{ $caption !== '' ? $caption : 'Vidéo Vimeo' }}"
+                                data-src="{{ VimeoEmbed::iframeSrc($vimeoMeta, true) }}"
+                                data-loaded="0"
+                                allow="autoplay; fullscreen; picture-in-picture"
+                                loading="lazy"
+                                style="min-height:100%;object-fit:cover;-webkit-transform:scale(1.06);transform:scale(1.06);"
+                            ></iframe>
+                        @elseif ($directVideoUrl !== '')
                             <video
                                 class="reel-video-desktop h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                                data-lazy-src="{{ $videoUrl }}"
+                                data-lazy-src="{{ $directVideoUrl }}"
                                 data-loaded="0"
                                 @if ($posterUrl !== '') poster="{{ $posterUrl }}" @endif
                                 muted
@@ -162,6 +191,14 @@ document.addEventListener('DOMContentLoaded',function(){
         v.removeAttribute('data-lazy-src');
         v.setAttribute('data-loaded','1');
     }
+    function hydrateIframe(f){
+        var ds=f.getAttribute('data-src');
+        if(!ds)return;
+        if(f.getAttribute('data-loaded')==='1')return;
+        f.src=ds;
+        f.removeAttribute('data-src');
+        f.setAttribute('data-loaded','1');
+    }
 
     var c=document.getElementById('reels-mobile');
     if(c){
@@ -180,6 +217,11 @@ document.addEventListener('DOMContentLoaded',function(){
                 });
                 if(hint)hint.style.display=idx===0?'':'none';
                 slides.forEach(function(s,i){
+                    var fr=s.querySelector('iframe.reel-iframe');
+                    if(fr){
+                        if(i===idx){ hydrateIframe(fr); }
+                        return;
+                    }
                     var v=s.querySelector('video');
                     if(!v)return;
                     if(i===idx){
@@ -194,6 +236,19 @@ document.addEventListener('DOMContentLoaded',function(){
         slides.forEach(function(s){obs.observe(s);});
     }
 
+    document.querySelectorAll('.reel-iframe-desktop').forEach(function(f){
+        var cell=f.closest('.reel-desk-cell');
+        if(!cell)return;
+        var io=new IntersectionObserver(function(entries){
+            entries.forEach(function(en){
+                if(en.isIntersecting){
+                    hydrateIframe(f);
+                }
+            });
+        },{root:null,rootMargin:'0px 0px 80px 0px',threshold:0.15});
+        io.observe(cell);
+    });
+
     document.querySelectorAll('.reel-video-desktop').forEach(function(v){
         var cell=v.closest('.reel-desk-cell');
         if(!cell)return;
@@ -201,9 +256,9 @@ document.addEventListener('DOMContentLoaded',function(){
             entries.forEach(function(en){
                 if(en.isIntersecting){
                     hydrateVideo(v);
-                    v.play().catch(function(){});
+                    v.play&&v.play().catch(function(){});
                 }else{
-                    v.pause();
+                    v.pause&&v.pause();
                 }
             });
         },{root:null,rootMargin:'0px 0px 80px 0px',threshold:0.15});
