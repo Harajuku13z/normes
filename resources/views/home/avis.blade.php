@@ -36,7 +36,7 @@
             <span class="text-xs font-extrabold uppercase tracking-widest text-slate-500">Témoignage</span>
         </div>
         @if ($intro !== '')
-            <p class="mt-3 max-w-3xl text-base leading-relaxed text-slate-600 sm:text-lg">{{ $intro }}</p>
+            <p class="mt-3 text-base leading-relaxed text-slate-600 sm:text-lg">{{ $intro }}</p>
         @endif
 
         <div class="mt-10 flex items-stretch gap-5">
