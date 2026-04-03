@@ -44,11 +44,18 @@
                     </summary>
 
                     <div class="mt-4">
-                        @include('admin.homepage.partials.form', [
-                            'name' => "sections[{$key}]",
-                            'value' => $value,
-                            'depth' => 0
-                        ])
+                        @if ($key === 'stats')
+                            @include('admin.homepage.partials.stats_form', [
+                                'name' => "sections[stats]",
+                                'value' => $value,
+                            ])
+                        @else
+                            @include('admin.homepage.partials.form', [
+                                'name' => "sections[{$key}]",
+                                'value' => $value,
+                                'depth' => 0
+                            ])
+                        @endif
                     </div>
                 </details>
             @endforeach

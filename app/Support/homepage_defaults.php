@@ -313,10 +313,10 @@ return [
 
     'stats' => [
         'items' => [
-            ['value' => '+5000', 'label' => 'Chantiers réalisés', 'icon' => 'building'],
-            ['value' => '98%', 'label' => 'Satisfaction client', 'icon' => 'star'],
-            ['value' => '48h', 'label' => 'Prise en charge rapide', 'icon' => 'clock'],
-            ['value' => '100%', 'label' => 'Devis gratuit', 'icon' => 'doc'],
+            ['value' => '+5000', 'label' => 'Chantiers réalisés', 'icon' => 'fa-solid fa-building'],
+            ['value' => '98%', 'label' => 'Satisfaction client', 'icon' => 'fa-solid fa-star'],
+            ['value' => '48h', 'label' => 'Prise en charge rapide', 'icon' => 'fa-solid fa-clock'],
+            ['value' => '100%', 'label' => 'Devis gratuit', 'icon' => 'fa-solid fa-file-lines'],
         ],
     ],
 
