@@ -624,4 +624,75 @@ Nous travaillons avec des équipes et des corps de métier complémentaires pour
             ['name' => 'Agence Bretagne - Pedernec', 'coords' => [48.595, -3.286], 'tag' => '22'],
         ],
     ],
+
+    'franchise_page' => [
+        'meta_title' => 'Franchise | Devenez franchisé | Normes & Rénovation',
+        'meta_description' => 'Devenez franchisé Normes Rénovation : marque reconnue, formation, accompagnement et réseau en Bourgogne et Bretagne. Déposez votre candidature en ligne.',
+        'meta_keywords' => 'franchise, franchisé, Normes Rénovation, agence, rénovation, Bourgogne, Bretagne',
+        'og_image' => '',
+
+        'hero_bg' => '',
+        'hero_kicker' => 'Franchise 100 % rentable',
+        'hero_h1_line1' => 'Devenez franchisé',
+        'hero_h1_accent' => 'Normes Rénovation',
+        'hero_intro' => 'Lancez votre entreprise avec une marque structurée, un marché porteur et un accompagnement de bout en bout — de la formation à la croissance de votre agence.',
+        'hero_cta_primary' => 'Commencer mon dossier',
+        'hero_cta_secondary' => 'Voir nos agences',
+
+        'pillars_kicker' => 'Pourquoi ?',
+        'pillars_title' => 'Pourquoi choisir Normes Rénovation ?',
+        'pillars_subtitle' => 'Notoriété et confiance · Formation et accompagnement · Croissance et opportunités',
+        'pillars' => [
+            ['icon' => 'shield-check', 'title' => 'Marque reconnue', 'text' => 'Bénéficiez de la notoriété et de la confiance associées à Normes Rénovation.'],
+            ['icon' => 'academic-cap', 'title' => 'Soutien continu', 'text' => 'Formation complète, accompagnement personnalisé et outils de gestion adaptés au terrain.'],
+            ['icon' => 'arrow-trending-up', 'title' => 'Opportunité de croissance', 'text' => 'Un marché de la rénovation et de la performance énergétique en fort développement.'],
+            ['icon' => 'light-bulb', 'title' => 'Innovation et qualité', 'text' => 'Process et offres alignées sur les normes et les attentes des clients.'],
+            ['icon' => 'user-group', 'title' => 'Réseau solidaire', 'text' => 'Échanges entre franchisés, bonnes pratiques et entraide au quotidien.'],
+        ],
+
+        'implantation_title_line1' => 'Déjà présents en',
+        'implantation_title_accent1' => 'Bourgogne',
+        'implantation_title_accent2' => 'Bretagne',
+        'implantation_text' => 'Normes Rénovation est implanté en Bourgogne-Franche-Comté et en Bretagne, avec des solutions de rénovation et de performance énergétique pour les particuliers et les professionnels. En rejoignant le réseau, vous capitalisez sur une expertise locale et une marque déjà identifiée sur ces territoires.',
+        'implantation_cta' => 'Voir nos agences',
+        'stats' => [
+            ['value' => '+3', 'label' => 'Agences', 'text' => 'Réseau en développement sur la France'],
+            ['value' => '99%', 'label' => 'Satisfaction', 'text' => 'Objectif qualité sur le terrain'],
+            ['value' => 'Ambition', 'label' => 'CA / agence', 'text' => 'Potentiel lié au territoire et au pilotage commercial'],
+        ],
+
+        'network_title' => 'Nos franchisés',
+        'network_intro' => 'Rejoignez un réseau dynamique sur un marché à fort potentiel. Bénéficiez de notre expertise, de notre accompagnement et de notre marque pour structurer votre développement.',
+        'network_items' => [
+            ['title' => 'Réseau national', 'text' => 'Plusieurs agences actives — objectif de déploiement maîtrisé.'],
+            ['title' => 'Satisfaction réseau', 'text' => 'Un suivi qualitatif et des process communs pour sécuriser l\'expérience client.'],
+            ['title' => 'Croissance', 'text' => 'Vision long terme : développement commercial et renfort des équipes.'],
+            ['title' => 'Formation', 'text' => 'Centaines d\'heures de formation et d\'accompagnement personnalisé par an pour les équipes.'],
+        ],
+        'testimonial_text' => '« Devenir agence Normes a été un tournant : le soutien et les outils du réseau m\'ont permis d\'accélérer le développement tout en gardant le cap sur la qualité. »',
+        'testimonial_author' => 'Fiona — Normes Rénovation Bretagne',
+
+        'steps_title' => 'Comment faire ?',
+        'steps_subtitle' => 'Les étapes pour nous rejoindre',
+        'steps' => [
+            ['title' => 'Envoyez votre candidature', 'text' => 'Remplissez le formulaire en ligne : nous étudions votre profil et votre secteur géographique.'],
+            ['title' => 'Entretien & analyse', 'text' => 'Échanges avec notre équipe pour valider l\'adéquation du territoire et du projet.'],
+            ['title' => 'Proposition & formation', 'text' => 'Remise des engagements, planning de formation et mise à disposition des outils réseau.'],
+            ['title' => 'Ouverture & suivi', 'text' => 'Lancement de votre agence avec accompagnement continu et reporting.'],
+        ],
+
+        'faq_title' => 'Ce qu\'il faut savoir (F.A.Q.)',
+        'faq' => [
+            ['q' => 'Quels sont les coûts associés à la franchise Normes Rénovation ?', 'a' => 'Les coûts varient selon la localisation, la taille du territoire et le projet d\'implantation. Nous vous fournissons une estimation personnalisée après analyse de votre dossier et entretien avec notre équipe.'],
+            ['q' => 'Quel soutien puis-je attendre de Normes en tant que franchisé ?', 'a' => 'Formation initiale et continue, méthodes commerciales et techniques, outils de pilotage, communication de marque, appui juridique et commercial, et mise en relation avec le réseau d\'agences.'],
+            ['q' => 'Quelles sont les qualifications requises pour devenir franchisé Normes ?', 'a' => 'Vous devez avoir un profil entrepreneurial, une capacité d\'investissement adaptée, l\'envie de développer une équipe locale sur le long terme, et partager nos exigences de qualité et de conformité RGE.'],
+            ['q' => 'Comment se déroule le processus de franchise avec Normes ?', 'a' => 'Après envoi du formulaire, nous vous recontactons pour un entretien de qualification, l\'analyse du territoire, la validation du business plan, puis la signature des documents et le planning de formation / ouverture.'],
+        ],
+
+        'form_kicker' => 'C\'est à vous',
+        'form_title' => 'Commencer votre dossier',
+        'form_intro' => 'Décrivez votre projet en quelques lignes : un expert Normes Rénovation vous recontacte pour un échange structuré et confidentiel.',
+        'form_submit' => 'Envoyer ma candidature',
+        'form_rgpd' => 'Les informations transmises sont destinées à l\'étude de votre dossier. Vous pouvez solliciter l\'accès, la rectification ou la suppression de vos données conformément au RGPD.',
+    ],
 ];

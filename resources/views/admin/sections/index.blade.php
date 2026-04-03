@@ -67,6 +67,19 @@
         </div>
 
         <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+            <h2 class="text-lg font-extrabold text-slate-900">Page Franchise</h2>
+            <p class="mt-1 text-sm text-slate-600">Hero, piliers, implantation, réseau, étapes, FAQ et formulaire de candidature.</p>
+            <div class="mt-5 flex flex-wrap gap-2">
+                <a href="{{ route('admin.franchise_settings.edit') }}" class="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
+                    Modifier la page franchise
+                </a>
+                <a href="{{ route('franchise.page') }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-extrabold text-slate-700 hover:bg-slate-50">
+                    Voir /franchise
+                </a>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
             <h2 class="text-lg font-extrabold text-slate-900">Avis</h2>
             <p class="mt-1 text-sm text-slate-600">Page dédiée : importer les avis Google (SerAPI) et gérer manuellement les avis des autres plateformes.</p>
             <div class="mt-5 flex flex-wrap gap-2">

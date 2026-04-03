@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminAboutPageController;
 use App\Http\Controllers\Admin\AdminAiServiceSettingsController;
 use App\Http\Controllers\Admin\AdminAvisSettingsController;
 use App\Http\Controllers\Admin\AdminContactSettingsController;
+use App\Http\Controllers\Admin\AdminFranchiseSettingsController;
 use App\Http\Controllers\Admin\AdminHeaderSettingsController;
 use App\Http\Controllers\Admin\AdminHomepageController;
 use App\Http\Controllers\Admin\AdminLayoutSettingsController;
@@ -65,6 +66,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/avis-settings', [AdminAvisSettingsController::class, 'edit'])->name('admin.avis_settings.edit');
         Route::post('/avis-settings', [AdminAvisSettingsController::class, 'update'])->name('admin.avis_settings.update');
         Route::post('/avis-settings/fetch-google', [AdminAvisSettingsController::class, 'fetchGoogle'])->name('admin.avis_settings.fetch_google');
+        Route::get('/franchise-settings', [AdminFranchiseSettingsController::class, 'edit'])->name('admin.franchise_settings.edit');
+        Route::post('/franchise-settings', [AdminFranchiseSettingsController::class, 'update'])->name('admin.franchise_settings.update');
         Route::get('/ai-service-settings', [AdminAiServiceSettingsController::class, 'edit'])->name('admin.ai_service_settings.edit');
         Route::post('/ai-service-settings', [AdminAiServiceSettingsController::class, 'update'])->name('admin.ai_service_settings.update');
         Route::get('/simulateur-settings', [AdminSimulateurSettingsController::class, 'edit'])->name('admin.simulateur_settings.edit');

@@ -2,56 +2,75 @@
     use App\Support\HomeView;
 
     $h = $home ?? [];
+    $fp = data_get($h, 'franchise_page', []);
+    if (! is_array($fp)) { $fp = []; }
     $f = data_get($h, 'footer', []);
     $siteName = (string) data_get($h, 'meta.site_name', 'Normes & Rénovation');
-    $metaTitle = 'Franchise | Devenez franchisé | '.$siteName;
-    $metaDescription = 'Devenez franchisé Normes Rénovation : marque reconnue, formation, accompagnement et réseau en Bourgogne et Bretagne. Déposez votre candidature en ligne.';
-    $metaKeywords = 'franchise, franchisé, Normes Rénovation, agence, rénovation, Bourgogne, Bretagne';
-    $ogImage = trim((string) data_get($h, 'meta.og_image', 'logo.png'));
+
+    $metaTitle = trim((string) data_get($fp, 'meta_title', ''));
+    if ($metaTitle === '') { $metaTitle = 'Franchise | Devenez franchisé | '.$siteName; }
+    $metaDescription = trim((string) data_get($fp, 'meta_description', 'Devenez franchisé Normes Rénovation.'));
+    $metaKeywords = trim((string) data_get($fp, 'meta_keywords', ''));
+    $ogImageRaw = trim((string) data_get($fp, 'og_image', ''));
+    $ogImage = $ogImageRaw !== '' ? $ogImageRaw : trim((string) data_get($h, 'meta.og_image', 'logo.png'));
     $canonicalUrl = route('franchise.page');
-    $heroBg = HomeView::url((string) data_get($h, 'styles.footer_bg', 'slide/toiture.png'));
+
+    $heroBgRaw = trim((string) data_get($fp, 'hero_bg', ''));
+    $heroBg = HomeView::url($heroBgRaw !== '' ? $heroBgRaw : (string) data_get($h, 'styles.footer_bg', 'slide/toiture.png'));
+    $preloadImages = [$heroBg];
     $agencesHref = route('home', [], false).'#agences';
+
+    $heroKicker = trim((string) data_get($fp, 'hero_kicker', 'Franchise 100 % rentable'));
+    $heroH1Line1 = trim((string) data_get($fp, 'hero_h1_line1', 'Devenez franchisé'));
+    $heroH1Accent = trim((string) data_get($fp, 'hero_h1_accent', 'Normes Rénovation'));
+    $heroIntro = trim((string) data_get($fp, 'hero_intro', ''));
+    $heroCtaPrimary = trim((string) data_get($fp, 'hero_cta_primary', 'Commencer mon dossier'));
+    $heroCtaSecondary = trim((string) data_get($fp, 'hero_cta_secondary', 'Voir nos agences'));
+
+    $pillarsKicker = trim((string) data_get($fp, 'pillars_kicker', 'Pourquoi ?'));
+    $pillarsTitle = trim((string) data_get($fp, 'pillars_title', 'Pourquoi choisir Normes Rénovation ?'));
+    $pillarsSubtitle = trim((string) data_get($fp, 'pillars_subtitle', ''));
+    $pillars = (array) data_get($fp, 'pillars', []);
+
+    $implTitle1 = trim((string) data_get($fp, 'implantation_title_line1', 'Déjà présents en'));
+    $implAccent1 = trim((string) data_get($fp, 'implantation_title_accent1', 'Bourgogne'));
+    $implAccent2 = trim((string) data_get($fp, 'implantation_title_accent2', 'Bretagne'));
+    $implText = trim((string) data_get($fp, 'implantation_text', ''));
+    $implCta = trim((string) data_get($fp, 'implantation_cta', 'Voir nos agences'));
+    $stats = (array) data_get($fp, 'stats', []);
+
+    $networkTitle = trim((string) data_get($fp, 'network_title', 'Nos franchisés'));
+    $networkIntro = trim((string) data_get($fp, 'network_intro', ''));
+    $networkItems = (array) data_get($fp, 'network_items', []);
+    $testimonialText = trim((string) data_get($fp, 'testimonial_text', ''));
+    $testimonialAuthor = trim((string) data_get($fp, 'testimonial_author', ''));
+
+    $stepsTitle = trim((string) data_get($fp, 'steps_title', 'Comment faire ?'));
+    $stepsSubtitle = trim((string) data_get($fp, 'steps_subtitle', 'Les étapes pour nous rejoindre'));
+    $steps = (array) data_get($fp, 'steps', []);
+
+    $faqTitle = trim((string) data_get($fp, 'faq_title', 'Ce qu\'il faut savoir (F.A.Q.)'));
+    $faqItems = (array) data_get($fp, 'faq', []);
+
+    $formKicker = trim((string) data_get($fp, 'form_kicker', 'C\'est à vous'));
+    $formTitle = trim((string) data_get($fp, 'form_title', 'Commencer votre dossier'));
+    $formIntro = trim((string) data_get($fp, 'form_intro', ''));
+    $formSubmit = trim((string) data_get($fp, 'form_submit', 'Envoyer ma candidature'));
+    $formRgpd = trim((string) data_get($fp, 'form_rgpd', ''));
+
     $footerEmail = trim((string) data_get($f, 'email', 'bourgogne-agence@normesrenovation.fr'));
     $footerPhone = trim((string) data_get($f, 'phone', '03 85 41 98 86'));
     $footerPhoneHref = trim((string) data_get($f, 'phone_href', 'tel:+33385419886'));
     $hqLines = data_get($f, 'address_lines', []);
-    if (! is_array($hqLines)) {
-        $hqLines = [];
-    }
+    if (! is_array($hqLines)) { $hqLines = []; }
     $hqAddress = $hqLines !== [] ? implode(', ', array_map('strval', $hqLines)) : '6 rue Pierre de Coubertin, 71100 Chalon-sur-Saône';
 
-    $faqItems = [
-        [
-            'q' => 'Quels sont les coûts associés à la franchise Normes Rénovation ?',
-            'a' => 'Les coûts varient selon la localisation, la taille du territoire et le projet d’implantation. Nous vous fournissons une estimation personnalisée après analyse de votre dossier et entretien avec notre équipe.',
-        ],
-        [
-            'q' => 'Quel soutien puis-je attendre de Normes en tant que franchisé ?',
-            'a' => 'Formation initiale et continue, méthodes commerciales et techniques, outils de pilotage, communication de marque, appui juridique et commercial, et mise en relation avec le réseau d’agences.',
-        ],
-        [
-            'q' => 'Quelles sont les qualifications requises pour devenir franchisé Normes ?',
-            'a' => 'Vous devez avoir un profil entrepreneurial, une capacité d’investissement adaptée, l’envie de développer une équipe locale sur le long terme, et partager nos exigences de qualité et de conformité RGE.',
-        ],
-        [
-            'q' => 'Comment se déroule le processus de franchise avec Normes ?',
-            'a' => 'Après envoi du formulaire, nous vous recontactons pour un entretien de qualification, l’analyse du territoire, la validation du business plan, puis la signature des documents et le planning de formation / ouverture.',
-        ],
-    ];
-
-    $steps = [
-        ['title' => 'Envoyez votre candidature', 'text' => 'Remplissez le formulaire en ligne : nous étudions votre profil et votre secteur géographique.'],
-        ['title' => 'Entretien & analyse', 'text' => 'Échanges avec notre équipe pour valider l’adéquation du territoire et du projet.'],
-        ['title' => 'Proposition & formation', 'text' => 'Remise des engagements, planning de formation et mise à disposition des outils réseau.'],
-        ['title' => 'Ouverture & suivi', 'text' => 'Lancement de votre agence avec accompagnement continu et reporting.'],
-    ];
-
-    $pillars = [
-        ['title' => 'Marque reconnue', 'text' => 'Bénéficiez de la notoriété et de la confiance associées à Normes Rénovation.'],
-        ['title' => 'Soutien continu', 'text' => 'Formation complète, accompagnement personnalisé et outils de gestion adaptés au terrain.'],
-        ['title' => 'Opportunité de croissance', 'text' => 'Un marché de la rénovation et de la performance énergétique en fort développement.'],
-        ['title' => 'Innovation et qualité', 'text' => 'Process et offres alignées sur les normes et les attentes des clients.'],
-        ['title' => 'Réseau solidaire', 'text' => 'Échanges entre franchisés, bonnes pratiques et entraide au quotidien.'],
+    $iconMap = [
+        'shield-check' => '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/>',
+        'academic-cap' => '<path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5"/>',
+        'arrow-trending-up' => '<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941"/>',
+        'light-bulb' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 0 0 1.5-.189m-1.5.189a6.01 6.01 0 0 1-1.5-.189m3.75 7.478a12.06 12.06 0 0 1-4.5 0m3.75 2.383a14.406 14.406 0 0 1-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 1 0-7.517 0c.85.493 1.509 1.333 1.509 2.316V18"/>',
+        'user-group' => '<path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z"/>',
     ];
 @endphp
 <!DOCTYPE html>
@@ -63,164 +82,211 @@
     'keywords' => $metaKeywords,
     'canonicalUrl' => $canonicalUrl,
     'ogImage' => $ogImage,
+    'preloadImages' => $preloadImages,
 ])
 <body class="overflow-x-hidden bg-white font-sans text-brand-dark antialiased">
 <a href="#contenu" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[2000] focus:rounded-xl focus:bg-white focus:px-4 focus:py-3 focus:text-sm focus:font-extrabold focus:text-brand-dark focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-brand-blue">Aller au contenu</a>
 @include('home.header', ['home' => $h])
 
-<section id="top" class="relative min-h-[420px] overflow-hidden sm:min-h-[480px]">
+{{-- ═══ HERO ═══ --}}
+<section id="top" class="relative min-h-[440px] overflow-hidden sm:min-h-[500px]">
     <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('{{ $heroBg }}');" aria-hidden="true"></div>
-    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/92 via-brand-dark/55 to-brand-dark/25" aria-hidden="true"></div>
-    <div class="relative z-10 mx-auto flex min-h-[420px] w-[95%] flex-col justify-end gap-4 px-4 py-10 sm:min-h-[480px] sm:px-6 sm:py-12 lg:px-8">
-        <div class="max-w-4xl text-white">
-            <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">Franchise 100 % rentable</p>
-            <h1 class="text-3xl font-black leading-[1.08] tracking-tight drop-shadow-md sm:text-4xl lg:text-5xl">
-                Devenez franchisé <span class="text-brand-blue">Normes Rénovation</span>
-            </h1>
-            <p class="mt-4 max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">
-                Lancez votre entreprise avec une marque structurée, un marché porteur et un accompagnement de bout en bout — de la formation à la croissance de votre agence.
-            </p>
-            <div class="mt-6 flex flex-wrap gap-3">
-                <a href="#candidature" class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
-                    Commencer mon dossier
-                </a>
-                <a href="{{ $agencesHref }}" class="rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-extrabold text-white backdrop-blur-sm transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
-                    Voir nos agences
-                </a>
+    <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/90 via-brand-dark/55 to-transparent" aria-hidden="true"></div>
+    <div class="relative z-10 mx-auto flex min-h-[440px] w-[95%] flex-col justify-end gap-5 px-4 py-8 sm:min-h-[500px] sm:px-6 sm:py-10 lg:px-8">
+        <div class="max-w-3xl text-white">
+            <div class="rounded-3xl border border-white/15 bg-brand-dark/35 p-6 shadow-soft backdrop-blur-md sm:p-8">
+                @if ($heroKicker !== '')
+                    <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">{{ $heroKicker }}</p>
+                @endif
+                <h1 class="mb-4 text-2xl font-black leading-[1.06] tracking-tight drop-shadow-md sm:text-4xl lg:text-5xl">
+                    <span>{{ $heroH1Line1 }}</span>
+                    @if ($heroH1Accent !== '')
+                        <span class="text-brand-blue"> {{ $heroH1Accent }}</span>
+                    @endif
+                </h1>
+                @if ($heroIntro !== '')
+                    <p class="max-w-2xl text-base leading-relaxed text-white/90 sm:text-lg">{{ $heroIntro }}</p>
+                @endif
+                <div class="mt-6 flex flex-wrap gap-3">
+                    <a href="#candidature" class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
+                        {{ $heroCtaPrimary }}
+                    </a>
+                    <a href="{{ $agencesHref }}" class="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:bg-yellow-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-dark">
+                        {{ $heroCtaSecondary }}
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <main id="contenu" class="scroll-mt-24">
-    <section class="border-b border-slate-200 bg-white py-14 sm:py-16" aria-labelledby="pourquoi-heading">
+
+    {{-- ═══ PILIERS ═══ --}}
+    @if ($pillars !== [])
+    <section class="border-b border-slate-200 bg-white py-16 sm:py-20" aria-labelledby="pourquoi-heading">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
             <div class="mx-auto max-w-3xl text-center">
-                <h2 id="pourquoi-heading" class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-blue">Pourquoi ?</h2>
-                <p class="mt-3 text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">Pourquoi choisir Normes Rénovation ?</p>
-                <p class="mt-4 text-base text-slate-600 sm:text-lg">Notoriété et confiance · Formation et accompagnement · Croissance et opportunités</p>
+                @if ($pillarsKicker !== '')
+                    <p id="pourquoi-heading" class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-blue">{{ $pillarsKicker }}</p>
+                @endif
+                @if ($pillarsTitle !== '')
+                    <h2 class="mt-3 text-2xl font-black tracking-tight text-brand-dark sm:text-3xl lg:text-4xl">{{ $pillarsTitle }}</h2>
+                @endif
+                @if ($pillarsSubtitle !== '')
+                    <p class="mt-4 text-base text-slate-600 sm:text-lg">{{ $pillarsSubtitle }}</p>
+                @endif
             </div>
-            <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                @foreach ($pillars as $pillar)
-                    <li class="rounded-2xl border border-slate-200/90 bg-slate-50/80 p-6 shadow-sm">
-                        <h3 class="text-lg font-extrabold text-brand-dark">{{ $pillar['title'] }}</h3>
-                        <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ $pillar['text'] }}</p>
+            <ul class="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                @foreach ($pillars as $idx => $pillar)
+                    @php
+                        $iconKey = trim((string) data_get($pillar, 'icon', ''));
+                        $iconSvg = $iconMap[$iconKey] ?? $iconMap['shield-check'];
+                        $colors = ['bg-sky-50 text-brand-blue', 'bg-amber-50 text-amber-600', 'bg-emerald-50 text-emerald-600', 'bg-violet-50 text-violet-600', 'bg-rose-50 text-rose-600'];
+                        $color = $colors[$idx % count($colors)];
+                    @endphp
+                    <li class="group rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                        <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl {{ $color }} transition group-hover:scale-110">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6">{!! $iconSvg !!}</svg>
+                        </span>
+                        <h3 class="mt-4 text-base font-extrabold text-brand-dark">{{ data_get($pillar, 'title', '') }}</h3>
+                        <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ data_get($pillar, 'text', '') }}</p>
                     </li>
                 @endforeach
             </ul>
         </div>
     </section>
+    @endif
 
-    <section class="bg-slate-50 py-14 sm:py-16" aria-labelledby="implantation-heading">
+    {{-- ═══ IMPLANTATION + CHIFFRES ═══ --}}
+    <section class="bg-slate-50 py-16 sm:py-20" aria-labelledby="implantation-heading">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-            <div class="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-14">
+            <div class="grid gap-10 lg:grid-cols-2 lg:items-center lg:gap-16">
                 <div>
-                    <h2 id="implantation-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">
-                        Déjà présents en <span class="text-brand-blue">Bourgogne</span> et <span class="text-brand-blue">Bretagne</span>
+                    <h2 id="implantation-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl lg:text-4xl">
+                        {{ $implTitle1 }} <span class="text-brand-blue">{{ $implAccent1 }}</span> et <span class="text-brand-blue">{{ $implAccent2 }}</span>
                     </h2>
-                    <p class="mt-4 text-base leading-relaxed text-slate-600">
-                        Normes Rénovation est implanté en Bourgogne-Franche-Comté et en Bretagne, avec des solutions de rénovation et de performance énergétique pour les particuliers et les professionnels. En rejoignant le réseau, vous capitalisez sur une expertise locale et une marque déjà identifiée sur ces territoires.
-                    </p>
-                    <a href="{{ $agencesHref }}" class="mt-6 inline-flex rounded-xl bg-brand-dark px-5 py-3 text-sm font-extrabold text-white shadow-md transition hover:bg-slate-800">
-                        Voir nos agences
+                    @if ($implText !== '')
+                        <p class="mt-5 text-base leading-relaxed text-slate-600 lg:text-lg">{{ $implText }}</p>
+                    @endif
+                    <a href="{{ $agencesHref }}" class="mt-7 inline-flex items-center gap-2 rounded-xl bg-brand-dark px-5 py-3 text-sm font-extrabold text-white shadow-md transition hover:bg-slate-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>
+                        {{ $implCta }}
                     </a>
                 </div>
-                <div class="grid gap-4 sm:grid-cols-3">
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
-                        <p class="text-3xl font-black text-brand-blue">+3</p>
-                        <p class="mt-1 text-xs font-extrabold uppercase tracking-wide text-slate-500">Agences</p>
-                        <p class="mt-2 text-sm text-slate-600">Réseau en développement sur la France</p>
+                @if ($stats !== [])
+                    <div class="grid gap-4 sm:grid-cols-3">
+                        @foreach ($stats as $stat)
+                            <div class="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm transition hover:shadow-md">
+                                <p class="text-3xl font-black text-brand-blue">{{ data_get($stat, 'value', '') }}</p>
+                                <p class="mt-1 text-xs font-extrabold uppercase tracking-wide text-slate-500">{{ data_get($stat, 'label', '') }}</p>
+                                <p class="mt-2 text-sm text-slate-600">{{ data_get($stat, 'text', '') }}</p>
+                            </div>
+                        @endforeach
                     </div>
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
-                        <p class="text-3xl font-black text-brand-blue">99%</p>
-                        <p class="mt-1 text-xs font-extrabold uppercase tracking-wide text-slate-500">Satisfaction</p>
-                        <p class="mt-2 text-sm text-slate-600">Objectif qualité sur le terrain</p>
-                    </div>
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm sm:col-span-3 lg:col-span-1">
-                        <p class="text-2xl font-black text-brand-blue">Ambition</p>
-                        <p class="mt-1 text-xs font-extrabold uppercase tracking-wide text-slate-500">CA / agence</p>
-                        <p class="mt-2 text-sm text-slate-600">Potentiel lié au territoire et au pilotage commercial</p>
-                    </div>
-                </div>
+                @endif
             </div>
         </div>
     </section>
 
-    <section class="bg-white py-14 sm:py-16" aria-labelledby="franchises-heading">
+    {{-- ═══ RÉSEAU FRANCHISÉS ═══ --}}
+    @if ($networkItems !== [])
+    <section class="bg-white py-16 sm:py-20" aria-labelledby="franchises-heading">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-            <h2 id="franchises-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">Nos franchisés</h2>
-            <p class="mt-4 max-w-3xl text-base leading-relaxed text-slate-600">
-                Rejoignez un réseau dynamique sur un marché à fort potentiel. Bénéficiez de notre expertise, de notre accompagnement et de notre marque pour structurer votre développement.
-            </p>
-            <ul class="mt-8 grid gap-4 sm:grid-cols-2">
-                <li class="flex gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
-                    <span class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-blue text-sm font-black text-white">1</span>
-                    <div><strong class="text-brand-dark">Réseau national</strong><p class="mt-1 text-sm text-slate-600">Plusieurs agences actives — objectif de déploiement maîtrisé.</p></div>
-                </li>
-                <li class="flex gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
-                    <span class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-blue text-sm font-black text-white">2</span>
-                    <div><strong class="text-brand-dark">Satisfaction réseau</strong><p class="mt-1 text-sm text-slate-600">Un suivi qualitatif et des process communs pour sécuriser l’expérience client.</p></div>
-                </li>
-                <li class="flex gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
-                    <span class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-blue text-sm font-black text-white">3</span>
-                    <div><strong class="text-brand-dark">Croissance</strong><p class="mt-1 text-sm text-slate-600">Vision long terme : développement commercial et renfort des équipes.</p></div>
-                </li>
-                <li class="flex gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-4">
-                    <span class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-blue text-sm font-black text-white">4</span>
-                    <div><strong class="text-brand-dark">Formation</strong><p class="mt-1 text-sm text-slate-600">Centaines d’heures de formation et d’accompagnement personnalisé par an pour les équipes.</p></div>
-                </li>
+            <div class="mx-auto max-w-3xl text-center">
+                <h2 id="franchises-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl lg:text-4xl">{{ $networkTitle }}</h2>
+                @if ($networkIntro !== '')
+                    <p class="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">{{ $networkIntro }}</p>
+                @endif
+            </div>
+            <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                @foreach ($networkItems as $idx => $item)
+                    <li class="relative overflow-hidden rounded-2xl border border-slate-200/80 bg-gradient-to-br from-slate-50 to-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
+                        <span class="absolute -right-2 -top-2 text-[4rem] font-black leading-none text-slate-100/60">{{ $idx + 1 }}</span>
+                        <div class="relative">
+                            <h3 class="text-base font-extrabold text-brand-dark">{{ data_get($item, 'title', '') }}</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ data_get($item, 'text', '') }}</p>
+                        </div>
+                    </li>
+                @endforeach
             </ul>
-            <figure class="mt-10 rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-8 shadow-sm">
-                <blockquote class="text-lg font-medium leading-relaxed text-brand-dark">
-                    « Devenir agence Normes a été un tournant : le soutien et les outils du réseau m’ont permis d’accélérer le développement tout en gardant le cap sur la qualité. »
-                </blockquote>
-                <figcaption class="mt-4 text-sm font-bold text-brand-blue">Fiona — Normes Rénovation Bretagne</figcaption>
-            </figure>
+            @if ($testimonialText !== '')
+                <figure class="mx-auto mt-14 max-w-3xl rounded-2xl border border-brand-blue/15 bg-gradient-to-br from-sky-50/60 to-white p-8 shadow-sm sm:p-10">
+                    <svg class="mb-4 h-8 w-8 text-brand-blue/30" fill="currentColor" viewBox="0 0 32 32" aria-hidden="true"><path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z"/></svg>
+                    <blockquote class="text-lg font-medium leading-relaxed text-brand-dark">{{ $testimonialText }}</blockquote>
+                    @if ($testimonialAuthor !== '')
+                        <figcaption class="mt-5 text-sm font-bold text-brand-blue">{{ $testimonialAuthor }}</figcaption>
+                    @endif
+                </figure>
+            @endif
         </div>
     </section>
+    @endif
 
-    <section class="border-t border-slate-200 bg-slate-50 py-14 sm:py-16" aria-labelledby="etapes-heading">
+    {{-- ═══ ÉTAPES TIMELINE ═══ --}}
+    @if ($steps !== [])
+    <section class="border-t border-slate-200 bg-slate-50 py-16 sm:py-20" aria-labelledby="etapes-heading">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-            <h2 id="etapes-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">Comment faire ?</h2>
-            <p class="mt-2 text-slate-600">Les étapes pour nous rejoindre</p>
-            <ol class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div class="mx-auto max-w-3xl text-center">
+                <h2 id="etapes-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl lg:text-4xl">{{ $stepsTitle }}</h2>
+                @if ($stepsSubtitle !== '')
+                    <p class="mt-3 text-base text-slate-600 sm:text-lg">{{ $stepsSubtitle }}</p>
+                @endif
+            </div>
+            <ol class="relative mx-auto mt-14 max-w-4xl">
+                <div class="absolute left-6 top-0 hidden h-full w-0.5 bg-gradient-to-b from-brand-blue via-brand-blue/40 to-slate-200 sm:block" aria-hidden="true"></div>
                 @foreach ($steps as $idx => $step)
-                    <li class="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                        <span class="absolute -top-3 left-4 inline-flex rounded-full bg-brand-yellow px-2.5 py-0.5 text-xs font-black text-brand-dark">{{ $idx + 1 }}</span>
-                        <h3 class="mt-2 text-base font-extrabold text-brand-dark">{{ $step['title'] }}</h3>
-                        <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ $step['text'] }}</p>
+                    <li class="relative mb-10 pl-0 sm:pl-16 last:mb-0">
+                        <span class="absolute left-0 top-0 hidden h-12 w-12 items-center justify-center rounded-full border-4 border-white bg-brand-blue text-sm font-black text-white shadow-md sm:inline-flex">{{ $idx + 1 }}</span>
+                        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md sm:p-7">
+                            <span class="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand-yellow text-xs font-black text-brand-dark sm:hidden">{{ $idx + 1 }}</span>
+                            <h3 class="text-base font-extrabold text-brand-dark sm:text-lg">{{ data_get($step, 'title', '') }}</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-slate-600 sm:text-base">{{ data_get($step, 'text', '') }}</p>
+                        </div>
                     </li>
                 @endforeach
             </ol>
         </div>
     </section>
+    @endif
 
-    <section class="bg-white py-14 sm:py-16" aria-labelledby="faq-heading">
+    {{-- ═══ FAQ ═══ --}}
+    @if ($faqItems !== [])
+    <section class="bg-white py-16 sm:py-20" aria-labelledby="faq-heading">
         <div class="mx-auto w-[95%] max-w-3xl px-4 sm:px-6 lg:px-8">
-            <h2 id="faq-heading" class="text-2xl font-black tracking-tight text-brand-dark sm:text-3xl">Ce qu’il faut savoir (F.A.Q.)</h2>
-            <div class="mt-8 space-y-3">
+            <h2 id="faq-heading" class="text-center text-2xl font-black tracking-tight text-brand-dark sm:text-3xl lg:text-4xl">{{ $faqTitle }}</h2>
+            <div class="mt-10 divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                 @foreach ($faqItems as $item)
-                    <details class="group rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 open:bg-white open:shadow-sm">
-                        <summary class="cursor-pointer list-none text-sm font-extrabold text-brand-dark after:float-right after:content-['+'] group-open:after:content-['−']">
-                            {{ $item['q'] }}
+                    <details class="group">
+                        <summary class="flex cursor-pointer items-center justify-between gap-4 px-6 py-5 text-left text-sm font-extrabold text-brand-dark transition hover:bg-slate-50 sm:text-base [&::-webkit-details-marker]:hidden">
+                            <span>{{ data_get($item, 'q', '') }}</span>
+                            <svg class="h-5 w-5 shrink-0 text-slate-400 transition group-open:rotate-45" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                         </summary>
-                        <p class="mt-3 border-t border-slate-200 pt-3 text-sm leading-relaxed text-slate-600">{{ $item['a'] }}</p>
+                        <div class="px-6 pb-5 text-sm leading-relaxed text-slate-600 sm:text-base">{{ data_get($item, 'a', '') }}</div>
                     </details>
                 @endforeach
             </div>
         </div>
     </section>
+    @endif
 
+    {{-- ═══ AVIS ═══ --}}
     @include('home.avis', ['home' => $h])
 
-    <section id="candidature" class="scroll-mt-24 border-t border-slate-200 bg-brand-dark py-14 text-white sm:py-20">
+    {{-- ═══ FORMULAIRE CANDIDATURE ═══ --}}
+    <section id="candidature" class="scroll-mt-24 bg-brand-dark py-16 text-white sm:py-20">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-            <div class="grid gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-14">
-                <div>
-                    <h2 class="text-3xl font-black tracking-tight sm:text-4xl"><span class="text-brand-blue">C’est à vous</span> — commencer votre dossier</h2>
-                    <p class="mt-4 text-sm leading-relaxed text-white/85 sm:text-base">
-                        Décrivez votre projet en quelques lignes : un expert Normes Rénovation vous recontacte pour un échange structuré et confidentiel.
-                    </p>
+            <div class="grid gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
+                <div class="flex flex-col justify-center">
+                    @if ($formKicker !== '')
+                        <p class="text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">{{ $formKicker }}</p>
+                    @endif
+                    <h2 class="mt-3 text-3xl font-black tracking-tight sm:text-4xl">
+                        <span class="text-brand-blue">{{ $formTitle }}</span>
+                    </h2>
+                    @if ($formIntro !== '')
+                        <p class="mt-4 text-sm leading-relaxed text-white/85 sm:text-base">{{ $formIntro }}</p>
+                    @endif
                     <div class="mt-10 space-y-5 rounded-2xl border border-white/15 bg-white/5 p-6 backdrop-blur-sm">
                         <div>
                             <p class="text-xs font-extrabold uppercase tracking-wide text-brand-yellow">Adresse</p>
@@ -236,9 +302,11 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="rounded-2xl border border-white/20 bg-white p-6 text-brand-dark shadow-xl sm:p-8">
                     @if (session('franchise_status'))
-                        <div class="mb-6 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-900" role="status">
+                        <div class="mb-6 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-900" role="status">
+                            <svg class="h-5 w-5 shrink-0 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
                             {{ session('franchise_status') }}
                         </div>
                     @endif
@@ -257,24 +325,24 @@
                         <div class="grid gap-4 sm:grid-cols-2">
                             <div class="sm:col-span-2">
                                 <label for="fr_name" class="mb-1 block text-sm font-semibold">Nom complet <span class="text-red-600">*</span></label>
-                                <input id="fr_name" name="name" type="text" autocomplete="name" value="{{ old('name') }}" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                                <input id="fr_name" name="name" type="text" autocomplete="name" value="{{ old('name') }}" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm transition focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
                             </div>
                             <div>
                                 <label for="fr_phone" class="mb-1 block text-sm font-semibold">Téléphone <span class="text-red-600">*</span></label>
-                                <input id="fr_phone" name="phone" type="tel" autocomplete="tel" value="{{ old('phone') }}" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                                <input id="fr_phone" name="phone" type="tel" autocomplete="tel" value="{{ old('phone') }}" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm transition focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
                             </div>
                             <div>
                                 <label for="fr_email" class="mb-1 block text-sm font-semibold">E-mail <span class="text-red-600">*</span></label>
-                                <input id="fr_email" name="email" type="email" autocomplete="email" value="{{ old('email') }}" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                                <input id="fr_email" name="email" type="email" autocomplete="email" value="{{ old('email') }}" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm transition focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
                             </div>
-                            <div class="sm:col-span-2">
+                            <div>
                                 <label for="fr_cp" class="mb-1 block text-sm font-semibold">Code postal <span class="text-red-600">*</span></label>
-                                <input id="fr_cp" name="postal_code" type="text" inputmode="numeric" maxlength="10" autocomplete="postal-code" value="{{ old('postal_code') }}" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                                <input id="fr_cp" name="postal_code" type="text" inputmode="numeric" maxlength="10" autocomplete="postal-code" value="{{ old('postal_code') }}" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm transition focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
                             </div>
-                            <div class="sm:col-span-2">
-                                <label for="fr_indep" class="mb-1 block text-sm font-semibold">Avez-vous déjà exercé une activité en indépendant ? <span class="text-red-600">*</span></label>
-                                <select id="fr_indep" name="has_independent_activity" required class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
-                                    @php $oldIndep = (string) old('has_independent_activity', ''); @endphp
+                            <div>
+                                <label for="fr_indep" class="mb-1 block text-sm font-semibold">Activité en indépendant ? <span class="text-red-600">*</span></label>
+                                @php $oldIndep = (string) old('has_independent_activity', ''); @endphp
+                                <select id="fr_indep" name="has_independent_activity" required class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm transition focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
                                     <option value="" {{ $oldIndep === '' ? 'selected' : '' }}>Sélectionner</option>
                                     <option value="1" {{ in_array($oldIndep, ['1', 'oui', 'yes'], true) ? 'selected' : '' }}>Oui</option>
                                     <option value="0" {{ in_array($oldIndep, ['0', 'non', 'no'], true) ? 'selected' : '' }}>Non</option>
@@ -282,21 +350,23 @@
                             </div>
                             <div class="sm:col-span-2">
                                 <label for="fr_sector" class="mb-1 block text-sm font-semibold">Secteur géographique visé <span class="text-red-600">*</span></label>
-                                <input id="fr_sector" name="geographic_sector" type="text" value="{{ old('geographic_sector') }}" placeholder="Ville, département ou région" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                                <input id="fr_sector" name="geographic_sector" type="text" value="{{ old('geographic_sector') }}" placeholder="Ville, département ou région" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm transition focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
                             </div>
                             <div class="sm:col-span-2">
                                 <label for="fr_apport" class="mb-1 block text-sm font-semibold">Apport personnel envisagé (€)</label>
-                                <input id="fr_apport" name="personal_contribution" type="text" value="{{ old('personal_contribution') }}" inputmode="decimal" placeholder="Ex. 30 000" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                                <input id="fr_apport" name="personal_contribution" type="text" value="{{ old('personal_contribution') }}" inputmode="decimal" placeholder="Ex. 30 000" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm transition focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
                             </div>
                             <div class="sm:col-span-2">
                                 <label for="fr_msg" class="mb-1 block text-sm font-semibold">Message</label>
-                                <textarea id="fr_msg" name="message" rows="5" placeholder="Parlez-nous de votre projet, de votre expérience et de vos disponibilités." class="w-full resize-y rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">{{ old('message') }}</textarea>
+                                <textarea id="fr_msg" name="message" rows="4" placeholder="Parlez-nous de votre projet, de votre expérience et de vos disponibilités." class="w-full resize-y rounded-lg border border-slate-200 px-3 py-2.5 text-sm transition focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">{{ old('message') }}</textarea>
                             </div>
                         </div>
                         <button type="submit" class="w-full rounded-xl bg-brand-blue px-4 py-3.5 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 sm:text-base">
-                            Envoyer ma candidature
+                            {{ $formSubmit }}
                         </button>
-                        <p class="text-center text-xs text-slate-500">Les informations transmises sont destinées à l’étude de votre dossier. Vous pouvez solliciter l’accès, la rectification ou la suppression de vos données conformément au RGPD.</p>
+                        @if ($formRgpd !== '')
+                            <p class="text-center text-xs text-slate-500">{{ $formRgpd }}</p>
+                        @endif
                     </form>
                 </div>
             </div>
@@ -311,11 +381,7 @@
         'name' => $metaTitle,
         'description' => $metaDescription,
         'url' => $canonicalUrl,
-        'isPartOf' => [
-            '@type' => 'WebSite',
-            'name' => $siteName,
-            'url' => url('/'),
-        ],
+        'isPartOf' => ['@type' => 'WebSite', 'name' => $siteName, 'url' => url('/')],
         'breadcrumb' => [
             '@type' => 'BreadcrumbList',
             'itemListElement' => [
@@ -324,18 +390,12 @@
             ],
         ],
     ];
-    $faqLd = [
-        '@context' => 'https://schema.org',
-        '@type' => 'FAQPage',
-        'mainEntity' => collect($faqItems)->map(fn ($item) => [
-            '@type' => 'Question',
-            'name' => $item['q'],
-            'acceptedAnswer' => ['@type' => 'Answer', 'text' => $item['a']],
-        ])->values()->all(),
-    ];
+    $faqLd = ['@context' => 'https://schema.org', '@type' => 'FAQPage', 'mainEntity' => collect($faqItems)->map(fn ($item) => ['@type' => 'Question', 'name' => data_get($item, 'q', ''), 'acceptedAnswer' => ['@type' => 'Answer', 'text' => data_get($item, 'a', '')]])->values()->all()];
 @endphp
 <script type="application/ld+json">{!! json_encode($franchiseLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@if ($faqItems !== [])
 <script type="application/ld+json">{!! json_encode($faqLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+@endif
 
 @include('home.footer', ['home' => $h])
 @include('home.scripts', ['home' => $h])
