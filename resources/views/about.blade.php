@@ -26,6 +26,14 @@
     $heroTitle = trim((string) data_get($ap, 'hero_title', 'Construisez avec nous, bâtissez l\'avenir'));
     $heroIntro = trim((string) data_get($ap, 'hero_intro', 'Normes et Rénovation est une entreprise spécialisée dans la rénovation de maison, offrant des solutions complètes pour traiter l\'humidité, améliorer l\'efficacité énergétique et assurer la durabilité de votre habitation.'));
 
+    $companyStoryKicker = trim((string) data_get($ap, 'company_story_kicker', 'Qui sommes-nous'));
+    $companyStoryHeading = trim((string) data_get($ap, 'company_story_heading', 'Normes et Rénovation, votre partenaire rénovation'));
+    $companyStoryBody = trim((string) data_get($ap, 'company_story_body', ''));
+    $companyStoryImageRaw = trim((string) data_get($ap, 'company_story_image', ''));
+    $companyStoryImageAlt = trim((string) data_get($ap, 'company_story_image_alt', ''));
+    $companyStoryImage = $companyStoryImageRaw !== '' ? HomeView::url($companyStoryImageRaw) : '';
+    $showCompanyStory = $companyStoryHeading !== '' || $companyStoryBody !== '' || $companyStoryImage !== '';
+
     $pillarsKicker = trim((string) data_get($ap, 'pillars_kicker', 'Expertise et durabilité'));
     $pillarsTitle = trim((string) data_get($ap, 'pillars_title', 'Un partenaire fiable à chaque étape'));
     $pillars = data_get($ap, 'pillars', []);
@@ -153,6 +161,61 @@
 </section>
 
 <main id="contenu" class="scroll-mt-24">
+
+    {{-- ═══ PRÉSENTATION ENTREPRISE (après hero) ═══ --}}
+    @if ($showCompanyStory)
+        <section
+            id="qui-sommes-nous"
+            class="scroll-mt-24 border-b border-slate-200/90 bg-white py-16 sm:py-20"
+            @if ($companyStoryHeading !== '') aria-labelledby="company-story-heading" @else aria-label="{{ $companyStoryKicker !== '' ? $companyStoryKicker : 'Présentation de l’entreprise' }}" @endif
+        >
+            <div @class([
+                'mx-auto w-[95%] px-4 sm:px-6 lg:px-8',
+                'grid items-center gap-10 lg:grid-cols-2 lg:gap-16' => $companyStoryImage !== '',
+                'max-w-3xl' => $companyStoryImage === '',
+            ])>
+                <div @class(['order-2 lg:order-1', 'mx-auto text-center lg:text-left' => $companyStoryImage === ''])>
+                    @if ($companyStoryKicker !== '')
+                        <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">{{ mb_strtoupper($companyStoryKicker, 'UTF-8') }}</p>
+                    @endif
+                    @if ($companyStoryHeading !== '')
+                        <h2 id="company-story-heading" class="mt-3 text-3xl font-black leading-tight tracking-tight text-brand-dark sm:text-4xl">
+                            {{ $companyStoryHeading }}
+                        </h2>
+                    @endif
+                    @if ($companyStoryBody !== '')
+                        <div class="mt-6 max-w-none space-y-4 text-left text-base leading-relaxed text-slate-600 sm:text-lg">
+                            {!! nl2br(e($companyStoryBody)) !!}
+                        </div>
+                    @endif
+                    <div @class(['mt-8 flex flex-wrap gap-3', 'justify-center lg:justify-start' => $companyStoryImage === ''])>
+                        <a href="{{ $servicesHref }}" class="inline-flex rounded-xl bg-brand-blue px-5 py-2.5 text-sm font-extrabold text-white shadow-md transition hover:-translate-y-0.5 hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2">
+                            Découvrir nos prestations
+                        </a>
+                        <a href="{{ $contactHref }}" class="inline-flex rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-extrabold text-brand-dark shadow-sm transition hover:border-brand-blue/30 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue focus-visible:ring-offset-2">
+                            Nous contacter
+                        </a>
+                    </div>
+                </div>
+                @if ($companyStoryImage !== '')
+                    <div class="order-1 lg:order-2">
+                        <figure class="overflow-hidden rounded-2xl shadow-xl shadow-slate-900/10 ring-1 ring-slate-200/80">
+                            <img
+                                src="{{ $companyStoryImage }}"
+                                alt="{{ $companyStoryImageAlt !== '' ? $companyStoryImageAlt : $companyStoryHeading }}"
+                                class="aspect-[4/3] w-full object-cover sm:aspect-[5/4] lg:min-h-[320px]"
+                                width="960"
+                                height="768"
+                                loading="eager"
+                                fetchpriority="high"
+                                decoding="async"
+                            >
+                        </figure>
+                    </div>
+                @endif
+            </div>
+        </section>
+    @endif
 
     {{-- ═══ REELS VIDÉO ═══ --}}
     @include('about._reels', [

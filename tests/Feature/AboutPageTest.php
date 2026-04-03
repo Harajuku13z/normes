@@ -15,6 +15,7 @@ class AboutPageTest extends TestCase
 
         $response->assertOk();
         $response->assertSee('CONSTRUISEZ AVEC NOUS', false);
+        $response->assertSee('votre partenaire rénovation', false);
         $response->assertSee('<h1', false);
         $response->assertSee('VOS AVIS', false);
         $response->assertSee('Mentions légales', false);

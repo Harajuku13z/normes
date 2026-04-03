@@ -420,6 +420,15 @@ return [
         'hero_kicker' => 'Notre entreprise',
         'hero_title' => 'CONSTRUISEZ AVEC NOUS, BÂTISSEZ L’AVENIR',
         'hero_intro' => 'Normes et Rénovation est une entreprise spécialisée dans la Rénovation de maison, offrant des solutions complètes pour traiter l’humidité, améliorer l’efficacité énergétique et assurer la durabilité de votre habitation.',
+        'company_story_kicker' => 'Qui sommes-nous',
+        'company_story_heading' => 'Normes et Rénovation, votre partenaire rénovation',
+        'company_story_body' => 'Normes et Rénovation est une entreprise de rénovation et d’amélioration de l’habitat, ancrée sur le terrain et tournée vers le long terme. Nous intervenons sur les projets de rénovation de la maison : humidité et pathologies liées à l’eau, isolation et performance thermique, sécurité et mise aux normes des installations, tout en privilégiant des solutions durables et intelligibles pour les propriétaires.
+
+Notre nom reflète notre exigence : respecter les règles de l’art et les normes en vigueur, pour des chantiers documentés et des finitions sérieuses. Nous préférons le conseil transparent aux promesses rapides : diagnostic clair, périmètre défini, et accompagnement jusqu’à la réception.
+
+Nous travaillons avec des équipes et des corps de métier complémentaires pour offrir une réponse cohérente sur les parties couverture, façade, second œuvre et confort intérieur, selon les besoins de votre bien. Notre objectif est simple : vous livrer un habitat plus sain, plus confortable et mieux protégé dans le temps.',
+        'company_story_image' => '/nous/equipe.jpeg',
+        'company_story_image_alt' => 'L’équipe Normes et Rénovation au travail',
         'reels_section_kicker' => 'Nos réalisations',
         'reels_section_title' => 'Découvrez notre savoir-faire en vidéo',
         'reels' => [
