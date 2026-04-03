@@ -44,6 +44,7 @@ final class HomePageDefaults
             'stats' => 'Chiffres clés',
             'avis' => 'Avis clients',
             'contact_page' => 'Page contact (textes)',
+            'about_page' => 'Page À propos',
             'devis' => 'Contact & devis',
             'blog' => 'Blog / conseils',
             'partners' => 'Partenaires',

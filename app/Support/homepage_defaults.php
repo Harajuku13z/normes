@@ -411,6 +411,33 @@ return [
         ],
     ],
 
+    'about_page' => [
+        'hero_bg' => '/slide/toiture.png',
+        'meta_title' => 'À propos | Normes & Rénovation',
+        'meta_description' => 'Normes et Rénovation : rénovation de maison, traitement de l’humidité, performance énergétique et solutions durables. Expertise technique et accompagnement personnalisé.',
+        'meta_keywords' => '',
+        'og_image' => '/slide/toiture.png',
+        'hero_kicker' => 'Notre entreprise',
+        'hero_title' => 'CONSTRUISEZ AVEC NOUS, BÂTISSEZ L’AVENIR',
+        'hero_intro' => 'Normes et Rénovation est une entreprise spécialisée dans la rénovation de maison, offrant des solutions complètes pour traiter l’humidité, améliorer l’efficacité énergétique et assurer la durabilité de votre habitation.',
+        'pillars_kicker' => 'Expertise et durabilité',
+        'pillars_title' => 'Un partenaire fiable à chaque étape',
+        'pillars' => [
+            ['title' => 'Expertise technique', 'text' => 'Diagnostics et interventions alignés sur les enjeux de votre bâtiment.'],
+            ['title' => 'Solutions personnalisées', 'text' => 'Des prestations sur mesure, du conseil à la mise en œuvre.'],
+            ['title' => 'Innovation et technologies modernes', 'text' => 'Des matériaux et équipements au service de la performance durable.'],
+            ['title' => 'Service client exceptionnel', 'text' => 'Une équipe à l’écoute et un suivi transparent tout au long du projet.'],
+        ],
+        'expertise_title' => 'Expertise complète en rénovation',
+        'expertise_text' => 'Normes et Rénovation se spécialise dans une gamme étendue de services de rénovation, incluant la gestion de l’humidité, l’amélioration de l’efficacité énergétique et la sécurité des installations électriques. Nous offrons des solutions sur mesure pour répondre aux besoins spécifiques de chaque projet.',
+        'expertise_image' => '/slide/toiture.png',
+        'eco_title' => 'Solutions écologiques et durables',
+        'eco_text' => 'Nous privilégions des solutions respectueuses de l’environnement, telles que les traitements hydrofuges pour façades et les systèmes de ventilation innovants. Nous nous engageons à utiliser des technologies durables qui améliorent le confort tout en réduisant l’empreinte écologique.',
+        'eco_image' => '/nous/equipe.jpeg',
+        'mediation_text' => "Conformément à la réglementation, notre établissement a désigné le Centre de la Médiation de la Consommation de Conciliateurs de Justice (CM2C) comme médiateur de la consommation. En cas de réclamation non résolue, vous pouvez le contacter directement à l’adresse https://www.cm2c.net.",
+        'tagline_bottom' => 'Spécialiste en solutions de rénovation électrique, thermique et hygrométrique pour la maison.',
+    ],
+
     'devis' => [
         'title_line1' => 'Vous avez',
         'title_line2' => 'un projet de rénovation ?',
