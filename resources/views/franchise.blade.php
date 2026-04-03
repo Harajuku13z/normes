@@ -209,7 +209,7 @@
                     <div class="grid gap-4 sm:grid-cols-3">
                         @foreach ($stats as $idx => $stat)
                             <div class="group rounded-2xl border border-white/15 bg-white/10 p-6 text-center backdrop-blur-sm transition hover:bg-white/20">
-                                <p class="text-3xl font-black text-brand-yellow transition group-hover:scale-110">{{ data_get($stat, 'value', '') }}</p>
+                                <p class="text-3xl font-black text-brand-yellow transition group-hover:scale-110" data-countup="{{ data_get($stat, 'value', '') }}">0</p>
                                 <p class="mt-1 text-xs font-extrabold uppercase tracking-wide text-white/70">{{ data_get($stat, 'label', '') }}</p>
                                 <p class="mt-2 text-sm text-white/60">{{ data_get($stat, 'text', '') }}</p>
                             </div>
@@ -243,7 +243,7 @@
                 @foreach ($networkItems as $idx => $item)
                     @php $bg = $cardBgs[$idx % count($cardBgs)]; @endphp
                     <li class="group relative overflow-hidden rounded-2xl bg-gradient-to-br {{ $bg }} p-6 shadow-lg transition hover:-translate-y-1 hover:shadow-2xl">
-                        <span class="absolute -right-3 -top-3 text-[4.5rem] font-black leading-none text-white/10">{{ str_pad((string) ($idx + 1), 2, '0', STR_PAD_LEFT) }}</span>
+                        <span class="absolute -right-3 -top-3 text-[4.5rem] font-black leading-none text-white/10" data-countup="{{ $idx + 1 }}" data-countup-pad="2">0</span>
                         <div class="relative">
                             <h3 class="text-base font-extrabold text-white">{{ data_get($item, 'title', '') }}</h3>
                             <p class="mt-2 text-sm leading-relaxed text-white/80">{{ data_get($item, 'text', '') }}</p>
@@ -280,9 +280,9 @@
                 @foreach ($steps as $idx => $step)
                     @php $isEven = $idx % 2 === 0; @endphp
                     <li class="relative mb-10 pl-0 sm:pl-16 last:mb-0">
-                        <span class="absolute left-0 top-0 hidden h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br {{ $isEven ? 'from-brand-blue to-sky-500' : 'from-brand-yellow to-amber-400' }} text-sm font-black {{ $isEven ? 'text-white' : 'text-brand-dark' }} shadow-lg sm:inline-flex">{{ $idx + 1 }}</span>
+                        <span class="absolute left-0 top-0 hidden h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br {{ $isEven ? 'from-brand-blue to-sky-500' : 'from-brand-yellow to-amber-400' }} text-sm font-black {{ $isEven ? 'text-white' : 'text-brand-dark' }} shadow-lg sm:inline-flex" data-countup="{{ $idx + 1 }}">0</span>
                         <div class="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition hover:border-white/20 hover:bg-white/10 sm:p-7">
-                            <span class="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br {{ $isEven ? 'from-brand-blue to-sky-500' : 'from-brand-yellow to-amber-400' }} text-xs font-black {{ $isEven ? 'text-white' : 'text-brand-dark' }} sm:hidden">{{ $idx + 1 }}</span>
+                            <span class="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br {{ $isEven ? 'from-brand-blue to-sky-500' : 'from-brand-yellow to-amber-400' }} text-xs font-black {{ $isEven ? 'text-white' : 'text-brand-dark' }} sm:hidden" data-countup="{{ $idx + 1 }}">0</span>
                             <h3 class="text-base font-extrabold text-white sm:text-lg">{{ data_get($step, 'title', '') }}</h3>
                             <p class="mt-2 text-sm leading-relaxed text-slate-400 sm:text-base">{{ data_get($step, 'text', '') }}</p>
                         </div>
@@ -489,6 +489,64 @@
 @if ($faqItems !== [])
 <script type="application/ld+json">{!! json_encode($faqLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
 @endif
+
+<script>
+(function () {
+    var els = document.querySelectorAll('[data-countup]');
+    if (!els.length) return;
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function animate(el) {
+        if (el.dataset.countupDone) return;
+        el.dataset.countupDone = '1';
+        var raw = el.dataset.countup;
+        var pad = parseInt(el.dataset.countupPad || '0', 10);
+        var match = raw.match(/^([^\d]*)([\d\s.,]+)([^\d]*)$/);
+        if (!match) { el.textContent = raw; return; }
+        var prefix = match[1];
+        var numStr = match[2].replace(/\s/g, '');
+        var suffix = match[3];
+        var hasDecimal = numStr.indexOf(',') !== -1 || numStr.indexOf('.') !== -1;
+        var sep = numStr.indexOf(',') !== -1 ? ',' : '.';
+        var target = parseFloat(numStr.replace(',', '.'));
+        if (isNaN(target)) { el.textContent = raw; return; }
+        var decimals = hasDecimal ? (numStr.split(sep)[1] || '').length : 0;
+        var useSpacer = /\d{4}/.test(numStr.replace(/[.,]/g, '')) || numStr.indexOf(' ') !== -1;
+
+        if (reduced) { el.textContent = raw; return; }
+
+        var duration = Math.min(2000, Math.max(800, target * 15));
+        var start = performance.now();
+
+        function step(now) {
+            var t = Math.min((now - start) / duration, 1);
+            var ease = 1 - Math.pow(1 - t, 3);
+            var val = ease * target;
+            var display = hasDecimal ? val.toFixed(decimals).replace('.', sep) : Math.round(val).toString();
+            if (useSpacer && !hasDecimal) {
+                display = display.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            }
+            if (pad > 0 && !hasDecimal) {
+                while (display.length < pad) display = '0' + display;
+            }
+            el.textContent = prefix + display + suffix;
+            if (t < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+
+    if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                if (e.isIntersecting) { animate(e.target); io.unobserve(e.target); }
+            });
+        }, { threshold: 0.3 });
+        els.forEach(function (el) { io.observe(el); });
+    } else {
+        els.forEach(animate);
+    }
+})();
+</script>
 
 @include('home.footer', ['home' => $h])
 @include('home.scripts', ['home' => $h])
