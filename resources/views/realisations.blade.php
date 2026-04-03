@@ -1,5 +1,6 @@
 @php
     use App\Support\HomeView;
+    use Illuminate\Support\Str;
 
     $h = $home ?? [];
     $rp = data_get($h, 'realisations_page', []);
@@ -94,24 +95,28 @@
                     Les réalisations seront publiées prochainement.
                 </p>
             @else
-                <div class="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-2 lg:gap-x-8 lg:gap-y-12">
+                <div class="mx-auto mt-12 max-w-5xl space-y-12 sm:space-y-14">
                     @foreach ($projects as $project)
                         <article
-                            class="flex h-full flex-col rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8"
+                            class="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm sm:p-8"
                             aria-labelledby="projet-{{ $project->id }}-title"
                         >
                             <h3 id="projet-{{ $project->id }}-title" class="text-xl font-black tracking-tight text-brand-dark sm:text-2xl">
                                 {{ $project->title }}
                             </h3>
-                            @if (trim((string) $project->description) !== '')
-                                <div class="mt-4 max-w-3xl text-base leading-relaxed text-slate-600">
-                                    {!! nl2br(e($project->description)) !!}
-                                </div>
+                            @php
+                                $descRaw = trim((string) $project->description);
+                                $excerpt = $descRaw !== '' ? Str::limit($descRaw, 200) : '';
+                            @endphp
+                            @if ($excerpt !== '')
+                                <p class="mt-3 text-base leading-relaxed text-slate-600">
+                                    {{ $excerpt }}
+                                </p>
                             @endif
 
                             @if ($project->images->isNotEmpty())
-                                <div class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
-                                    @foreach ($project->images as $img)
+                                <div class="mt-6 grid grid-cols-3 gap-2 sm:gap-4">
+                                    @foreach ($project->images->take(3) as $img)
                                         @php
                                             $src = HomeView::url((string) $img->path);
                                             $alt = trim((string) $img->alt) !== '' ? $img->alt : $project->title;
@@ -121,8 +126,8 @@
                                                 src="{{ $src }}"
                                                 alt="{{ $alt }}"
                                                 class="aspect-[4/3] w-full object-cover"
-                                                width="800"
-                                                height="600"
+                                                width="400"
+                                                height="300"
                                                 loading="lazy"
                                                 decoding="async"
                                             >
@@ -130,6 +135,15 @@
                                     @endforeach
                                 </div>
                             @endif
+
+                            <div class="mt-6">
+                                <a
+                                    href="{{ route('realisations.show', $project) }}"
+                                    class="inline-flex items-center rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2"
+                                >
+                                    Voir plus
+                                </a>
+                            </div>
                         </article>
                     @endforeach
                 </div>

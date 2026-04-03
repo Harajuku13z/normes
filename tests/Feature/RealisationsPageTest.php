@@ -30,6 +30,7 @@ class RealisationsPageTest extends TestCase
     {
         PortfolioProject::factory()->create([
             'title' => 'Chantier toiture test unique',
+            'slug' => 'chantier-toiture-test-unique',
             'description' => 'Description du chantier.',
             'sort_order' => 0,
         ]);
@@ -39,5 +40,28 @@ class RealisationsPageTest extends TestCase
         $response->assertOk();
         $response->assertSee('Chantier toiture test unique', false);
         $response->assertSee('Description du chantier.', false);
+        $response->assertSee('Voir plus', false);
+    }
+
+    public function test_realisation_detail_page_shows_full_content(): void
+    {
+        $project = PortfolioProject::factory()->create([
+            'title' => 'Projet détail SEO',
+            'slug' => 'projet-detail-seo',
+            'description' => "Ligne une.\nLigne deux.",
+            'sort_order' => 0,
+        ]);
+
+        $response = $this->get('/realisations/projet-detail-seo');
+
+        $response->assertOk();
+        $response->assertSee('Projet détail SEO', false);
+        $response->assertSee('Ligne une.', false);
+        $response->assertSee(route('realisations.page', [], false), false);
+    }
+
+    public function test_unknown_realisation_slug_returns_not_found(): void
+    {
+        $this->get('/realisations/n-existe-pas-xyz')->assertNotFound();
     }
 }

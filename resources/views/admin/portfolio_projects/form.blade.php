@@ -48,6 +48,16 @@
                     class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
                 >
             </div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:col-span-2">
+                <label class="text-sm font-semibold text-slate-800">Slug URL</label>
+                <input
+                    name="slug"
+                    value="{{ old('slug', $project->slug ?? '') }}"
+                    placeholder="ex. renovation-toiture-chalon (laisser vide = dérivé du titre)"
+                    class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 font-mono text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200"
+                >
+                <p class="mt-1 text-xs text-slate-500">URL publique : <span class="font-mono">/realisations/<span class="text-sky-700">votre-slug</span></span>. Lettres minuscules, tirets. Laisser vide pour génération automatique.</p>
+            </div>
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <label class="text-sm font-semibold text-slate-800">Ordre d’affichage</label>
                 <input

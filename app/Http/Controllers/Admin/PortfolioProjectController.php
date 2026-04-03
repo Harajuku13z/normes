@@ -37,8 +37,13 @@ class PortfolioProjectController extends Controller
     {
         $project = DB::transaction(function () use ($request): PortfolioProject {
             $data = $request->validated();
+            $slug = $data['slug'] ?? null;
+            if ($slug === null || $slug === '') {
+                $slug = PortfolioProject::makeUniqueSlugFromTitle($data['title']);
+            }
             $project = PortfolioProject::query()->create([
                 'title' => $data['title'],
+                'slug' => $slug,
                 'description' => $data['description'] ?? null,
                 'sort_order' => (int) ($data['sort_order'] ?? 0),
             ]);
@@ -66,8 +71,13 @@ class PortfolioProjectController extends Controller
     {
         DB::transaction(function () use ($request, $portfolio_project): void {
             $data = $request->validated();
+            $slug = $data['slug'] ?? null;
+            if ($slug === null || $slug === '') {
+                $slug = $portfolio_project->slug ?? PortfolioProject::makeUniqueSlugFromTitle($data['title'], $portfolio_project->id);
+            }
             $portfolio_project->update([
                 'title' => $data['title'],
+                'slug' => $slug,
                 'description' => $data['description'] ?? null,
                 'sort_order' => (int) ($data['sort_order'] ?? 0),
             ]);

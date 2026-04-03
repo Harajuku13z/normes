@@ -38,6 +38,7 @@
                             <td class="px-4 py-3 font-semibold text-slate-900">{{ $p->title }}</td>
                             <td class="px-4 py-3 text-slate-600">{{ $p->images_count }}</td>
                             <td class="px-4 py-3 text-right">
+                                <a href="{{ route('realisations.show', $p) }}" target="_blank" rel="noopener noreferrer" class="mr-3 font-extrabold text-slate-600 hover:underline">Voir</a>
                                 <a href="{{ route('admin.portfolio_projects.edit', $p) }}" class="font-extrabold text-sky-700 hover:underline">Modifier</a>
                             </td>
                         </tr>
