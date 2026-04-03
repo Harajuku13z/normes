@@ -158,8 +158,9 @@
         if (section) { section.addEventListener('mouseenter', stopAuto); section.addEventListener('mouseleave', startAuto); }
 
         if ('IntersectionObserver' in window && section) {
-            new IntersectionObserver(function (e, o) { e.forEach(function (entry) { if (entry.isIntersecting) { init(); o.disconnect(); } }); }, { threshold: 0.2 }).observe(section);
-        } else { init(); }
+            new IntersectionObserver(function (e, o) { e.forEach(function (entry) { if (entry.isIntersecting) { init(); o.disconnect(); } }); }, { threshold: 0.05, rootMargin: '0px 0px 200px 0px' }).observe(section);
+        }
+        setTimeout(init, 3000);
     })();
     </script>
 </div>
