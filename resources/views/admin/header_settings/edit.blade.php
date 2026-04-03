@@ -37,7 +37,7 @@
             <div class="flex flex-wrap items-center justify-between gap-3">
                 <div>
                     <h2 class="text-sm font-extrabold text-slate-900">Menu principal</h2>
-                    <p class="mt-1 text-xs text-slate-600">Ajoute des entrées, puis des sous-menus si besoin. Tu peux mélanger route interne + URL personnalisée.</p>
+                    <p class="mt-1 text-xs text-slate-600">Ajoute des entrées, puis des sous-menus si besoin. Utilise <strong>↑</strong> / <strong>↓</strong> pour l’ordre d’affichage. Tu peux mélanger route interne + URL personnalisée.</p>
                 </div>
                 <button type="button" id="addMenuItemBtn" class="inline-flex items-center rounded-lg bg-sky-600 px-3 py-2 text-xs font-extrabold text-white hover:bg-sky-700">
                     + Ajouter un menu
@@ -64,7 +64,10 @@
         <div class="menu-item rounded-xl border border-slate-200 bg-slate-50 p-4">
             <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <p class="text-xs font-extrabold uppercase tracking-wide text-slate-500">Menu principal</p>
-                <div class="flex items-center gap-2">
+                <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wide text-slate-400">Position</span>
+                    <button type="button" class="move-item-up rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-extrabold text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-35" title="Monter">↑</button>
+                    <button type="button" class="move-item-down rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-extrabold text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-35" title="Descendre">↓</button>
                     <button type="button" class="add-child-btn rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-extrabold text-slate-700 hover:bg-slate-100">+ Sous-menu</button>
                     <button type="button" class="remove-item-btn rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-extrabold text-red-700 hover:bg-red-100">Supprimer</button>
                 </div>
@@ -92,7 +95,11 @@
         <div class="child-item rounded-lg border border-slate-200 bg-white p-3">
             <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <p class="text-xs font-extrabold uppercase tracking-wide text-slate-500">Sous-menu</p>
-                <button type="button" class="remove-child-btn rounded-lg border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-extrabold text-red-700 hover:bg-red-100">Supprimer</button>
+                <div class="flex flex-wrap items-center gap-1.5">
+                    <button type="button" class="move-child-up rounded-lg border border-slate-300 bg-slate-50 px-2 py-1 text-xs font-extrabold text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-35" title="Monter">↑</button>
+                    <button type="button" class="move-child-down rounded-lg border border-slate-300 bg-slate-50 px-2 py-1 text-xs font-extrabold text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-35" title="Descendre">↓</button>
+                    <button type="button" class="remove-child-btn rounded-lg border border-red-200 bg-red-50 px-2.5 py-1 text-xs font-extrabold text-red-700 hover:bg-red-100">Supprimer</button>
+                </div>
             </div>
             <div class="grid gap-2 lg:grid-cols-4">
                 <input data-field="label" type="text" placeholder="Libellé" class="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm">
@@ -118,6 +125,57 @@
             const menuTpl = document.getElementById('menuItemTemplate');
             const childTpl = document.getElementById('childItemTemplate');
 
+            function moveMenuItemUp(menuNode) {
+                const prev = menuNode.previousElementSibling;
+                if (prev && prev.classList.contains('menu-item')) {
+                    menuBuilder.insertBefore(menuNode, prev);
+                    syncNamesAndPreview();
+                }
+            }
+
+            function moveMenuItemDown(menuNode) {
+                const next = menuNode.nextElementSibling;
+                if (next && next.classList.contains('menu-item')) {
+                    menuBuilder.insertBefore(next, menuNode);
+                    syncNamesAndPreview();
+                }
+            }
+
+            function moveChildUp(childNode) {
+                const prev = childNode.previousElementSibling;
+                if (prev && prev.classList.contains('child-item')) {
+                    childNode.parentElement.insertBefore(childNode, prev);
+                    syncNamesAndPreview();
+                }
+            }
+
+            function moveChildDown(childNode) {
+                const next = childNode.nextElementSibling;
+                if (next && next.classList.contains('child-item')) {
+                    childNode.parentElement.insertBefore(next, childNode);
+                    syncNamesAndPreview();
+                }
+            }
+
+            function updateReorderButtonsState() {
+                const topItems = Array.from(menuBuilder.querySelectorAll(':scope > .menu-item'));
+                topItems.forEach((node, idx) => {
+                    const up = node.querySelector('.move-item-up');
+                    const down = node.querySelector('.move-item-down');
+                    if (up) up.disabled = idx === 0;
+                    if (down) down.disabled = idx === topItems.length - 1;
+                });
+                menuBuilder.querySelectorAll(':scope > .menu-item').forEach((menuNode) => {
+                    const kids = Array.from(menuNode.querySelectorAll(':scope > .children-container > .child-item'));
+                    kids.forEach((childNode, j) => {
+                        const up = childNode.querySelector('.move-child-up');
+                        const down = childNode.querySelector('.move-child-down');
+                        if (up) up.disabled = j === 0;
+                        if (down) down.disabled = j === kids.length - 1;
+                    });
+                });
+            }
+
             function addChildItem(parentNode, values = {}) {
                 const childNode = childTpl.content.firstElementChild.cloneNode(true);
                 childNode.querySelector('[data-field="label"]').value = values.label || '';
@@ -127,6 +185,12 @@
                 childNode.querySelector('.remove-child-btn').addEventListener('click', function () {
                     childNode.remove();
                     syncNamesAndPreview();
+                });
+                childNode.querySelector('.move-child-up').addEventListener('click', function () {
+                    moveChildUp(childNode);
+                });
+                childNode.querySelector('.move-child-down').addEventListener('click', function () {
+                    moveChildDown(childNode);
                 });
                 childNode.querySelectorAll('input,select').forEach((el) => {
                     el.addEventListener('input', syncNamesAndPreview);
@@ -146,6 +210,12 @@
                 menuNode.querySelector('.remove-item-btn').addEventListener('click', function () {
                     menuNode.remove();
                     syncNamesAndPreview();
+                });
+                menuNode.querySelector('.move-item-up').addEventListener('click', function () {
+                    moveMenuItemUp(menuNode);
+                });
+                menuNode.querySelector('.move-item-down').addEventListener('click', function () {
+                    moveMenuItemDown(menuNode);
                 });
                 menuNode.querySelector('.add-child-btn').addEventListener('click', function () {
                     addChildItem(menuNode, {});
@@ -195,6 +265,7 @@
                 });
 
                 previewBox.innerHTML = lines.length ? `<pre class="whitespace-pre-wrap text-xs leading-6 text-slate-700">${lines.join('\n')}</pre>` : '<p class="text-xs text-slate-500">Aucun menu pour le moment.</p>';
+                updateReorderButtonsState();
             }
 
             if (addMenuItemBtn) {
