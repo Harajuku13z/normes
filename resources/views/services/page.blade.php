@@ -44,9 +44,10 @@
     $subServiceCardClass = $subServiceCardHeight === 'tall'
         ? 'service-card relative min-h-[450px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5 sm:min-h-[480px]'
         : 'service-card relative min-h-[300px] overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 transition hover:-translate-y-0.5 sm:min-h-[320px]';
+    // Split model: fixed media box + absolute img so object-cover fills 100% (no grey strips from min-h + h-full).
     $subServiceSplitMediaClass = $subServiceCardHeight === 'tall'
-        ? 'w-full min-h-[18rem] overflow-hidden bg-slate-100 sm:min-h-[20rem]'
-        : 'w-full min-h-[14rem] overflow-hidden bg-slate-100 sm:min-h-[16rem]';
+        ? 'relative w-full min-h-[18rem] overflow-hidden bg-white sm:min-h-[20rem]'
+        : 'relative w-full min-h-[14rem] overflow-hidden bg-white sm:min-h-[16rem]';
     $statsHeadingText = trim((string) data_get($ov, 'stats.heading', 'Chiffres clés'));
     $statsLinkText = trim((string) data_get($ov, 'stats.link_text', 'Voir les avis'));
     $partnersHeadingText = trim((string) data_get($ov, 'partners.heading', 'Partenaires associés'));
@@ -258,12 +259,12 @@
                             ->all();
                     @endphp
                     @if ($subServiceCardModel === 'split')
-                        <article class="service-card overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-md">
+                        <article class="service-card flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-soft transition hover:-translate-y-0.5 hover:shadow-md">
                             <div class="{{ $subServiceSplitMediaClass }}">
                                 <img
                                     src="{{ $img }}"
                                     alt="{{ $title }}"
-                                    class="block h-full w-full object-cover object-center"
+                                    class="absolute inset-0 h-full w-full object-cover object-center"
                                     loading="lazy"
                                     decoding="async"
                                 >
