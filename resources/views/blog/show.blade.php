@@ -96,10 +96,6 @@
                         <a href="{{ $shareX }}" target="_blank" rel="noopener" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-extrabold text-slate-700 hover:border-brand-blue/40 hover:text-brand-blue">X</a>
                         <a href="{{ $shareWhatsapp }}" target="_blank" rel="noopener" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-extrabold text-slate-700 hover:border-brand-blue/40 hover:text-brand-blue">WhatsApp</a>
                     </div>
-                    <button type="button" id="likeBtn" class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-xs font-extrabold uppercase tracking-wide text-white hover:bg-brand-dark">
-                        <span id="likeIcon" aria-hidden="true">♡</span> <span id="likeText">J'aime</span>
-                    </button>
-                    <p class="mt-2 text-[11px] text-slate-500">Like enregistré sur votre appareil.</p>
                 </div>
 
                 {{-- Devis --}}
@@ -143,33 +139,6 @@
 
     <script type="application/ld+json">{!! json_encode($articleLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
 
-    <script>
-        (function () {
-            const btn = document.getElementById('likeBtn');
-            if (!btn) return;
-            const key = 'nr_blog_like_' + @json($post->id);
-            const icon = document.getElementById('likeIcon');
-            const text = document.getElementById('likeText');
-
-            const setState = (liked) => {
-                if (icon) icon.textContent = liked ? '♥' : '♡';
-                if (text) text.textContent = liked ? 'Aimé' : "J'aime";
-                btn.classList.toggle('bg-brand-blue', liked);
-                btn.classList.toggle('hover:bg-sky-500', liked);
-                btn.classList.toggle('bg-slate-900', !liked);
-            };
-
-            let liked = false;
-            try { liked = localStorage.getItem(key) === '1'; } catch (e) {}
-            setState(liked);
-
-            btn.addEventListener('click', () => {
-                liked = !liked;
-                try { localStorage.setItem(key, liked ? '1' : '0'); } catch (e) {}
-                setState(liked);
-            });
-        })();
-    </script>
 </main>
 
 @include('home.footer', ['home' => $h])
