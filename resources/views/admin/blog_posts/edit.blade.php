@@ -116,6 +116,11 @@
                             <textarea name="meta_description" rows="3" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm leading-relaxed">{{ old('meta_description', $post->meta_description) }}</textarea>
                         </div>
                         <div>
+                            <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Mots clés (optionnel)</label>
+                            <input type="text" name="meta_keywords" value="{{ old('meta_keywords', $post->meta_keywords) }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" placeholder="ex: rénovation toiture, isolation, aides CEE">
+                            <p class="mt-1 text-xs text-slate-500">Séparez par des virgules. (Facultatif)</p>
+                        </div>
+                        <div>
                             <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Canonical (optionnel)</label>
                             <input type="text" name="canonical_url" value="{{ old('canonical_url', $post->canonical_url) }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" placeholder="https://...">
                         </div>

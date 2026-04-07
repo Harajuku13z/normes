@@ -30,6 +30,7 @@
     'home' => $h,
     'title' => $title,
     'description' => $description,
+    'keywords' => $post->meta_keywords,
     'canonicalUrl' => $canonicalUrl,
     'ogImage' => $ogImage,
 ])

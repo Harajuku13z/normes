@@ -16,6 +16,7 @@ class BlogPost extends Model
         'featured_image',
         'meta_title',
         'meta_description',
+        'meta_keywords',
         'canonical_url',
         'og_image',
         'published_at',
