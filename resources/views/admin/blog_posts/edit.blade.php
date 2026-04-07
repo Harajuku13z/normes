@@ -2,6 +2,18 @@
 
 @section('title', ($post->exists ? 'Éditer' : 'Créer').' — Article')
 
+@push('styles')
+    <link rel="stylesheet" href="https://unpkg.com/trix@2.1.8/dist/trix.css">
+    <style>
+        trix-editor {
+            min-height: 520px;
+        }
+        trix-editor:focus {
+            outline: none;
+        }
+    </style>
+@endpush
+
 @section('content')
     @php
         $isEdit = $post->exists;
@@ -57,7 +69,7 @@
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <div>
-                            <p class="text-xs font-extrabold uppercase tracking-wide text-slate-500">Contenu (HTML)</p>
+                            <p class="text-xs font-extrabold uppercase tracking-wide text-slate-500">Contenu</p>
                             <p class="mt-1 text-xs text-slate-500">Astuce: H2/H3, listes, blocs “Avantages”, et 1 CTA toutes les 2–3 sections.</p>
                         </div>
                         <div class="flex flex-wrap gap-2">
@@ -73,7 +85,8 @@
                         <p class="mt-1 text-xs text-slate-500">L'image est uploadée puis insérée automatiquement dans le contenu.</p>
                     </div>
 
-                    <textarea id="contentEditor" name="content_html" rows="18" class="mt-4 w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-mono text-sm leading-relaxed">{{ old('content_html', $post->content_html) }}</textarea>
+                    <input id="contentEditor" type="hidden" name="content_html" value="{{ old('content_html', $post->content_html) }}">
+                    <trix-editor input="contentEditor" class="mt-4 w-full rounded-xl border border-slate-300 bg-white px-4 py-3"></trix-editor>
                 </div>
             </div>
 
@@ -112,7 +125,17 @@
                         </div>
                         <div>
                             <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">OG image (optionnel)</label>
-                            <input type="text" name="og_image" value="{{ old('og_image', $post->og_image) }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" placeholder="/storage/...">
+                            @php
+                                $og = old('og_image', $post->og_image);
+                                $ogUrl = is_string($og) && trim($og) !== '' ? \App\Support\HomeView::url($og) : '';
+                            @endphp
+                            <div class="mt-2 flex flex-wrap items-start gap-4">
+                                <img id="ogPreview" src="{{ $ogUrl }}" alt="" class="h-24 w-28 rounded-lg border border-slate-200 bg-white object-cover {{ $ogUrl ? '' : 'hidden' }}">
+                                <div class="min-w-0 flex-1">
+                                    <input id="ogInput" type="text" name="og_image" value="{{ $og }}" class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm" placeholder="/storage/...">
+                                    <input type="file" accept="image/*" class="mt-2 w-full text-sm" data-upload-target-input-id="ogInput" data-upload-target-preview-id="ogPreview">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -135,6 +158,7 @@
     @endif
 
     @push('scripts')
+        <script src="https://unpkg.com/trix@2.1.8/dist/trix.umd.min.js"></script>
         <script>
             (function () {
                 const uploadUrl = @json($uploadUrl);
@@ -172,6 +196,18 @@
                     if (!data.url) throw new Error('URL upload manquante');
                     return data.url;
                 };
+
+                document.addEventListener('trix-attachment-add', async (event) => {
+                    const attachment = event.attachment;
+                    const file = attachment && attachment.file;
+                    if (!file) return;
+                    try {
+                        const url = await uploadFile(file);
+                        attachment.setAttributes({ url: url, href: url });
+                    } catch (e) {
+                        alert(String(e));
+                    }
+                });
 
                 document.addEventListener('change', async (e) => {
                     const input = e.target;
