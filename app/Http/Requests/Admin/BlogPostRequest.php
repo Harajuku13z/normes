@@ -46,6 +46,10 @@ class BlogPostRequest extends FormRequest
     public function validated($key = null, $default = null)
     {
         $data = parent::validated($key, $default);
+        // No drafts: publish automatically if not explicitly provided.
+        if (!array_key_exists('published_at', $data) || empty($data['published_at'])) {
+            $data['published_at'] = now();
+        }
         foreach (['slug', 'excerpt', 'content_html', 'featured_image', 'meta_title', 'meta_description', 'canonical_url', 'og_image'] as $k) {
             if (array_key_exists($k, $data) && is_string($data[$k])) {
                 $data[$k] = trim($data[$k]);

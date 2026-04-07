@@ -29,7 +29,11 @@ class AdminBlogPostsController extends Controller
 
     public function store(BlogPostRequest $request): RedirectResponse
     {
-        $post = BlogPost::query()->create($request->validated());
+        $data = $request->validated();
+        if (empty($data['published_at'])) {
+            $data['published_at'] = now();
+        }
+        $post = BlogPost::query()->create($data);
 
         return redirect()
             ->route('admin.blog_posts.edit', $post)
@@ -45,7 +49,11 @@ class AdminBlogPostsController extends Controller
 
     public function update(BlogPostRequest $request, BlogPost $blogPost): RedirectResponse
     {
-        $blogPost->update($request->validated());
+        $data = $request->validated();
+        if (empty($data['published_at'])) {
+            $data['published_at'] = now();
+        }
+        $blogPost->update($data);
 
         return back()->with('status', 'Article mis à jour.');
     }

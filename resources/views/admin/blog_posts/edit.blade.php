@@ -53,12 +53,8 @@
                             <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Slug (URL)</label>
                             <input type="text" name="slug" value="{{ old('slug', $post->slug) }}" placeholder="ex: isolation-toiture-bretagne" class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-mono text-sm">
                         </div>
-                        <div class="w-full sm:w-56">
-                            <label class="mb-1 block text-xs font-extrabold uppercase tracking-wide text-slate-500">Publié le</label>
-                            <input type="datetime-local" name="published_at" value="{{ old('published_at', $post->published_at?->format('Y-m-d\\TH:i')) }}" class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm">
-                        </div>
                     </div>
-                    <p class="mt-2 text-xs text-slate-500">Laissez vide = brouillon. Date passée = publié.</p>
+                    <p class="mt-2 text-xs text-slate-500">Publication automatique : l’article est publié dès l’enregistrement.</p>
                 </div>
 
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
