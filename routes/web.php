@@ -4,6 +4,7 @@ use App\Http\Controllers\AboutController;
 use App\Http\Controllers\Admin\AdminAboutPageController;
 use App\Http\Controllers\Admin\AdminAiServiceSettingsController;
 use App\Http\Controllers\Admin\AdminAvisSettingsController;
+use App\Http\Controllers\Admin\AdminBlogPostsController;
 use App\Http\Controllers\Admin\AdminContactSettingsController;
 use App\Http\Controllers\Admin\AdminFranchiseSettingsController;
 use App\Http\Controllers\Admin\AdminHeaderSettingsController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Admin\PortfolioProjectController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FranchiseController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RealisationsController;
 use App\Http\Controllers\ServicePagesController;
@@ -77,6 +79,15 @@ Route::prefix('admin')->group(function () {
         Route::get('/simulateur-leads/{simulateurLead}/pdf', [AdminSimulateurSettingsController::class, 'leadPdf'])->name('admin.simulateur_leads.pdf');
         Route::post('/simulateur-leads/{simulateurLead}/resend-admin-mail', [AdminSimulateurSettingsController::class, 'resendAdminMail'])->name('admin.simulateur_leads.resend_admin_mail');
         Route::post('/simulateur-leads/{simulateurLead}/resend-client-mail', [AdminSimulateurSettingsController::class, 'resendClientMail'])->name('admin.simulateur_leads.resend_client_mail');
+
+        Route::prefix('blog-posts')->name('admin.blog_posts.')->group(function () {
+            Route::get('/', [AdminBlogPostsController::class, 'index'])->name('index');
+            Route::get('/create', [AdminBlogPostsController::class, 'create'])->name('create');
+            Route::post('/', [AdminBlogPostsController::class, 'store'])->name('store');
+            Route::get('/{blogPost}/edit', [AdminBlogPostsController::class, 'edit'])->name('edit');
+            Route::put('/{blogPost}', [AdminBlogPostsController::class, 'update'])->name('update');
+            Route::delete('/{blogPost}', [AdminBlogPostsController::class, 'destroy'])->name('destroy');
+        });
     });
 
     Route::middleware('elizo_adminuser')->group(function () {
@@ -94,6 +105,10 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact.page'
 
 // Page À propos
 Route::get('/a-propos', [AboutController::class, 'index'])->name('about.page');
+
+// Blog (articles)
+Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 
 // Franchise (candidature)
 Route::get('/franchise', [FranchiseController::class, 'index'])->name('franchise.page');
