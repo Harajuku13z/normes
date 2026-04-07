@@ -34,6 +34,7 @@ return [
             ['label' => 'Le réseau', 'route' => 'home', 'anchor' => 'a-propos', 'custom_url' => '', 'style' => ''],
             ['label' => 'Réalisations', 'route' => 'realisations.page', 'anchor' => '', 'custom_url' => '', 'style' => ''],
             ['label' => 'Franchise', 'route' => 'franchise.page', 'anchor' => '', 'custom_url' => '', 'style' => ''],
+            ['label' => 'Blog', 'route' => 'blog.index', 'anchor' => '', 'custom_url' => '', 'style' => ''],
             ['label' => 'Conseils', 'route' => 'home', 'anchor' => 'conseils', 'custom_url' => '', 'style' => ''],
             ['label' => 'Devis', 'route' => 'contact.page', 'anchor' => 'devis', 'custom_url' => '', 'style' => 'cta'],
         ],
