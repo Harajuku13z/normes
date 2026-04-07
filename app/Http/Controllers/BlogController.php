@@ -24,6 +24,13 @@ class BlogController extends Controller
             ->where('slug', $slug)
             ->firstOrFail();
 
-        return view('blog.show', compact('post'));
+        $latestPosts = BlogPost::query()
+            ->published()
+            ->where('id', '!=', $post->id)
+            ->orderByDesc('published_at')
+            ->limit(3)
+            ->get(['id', 'title', 'slug', 'published_at']);
+
+        return view('blog.show', compact('post', 'latestPosts'));
     }
 }
