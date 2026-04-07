@@ -364,7 +364,7 @@
 
         const serviceCtas = Array.from(document.querySelectorAll('#serviceGrid .service-card a'));
         serviceCtas.forEach((link) => {
-            link.className = 'mt-5 inline-flex w-fit items-center justify-center gap-2 rounded-xl bg-brand-dark px-5 py-3 text-sm font-extrabold uppercase tracking-wide text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow';
+            link.className = 'mt-5 inline-flex w-fit items-center justify-center gap-2 rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold uppercase tracking-wide text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-sky-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow';
             link.innerHTML = 'En savoir plus <span aria-hidden=\"true\">→</span>';
         });
 
