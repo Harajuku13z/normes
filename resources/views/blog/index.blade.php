@@ -1,5 +1,5 @@
 @php
-    $h = app(\\App\\Services\\HomePageService::class)->merged();
+    $h = app(\App\Services\HomePageService::class)->merged();
     $title = 'Blog — Normes & Rénovation';
     $description = 'Conseils rénovation, travaux, toiture, isolation et performance énergétique : retrouvez nos articles et guides.';
     $canonicalUrl = url('/blog');
@@ -40,7 +40,7 @@
                 <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($posts as $post)
                         @php
-                            $img = trim((string) $post->featured_image) !== '' ? \\App\\Support\\HomeView::url($post->featured_image) : \\App\\Support\\HomeView::url('/slide/toiture.png');
+                            $img = trim((string) $post->featured_image) !== '' ? \App\Support\HomeView::url($post->featured_image) : \App\Support\HomeView::url('/slide/toiture.png');
                             $postUrl = route('blog.show', $post->slug);
                             $metaTitle = trim((string) $post->meta_title) !== '' ? $post->meta_title : $post->title;
                             $excerpt = trim((string) $post->excerpt);

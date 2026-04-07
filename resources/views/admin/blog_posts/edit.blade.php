@@ -83,7 +83,7 @@
                     <p class="text-sm font-extrabold text-slate-900">Image mise en avant</p>
                     @php
                         $featured = old('featured_image', $post->featured_image);
-                        $featuredUrl = is_string($featured) && trim($featured) !== '' ? \\App\\Support\\HomeView::url($featured) : '';
+                        $featuredUrl = is_string($featured) && trim($featured) !== '' ? \App\Support\HomeView::url($featured) : '';
                     @endphp
                     <div class="mt-4 flex flex-wrap items-start gap-4">
                         <img id="featuredPreview" src="{{ $featuredUrl }}" alt="" class="h-24 w-28 rounded-lg border border-slate-200 bg-white object-cover {{ $featuredUrl ? '' : 'hidden' }}">

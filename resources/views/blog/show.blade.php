@@ -1,10 +1,10 @@
 @php
-    $h = app(\\App\\Services\\HomePageService::class)->merged();
+    $h = app(\App\Services\HomePageService::class)->merged();
     $title = trim((string) $post->meta_title) !== '' ? $post->meta_title : $post->title.' — Blog';
     $description = trim((string) $post->meta_description) !== '' ? $post->meta_description : (trim((string) $post->excerpt) !== '' ? $post->excerpt : 'Article du blog Normes & Rénovation.');
     $canonicalUrl = trim((string) $post->canonical_url) !== '' ? $post->canonical_url : url('/blog/'.$post->slug);
     $ogImage = trim((string) $post->og_image) !== '' ? $post->og_image : $post->featured_image;
-    $img = trim((string) $post->featured_image) !== '' ? \\App\\Support\\HomeView::url($post->featured_image) : \\App\\Support\\HomeView::url('/slide/toiture.png');
+    $img = trim((string) $post->featured_image) !== '' ? \App\Support\HomeView::url($post->featured_image) : \App\Support\HomeView::url('/slide/toiture.png');
 
     $articleLd = [
         '@context' => 'https://schema.org',
@@ -19,7 +19,7 @@
             'name' => data_get($h, 'meta.site_name', 'Normes & Rénovation'),
             'logo' => [
                 '@type' => 'ImageObject',
-                'url' => \\App\\Support\\HomeView::url(data_get($h, 'meta.og_image', 'logo.png')),
+                'url' => \App\Support\HomeView::url(data_get($h, 'meta.og_image', 'logo.png')),
             ],
         ],
     ];
