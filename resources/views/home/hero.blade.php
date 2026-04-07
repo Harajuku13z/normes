@@ -16,7 +16,8 @@
                 <div class="flex flex-wrap gap-3">
                     <a id="heroPrimaryCta" href="{{ data_get($first, 'primary_href', '#devis') }}" class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-sky-500">{{ data_get($first, 'primary_text') }}</a>
                     <a id="heroSecondaryCta" href="{{ data_get($first, 'secondary_href', '#devis') }}" class="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:-translate-y-0.5 hover:bg-yellow-300">{{ data_get($first, 'secondary_text') }}</a>
-                    <a id="heroLearnMoreCta" href="#services" class="inline-flex items-center gap-2 whitespace-nowrap rounded-xl bg-white px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:-translate-y-0.5 hover:bg-slate-50">
+                    <a id="heroLearnMoreCta" href="#services"
+                       class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-white/15 bg-brand-dark px-5 py-3 text-sm font-extrabold uppercase tracking-wide text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow">
                         En savoir plus <span aria-hidden="true">→</span>
                     </a>
                 </div>
