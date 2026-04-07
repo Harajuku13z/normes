@@ -21,6 +21,7 @@ class AdminHeaderSettingsController extends Controller
             ['value' => 'services.index', 'label' => 'Services (/services)'],
             ['value' => 'about.page', 'label' => 'À propos (/a-propos)'],
             ['value' => 'realisations.page', 'label' => 'Réalisations (/realisations)'],
+            ['value' => 'blog.index', 'label' => 'Blog (/blog)'],
             ['value' => 'contact.page', 'label' => 'Contact (/contact)'],
             ['value' => 'simulateur.start', 'label' => 'Simulateur (/simulateur)'],
             ['value' => 'franchise.page', 'label' => 'Franchise (/franchise)'],
