@@ -36,7 +36,7 @@ class HomePageService
             }
         }
 
-        return $this->withDerived($this->ensureBlogInHeaderMenu($this->ensureFranchiseInHeaderMenu($out)));
+        return $this->withDerived($this->ensureFranchiseInHeaderMenu($out));
     }
 
     /**
@@ -92,58 +92,7 @@ class HomePageService
         return $data;
     }
 
-    /**
-     * If the header menu was saved in DB, menu_items replace defaults entirely.
-     * Inject "Blog" once if absent.
-     *
-     * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
-     */
-    protected function ensureBlogInHeaderMenu(array $data): array
-    {
-        if (! Route::has('blog.index')) {
-            return $data;
-        }
-
-        $items = data_get($data, 'header.menu_items');
-        if (! is_array($items)) {
-            return $data;
-        }
-
-        $hasBlog = collect($items)->contains(function ($item) {
-            return is_array($item) && trim((string) data_get($item, 'route', '')) === 'blog.index';
-        });
-
-        if ($hasBlog) {
-            return $data;
-        }
-
-        $blogItem = [
-            'label' => 'Blog',
-            'route' => 'blog.index',
-            'anchor' => '',
-            'custom_url' => '',
-            'style' => '',
-        ];
-
-        // Insert near "Conseils" if present, else append.
-        $newItems = [];
-        $inserted = false;
-        foreach ($items as $item) {
-            if (! $inserted && is_array($item) && trim((string) data_get($item, 'route', '')) === 'home' && trim((string) data_get($item, 'anchor', '')) === 'conseils') {
-                $newItems[] = $blogItem;
-                $inserted = true;
-            }
-            $newItems[] = $item;
-        }
-        if (! $inserted) {
-            $newItems[] = $blogItem;
-        }
-
-        data_set($data, 'header.menu_items', $newItems);
-
-        return $data;
-    }
+    
 
     /**
      * @param  array<string, mixed>  $data
