@@ -234,6 +234,7 @@
         const heroSubtitle = document.getElementById('heroSubtitle');
         const heroPrimaryCta = document.getElementById('heroPrimaryCta');
         const heroSecondaryCta = document.getElementById('heroSecondaryCta');
+        const heroLearnMoreCta = document.getElementById('heroLearnMoreCta');
         const thumbs = Array.from(document.querySelectorAll('.hero-thumb'));
         const slides = @json($slidesJs);
 
@@ -255,6 +256,11 @@
             if (heroSecondaryCta) {
                 heroSecondaryCta.textContent = slide.secondaryText;
                 heroSecondaryCta.setAttribute('href', slide.secondaryHref);
+            }
+            // Ensure the "En savoir plus" CTA stays visible.
+            if (heroLearnMoreCta) {
+                heroLearnMoreCta.style.display = '';
+                if (!heroLearnMoreCta.getAttribute('href')) heroLearnMoreCta.setAttribute('href', '#services');
             }
         };
 
