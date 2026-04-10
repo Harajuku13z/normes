@@ -52,7 +52,7 @@ final class HomePageDefaults
             'processus' => 'Processus',
             'aides_renov' => 'Bloc aides MaPrimeRénov’',
             'stats' => 'Chiffres clés',
-            'avis' => 'Avis clients',
+            'avis' => 'Avis (témoignages clients)',
             'contact_page' => 'Page contact (textes)',
             'about_page' => 'Page À propos',
             'realisations_page' => 'Page Réalisations (hero & SEO)',

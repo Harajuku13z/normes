@@ -3,8 +3,8 @@
     $defaults = \App\Support\HomePageDefaults::all();
     $defaultAvis = is_array(data_get($defaults, 'avis', [])) ? data_get($defaults, 'avis', []) : [];
 
-    $titleAccent = trim((string) data_get($h, 'avis.title_accent', (string) data_get($defaultAvis, 'title_accent', 'Ce que nos clients')));
-    $titleRest = trim((string) data_get($h, 'avis.title_rest', (string) data_get($defaultAvis, 'title_rest', 'pensent de nous')));
+    $titleAccent = trim((string) data_get($h, 'avis.title_accent', (string) data_get($defaultAvis, 'title_accent', 'Ce que nos clients pensent de nous')));
+    $titleRest = trim((string) data_get($h, 'avis.title_rest', (string) data_get($defaultAvis, 'title_rest', ': avis client')));
     $intro = trim((string) data_get($h, 'avis.intro', (string) data_get($defaultAvis, 'intro', '')));
     $googleUrl = trim((string) data_get($h, 'avis.google_url', (string) data_get($defaultAvis, 'google_url', '#')));
     $sidebarAvis = (array) data_get($h, 'sidebar_avis', data_get($defaults, 'sidebar_avis', []));

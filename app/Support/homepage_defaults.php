@@ -322,8 +322,8 @@ return [
     ],
 
     'avis' => [
-        'title_accent' => 'Ce que nos clients',
-        'title_rest' => 'pensent de nous',
+        'title_accent' => 'Ce que nos clients pensent de nous',
+        'title_rest' => ': avis client',
         'intro' => 'Ils nous font confiance pour leurs travaux de rénovation. Découvrez tous les retours sur notre fiche Google.',
         'google_url' => 'https://share.google/14Nu70a8PfwWT4P4p',
         'google_button' => 'Voir la fiche',

@@ -268,14 +268,14 @@
             </div>
 
             <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50/70 p-4">
-                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Avis clients</p>
+                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Avis — ce que nos clients pensent</p>
                 <div class="mt-3 grid gap-3 lg:grid-cols-2">
                     <input name="content_overrides[avis][kicker]" value="{{ old('content_overrides.avis.kicker', data_get($ov, 'avis.kicker', 'Avis multi-plateformes')) }}" placeholder="Kicker avis" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
                     <input name="content_overrides[avis][google_button]" value="{{ old('content_overrides.avis.google_button', data_get($ov, 'avis.google_button', 'Voir la fiche')) }}" placeholder="Texte bouton Google" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
                 </div>
                 <div class="mt-3 grid gap-3 lg:grid-cols-2">
-                    <input name="content_overrides[avis][title_accent]" value="{{ old('content_overrides.avis.title_accent', data_get($ov, 'avis.title_accent', 'Ce que nos clients')) }}" placeholder="Titre avis - partie couleur" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
-                    <input name="content_overrides[avis][title_rest]" value="{{ old('content_overrides.avis.title_rest', data_get($ov, 'avis.title_rest', 'pensent de nous')) }}" placeholder="Titre avis - partie non couleur" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <input name="content_overrides[avis][title_accent]" value="{{ old('content_overrides.avis.title_accent', data_get($ov, 'avis.title_accent', 'Ce que nos clients pensent de nous')) }}" placeholder="Titre avis - partie couleur" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <input name="content_overrides[avis][title_rest]" value="{{ old('content_overrides.avis.title_rest', data_get($ov, 'avis.title_rest', ': avis client')) }}" placeholder="Titre avis - partie non couleur" class="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
                 </div>
                 <textarea name="content_overrides[avis][intro]" rows="2" placeholder="Intro avis" class="mt-3 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200">{{ old('content_overrides.avis.intro', data_get($ov, 'avis.intro', '')) }}</textarea>
                 <input name="content_overrides[avis][platform_info]" value="{{ old('content_overrides.avis.platform_info', data_get($ov, 'avis.platform_info', 'Des retours concrets, provenant de plusieurs plateformes.')) }}" placeholder="Texte sous le titre des avis" class="mt-3 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
