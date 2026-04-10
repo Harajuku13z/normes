@@ -5,7 +5,8 @@
     $h = $home ?? [];
     $ov = is_array($avisOverrides ?? null) ? $avisOverrides : [];
 
-    $titleAccent = trim((string) data_get($ov, 'title_accent', (string) data_get($h, 'avis.title_accent', (string) data_get($defaultAvis, 'title_accent', 'disent de nous'))));
+    $titleAccent = trim((string) data_get($ov, 'title_accent', (string) data_get($h, 'avis.title_accent', (string) data_get($defaultAvis, 'title_accent', 'Avis'))));
+    $titleRest = trim((string) data_get($ov, 'title_rest', (string) data_get($h, 'avis.title_rest', (string) data_get($defaultAvis, 'title_rest', 'clients'))));
     $intro = trim((string) data_get($ov, 'intro', (string) data_get($h, 'avis.intro', (string) data_get($defaultAvis, 'intro', ''))));
     $googleUrl = trim((string) data_get($h, 'avis.google_url', (string) data_get($defaultAvis, 'google_url', '#')));
     $sidebarAvis = (array) data_get($h, 'sidebar_avis', data_get($defaults, 'sidebar_avis', []));
@@ -29,7 +30,7 @@
 <div id="svc-avis-clients" class="rounded-2xl bg-sky-50 p-6 sm:p-8">
 
     <h2 class="text-2xl font-black leading-tight text-brand-dark sm:text-3xl">
-        Ce que nos clients <span class="text-brand-blue">{{ $titleAccent }}</span>
+        <span class="text-brand-blue">{{ $titleAccent }}</span>@if ($titleRest !== ''){{ ' '.$titleRest }}@endif
     </h2>
 
     <div class="mt-4 flex items-center gap-3">

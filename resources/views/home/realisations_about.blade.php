@@ -1,6 +1,10 @@
 @php
     $h = $home ?? [];
     $r = data_get($h, 'realisations', []);
+    $promoHref = trim((string) data_get($r, 'promo_href', ''));
+    if ($promoHref === '' || $promoHref === '#realisations') {
+        $promoHref = route('realisations.page');
+    }
     $cases = data_get($r, 'cases', []);
     $c0 = $cases[0] ?? [];
     $before0 = \App\Support\HomeView::url(data_get($c0, 'before'));
@@ -68,7 +72,7 @@
 
             <div class="flex min-h-0 flex-col gap-6 lg:h-full">
                 <a
-                    href="#realisations"
+                    href="{{ $promoHref }}"
                     class="group relative block flex-1 overflow-hidden rounded-2xl border border-slate-200 shadow-soft"
                 >
                     <div class="absolute inset-0 bg-cover bg-center transition duration-300 group-hover:scale-105" style="background-image:url('{{ $promoBg }}')"></div>

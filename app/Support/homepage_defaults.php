@@ -194,6 +194,7 @@ return [
         'promo_title' => 'Voir toutes nos realisations',
         'promo_text' => 'Decouvrez nos chantiers avant/apres et les transformations deja realisees pour nos clients.',
         'promo_button' => 'Explorer les realisations',
+        'promo_href' => '',
         'promo_bg' => 'avantapres/toitureapres.png',
     ],
 
@@ -322,7 +323,7 @@ return [
 
     'avis' => [
         'title_accent' => 'Avis',
-        'title_rest' => ' clients',
+        'title_rest' => 'clients',
         'intro' => 'Ils nous font confiance pour leurs travaux de rénovation. Découvrez tous les retours sur notre fiche Google.',
         'google_url' => 'https://share.google/14Nu70a8PfwWT4P4p',
         'google_button' => 'Voir la fiche',

@@ -3,7 +3,8 @@
     $defaults = \App\Support\HomePageDefaults::all();
     $defaultAvis = is_array(data_get($defaults, 'avis', [])) ? data_get($defaults, 'avis', []) : [];
 
-    $titleAccent = trim((string) data_get($h, 'avis.title_accent', (string) data_get($defaultAvis, 'title_accent', 'disent de nous')));
+    $titleAccent = trim((string) data_get($h, 'avis.title_accent', (string) data_get($defaultAvis, 'title_accent', 'Avis')));
+    $titleRest = trim((string) data_get($h, 'avis.title_rest', (string) data_get($defaultAvis, 'title_rest', 'clients')));
     $intro = trim((string) data_get($h, 'avis.intro', (string) data_get($defaultAvis, 'intro', '')));
     $googleUrl = trim((string) data_get($h, 'avis.google_url', (string) data_get($defaultAvis, 'google_url', '#')));
     $sidebarAvis = (array) data_get($h, 'sidebar_avis', data_get($defaults, 'sidebar_avis', []));
@@ -28,7 +29,7 @@
     <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
 
         <h2 id="avis-heading" class="text-3xl font-black leading-tight text-brand-dark sm:text-4xl lg:text-5xl">
-            Ce que nos clients <span class="text-brand-blue">{{ $titleAccent }}</span>
+            <span class="text-brand-blue">{{ $titleAccent }}</span>@if ($titleRest !== ''){{ ' '.$titleRest }}@endif
         </h2>
 
         <div class="mt-5 flex items-center gap-3">
