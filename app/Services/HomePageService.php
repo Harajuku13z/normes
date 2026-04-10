@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\HomeSection;
 use App\Models\BlogPost;
+use App\Models\HomeSection;
 use App\Models\ServicePage;
 use App\Support\HomePageDefaults;
 use Illuminate\Database\QueryException;
@@ -91,8 +91,6 @@ class HomePageService
 
         return $data;
     }
-
-    
 
     /**
      * @param  array<string, mixed>  $data
@@ -194,7 +192,7 @@ class HomePageService
         }
         data_set($data, 'services.cards', $serviceCards);
 
-        // Latest blog posts for homepage "Astuces & blog" section.
+        // Latest blog posts for homepage "Astuces & blog" section (always from DB, no placeholder merge).
         try {
             $latestPosts = BlogPost::query()
                 ->published()
@@ -204,8 +202,11 @@ class HomePageService
                 ->map(function (BlogPost $p): array {
                     $title = (string) $p->title;
                     $excerpt = trim((string) $p->excerpt);
+                    $published = $p->published_at;
+                    $tag = $published ? $published->format('d/m/Y') : 'Blog';
+
                     return [
-                        'tag' => 'Blog',
+                        'tag' => $tag,
                         'title' => $title,
                         'excerpt' => $excerpt,
                         'image' => (string) ($p->featured_image ?? ''),
@@ -214,11 +215,9 @@ class HomePageService
                     ];
                 })
                 ->all();
-            if ($latestPosts !== []) {
-                data_set($data, 'blog.posts', $latestPosts);
-            }
+            data_set($data, 'blog.posts', $latestPosts);
         } catch (QueryException) {
-            // ignore if table doesn't exist yet
+            data_set($data, 'blog.posts', []);
         }
 
         $slides = data_get($data, 'hero.slides');

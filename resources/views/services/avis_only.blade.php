@@ -5,8 +5,8 @@
     $h = $home ?? [];
     $ov = is_array($avisOverrides ?? null) ? $avisOverrides : [];
 
-    $titleAccent = trim((string) data_get($ov, 'title_accent', (string) data_get($h, 'avis.title_accent', (string) data_get($defaultAvis, 'title_accent', 'Avis'))));
-    $titleRest = trim((string) data_get($ov, 'title_rest', (string) data_get($h, 'avis.title_rest', (string) data_get($defaultAvis, 'title_rest', 'clients'))));
+    $titleAccent = trim((string) data_get($ov, 'title_accent', (string) data_get($h, 'avis.title_accent', (string) data_get($defaultAvis, 'title_accent', 'Ce que nos clients'))));
+    $titleRest = trim((string) data_get($ov, 'title_rest', (string) data_get($h, 'avis.title_rest', (string) data_get($defaultAvis, 'title_rest', 'pensent de nous'))));
     $intro = trim((string) data_get($ov, 'intro', (string) data_get($h, 'avis.intro', (string) data_get($defaultAvis, 'intro', ''))));
     $googleUrl = trim((string) data_get($h, 'avis.google_url', (string) data_get($defaultAvis, 'google_url', '#')));
     $sidebarAvis = (array) data_get($h, 'sidebar_avis', data_get($defaults, 'sidebar_avis', []));

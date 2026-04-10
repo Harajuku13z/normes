@@ -322,8 +322,8 @@ return [
     ],
 
     'avis' => [
-        'title_accent' => 'Avis',
-        'title_rest' => 'clients',
+        'title_accent' => 'Ce que nos clients',
+        'title_rest' => 'pensent de nous',
         'intro' => 'Ils nous font confiance pour leurs travaux de rénovation. Découvrez tous les retours sur notre fiche Google.',
         'google_url' => 'https://share.google/14Nu70a8PfwWT4P4p',
         'google_button' => 'Voir la fiche',
@@ -544,33 +544,8 @@ Nous travaillons avec des équipes et des corps de métier complémentaires pour
         'title_accent' => 'Astuces',
         'title_rest' => ' & blog',
         'intro' => 'Conseils pratiques pour preparer vos travaux, mieux comprendre les aides et entretenir votre logement durablement.',
-        'posts' => [
-            [
-                'tag' => 'Isolation',
-                'title' => 'Combles perdus ou amenages : par ou commencer ?',
-                'excerpt' => 'Les bonnes questions sur l\'epaisseur, la ventilation et l\'humidite avant de signer un devis d\'isolation.',
-                'image' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-                'link_text' => 'Demander un avis technique →',
-                'href' => '#devis',
-            ],
-            [
-                'tag' => 'Aides',
-                'title' => 'MaPrimeRénov\' & CEE : cumul et dossier sans prise de tete',
-                'excerpt' => 'Ce qui change souvent, les pieces a anticiper et comment une entreprise RGE vous aide a securiser vos droits.',
-                'image' => 'https://images.unsplash.com/photo-1521791055366-0d553872125f?auto=format&fit=crop&w=1200&q=80',
-                'link_text' => 'Parler a un conseiller →',
-                'href' => '#devis',
-            ],
-            [
-                'tag' => 'Entretien',
-                'title' => 'Toiture : signes qui doivent declencher un controle',
-                'excerpt' => 'Tuiles, zinguerie, isolation — reperer tot les traces d\'infiltration limite les grosses reparations.',
-                'image' => 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80',
-                'link_text' => 'Voir nos chantiers →',
-                'href' => '#realisations',
-                'wide' => true,
-            ],
-        ],
+        // Rempli dynamiquement par HomePageService (articles publiés) — pas de cartes fictives.
+        'posts' => [],
     ],
 
     'partners' => [

@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use Illuminate\Support\Facades\Storage;
+
 final class HomeView
 {
     public static function url(?string $path): string
@@ -19,6 +21,11 @@ final class HomeView
         $path = ltrim($path, '/');
         if (str_starts_with($path, 'public/')) {
             $path = substr($path, strlen('public/'));
+        }
+
+        // Filament / storage public disk (blog/featured, blog/og, pièces jointes éditeur)
+        if (str_starts_with($path, 'blog/')) {
+            return Storage::disk('public')->url($path);
         }
 
         return asset($path);

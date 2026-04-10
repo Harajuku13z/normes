@@ -51,11 +51,11 @@
                 </div>
                 <div>
                     <label class="text-sm font-semibold text-slate-800">Titre partie couleur</label>
-                    <input name="avis[title_accent]" value="{{ old('avis.title_accent', data_get($a, 'title_accent', 'Avis')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <input name="avis[title_accent]" value="{{ old('avis.title_accent', data_get($a, 'title_accent', 'Ce que nos clients')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
                 </div>
                 <div>
                     <label class="text-sm font-semibold text-slate-800">Titre partie normale</label>
-                    <input name="avis[title_rest]" value="{{ old('avis.title_rest', data_get($a, 'title_rest', 'clients')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
+                    <input name="avis[title_rest]" value="{{ old('avis.title_rest', data_get($a, 'title_rest', 'pensent de nous')) }}" class="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200" />
                 </div>
             </div>
             <div class="mt-4">
