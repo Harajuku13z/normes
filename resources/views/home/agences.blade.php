@@ -8,7 +8,7 @@
 <section id="agences" class="scroll-mt-24 bg-slate-50/70 py-16 sm:py-20">
     <div class="mx-auto grid w-[95%] gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:items-stretch lg:px-8">
         <div class="flex h-full min-h-0 flex-col rounded-2xl border border-slate-200 bg-white p-4 shadow-soft sm:p-6">
-            <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">{{ data_get($a, 'title_accent') }}</span>{{ data_get($a, 'title_rest') }}</h2>
+            <h2 class="mb-3 text-4xl font-extrabold text-brand-dark sm:text-5xl"><span class="text-brand-blue">{{ data_get($a, 'title_accent') }}</span>{{ filled(data_get($a, 'title_rest')) ? ' ' : '' }}{{ data_get($a, 'title_rest') }}</h2>
             <p class="mb-6 text-base text-slate-600 sm:text-lg">{{ data_get($a, 'intro') }}</p>
             <div class="space-y-3">
                 @foreach (data_get($a, 'agencies', []) as $ag)

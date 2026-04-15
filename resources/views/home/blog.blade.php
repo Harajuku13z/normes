@@ -5,7 +5,7 @@
 @endphp
 <section id="conseils" class="bg-slate-50/70 py-16 sm:py-20 scroll-mt-24">
         <div class="mx-auto w-[95%] px-4 sm:px-6 lg:px-8">
-        <h2 class="mb-2 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">{{ data_get($h, 'blog.title_accent') }}</span>{{ data_get($h, 'blog.title_rest') }}</h2>
+        <h2 class="mb-2 text-4xl font-extrabold leading-tight text-brand-dark sm:text-5xl"><span class="text-brand-blue">{{ data_get($h, 'blog.title_accent') }}</span>{{ filled(data_get($h, 'blog.title_rest')) ? ' ' : '' }}{{ data_get($h, 'blog.title_rest') }}</h2>
         <p class="mb-8 max-w-2xl text-base text-slate-600 sm:text-lg">{{ data_get($h, 'blog.intro') }}</p>
         @if ($blogPosts === [])
             <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-soft">
