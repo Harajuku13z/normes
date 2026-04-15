@@ -8,7 +8,7 @@
             <div class="flex items-start justify-between gap-3">
                 <div>
                     <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">Cookies & RGPD</p>
-                    <h3 class="mt-1 text-lg font-extrabold text-brand-dark sm:text-xl">Nous respectons votre vie privee</h3>
+                    <h3 class="mt-1 text-lg font-extrabold text-brand-dark sm:text-xl">Nous respectons votre vie privée</h3>
                 </div>
                 <button
                     id="cookieConsentClose"
@@ -21,7 +21,7 @@
             </div>
 
             <p class="mt-3 text-sm leading-relaxed text-slate-600">
-                Nous utilisons des cookies pour le fonctionnement du site, la mesure d'audience et l'amelioration de nos services.
+                Nous utilisons des cookies pour le fonctionnement du site, la mesure d'audience et l'amélioration de nos services.
                 Vous pouvez accepter, refuser ou personnaliser vos choix.
             </p>
 
@@ -29,7 +29,7 @@
                 <div class="space-y-3">
                     <label class="flex items-start justify-between gap-3 rounded-lg bg-white p-3 ring-1 ring-slate-100">
                         <span>
-                            <span class="block text-sm font-extrabold text-brand-dark">Cookies necessaires</span>
+                            <span class="block text-sm font-extrabold text-brand-dark">Cookies nécessaires</span>
                             <span class="mt-0.5 block text-xs text-slate-600">Indispensables au fonctionnement du site.</span>
                         </span>
                         <input type="checkbox" checked disabled class="mt-1 h-4 w-4 rounded border-slate-300 text-brand-blue">
@@ -38,7 +38,7 @@
                     <label class="flex items-start justify-between gap-3 rounded-lg bg-white p-3 ring-1 ring-slate-100">
                         <span>
                             <span class="block text-sm font-extrabold text-brand-dark">Mesure d'audience</span>
-                            <span class="mt-0.5 block text-xs text-slate-600">Nous aide a comprendre l'utilisation du site.</span>
+                            <span class="mt-0.5 block text-xs text-slate-600">Nous aide à comprendre l'utilisation du site.</span>
                         </span>
                         <input id="cookieAnalytics" type="checkbox" class="mt-1 h-4 w-4 rounded border-slate-300 text-brand-blue">
                     </label>

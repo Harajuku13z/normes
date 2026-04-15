@@ -98,7 +98,7 @@
                 type="button"
                 class="inline-flex w-fit items-center rounded-md border border-white/25 bg-white/10 px-3 py-1.5 text-xs font-extrabold text-white transition hover:bg-white/20"
             >
-                Gerer les cookies
+                Gérer les cookies
             </button>
         </div>
     </div>

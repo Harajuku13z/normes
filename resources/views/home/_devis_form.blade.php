@@ -26,7 +26,7 @@
         <p class="mb-4 text-sm font-semibold text-slate-600">{{ data_get($d, 'form.note') }}</p>
         <div class="grid gap-3 sm:grid-cols-2">
             <div class="sm:col-span-2">
-                <label for="devisNomComplet" class="mb-1 block text-sm font-semibold">Nom et prenom</label>
+                <label for="devisNomComplet" class="mb-1 block text-sm font-semibold">Nom et prénom</label>
                 <input id="devisNomComplet" name="nom_complet" type="text" autocomplete="name" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
             </div>
             <div>
@@ -34,7 +34,7 @@
                 <input id="devisEmail" name="email" type="email" autocomplete="email" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
             </div>
             <div>
-                <label for="devisPhone" class="mb-1 block text-sm font-semibold">Telephone</label>
+                <label for="devisPhone" class="mb-1 block text-sm font-semibold">Téléphone</label>
                 <input id="devisPhone" name="telephone" type="tel" autocomplete="tel" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
             </div>
             <div>
@@ -52,7 +52,7 @@
             <div class="sm:col-span-2">
                 <label for="devisService" class="mb-1 block text-sm font-semibold">Service</label>
                 <select id="devisService" name="service" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
-                    <option value="">Selectionner un service</option>
+                    <option value="">Sélectionner un service</option>
                     @foreach ($serviceOptions as $serviceTitle)
                         <option value="{{ $serviceTitle }}">{{ $serviceTitle }}</option>
                     @endforeach
@@ -65,7 +65,7 @@
         </div>
         <div class="mt-3">
             <label for="devisAutres" class="mb-1 block text-sm font-semibold">Autres informations</label>
-            <textarea id="devisAutres" name="autres_infos" rows="3" placeholder="Contraintes d'acces, disponibilites, budget, delais, etc." class="w-full resize-y rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25"></textarea>
+            <textarea id="devisAutres" name="autres_infos" rows="3" placeholder="Contraintes d'accès, disponibilités, budget, délais, etc." class="w-full resize-y rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25"></textarea>
         </div>
         <div class="mt-3">
             <label for="devisPhotos" class="mb-1 block text-sm font-semibold">Photos et documents</label>

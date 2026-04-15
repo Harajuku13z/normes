@@ -24,7 +24,7 @@ return [
 
     'header' => [
         'logo' => '/logo.png',
-        'logo_alt' => 'Normes & Renovation',
+        'logo_alt' => 'Normes & Rénovation',
         'menu_items' => [
             ['label' => 'Accueil', 'route' => 'home', 'anchor' => '', 'custom_url' => '', 'style' => ''],
             ['label' => 'Toiture', 'route' => 'home', 'anchor' => 'services', 'custom_url' => '', 'style' => ''],
@@ -49,7 +49,7 @@ return [
             [
                 'image' => 'slide/toiture.png',
                 'title' => 'Travaux de toiture durables et performants',
-                'subtitle' => 'Protection, etancheite et renovation complete de votre toiture pour valoriser votre maison.',
+                'subtitle' => 'Protection, étanchéité et rénovation complète de votre toiture pour valoriser votre maison.',
                 'primary_text' => 'Devis toiture',
                 'primary_href' => '#devis',
                 'secondary_text' => 'Nous contacter',
@@ -57,9 +57,9 @@ return [
             ],
             [
                 'image' => 'slide/solaire.png',
-                'title' => 'Photovoltaique: produisez votre propre energie',
-                'subtitle' => 'Installez des panneaux solaires performants et reduisez durablement vos factures.',
-                'primary_text' => 'Etude photovoltaique',
+                'title' => 'Photovoltaïque : produisez votre propre énergie',
+                'subtitle' => 'Installez des panneaux solaires performants et réduisez durablement vos factures.',
+                'primary_text' => 'Étude photovoltaïque',
                 'primary_href' => '#services',
                 'secondary_text' => 'Nous contacter',
                 'secondary_href' => '#devis',
@@ -96,7 +96,7 @@ return [
 
     'services' => [
         'title_accent' => 'Nos services',
-        'title_rest' => ' de renovation',
+        'title_rest' => ' de rénovation',
         'intro' => 'Découvrez nos services principaux, pensés pour protéger, améliorer et valoriser votre habitat.',
         'items' => [
             [
@@ -176,8 +176,8 @@ return [
 
     'realisations' => [
         'title_accent' => 'Avant',
-        'title_rest' => ' / Apres',
-        'intro' => 'Comparez plusieurs chantiers et voyez l\'impact concret de nos renovations.',
+        'title_rest' => ' / Après',
+        'intro' => 'Comparez plusieurs chantiers et voyez l\'impact concret de nos rénovations.',
         'buttons' => [
             ['case' => 1, 'label' => 'Toiture'],
             ['case' => 2, 'label' => 'Façade'],
@@ -190,10 +190,10 @@ return [
         'cta_text' => 'Décrivez votre besoin : nous vous recontactons rapidement avec un accompagnement personnalisé, vos options d\'aides et une première base pour votre devis.',
         'cta_button' => 'Ouvrir le simulateur de devis',
         'cta_href' => '#devis',
-        'promo_kicker' => 'Realisations',
-        'promo_title' => 'Voir toutes nos realisations',
-        'promo_text' => 'Decouvrez nos chantiers avant/apres et les transformations deja realisees pour nos clients.',
-        'promo_button' => 'Explorer les realisations',
+        'promo_kicker' => 'Réalisations',
+        'promo_title' => 'Voir toutes nos réalisations',
+        'promo_text' => 'Découvrez nos chantiers avant/après et les transformations déjà réalisées pour nos clients.',
+        'promo_button' => 'Explorer les réalisations',
         'promo_href' => '',
         'promo_bg' => 'avantapres/toitureapres.png',
     ],
@@ -543,7 +543,7 @@ Nous travaillons avec des équipes et des corps de métier complémentaires pour
     'blog' => [
         'title_accent' => 'Astuces',
         'title_rest' => ' & blog',
-        'intro' => 'Conseils pratiques pour preparer vos travaux, mieux comprendre les aides et entretenir votre logement durablement.',
+        'intro' => 'Conseils pratiques pour préparer vos travaux, mieux comprendre les aides et entretenir votre logement durablement.',
         // Rempli dynamiquement par HomePageService (articles publiés) — pas de cartes fictives.
         'posts' => [],
     ],
@@ -599,8 +599,8 @@ Nous travaillons avec des équipes et des corps de métier complémentaires pour
 
     'map' => [
         'locations' => [
-            ['name' => 'Agence 71 - Chalon-sur-Saone', 'coords' => [46.781, 4.853], 'tag' => '71'],
-            ['name' => 'Agence Bretagne - Pedernec', 'coords' => [48.595, -3.286], 'tag' => '22'],
+            ['name' => 'Agence 71 - Chalon-sur-Saône', 'coords' => [46.781, 4.853], 'tag' => '71'],
+            ['name' => 'Agence Bretagne - Pédernec', 'coords' => [48.595, -3.286], 'tag' => '22'],
         ],
     ],
 
