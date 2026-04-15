@@ -9,7 +9,7 @@
             <div class="border-b border-slate-100 px-5 py-8 sm:px-8 sm:py-10">
                 <div class="min-w-0">
                     <h2 class="text-3xl font-extrabold leading-tight text-brand-dark sm:text-4xl lg:text-5xl">
-                        <span class="text-brand-blue">{{ data_get($proc, 'title_accent') }}</span>{{ data_get($proc, 'title_rest') }}
+                        <span class="text-brand-blue">{{ data_get($proc, 'title_accent') }}</span>{{ filled(data_get($proc, 'title_rest')) ? ' ' : '' }}{{ data_get($proc, 'title_rest') }}
                     </h2>
                     <p class="mt-3 max-w-3xl text-base text-slate-600 sm:text-lg">{{ data_get($proc, 'intro') }}</p>
                 </div>
