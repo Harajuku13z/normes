@@ -24,9 +24,11 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\FranchiseController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LegacyPageController;
 use App\Http\Controllers\RealisationsController;
 use App\Http\Controllers\ServicePagesController;
 use App\Http\Controllers\SimulateurController;
+use App\Http\Controllers\Admin\AdminLegacyPagesController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -88,6 +90,15 @@ Route::prefix('admin')->group(function () {
             Route::put('/{blogPost}', [AdminBlogPostsController::class, 'update'])->name('update');
             Route::delete('/{blogPost}', [AdminBlogPostsController::class, 'destroy'])->name('destroy');
         });
+
+        Route::prefix('legacy-pages')->name('admin.legacy_pages.')->group(function () {
+            Route::get('/', [AdminLegacyPagesController::class, 'index'])->name('index');
+            Route::get('/create', [AdminLegacyPagesController::class, 'create'])->name('create');
+            Route::post('/', [AdminLegacyPagesController::class, 'store'])->name('store');
+            Route::get('/{legacyPage}/edit', [AdminLegacyPagesController::class, 'edit'])->name('edit');
+            Route::put('/{legacyPage}', [AdminLegacyPagesController::class, 'update'])->name('update');
+            Route::delete('/{legacyPage}', [AdminLegacyPagesController::class, 'destroy'])->name('destroy');
+        });
     });
 
     Route::middleware('elizo_adminuser')->group(function () {
@@ -145,3 +156,8 @@ Route::middleware('admin')->prefix('admin')->group(function () {
         Route::put('/{servicePage}', [AdminServicePagesController::class, 'update'])->name('update');
     });
 });
+
+// Legacy URLs from previous WordPress site served as real pages (200)
+Route::get('/{path}', [LegacyPageController::class, 'showByPath'])
+    ->where('path', '.*')
+    ->name('legacy.show');

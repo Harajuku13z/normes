@@ -121,5 +121,15 @@
                 </a>
             </div>
         </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+            <h2 class="text-lg font-extrabold text-slate-900">Legacy URLs (SEO)</h2>
+            <p class="mt-1 text-sm text-slate-600">Crée des pages 200 sur les anciennes URLs WordPress pour conserver les pages indexées Google sans redirection.</p>
+            <div class="mt-5 flex flex-wrap gap-2">
+                <a href="{{ route('admin.legacy_pages.index') }}" class="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
+                    Gérer les URLs legacy
+                </a>
+            </div>
+        </div>
     </div>
 @endsection

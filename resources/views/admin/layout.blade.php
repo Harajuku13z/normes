@@ -24,6 +24,7 @@
             $isRealisationsAdmin = str_starts_with((string) $currentRoute, 'admin.realisations.')
                 || str_starts_with((string) $currentRoute, 'admin.portfolio_projects.');
             $isBlogAdmin = str_starts_with((string) $currentRoute, 'admin.blog_posts.');
+            $isLegacyPagesAdmin = str_starts_with((string) $currentRoute, 'admin.legacy_pages.');
         @endphp
         <div class="w-full flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6 relative z-20">
             <a href="{{ route('admin.dashboard') }}" class="text-lg font-extrabold text-slate-800">Admin — Page d'accueil</a>
@@ -96,6 +97,10 @@
                         <a href="{{ route('admin.blog_posts.index') }}"
                            class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isBlogAdmin ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
                             Blog
+                        </a>
+                        <a href="{{ route('admin.legacy_pages.index') }}"
+                           class="block rounded-xl px-3 py-2 text-sm font-extrabold {{ $isLegacyPagesAdmin ? 'bg-sky-600 text-white' : 'text-slate-700 hover:bg-slate-50' }}">
+                            Legacy URLs SEO
                         </a>
                     </div>
                 </nav>
