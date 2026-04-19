@@ -54,7 +54,7 @@ class WordPressLegacyImporter
 
             $safeTitle = $title !== '' ? html_entity_decode($title, ENT_QUOTES | ENT_HTML5, 'UTF-8') : Str::headline(str_replace('-', ' ', basename($normalizedPath)));
             $safeExcerpt = $excerpt !== '' ? html_entity_decode(strip_tags($excerpt), ENT_QUOTES | ENT_HTML5, 'UTF-8') : null;
-            $safeContent = $content !== '' ? $content : '<p>Contenu en cours de migration.</p>';
+            $safeContent = $content !== '' ? $this->cleanHtml($content) : null;
 
             $existing = LegacyPage::query()->where('old_path', $normalizedPath)->first();
             if ($existing === null) {
@@ -112,6 +112,21 @@ class WordPressLegacyImporter
         $normalized = LegacyPage::normalizePath($path);
 
         return $normalized !== '' ? $normalized : null;
+    }
+
+    protected function cleanHtml(string $html): string
+    {
+        // Remove Gutenberg block comments
+        $html = preg_replace('/<!--\s*\/?wp:[^\-].*?-->/s', '', $html) ?? $html;
+        // Remove Elementor shortcodes
+        $html = preg_replace('/\[et_pb[^\]]*\].*?\[\/et_pb[^\]]*\]/si', '', $html) ?? $html;
+        // Remove inline styles and wp-block classes that clash with design system
+        $html = preg_replace('/\s*style="[^"]*"/i', '', $html) ?? $html;
+        $html = preg_replace('/\s*class="[^"]*wp-block[^"]*"/i', '', $html) ?? $html;
+        // Collapse blank lines
+        $html = preg_replace('/(\n\s*){3,}/', "\n\n", $html) ?? $html;
+
+        return trim($html);
     }
 
     protected function shouldSkipPath(string $path): bool
