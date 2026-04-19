@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ContactInquiry;
+use App\Services\ContactMailer;
 use App\Services\HomePageService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ContactController extends Controller
@@ -13,5 +17,57 @@ class ContactController extends Controller
             'home' => $homePage->merged(),
         ]);
     }
-}
 
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'nom_complet'  => ['nullable', 'string', 'max:150'],
+            'email'        => ['nullable', 'email', 'max:150'],
+            'telephone'    => ['nullable', 'string', 'max:30'],
+            'code_postal'  => ['nullable', 'string', 'max:10'],
+            'service'      => ['nullable', 'string', 'max:150'],
+            'message'      => ['nullable', 'string', 'max:5000'],
+            'autres_infos' => ['nullable', 'string', 'max:3000'],
+            'photos.*'     => ['nullable', 'file', 'mimes:jpg,jpeg,png,gif,webp,heic,pdf,doc,docx', 'max:10240'],
+        ]);
+
+        $photoPaths = [];
+        if ($request->hasFile('photos')) {
+            foreach ($request->file('photos') as $file) {
+                if ($file->isValid()) {
+                    $photoPaths[] = $file->store('contact-uploads', 'public');
+                }
+            }
+        }
+
+        $inquiry = ContactInquiry::query()->create([
+            'nom_complet'  => $validated['nom_complet'] ?? null,
+            'email'        => $validated['email'] ?? null,
+            'telephone'    => $validated['telephone'] ?? null,
+            'code_postal'  => $validated['code_postal'] ?? null,
+            'service'      => $validated['service'] ?? null,
+            'message'      => $validated['message'] ?? null,
+            'autres_infos' => $validated['autres_infos'] ?? null,
+            'photos'       => $photoPaths ?: null,
+            'ip_address'   => $request->ip(),
+        ]);
+
+        $mailer = app(ContactMailer::class);
+
+        try {
+            $mailer->sendAdminNotification($inquiry);
+            $inquiry->update(['admin_mail_sent' => true]);
+        } catch (\Throwable $e) {
+            logger()->error('Contact admin mail failed: ' . $e->getMessage());
+        }
+
+        try {
+            $mailer->sendClientConfirmation($inquiry);
+            $inquiry->update(['client_mail_sent' => true]);
+        } catch (\Throwable $e) {
+            logger()->error('Contact client mail failed: ' . $e->getMessage());
+        }
+
+        return redirect()->back()->with('contact_success', true);
+    }
+}

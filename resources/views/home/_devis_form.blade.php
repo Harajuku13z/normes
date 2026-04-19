@@ -21,21 +21,37 @@
         <h3 class="text-2xl font-black tracking-tight text-brand-blue sm:text-3xl">{{ data_get($d, 'form.title') }}</h3>
         <p class="mt-2 inline-block rounded-lg bg-brand-blue/10 px-3 py-1.5 text-sm font-semibold text-brand-dark">{{ data_get($d, 'form.intro') }}</p>
     </div>
-    <form class="flex flex-1 flex-col text-brand-dark" action="#" method="post" enctype="multipart/form-data">
+
+    @if(session('contact_success'))
+    <div class="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold text-green-700">
+        ✅ Votre message a bien été envoyé ! Nous vous répondrons dans les meilleurs délais.
+    </div>
+    @endif
+
+    @if($errors->any())
+    <div class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <strong>Veuillez corriger les erreurs suivantes :</strong>
+        <ul class="mt-1 list-inside list-disc">
+            @foreach($errors->all() as $err)<li>{{ $err }}</li>@endforeach
+        </ul>
+    </div>
+    @endif
+
+    <form class="flex flex-1 flex-col text-brand-dark" action="{{ route('contact.store') }}" method="post" enctype="multipart/form-data">
         @csrf
         <p class="mb-4 text-sm font-semibold text-slate-600">{{ data_get($d, 'form.note') }}</p>
         <div class="grid gap-3 sm:grid-cols-2">
             <div class="sm:col-span-2">
                 <label for="devisNomComplet" class="mb-1 block text-sm font-semibold">Nom et prénom</label>
-                <input id="devisNomComplet" name="nom_complet" type="text" autocomplete="name" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                <input id="devisNomComplet" name="nom_complet" type="text" autocomplete="name" value="{{ old('nom_complet') }}" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
             </div>
             <div>
                 <label for="devisEmail" class="mb-1 block text-sm font-semibold">Email</label>
-                <input id="devisEmail" name="email" type="email" autocomplete="email" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                <input id="devisEmail" name="email" type="email" autocomplete="email" value="{{ old('email') }}" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
             </div>
             <div>
                 <label for="devisPhone" class="mb-1 block text-sm font-semibold">Téléphone</label>
-                <input id="devisPhone" name="telephone" type="tel" autocomplete="tel" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                <input id="devisPhone" name="telephone" type="tel" autocomplete="tel" value="{{ old('telephone') }}" class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
             </div>
             <div>
                 <label for="devisCp" class="mb-1 block text-sm font-semibold">Code postal</label>
@@ -46,6 +62,7 @@
                     inputmode="numeric"
                     maxlength="10"
                     autocomplete="postal-code"
+                    value="{{ old('code_postal') }}"
                     class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25"
                 >
             </div>

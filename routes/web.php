@@ -113,6 +113,9 @@ Route::get('/services/{slug}', [ServicePagesController::class, 'show'])->name('s
 
 // Page publique contact (formulaire)
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.page');
+Route::post('/contact', [ContactController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('contact.store');
 
 // Page À propos
 Route::get('/a-propos', [AboutController::class, 'index'])->name('about.page');
