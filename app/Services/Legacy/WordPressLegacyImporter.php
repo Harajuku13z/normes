@@ -61,6 +61,12 @@ class WordPressLegacyImporter
 
             $existing = LegacyPage::query()->where('old_path', $normalizedPath)->first();
 
+            // Never overwrite pages that have been manually edited in admin
+            if ($existing !== null && $existing->content_locked) {
+                $skipped++;
+                continue;
+            }
+
             if ($existing === null) {
                 LegacyPage::query()->create([
                     'old_path'     => $normalizedPath,
@@ -142,12 +148,11 @@ class WordPressLegacyImporter
         // Neutralise PHP open/close tags — prevents PHP ParseErrors when Blade echoes content
         $html = str_replace(['<?php', '<?=', '<?', '?>'], ['&lt;?php', '&lt;?=', '&lt;?', '?&gt;'], $html);
 
-        // Rewrite absolute WordPress image URLs to normesrenovation.fr (keep them absolute so
-        // they still resolve if the old uploads are restored)
-        // Replace old WP domain variants → canonical normesrenovation.fr
+        // Rewrite absolute WordPress image URLs to nr.normesrenovation.fr (the actual WP install)
+        // Handles: normesrenovation.fr, www.normesrenovation.fr, nr.normesrenovation.fr → canonical nr.normesrenovation.fr
         $html = preg_replace(
-            '#https?://(?:www\.)?normesrenovation\.fr(/wp-content/uploads/)#i',
-            'https://normesrenovation.fr$1',
+            '#https?://(?:(?:www|nr)\.)?normesrenovation\.fr(/wp-content/uploads/)#i',
+            'https://nr.normesrenovation.fr$1',
             $html
         ) ?? $html;
 

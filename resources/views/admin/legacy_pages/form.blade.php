@@ -90,13 +90,26 @@
                           class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 font-mono text-xs focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-200">{{ old('content_html', $legacyPage->content_html ?? '') }}</textarea>
             </div>
 
-            <div class="sm:col-span-2 flex items-center gap-3">
+            <div class="sm:col-span-2 flex flex-wrap items-center gap-4">
                 <label class="inline-flex cursor-pointer items-center gap-2.5 text-sm font-semibold text-slate-700">
                     <input type="checkbox" name="is_active" value="1"
                            {{ old('is_active', $legacyPage->is_active ?? true) ? 'checked' : '' }}
                            class="h-4 w-4 rounded border-slate-300 text-sky-600 focus:ring-sky-500" />
                     Page active (visible publiquement)
                 </label>
+                @if ($isEdit)
+                <label class="inline-flex cursor-pointer items-center gap-2.5 text-sm font-semibold text-slate-700" title="Décocher pour permettre à l'importeur WordPress de réécrire cette page">
+                    <input type="checkbox" name="content_locked" value="1"
+                           {{ old('content_locked', $legacyPage->content_locked ?? false) ? 'checked' : '' }}
+                           class="h-4 w-4 rounded border-slate-300 text-amber-500 focus:ring-amber-400" />
+                    <span class="{{ ($legacyPage->content_locked ?? false) ? 'text-amber-600' : 'text-slate-500' }}">
+                        🔒 Contenu verrouillé (protégé de l'import WP)
+                    </span>
+                </label>
+                @if ($legacyPage->content_locked ?? false)
+                    <span class="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-700">Protégé — l'importeur ne peut pas écraser cette page</span>
+                @endif
+                @endif
             </div>
         </div>
     </div>
@@ -114,7 +127,7 @@
                 <p class="mb-2 text-xs font-extrabold uppercase tracking-wide text-slate-500">Aperçu Google</p>
                 <div class="rounded-xl border border-slate-200 bg-slate-50 px-4 py-4">
                     <p id="seo_preview_url" class="text-[13px] text-green-700">
-                        nr.osmoseconsulting.fr › {{ $legacyPage->old_path ?? '…' }}
+                        normesrenovation.fr › {{ $legacyPage->old_path ?? '…' }}
                     </p>
                     <p id="seo_preview_title" class="mt-0.5 text-[17px] font-medium text-blue-700 leading-snug">
                         {{ $legacyPage->meta_title ?? $legacyPage->title ?? 'Meta title…' }}
@@ -209,7 +222,7 @@
         var p = pathInput.value || '…';
         prevTitle.textContent = t;
         prevDesc.textContent  = d;
-        prevUrl.textContent   = 'nr.osmoseconsulting.fr › ' + p;
+        prevUrl.textContent   = 'normesrenovation.fr › ' + p;
         titleChars.textContent = titleInput.value.length;
         descChars.textContent  = descInput.value.length;
         titleChars.className   = titleInput.value.length > 60 ? 'text-red-600 font-bold' : '';

@@ -18,10 +18,12 @@ class LegacyPage extends Model
         'canonical_url',
         'og_image',
         'is_active',
+        'content_locked',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
+        'is_active'      => 'boolean',
+        'content_locked' => 'boolean',
     ];
 
     protected static function booted(): void

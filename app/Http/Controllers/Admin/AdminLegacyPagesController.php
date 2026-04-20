@@ -49,6 +49,8 @@ class AdminLegacyPagesController extends Controller
     public function update(Request $request, LegacyPage $legacyPage): RedirectResponse
     {
         $data = $this->validated($request, $legacyPage->id);
+        // Automatically lock the page so the WP importer won't overwrite manual edits
+        $data['content_locked'] = true;
         $legacyPage->update($data);
 
         return redirect()
@@ -84,7 +86,8 @@ class AdminLegacyPagesController extends Controller
             'meta_description' => ['nullable', 'string'],
             'canonical_url' => ['nullable', 'string', 'max:255'],
             'og_image' => ['nullable', 'string', 'max:255'],
-            'is_active' => ['nullable', 'boolean'],
+            'is_active'      => ['nullable', 'boolean'],
+            'content_locked' => ['nullable', 'boolean'],
         ]) + [
             'is_active' => $request->boolean('is_active'),
         ];
