@@ -133,10 +133,25 @@ class WordPressLegacyImporter
 
     protected function cleanHtml(string $html): string
     {
+        // Remove Gutenberg/Elementor block markup
         $html = preg_replace('/<!--\s*\/?wp:[^\-].*?-->/s', '', $html) ?? $html;
         $html = preg_replace('/\[et_pb[^\]]*\].*?\[\/et_pb[^\]]*\]/si', '', $html) ?? $html;
         $html = preg_replace('/\s*style="[^"]*"/i', '', $html) ?? $html;
         $html = preg_replace('/\s*class="[^"]*wp-block[^"]*"/i', '', $html) ?? $html;
+
+        // Neutralise PHP open/close tags — prevents PHP ParseErrors when Blade echoes content
+        $html = str_replace(['<?php', '<?=', '<?', '?>'], ['&lt;?php', '&lt;?=', '&lt;?', '?&gt;'], $html);
+
+        // Rewrite absolute WordPress image URLs to normesrenovation.fr (keep them absolute so
+        // they still resolve if the old uploads are restored)
+        // Replace old WP domain variants → canonical normesrenovation.fr
+        $html = preg_replace(
+            '#https?://(?:www\.)?normesrenovation\.fr(/wp-content/uploads/)#i',
+            'https://normesrenovation.fr$1',
+            $html
+        ) ?? $html;
+
+        // Collapse excessive whitespace
         $html = preg_replace('/(\n\s*){3,}/', "\n\n", $html) ?? $html;
 
         return trim($html);
