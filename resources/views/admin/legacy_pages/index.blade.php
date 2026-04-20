@@ -3,21 +3,50 @@
 @section('title', 'Pages legacy WordPress')
 
 @section('content')
-    <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+    <div class="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
             <h1 class="text-2xl font-extrabold text-slate-900">Pages legacy WordPress</h1>
             <p class="mt-1 text-sm text-slate-600">
                 Crée des pages 200 OK sur les anciennes URLs indexées (sans redirection).
-            </p>
-            <p class="mt-1 text-xs text-slate-500">
-                Import initial uniquement: <code class="rounded bg-slate-100 px-1">php artisan legacy:import-wordpress --no-update</code>
-                <span class="ml-1 text-slate-400">(les pages verrouillées 🔒 ne sont jamais écrasées)</span>
+                Les pages verrouillées 🔒 ne sont jamais écrasées par l'import.
             </p>
         </div>
-        <a href="{{ route('admin.legacy_pages.create') }}" class="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
-            Ajouter une page legacy
-        </a>
+        <div class="flex flex-wrap items-center gap-2">
+            {{-- Bouton import WordPress --}}
+            <form method="post" action="{{ route('admin.legacy_pages.import_wordpress') }}"
+                  onsubmit="return confirm('Supprimer toutes les pages non verrouillées et relancer l\'import WordPress ? Cela peut prendre 1–2 minutes.')">
+                @csrf
+                <button type="submit"
+                        class="inline-flex items-center gap-1.5 rounded-xl bg-amber-500 px-4 py-2 text-sm font-extrabold text-white hover:bg-amber-600">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"/>
+                    </svg>
+                    Reimporter depuis WordPress
+                </button>
+            </form>
+            <a href="{{ route('admin.legacy_pages.create') }}"
+               class="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
+                + Ajouter une page
+            </a>
+        </div>
     </div>
+
+    {{-- Messages import --}}
+    @if (session('import_status'))
+        <div class="mb-5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
+            ✅ {{ session('import_status') }}
+        </div>
+    @endif
+    @if (session('import_error'))
+        <div class="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+            ❌ {{ session('import_error') }}
+        </div>
+    @endif
+    @if (session('status'))
+        <div class="mb-5 rounded-xl border border-sky-200 bg-sky-50 px-4 py-3 text-sm font-semibold text-sky-800">
+            {{ session('status') }}
+        </div>
+    @endif
 
     <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <table class="min-w-full divide-y divide-slate-200 text-sm">

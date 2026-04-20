@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BlogPost;
 use App\Models\LegacyPage;
+use App\Services\Legacy\WordPressLegacyImporter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -65,6 +67,48 @@ class AdminLegacyPagesController extends Controller
         return redirect()
             ->route('admin.legacy_pages.index')
             ->with('status', 'Page legacy supprimée.');
+    }
+
+    /**
+     * Trigger WordPress XML import from the admin panel (no SSH required).
+     * - Deletes all non-locked legacy_pages (fresh start)
+     * - Imports ad + page → legacy_pages  (images → nr.normesrenovation.fr)
+     * - Imports post → blog_posts
+     */
+    public function importWordPress(Request $request): RedirectResponse
+    {
+        // Extend limits for large XML processing
+        @ini_set('memory_limit', '512M');
+        @set_time_limit(300);
+        @ignore_user_abort(true);
+
+        $xmlPath = base_path('BD WORDPRESS/normesampreacutenovation.WordPress.2026-04-15.xml');
+
+        if (! is_file($xmlPath)) {
+            return redirect()
+                ->route('admin.legacy_pages.index')
+                ->with('import_error', 'Fichier XML WordPress introuvable : ' . $xmlPath);
+        }
+
+        // 1. Delete all non-locked legacy_pages (keep manually-edited ones)
+        $deleted = LegacyPage::query()->where('content_locked', false)->delete();
+
+        // 2. Run full import
+        /** @var WordPressLegacyImporter $importer */
+        $importer = app(WordPressLegacyImporter::class);
+        $result   = $importer->importAllFromXml($xmlPath, updateExisting: true);
+
+        $p = $result['pages'];
+        $b = $result['posts'];
+
+        $msg = sprintf(
+            'Import terminé. Pages supprimées : %d. Legacy créées : %d / mises à jour : %d. Articles créés : %d / mis à jour : %d.',
+            $deleted, $p['created'], $p['updated'], $b['created'], $b['updated']
+        );
+
+        return redirect()
+            ->route('admin.legacy_pages.index')
+            ->with('import_status', $msg);
     }
 
     /**

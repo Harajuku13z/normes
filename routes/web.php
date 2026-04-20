@@ -95,6 +95,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [AdminLegacyPagesController::class, 'index'])->name('index');
             Route::get('/create', [AdminLegacyPagesController::class, 'create'])->name('create');
             Route::post('/', [AdminLegacyPagesController::class, 'store'])->name('store');
+            Route::post('/import-wordpress', [AdminLegacyPagesController::class, 'importWordPress'])->name('import_wordpress');
             Route::get('/{legacyPage}/edit', [AdminLegacyPagesController::class, 'edit'])->name('edit');
             Route::put('/{legacyPage}', [AdminLegacyPagesController::class, 'update'])->name('update');
             Route::delete('/{legacyPage}', [AdminLegacyPagesController::class, 'destroy'])->name('destroy');
