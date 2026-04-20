@@ -8,6 +8,7 @@ use App\Services\HomePageService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\View\View as ViewResponse;
 
 class ContactController extends Controller
 {
@@ -68,6 +69,13 @@ class ContactController extends Controller
             logger()->error('Contact client mail failed: ' . $e->getMessage());
         }
 
-        return redirect()->back()->with('contact_success', true);
+        return redirect()->route('contact.success');
+    }
+
+    public function success(HomePageService $homePage): ViewResponse
+    {
+        return view('contact-success', [
+            'home' => $homePage->merged(),
+        ]);
     }
 }

@@ -116,6 +116,7 @@ Route::get('/contact', [ContactController::class, 'index'])->name('contact.page'
 Route::post('/contact', [ContactController::class, 'store'])
     ->middleware('throttle:10,1')
     ->name('contact.store');
+Route::get('/contact/merci', [ContactController::class, 'success'])->name('contact.success');
 
 // Page À propos
 Route::get('/a-propos', [AboutController::class, 'index'])->name('about.page');
@@ -129,6 +130,7 @@ Route::get('/franchise', [FranchiseController::class, 'index'])->name('franchise
 Route::post('/franchise', [FranchiseController::class, 'store'])
     ->middleware('throttle:8,1')
     ->name('franchise.store');
+Route::get('/franchise/merci', [FranchiseController::class, 'success'])->name('franchise.success');
 
 // Réalisations (portfolio)
 Route::get('/realisations', [RealisationsController::class, 'index'])->name('realisations.page');

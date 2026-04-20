@@ -3,16 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FranchiseInquiryRequest;
-use App\Mail\FranchiseInquiryMail;
 use App\Models\FranchiseInquiry;
 use App\Services\HomePageService;
+use App\Services\SimulateurMailer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\View;
+use Illuminate\View\View as ViewResponse;
 
 class FranchiseController extends Controller
 {
-    public function index(HomePageService $homePage): View
+    public function __construct(private readonly SimulateurMailer $mailer) {}
+
+    public function index(HomePageService $homePage): ViewResponse
     {
         return view('franchise', [
             'home' => $homePage->merged(),
@@ -26,27 +29,40 @@ class FranchiseController extends Controller
 
         $inquiry = FranchiseInquiry::query()->create($payload);
 
-        $to = (string) config('services.franchise_notify_email', '');
-        if (trim($to) === '') {
-            $to = trim((string) data_get($homePage->merged(), 'footer.email', ''));
+        // Determine recipient: settings DB → footer email → from address
+        $settings  = $this->mailer->settings();
+        $adminEmail = (string) data_get($settings, 'notifications.admin_email', '');
+        if ($adminEmail === '') {
+            $adminEmail = trim((string) data_get($homePage->merged(), 'footer.email', ''));
         }
-        if ($to === '') {
-            $to = (string) config('mail.from.address', '');
+        if ($adminEmail === '') {
+            $adminEmail = (string) config('mail.from.address', '');
         }
 
-        if ($to !== '') {
+        if ($adminEmail !== '') {
             try {
-                Mail::to($to)->send(new FranchiseInquiryMail($inquiry));
+                $html = View::make('emails.franchise-inquiry-html', ['inquiry' => $inquiry])->render();
+                $this->mailer->sendRaw(
+                    $settings,
+                    $adminEmail,
+                    'Nouvelle candidature franchise — ' . ($inquiry->name ?? 'inconnu'),
+                    $html
+                );
             } catch (\Throwable $e) {
                 \Log::error('Franchise inquiry mail failed', [
-                    'exception' => $e->getMessage(),
+                    'exception'  => $e->getMessage(),
                     'inquiry_id' => $inquiry->id,
                 ]);
             }
         }
 
-        return redirect()
-            ->to(route('franchise.page', [], false).'#candidature')
-            ->with('franchise_status', 'Merci ! Votre dossier a bien été transmis. Un expert Normes Rénovation vous recontacte sous peu.');
+        return redirect()->route('franchise.success');
+    }
+
+    public function success(HomePageService $homePage): ViewResponse
+    {
+        return view('franchise.success', [
+            'home' => $homePage->merged(),
+        ]);
     }
 }

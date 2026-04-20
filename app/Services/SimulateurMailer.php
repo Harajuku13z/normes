@@ -116,6 +116,16 @@ class SimulateurMailer
     }
 
     /**
+     * Public entry point for external callers (e.g. FranchiseController).
+     *
+     * @param  array<string, mixed>  $settings
+     */
+    public function sendRaw(array $settings, string $to, string $subject, string $html): void
+    {
+        $this->sendHtml($settings, $to, $subject, $html);
+    }
+
+    /**
      * @param  array<string, mixed>  $settings
      */
     private function sendHtml(array $settings, string $to, string $subject, string $html): void
