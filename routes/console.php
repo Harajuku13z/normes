@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use App\Services\Legacy\WordPressApiImporter;
 use App\Services\Legacy\WordPressLegacyImporter;
 
 Artisan::command('inspire', function () {
@@ -51,3 +52,37 @@ Artisan::command('legacy:import-wordpress {xmlPath?} {--no-update} {--fresh}', f
 
     return 0;
 })->purpose('Importe les pages et articles WordPress (legacy_pages + blog_posts)');
+
+Artisan::command('legacy:import-api {--no-update} {--fresh}', function () {
+    $this->info('Import WordPress via REST API → https://nr.normesrenovation.fr/wp-json/wp/v2/');
+
+    /** @var WordPressApiImporter $importer */
+    $importer = app(WordPressApiImporter::class);
+    $updateExisting = ! $this->option('no-update');
+
+    if ($this->option('fresh')) {
+        $deleted = \App\Models\LegacyPage::query()->where('content_locked', false)->delete();
+        $this->warn("Mode --fresh : $deleted pages legacy supprimées (non verrouillées).");
+    }
+
+    $this->info('Récupération des pages legacy (pages + annonces)…');
+    $p = $importer->importLegacyPages($updateExisting);
+    $this->info('─── Pages legacy (pages + ad → legacy_pages) ───');
+    $this->line('  Total récupérés : ' . $p['total']);
+    $this->line('  Créées          : ' . $p['created']);
+    $this->line('  Mises à jour    : ' . $p['updated']);
+    $this->line('  Ignorées        : ' . $p['skipped']);
+
+    $this->info('');
+    $this->info('Récupération des articles…');
+    $b = $importer->importBlogPosts($updateExisting);
+    $this->info('─── Articles (posts → blog_posts) ──────────────');
+    $this->line('  Total récupérés : ' . $b['total']);
+    $this->line('  Créés           : ' . $b['created']);
+    $this->line('  Mis à jour      : ' . $b['updated']);
+    $this->line('  Ignorés         : ' . $b['skipped']);
+
+    $this->info('');
+    $this->info('Import terminé !');
+    return 0;
+})->purpose('Importe les pages et articles WordPress via l\'API REST (sans fichier XML)');

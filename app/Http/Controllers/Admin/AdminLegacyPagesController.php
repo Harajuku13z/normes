@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\BlogPost;
 use App\Models\LegacyPage;
+use App\Services\Legacy\WordPressApiImporter;
 use App\Services\Legacy\WordPressLegacyImporter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -70,40 +71,37 @@ class AdminLegacyPagesController extends Controller
     }
 
     /**
-     * Trigger WordPress XML import from the admin panel (no SSH required).
+     * Trigger WordPress import via the live REST API (no SSH, no XML file needed).
      * - Deletes all non-locked legacy_pages (fresh start)
-     * - Imports ad + page → legacy_pages  (images → nr.normesrenovation.fr)
+     * - Imports ad + page → legacy_pages  (images from nr.normesrenovation.fr)
      * - Imports post → blog_posts
      */
     public function importWordPress(Request $request): RedirectResponse
     {
-        // Extend limits for large XML processing
-        @ini_set('memory_limit', '512M');
-        @set_time_limit(300);
+        @set_time_limit(600);
         @ignore_user_abort(true);
-
-        $xmlPath = base_path('BD WORDPRESS/normesampreacutenovation.WordPress.2026-04-15.xml');
-
-        if (! is_file($xmlPath)) {
-            return redirect()
-                ->route('admin.legacy_pages.index')
-                ->with('import_error', 'Fichier XML WordPress introuvable : ' . $xmlPath);
-        }
 
         // 1. Delete all non-locked legacy_pages (keep manually-edited ones)
         $deleted = LegacyPage::query()->where('content_locked', false)->delete();
 
-        // 2. Run full import
-        /** @var WordPressLegacyImporter $importer */
-        $importer = app(WordPressLegacyImporter::class);
-        $result   = $importer->importAllFromXml($xmlPath, updateExisting: true);
+        // 2. Run full import via REST API
+        /** @var WordPressApiImporter $importer */
+        $importer = app(WordPressApiImporter::class);
+
+        try {
+            $result = $importer->importAll(updateExisting: true);
+        } catch (\Throwable $e) {
+            return redirect()
+                ->route('admin.legacy_pages.index')
+                ->with('import_error', 'Erreur lors de l\'import API WordPress : ' . $e->getMessage());
+        }
 
         $p = $result['pages'];
         $b = $result['posts'];
 
         $msg = sprintf(
-            'Import terminé. Pages supprimées : %d. Legacy créées : %d / mises à jour : %d. Articles créés : %d / mis à jour : %d.',
-            $deleted, $p['created'], $p['updated'], $b['created'], $b['updated']
+            'Import terminé (API WordPress). Pages supprimées : %d. Legacy créées : %d / mises à jour : %d / ignorées : %d. Articles créés : %d / mis à jour : %d.',
+            $deleted, $p['created'], $p['updated'], $p['skipped'], $b['created'], $b['updated']
         );
 
         return redirect()
