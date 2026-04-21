@@ -126,19 +126,27 @@ class WordPressApiImporter
         }
 
         if ($existing === null) {
-            LegacyPage::query()->create([
-                'old_path'         => $normalizedPath,
-                'title'            => $safeTitle,
-                'h1'               => $safeTitle,
-                'excerpt'          => $safeExcerpt,
-                'content_html'     => $safeContent,
-                'meta_title'       => $safeTitle,
-                'meta_description' => $safeExcerpt,
-                'og_image'         => $ogImage,
-                'is_active'        => true,
-            ]);
+            try {
+                LegacyPage::query()->create([
+                    'old_path'         => $normalizedPath,
+                    'title'            => $safeTitle,
+                    'h1'               => $safeTitle,
+                    'excerpt'          => $safeExcerpt,
+                    'content_html'     => $safeContent,
+                    'meta_title'       => $safeTitle,
+                    'meta_description' => $safeExcerpt,
+                    'og_image'         => $ogImage,
+                    'is_active'        => true,
+                ]);
 
-            return 'created';
+                return 'created';
+            } catch (\Illuminate\Database\UniqueConstraintViolationException) {
+                // Race condition: another process already inserted — fetch and update below
+                $existing = LegacyPage::query()->where('old_path', $normalizedPath)->first();
+                if ($existing === null || $existing->content_locked) {
+                    return 'skipped';
+                }
+            }
         }
 
         if (! $updateExisting) {
@@ -187,19 +195,26 @@ class WordPressApiImporter
         $existing = BlogPost::query()->where('slug', $slug)->first();
 
         if ($existing === null) {
-            BlogPost::query()->create([
-                'title'            => $safeTitle,
-                'slug'             => $slug,
-                'excerpt'          => $safeExcerpt,
-                'content_html'     => $safeContent,
-                'featured_image'   => $ogImage,
-                'og_image'         => $ogImage,
-                'meta_title'       => $safeTitle,
-                'meta_description' => $safeExcerpt,
-                'published_at'     => $publishedAt,
-            ]);
+            try {
+                BlogPost::query()->create([
+                    'title'            => $safeTitle,
+                    'slug'             => $slug,
+                    'excerpt'          => $safeExcerpt,
+                    'content_html'     => $safeContent,
+                    'featured_image'   => $ogImage,
+                    'og_image'         => $ogImage,
+                    'meta_title'       => $safeTitle,
+                    'meta_description' => $safeExcerpt,
+                    'published_at'     => $publishedAt,
+                ]);
 
-            return 'created';
+                return 'created';
+            } catch (\Illuminate\Database\UniqueConstraintViolationException) {
+                $existing = BlogPost::query()->where('slug', $slug)->first();
+                if ($existing === null) {
+                    return 'skipped';
+                }
+            }
         }
 
         if (! $updateExisting) {
