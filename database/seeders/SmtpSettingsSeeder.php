@@ -26,10 +26,12 @@ class SmtpSettingsSeeder extends Seeder
         $name    = (string) env('MAIL_FROM_NAME', 'Normes Rénovation');
         $adminTo = $from; // notifications go to the same mailbox by default
 
-        // Normalise encryption string
-        if ($enc === 'null' || $enc === 'none' || $enc === '') {
-            $enc = 'none';
-        }
+        // Normalise encryption string to Laravel 11 scheme values (smtp / smtps)
+        $enc = match (strtolower($enc)) {
+            'ssl', 'smtps'    => 'smtps',
+            'null', 'none', '' => 'smtp',
+            default            => 'smtp',
+        };
 
         $payload = [
             'smtp' => [

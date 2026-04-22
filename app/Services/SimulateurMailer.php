@@ -139,21 +139,25 @@ class SimulateurMailer
             throw new \RuntimeException('SMTP settings are incomplete.');
         }
 
-        $encryption = (string) data_get($smtp, 'encryption', 'tls');
-        if ($encryption === 'none') {
-            $encryption = '';
-        }
+        // Laravel 11 uses 'scheme' (smtp/smtps) instead of 'encryption' (ssl/tls).
+        // Map legacy values stored in DB to the new format.
+        $rawEnc = (string) data_get($smtp, 'encryption', 'smtps');
+        $scheme = match (strtolower($rawEnc)) {
+            'ssl', 'smtps' => 'smtps',   // port 465 — implicit TLS
+            'none', ''     => 'smtp',    // plain / STARTTLS
+            default        => 'smtp',    // 'tls', 'starttls', etc.
+        };
 
         config([
-            'mail.default' => 'smtp',
-            'mail.mailers.smtp.transport' => 'smtp',
-            'mail.mailers.smtp.host' => $host,
-            'mail.mailers.smtp.port' => (int) data_get($smtp, 'port', 587),
-            'mail.mailers.smtp.encryption' => $encryption !== '' ? $encryption : null,
-            'mail.mailers.smtp.username' => $username,
-            'mail.mailers.smtp.password' => $password,
-            'mail.from.address' => $fromAddress,
-            'mail.from.name' => (string) data_get($smtp, 'from_name', 'Normes & Renovation'),
+            'mail.default'                    => 'smtp',
+            'mail.mailers.smtp.transport'     => 'smtp',
+            'mail.mailers.smtp.scheme'        => $scheme,
+            'mail.mailers.smtp.host'          => $host,
+            'mail.mailers.smtp.port'          => (int) data_get($smtp, 'port', 465),
+            'mail.mailers.smtp.username'      => $username,
+            'mail.mailers.smtp.password'      => $password,
+            'mail.from.address'               => $fromAddress,
+            'mail.from.name'                  => (string) data_get($smtp, 'from_name', 'Normes & Renovation'),
         ]);
 
         Mail::html($html, function ($message) use ($to, $subject): void {
