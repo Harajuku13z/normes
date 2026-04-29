@@ -28,6 +28,7 @@ use App\Http\Controllers\LegacyPageController;
 use App\Http\Controllers\RealisationsController;
 use App\Http\Controllers\ServicePagesController;
 use App\Http\Controllers\SimulateurController;
+use App\Http\Controllers\Admin\AdminContactInquiriesController;
 use App\Http\Controllers\Admin\AdminLegacyPagesController;
 use Illuminate\Support\Facades\Route;
 
@@ -99,6 +100,11 @@ Route::prefix('admin')->group(function () {
             Route::get('/{legacyPage}/edit', [AdminLegacyPagesController::class, 'edit'])->name('edit');
             Route::put('/{legacyPage}', [AdminLegacyPagesController::class, 'update'])->name('update');
             Route::delete('/{legacyPage}', [AdminLegacyPagesController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('contact-inquiries')->name('admin.contact_inquiries.')->group(function () {
+            Route::get('/', [AdminContactInquiriesController::class, 'index'])->name('index');
+            Route::get('/{contactInquiry}', [AdminContactInquiriesController::class, 'show'])->name('show');
         });
     });
 

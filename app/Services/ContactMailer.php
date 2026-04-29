@@ -84,17 +84,20 @@ class ContactMailer
             throw new \RuntimeException('SMTP settings are incomplete. Configure them in Admin → Paramètres simulateur.');
         }
 
-        $encryption = (string) data_get($smtp, 'encryption', 'tls');
-        if ($encryption === 'none') {
-            $encryption = '';
-        }
+        // Laravel 11 uses 'scheme' (smtp/smtps) instead of 'encryption' (ssl/tls)
+        $rawEnc = (string) data_get($smtp, 'encryption', 'smtps');
+        $scheme = match (strtolower($rawEnc)) {
+            'ssl', 'smtps' => 'smtps',
+            'none', ''     => 'smtp',
+            default        => 'smtp',
+        };
 
         config([
             'mail.default'                    => 'smtp',
             'mail.mailers.smtp.transport'     => 'smtp',
+            'mail.mailers.smtp.scheme'        => $scheme,
             'mail.mailers.smtp.host'          => $host,
-            'mail.mailers.smtp.port'          => (int) data_get($smtp, 'port', 587),
-            'mail.mailers.smtp.encryption'    => $encryption !== '' ? $encryption : null,
+            'mail.mailers.smtp.port'          => (int) data_get($smtp, 'port', 465),
             'mail.mailers.smtp.username'      => $username,
             'mail.mailers.smtp.password'      => $password,
             'mail.from.address'               => $fromAddress,
