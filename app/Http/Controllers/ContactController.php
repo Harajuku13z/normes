@@ -35,9 +35,32 @@ class ContactController extends Controller
         $photoPaths = [];
         if ($request->hasFile('photos')) {
             foreach ($request->file('photos') as $file) {
-                if ($file->isValid()) {
-                    $photoPaths[] = $file->store('contact-uploads', 'public');
+                if (! $file->isValid()) {
+                    continue;
                 }
+
+                $ext = strtolower($file->getClientOriginalExtension());
+
+                // Convert HEIC/HEIF → JPEG so browsers can display them
+                if (in_array($ext, ['heic', 'heif'], true) && extension_loaded('imagick')) {
+                    try {
+                        $imagick = new \Imagick();
+                        $imagick->readImageBlob($file->get());
+                        $imagick->setImageFormat('jpeg');
+                        $imagick->setImageCompressionQuality(88);
+
+                        $filename  = 'contact-uploads/' . \Illuminate\Support\Str::random(40) . '.jpg';
+                        $fullPath  = storage_path('app/public/' . $filename);
+                        $imagick->writeImage($fullPath);
+                        $imagick->clear();
+                        $photoPaths[] = $filename;
+                        continue;
+                    } catch (\Throwable) {
+                        // Fall through to normal store if conversion fails
+                    }
+                }
+
+                $photoPaths[] = $file->store('contact-uploads', 'public');
             }
         }
 

@@ -71,19 +71,57 @@
             @endif
 
             @if(!empty($contactInquiry->photos))
+                @php
+                    $imageExts = ['jpg','jpeg','png','gif','webp'];
+                @endphp
                 <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <h2 class="mb-3 text-base font-extrabold text-slate-900">Photos / Fichiers joints ({{ count($contactInquiry->photos) }})</h2>
-                    <div class="flex flex-wrap gap-3">
-                        @foreach($contactInquiry->photos as $photo)
-                            <a href="{{ asset('storage/' . $photo) }}" target="_blank"
-                               class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors">
-                                <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>
-                                </svg>
-                                {{ basename($photo) }}
-                            </a>
-                        @endforeach
-                    </div>
+                    <h2 class="mb-4 text-base font-extrabold text-slate-900">
+                        Photos / Fichiers joints
+                        <span class="ml-2 text-sm font-normal text-slate-400">({{ count($contactInquiry->photos) }})</span>
+                    </h2>
+
+                    {{-- Images affichées directement --}}
+                    @php $images = array_filter($contactInquiry->photos, fn($p) => in_array(strtolower(pathinfo($p, PATHINFO_EXTENSION)), $imageExts)); @endphp
+                    @if(count($images))
+                        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 mb-4">
+                            @foreach($images as $photo)
+                                <a href="{{ asset('storage/' . $photo) }}" target="_blank" rel="noopener"
+                                   class="group relative block overflow-hidden rounded-xl border border-slate-200 bg-slate-100 aspect-square hover:border-blue-400 transition-colors">
+                                    <img src="{{ asset('storage/' . $photo) }}"
+                                         alt="Photo contact"
+                                         class="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                                         loading="lazy">
+                                    <div class="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition group-hover:bg-black/20 group-hover:opacity-100">
+                                        <svg class="h-7 w-7 text-white drop-shadow" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/>
+                                        </svg>
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    {{-- Fichiers non-image (PDF, DOC, HEIC non converti…) --}}
+                    @php $files = array_filter($contactInquiry->photos, fn($p) => !in_array(strtolower(pathinfo($p, PATHINFO_EXTENSION)), $imageExts)); @endphp
+                    @if(count($files))
+                        <div class="flex flex-wrap gap-2">
+                            @foreach($files as $photo)
+                                @php $ext = strtolower(pathinfo($photo, PATHINFO_EXTENSION)); @endphp
+                                <a href="{{ asset('storage/' . $photo) }}" target="_blank" rel="noopener"
+                                   class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors">
+                                    @if($ext === 'pdf')
+                                        <svg class="h-4 w-4 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5V8H18.5L13 3.5zM8.5 17H8v1.5H6.5V14H8.5a2 2 0 0 1 0 4v-1zm5.5-.5H12.5V14H15v1h-1.5v.5H15V17h-1.5V18.5H12V14h2a1.5 1.5 0 0 1 0 3zm4-1.5H17v3.5h-1.5V14H18v1.5z"/></svg>
+                                    @else
+                                        <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"/>
+                                        </svg>
+                                    @endif
+                                    {{ basename($photo) }}
+                                    <span class="uppercase text-slate-400">{{ $ext }}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
             @endif
         </div>
