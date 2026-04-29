@@ -101,6 +101,39 @@
                 Tableau de bord
             </a>
 
+            {{-- LEADS (juste après tableau de bord) --}}
+            <p class="mt-4 mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">Leads</p>
+
+            <a href="{{ route('admin.contact_inquiries.index') }}"
+               class="group mb-1 flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-colors
+                      {{ nav_active($r, ['admin.contact_inquiries']) ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
+                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/>
+                </svg>
+                Demandes contact
+                @php
+                    try { $contactCount = \App\Models\ContactInquiry::query()->where('admin_mail_sent', false)->count(); } catch (\Throwable) { $contactCount = 0; }
+                @endphp
+                @if($contactCount > 0)
+                    <span class="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white">{{ $contactCount }}</span>
+                @endif
+            </a>
+
+            <a href="{{ route('admin.simulateur_leads.index') }}"
+               class="group mb-1 flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-colors
+                      {{ nav_active($r, ['admin.simulateur_leads']) ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
+                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
+                </svg>
+                Leads simulateur
+                @php
+                    try { $leadsCount = \App\Models\SimulateurLead::query()->whereNotNull('completed_at')->where('completed_at', '>=', now()->subDays(30))->count(); } catch (\Throwable) { $leadsCount = 0; }
+                @endphp
+                @if($leadsCount > 0)
+                    <span class="ml-auto rounded-full bg-blue-500 px-2 py-0.5 text-[10px] font-bold text-white">{{ $leadsCount }}</span>
+                @endif
+            </a>
+
             {{-- CONTENU --}}
             <p class="mt-5 mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">Contenu</p>
 
@@ -142,25 +175,6 @@
 
             {{-- PAGES --}}
             <p class="mt-5 mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">Pages</p>
-
-            <a href="{{ route('admin.contact_inquiries.index') }}"
-               class="group mb-1 flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-colors
-                      {{ nav_active($r, ['admin.contact_inquiries']) ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
-                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 9.75a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375m-13.5 3.01c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 0 1 .778-.332 48.294 48.294 0 0 0 5.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z"/>
-                </svg>
-                Demandes contact
-                @php
-                    try {
-                        $contactCount = \App\Models\ContactInquiry::query()->where('admin_mail_sent', false)->count();
-                    } catch (\Throwable) {
-                        $contactCount = 0;
-                    }
-                @endphp
-                @if($contactCount > 0)
-                    <span class="ml-auto rounded-full bg-red-500 px-2 py-0.5 text-[10px] font-bold text-white">{{ $contactCount }}</span>
-                @endif
-            </a>
 
             <a href="{{ route('admin.contact_settings.edit') }}"
                class="group mb-1 flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-colors
@@ -250,24 +264,6 @@
                 Config SMTP
             </a>
 
-            <a href="{{ route('admin.simulateur_leads.index') }}"
-               class="group mb-1 flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-colors
-                      {{ nav_active($r, ['admin.simulateur_leads']) ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
-                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/>
-                </svg>
-                Leads
-                @php
-                    try {
-                        $leadsCount = \App\Models\SimulateurLead::query()->whereNull('completed_at')->count();
-                    } catch (\Throwable) {
-                        $leadsCount = 0;
-                    }
-                @endphp
-                @if($leadsCount > 0)
-                    <span class="ml-auto rounded-full bg-brand-600 px-2 py-0.5 text-[10px] font-bold text-white">{{ $leadsCount }}</span>
-                @endif
-            </a>
 
         </nav>
 

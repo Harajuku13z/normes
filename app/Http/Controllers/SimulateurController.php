@@ -450,8 +450,11 @@ class SimulateurController extends Controller
             $lead = SimulateurLead::query()->create($payload);
             $request->session()->put('simulateur_lead_id', $lead->id);
             return $lead;
-        } catch (QueryException) {
-            // No-op: if migration not applied, simulator UX must still work.
+        } catch (QueryException $e) {
+            logger()->error('SimulateurLead upsert failed: ' . $e->getMessage(), [
+                'leadId' => $request->session()->get('simulateur_lead_id'),
+                'completed' => $completed,
+            ]);
             return null;
         }
     }
