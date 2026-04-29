@@ -41,22 +41,22 @@ class ContactController extends Controller
 
                 $ext = strtolower($file->getClientOriginalExtension());
 
-                // Convert HEIC/HEIF → JPEG so browsers can display them
+                // Convert HEIC/HEIF/non-web images → PNG using Imagick (readImage via temp path)
                 if (in_array($ext, ['heic', 'heif'], true) && extension_loaded('imagick')) {
                     try {
-                        $imagick = new \Imagick();
-                        $imagick->readImageBlob($file->get());
-                        $imagick->setImageFormat('jpeg');
-                        $imagick->setImageCompressionQuality(88);
+                        $tmpPath  = $file->getRealPath();
+                        $imagick  = new \Imagick($tmpPath);
+                        $imagick->setImageFormat('png');
 
-                        $filename  = 'contact-uploads/' . \Illuminate\Support\Str::random(40) . '.jpg';
-                        $fullPath  = storage_path('app/public/' . $filename);
+                        $filename = 'contact-uploads/' . \Illuminate\Support\Str::random(40) . '.png';
+                        $fullPath = storage_path('app/public/' . $filename);
                         $imagick->writeImage($fullPath);
                         $imagick->clear();
                         $photoPaths[] = $filename;
                         continue;
-                    } catch (\Throwable) {
-                        // Fall through to normal store if conversion fails
+                    } catch (\Throwable $e) {
+                        logger()->error('HEIC→PNG conversion failed: ' . $e->getMessage());
+                        // Fall through to normal store
                     }
                 }
 

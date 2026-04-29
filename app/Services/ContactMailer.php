@@ -84,12 +84,14 @@ class ContactMailer
             throw new \RuntimeException('SMTP settings are incomplete. Configure them in Admin → Paramètres simulateur.');
         }
 
-        // Laravel 11 uses 'scheme' (smtp/smtps) instead of 'encryption' (ssl/tls)
+        // Laravel 11 uses 'scheme' (smtp/smtps) instead of 'encryption' (ssl/tls).
+        // If port is 465, always use smtps (implicit TLS) regardless of encryption value.
         $rawEnc = (string) data_get($smtp, 'encryption', 'smtps');
+        $port   = (int) data_get($smtp, 'port', 465);
         $scheme = match (strtolower($rawEnc)) {
             'ssl', 'smtps' => 'smtps',
-            'none', ''     => 'smtp',
-            default        => 'smtp',
+            'tls'          => 'smtp',
+            default        => $port === 465 ? 'smtps' : 'smtp',
         };
 
         config([

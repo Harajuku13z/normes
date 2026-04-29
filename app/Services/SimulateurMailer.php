@@ -141,11 +141,13 @@ class SimulateurMailer
 
         // Laravel 11 uses 'scheme' (smtp/smtps) instead of 'encryption' (ssl/tls).
         // Map legacy values stored in DB to the new format.
+        // If port is 465, always use smtps (implicit TLS) regardless of encryption value.
         $rawEnc = (string) data_get($smtp, 'encryption', 'smtps');
+        $port   = (int) data_get($smtp, 'port', 465);
         $scheme = match (strtolower($rawEnc)) {
-            'ssl', 'smtps' => 'smtps',   // port 465 — implicit TLS
-            'none', ''     => 'smtp',    // plain / STARTTLS
-            default        => 'smtp',    // 'tls', 'starttls', etc.
+            'ssl', 'smtps' => 'smtps',
+            'tls'          => 'smtp',    // STARTTLS on port 587
+            default        => $port === 465 ? 'smtps' : 'smtp',  // auto-detect by port
         };
 
         config([
