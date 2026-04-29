@@ -317,7 +317,7 @@
                     <p><span class="font-extrabold">Sous-services :</span> {{ collect((array) data_get($s, 'sub_services', []))->filter()->implode(', ') ?: '—' }}</p>
                 </div>
 
-                <form method="post" action="{{ route('simulateur.finish') }}" class="mt-5 grid gap-4 sm:grid-cols-2">
+                <form method="post" action="{{ route('simulateur.finish') }}" class="mt-5 grid gap-4 sm:grid-cols-2" id="simFinishForm" onsubmit="(function(f){var btn=f.querySelector('[data-finish-btn]');if(btn){btn.disabled=true;btn.textContent='Envoi en cours…';}})(this)">
                     @csrf
                     <div>
                         <label class="mb-1 block text-sm font-semibold">Téléphone</label>
@@ -329,7 +329,7 @@
                     </div>
                     <div class="sm:col-span-2 pt-1 flex gap-2">
                         <a href="{{ route('simulateur.step4') }}" class="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-extrabold text-slate-700 hover:bg-slate-50">Retour</a>
-                        <button class="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-extrabold text-white hover:bg-emerald-700">Valider mon simulateur</button>
+                        <button type="submit" data-finish-btn class="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-extrabold text-white hover:bg-emerald-700 disabled:opacity-60 disabled:cursor-not-allowed">Valider mon simulateur</button>
                         <a href="tel:{{ $callHref }}" class="rounded-xl border border-emerald-300 bg-emerald-50 px-5 py-3 text-sm font-extrabold text-emerald-700 hover:bg-emerald-100">
                             Appeler tout de suite
                         </a>

@@ -309,7 +309,8 @@ class SimulateurController extends Controller
         $state['telephone'] = trim((string) $data['telephone']);
         $state['email'] = trim((string) ($data['email'] ?? ''));
         $lead = $this->upsertLeadFromState($request, $state, true);
-        if ($lead) {
+        // Guard against double-submission: only send emails once (when not already notified)
+        if ($lead && $lead->admin_notified_completed_at === null) {
             try {
                 $this->mailer->sendCompleted($lead);
                 $lead->forceFill([
