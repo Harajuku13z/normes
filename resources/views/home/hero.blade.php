@@ -20,28 +20,26 @@
     <div id="heroIdentityBlock"
          class="{{ $isIdentity ? 'flex' : 'hidden' }} absolute inset-0 z-10 items-center">
 
-        {{-- Voile blanc à gauche, transparent à droite — laisse la photo respirer --}}
-        <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-white/97 to-white/10"></div>
-        {{-- Voile mobile : couvre tout légèrement pour lisibilité --}}
-        <div class="pointer-events-none absolute inset-0 bg-white/60 sm:hidden"></div>
+        {{-- Voile sombre léger — image plus claire, texte blanc lisible --}}
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-brand-dark/65 via-brand-dark/40 to-brand-dark/10"></div>
 
         {{-- Contenu --}}
         <div class="relative z-10 w-full max-w-xl px-6 pb-28 pt-10 sm:pb-12 sm:pl-10 lg:pl-16">
 
-            {{-- Grand titre style PPF --}}
+            {{-- Grand titre --}}
             <h1 class="mb-4 leading-none">
                 <span style="font-family:'Anton',sans-serif;font-size:clamp(3.8rem,9vw,7.5rem);letter-spacing:0.01em"
-                      class="block text-brand-dark">OUI,</span>
+                      class="block text-white drop-shadow-lg">OUI,</span>
                 <span style="font-family:'Anton',sans-serif;font-size:clamp(2.2rem,5.5vw,4.5rem);letter-spacing:0.01em"
-                      class="block text-brand-yellow">c'est nous&nbsp;!</span>
+                      class="block text-brand-yellow drop-shadow-lg">c'est nous&nbsp;!</span>
             </h1>
 
-            <p class="mb-8 text-base font-semibold leading-relaxed text-brand-dark/70 sm:text-lg">
+            <p class="mb-8 text-base font-semibold leading-relaxed text-white/90 sm:text-lg">
                 L'expert en rénovation énergétique<br class="hidden sm:block">
                 et entretien de la maison en Bourgogne.
             </p>
 
-            {{-- Stats cercles jaunes style PPF --}}
+            {{-- Stats cercles jaunes --}}
             @php
             $heroStats = [
                 ['+5 000','Chantiers','M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z'],
@@ -50,16 +48,16 @@
                 ['24 h','Réponse','M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z'],
             ];
             @endphp
-            <div class="mb-8 grid grid-cols-4 gap-3 border-t-2 border-brand-yellow/30 pt-6">
+            <div class="mb-8 grid grid-cols-4 gap-3 border-t border-white/20 pt-6">
                 @foreach($heroStats as [$val, $lbl, $path])
                 <div class="flex flex-col items-center gap-2 text-center">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-yellow shadow-sm">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-yellow shadow-md">
                         <svg class="h-5 w-5 text-brand-dark" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="{{ $path }}"/>
                         </svg>
                     </div>
-                    <span class="text-sm font-black leading-none text-brand-dark sm:text-base">{{ $val }}</span>
-                    <span class="text-[9px] font-bold uppercase tracking-widest text-brand-dark/50">{{ $lbl }}</span>
+                    <span class="text-sm font-black leading-none text-white sm:text-base">{{ $val }}</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-white/60">{{ $lbl }}</span>
                 </div>
                 @endforeach
             </div>
@@ -71,11 +69,11 @@
                     Devis gratuit →
                 </a>
                 <a href="#services"
-                   class="inline-flex items-center gap-2 rounded-xl bg-brand-dark px-6 py-3 text-sm font-extrabold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-700">
+                   class="inline-flex items-center gap-2 rounded-xl bg-white/15 px-6 py-3 text-sm font-extrabold text-white shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/25">
                     Nos services
                 </a>
                 <a href="tel:+33385419886"
-                   class="inline-flex items-center gap-2 rounded-xl border-2 border-brand-dark/15 bg-white px-5 py-3 text-sm font-extrabold text-brand-dark shadow-sm transition hover:-translate-y-0.5 hover:border-brand-yellow">
+                   class="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-extrabold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/20">
                     <svg class="h-4 w-4 text-brand-yellow" fill="currentColor" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
                     03 85 41 98 86
                 </a>
