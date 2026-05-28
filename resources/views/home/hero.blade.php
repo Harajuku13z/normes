@@ -20,63 +20,78 @@
     <div id="heroIdentityBlock"
          class="{{ $isIdentity ? 'flex' : 'hidden' }} absolute inset-0 z-10">
 
-        {{-- Dégradé latéral : sombre à gauche, transparent à droite --}}
-        <div class="absolute inset-0 bg-gradient-to-r from-brand-dark/95 via-brand-dark/70 to-brand-dark/10 pointer-events-none"></div>
-        {{-- Dégradé bas pour lisibilité miniatures --}}
-        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-brand-dark/60 to-transparent pointer-events-none"></div>
+        {{-- Dégradé latéral --}}
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-brand-dark/90 via-brand-dark/65 to-brand-dark/10"></div>
+        <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-36 bg-gradient-to-t from-brand-dark/70 to-transparent"></div>
 
-        {{-- Contenu texte — colonne gauche --}}
-        <div class="relative z-10 flex h-full w-full max-w-3xl flex-col justify-center px-8 py-12 sm:px-12 lg:px-16 xl:px-20">
+        {{-- Contenu — même positionnement que les autres slides --}}
+        <div class="relative z-10 mx-auto flex h-full w-[95%] flex-col justify-end px-4 pb-10 pt-8 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
 
-            {{-- Eyebrow badge --}}
-            <div class="mb-6 inline-flex w-fit items-center gap-2 rounded-full border border-brand-yellow/50 bg-brand-yellow/15 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.18em] text-brand-yellow backdrop-blur-sm">
-                <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-yellow"></span>
-                Expert rénovation · Bourgogne · Certifié RGE
-            </div>
+            {{-- Carte principale — style identique aux autres slides --}}
+            <div class="max-w-3xl w-full text-white">
+                <div class="rounded-3xl border border-white/15 bg-brand-dark/40 p-6 shadow-soft backdrop-blur-md sm:p-8">
 
-            {{-- Titre principal --}}
-            <h1 class="mb-4 leading-none text-white">
-                <span class="block text-[2.6rem] font-black tracking-tight drop-shadow-lg sm:text-[3.4rem] lg:text-[4.2rem] xl:text-[5rem]">L'EXPERT<span class="text-brand-yellow">.</span></span>
-                <span class="block text-[1.8rem] font-black uppercase tracking-tight text-brand-yellow drop-shadow sm:text-[2.4rem] lg:text-[3rem]">Rénovation Énergétique</span>
-                <span class="mt-2 block text-lg font-semibold text-white/80 sm:text-xl lg:text-2xl">et entretien de la maison en Bourgogne</span>
-            </h1>
+                    {{-- Slogan accroche --}}
+                    <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">
+                        <span class="mr-2 inline-block rounded-full bg-brand-yellow/20 px-2 py-0.5">✦</span>Oui c'est nous !
+                    </p>
 
-            {{-- Description --}}
-            <p class="mb-7 max-w-lg text-[0.95rem] leading-relaxed text-white/75 sm:text-base lg:text-lg">
-                Toiture, isolation, énergie solaire, ventilation — une équipe certifiée RGE à vos côtés pour chaque projet de rénovation.
-            </p>
+                    {{-- Titre --}}
+                    <h1 class="mb-2 leading-[1.02] tracking-tight drop-shadow">
+                        <span class="block text-4xl font-black text-white sm:text-5xl lg:text-6xl">L'Expert Rénovation<span class="text-brand-yellow">.</span></span>
+                        <span class="block text-xl font-bold text-white/80 sm:text-2xl lg:text-3xl">Bourgogne — Certifié RGE</span>
+                    </h1>
 
-            {{-- Stats inline --}}
-            <div class="mb-8 flex flex-wrap gap-x-6 gap-y-3">
-                @foreach ([
-                    ['+5 000', 'chantiers'],
-                    ['98 %',   'satisfaction'],
-                    ['RGE',    'certifié'],
-                    ['48 h',   'prise en charge'],
-                ] as [$val, $lbl])
-                <div class="flex items-center gap-2">
-                    <span class="text-xl font-black text-brand-yellow sm:text-2xl">{{ $val }}</span>
-                    <span class="text-xs font-semibold uppercase tracking-wide text-white/60">{{ $lbl }}</span>
+                    {{-- Spécialités tags --}}
+                    <div class="mb-5 mt-4 flex flex-wrap gap-2">
+                        @foreach(['Traitement des tuiles', 'Couverture', 'Photovoltaïque', 'Isolation', 'Façade'] as $s)
+                        <span class="inline-flex items-center gap-1.5 rounded-full border border-brand-yellow/30 bg-brand-yellow/10 px-3 py-1 text-xs font-bold text-brand-yellow">
+                            <span class="h-1 w-1 rounded-full bg-brand-yellow"></span>{{ $s }}
+                        </span>
+                        @endforeach
+                    </div>
+
+                    {{-- Stats ligne --}}
+                    <div class="mb-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-white/10 pt-4">
+                        @foreach([['+5 000','chantiers'],[' 98 %','satisfaction'],['RGE','certifié'],['48 h','réponse']] as [$v,$l])
+                        <div class="flex items-baseline gap-1.5">
+                            <span class="text-lg font-black text-brand-yellow sm:text-xl">{{ $v }}</span>
+                            <span class="text-xs font-semibold uppercase tracking-wide text-white/55">{{ $l }}</span>
+                        </div>
+                        @endforeach
+                    </div>
+
+                    {{-- CTAs --}}
+                    <div class="flex flex-wrap gap-3">
+                        <a href="#devis"
+                           class="inline-flex items-center gap-2 rounded-xl bg-brand-yellow px-6 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:-translate-y-0.5 hover:bg-yellow-300">
+                            Devis gratuit →
+                        </a>
+                        <a href="#services"
+                           class="inline-flex items-center gap-2 rounded-xl bg-brand-blue px-6 py-3 text-sm font-extrabold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-sky-500">
+                            Nos services
+                        </a>
+                        <a href="tel:+33385419886"
+                           class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/20">
+                            <svg class="h-4 w-4 text-brand-yellow" fill="currentColor" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+                            03 85 41 98 86
+                        </a>
+                        {{-- Badge avis --}}
+                        <div class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm">
+                            <span class="text-base font-black text-brand-yellow">5.0</span>
+                            <div>
+                                <div class="text-[10px] font-bold uppercase tracking-wide text-white/60">Avis Google</div>
+                                <div class="text-xs text-brand-yellow">★★★★★ <span class="text-white/50">+100</span></div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-                @endforeach
             </div>
 
-            {{-- CTAs --}}
-            <div class="flex flex-wrap gap-3">
-                <a href="#devis"
-                   class="inline-flex items-center gap-2 rounded-xl bg-brand-yellow px-7 py-3.5 text-sm font-extrabold text-brand-dark shadow-[0_4px_24px_rgba(251,191,36,.4)] transition hover:-translate-y-0.5 hover:bg-yellow-300 hover:shadow-[0_6px_28px_rgba(251,191,36,.55)]">
-                    Devis gratuit &nbsp;→
-                </a>
-                <a href="#services"
-                   class="inline-flex items-center gap-2 rounded-xl border-2 border-white/30 bg-white/10 px-7 py-3.5 text-sm font-extrabold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:border-white/60 hover:bg-white/20">
-                    Nos services
-                </a>
-                <a href="tel:+33385419886"
-                   class="inline-flex items-center gap-2 rounded-xl bg-brand-dark/60 px-5 py-3.5 text-sm font-bold text-white/90 backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-brand-dark/80">
-                    <svg class="h-4 w-4 text-brand-yellow" fill="currentColor" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
-                    03 85 41 98 86
-                </a>
-            </div>
+            {{-- Espace côté droit --}}
+            <div class="hidden lg:block lg:w-[200px]"></div>
+        </div>
 
             {{-- Badge avis flottant --}}
             <div class="mt-8 inline-flex w-fit items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur-sm">
