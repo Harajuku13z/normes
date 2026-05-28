@@ -407,6 +407,7 @@
                     @endif
                     <form method="post" action="{{ route('franchise.store') }}" class="space-y-4">
                         @csrf
+                        @include('partials.form_spam_shield', ['form' => 'franchise'])
                         <div class="grid gap-4 sm:grid-cols-2">
                             <div class="sm:col-span-2">
                                 <label for="fr_name" class="mb-1 block text-sm font-semibold">Nom complet <span class="text-red-600">*</span></label>
@@ -422,7 +423,7 @@
                             </div>
                             <div>
                                 <label for="fr_cp" class="mb-1 block text-sm font-semibold">Code postal <span class="text-red-600">*</span></label>
-                                <input id="fr_cp" name="postal_code" type="text" inputmode="numeric" maxlength="10" autocomplete="postal-code" value="{{ old('postal_code') }}" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm transition focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
+                                <input id="fr_cp" name="postal_code" type="text" inputmode="numeric" maxlength="5" pattern="[0-9]{5}" autocomplete="postal-code" value="{{ old('postal_code') }}" required class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm transition focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25">
                             </div>
                             <div>
                                 <label for="fr_indep" class="mb-1 block text-sm font-semibold">Activité en indépendant ? <span class="text-red-600">*</span></label>

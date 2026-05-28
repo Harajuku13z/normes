@@ -21,7 +21,7 @@ class FranchiseInquiryRequest extends FormRequest
             'name' => ['required', 'string', 'max:190'],
             'phone' => ['required', 'string', 'max:64'],
             'email' => ['required', 'email:rfc', 'max:190'],
-            'postal_code' => ['required', 'string', 'max:32'],
+            'postal_code' => ['required', 'regex:/^\d{5}$/'],
             'has_independent_activity' => ['required', Rule::in(['0', '1', 'yes', 'no', 'oui', 'non'])],
             'geographic_sector' => ['required', 'string', 'max:255'],
             'personal_contribution' => ['nullable', 'string', 'max:120'],

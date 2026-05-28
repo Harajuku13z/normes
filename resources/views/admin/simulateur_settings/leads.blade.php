@@ -102,13 +102,23 @@
                                 </div>
                             </td>
                             <td class="px-4 py-3 text-right">
-                                <a href="{{ route('admin.simulateur_leads.show', $lead) }}"
-                                   class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors">
-                                    Voir
-                                    <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
-                                    </svg>
-                                </a>
+                                <div class="flex items-center justify-end gap-2">
+                                    <a href="{{ route('admin.simulateur_leads.show', $lead) }}"
+                                       class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors">
+                                        Voir
+                                        <svg class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/>
+                                        </svg>
+                                    </a>
+                                    <form method="post" action="{{ route('admin.simulateur_leads.destroy', $lead) }}" onsubmit="return confirm('Supprimer ce lead ?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="inline-flex items-center gap-1 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-bold text-red-700 transition-colors hover:bg-red-100">
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @endforeach

@@ -3,7 +3,7 @@
 @section('title', 'Demande de ' . ($contactInquiry->nom_complet ?: 'inconnu'))
 
 @section('content')
-    <div class="mb-6 flex items-center gap-3">
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
         <a href="{{ route('admin.contact_inquiries.index') }}"
            class="flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -11,6 +11,14 @@
             </svg>
             Retour aux demandes
         </a>
+        <form method="post" action="{{ route('admin.contact_inquiries.destroy', $contactInquiry) }}" onsubmit="return confirm('Supprimer définitivement cette demande ?');">
+            @csrf
+            @method('DELETE')
+            <button type="submit"
+                    class="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-extrabold text-red-700 shadow-sm transition hover:bg-red-100">
+                Supprimer la demande
+            </button>
+        </form>
     </div>
 
     <div class="grid gap-5 lg:grid-cols-3">

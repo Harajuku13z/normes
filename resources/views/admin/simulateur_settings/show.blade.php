@@ -42,6 +42,13 @@
                 <a href="{{ route('admin.simulateur_leads.pdf', $lead) }}" class="inline-flex items-center rounded-xl bg-rose-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-rose-700">
                     Export PDF
                 </a>
+                <form method="post" action="{{ route('admin.simulateur_leads.destroy', $lead) }}" onsubmit="return confirm('Supprimer définitivement ce lead ?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="inline-flex items-center rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-extrabold text-red-700 hover:bg-red-100">
+                        Supprimer
+                    </button>
+                </form>
             </div>
         </div>
 

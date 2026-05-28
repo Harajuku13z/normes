@@ -131,5 +131,15 @@
                 </a>
             </div>
         </div>
+
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
+            <h2 class="text-lg font-extrabold text-slate-900">Signatures mail</h2>
+            <p class="mt-1 text-sm text-slate-600">Créer une signature HTML par employé avec photo, mail, téléphone, aperçu et bloc prêt à coller dans Gmail.</p>
+            <div class="mt-5 flex flex-wrap gap-2">
+                <a href="{{ route('admin.email_signatures.index') }}" class="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
+                    Gérer les signatures
+                </a>
+            </div>
+        </div>
     </div>
 @endsection

@@ -6,6 +6,7 @@ use App\Models\SimulateurLead;
 use App\Models\ServicePage;
 use App\Services\HomePageService;
 use App\Services\SimulateurMailer;
+use App\Support\FormSpamGuard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
@@ -56,6 +57,15 @@ class SimulateurController extends Controller
 
     public function step1Store(Request $request): RedirectResponse
     {
+        app(FormSpamGuard::class)->ensureValid($request, 'simulateur-step1', [
+            'nom_prenom',
+            'telephone',
+            'email',
+            'code_postal',
+            'surface_m2',
+            'address',
+        ]);
+
         $data = $request->validate([
             'nom_prenom' => ['required', 'string', 'max:190'],
             'code_postal' => ['required', 'regex:/^\d{5}$/'],
@@ -300,6 +310,11 @@ class SimulateurController extends Controller
 
     public function finish(Request $request): RedirectResponse
     {
+        app(FormSpamGuard::class)->ensureValid($request, 'simulateur-finish', [
+            'telephone',
+            'email',
+        ]);
+
         $data = $request->validate([
             'telephone' => ['required', 'string', 'max:30'],
             'email' => ['nullable', 'email', 'max:190'],

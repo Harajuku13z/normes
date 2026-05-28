@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\HomeAdminController;
 use App\Http\Controllers\Admin\PortfolioProjectController;
 use App\Http\Controllers\Admin\UploadController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\EmailSignatureController;
 use App\Http\Controllers\FranchiseController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\HomeController;
@@ -28,11 +29,30 @@ use App\Http\Controllers\LegacyPageController;
 use App\Http\Controllers\RealisationsController;
 use App\Http\Controllers\ServicePagesController;
 use App\Http\Controllers\SimulateurController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Admin\AdminContactInquiriesController;
+use App\Http\Controllers\Admin\AdminEmailSignatureController;
 use App\Http\Controllers\Admin\AdminLegacyPagesController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::controller(SitemapController::class)
+    ->withoutMiddleware([
+        \Illuminate\Cookie\Middleware\EncryptCookies::class,
+        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+    ])
+    ->group(function (): void {
+        Route::get('/sitemap_index.xml', 'index')->name('sitemap.index');
+        Route::get('/sitemap.xml', 'index')->name('sitemap.alias');
+        Route::get('/page-sitemap.xml', 'pages')->name('sitemap.pages');
+        Route::get('/service-sitemap.xml', 'services')->name('sitemap.services');
+        Route::get('/blog-sitemap.xml', 'blog')->name('sitemap.blog');
+        Route::get('/realisation-sitemap.xml', 'realisations')->name('sitemap.realisations');
+        Route::get('/legacy-sitemap.xml', 'legacy')->name('sitemap.legacy');
+    });
 
 Route::prefix('admin')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('admin.login');
@@ -82,6 +102,7 @@ Route::prefix('admin')->group(function () {
         Route::get('/simulateur-leads/{simulateurLead}/pdf', [AdminSimulateurSettingsController::class, 'leadPdf'])->name('admin.simulateur_leads.pdf');
         Route::post('/simulateur-leads/{simulateurLead}/resend-admin-mail', [AdminSimulateurSettingsController::class, 'resendAdminMail'])->name('admin.simulateur_leads.resend_admin_mail');
         Route::post('/simulateur-leads/{simulateurLead}/resend-client-mail', [AdminSimulateurSettingsController::class, 'resendClientMail'])->name('admin.simulateur_leads.resend_client_mail');
+        Route::delete('/simulateur-leads/{simulateurLead}', [AdminSimulateurSettingsController::class, 'destroyLead'])->name('admin.simulateur_leads.destroy');
 
         Route::prefix('blog-posts')->name('admin.blog_posts.')->group(function () {
             Route::get('/', [AdminBlogPostsController::class, 'index'])->name('index');
@@ -105,6 +126,16 @@ Route::prefix('admin')->group(function () {
         Route::prefix('contact-inquiries')->name('admin.contact_inquiries.')->group(function () {
             Route::get('/', [AdminContactInquiriesController::class, 'index'])->name('index');
             Route::get('/{contactInquiry}', [AdminContactInquiriesController::class, 'show'])->name('show');
+            Route::delete('/{contactInquiry}', [AdminContactInquiriesController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('email-signatures')->name('admin.email_signatures.')->group(function () {
+            Route::get('/', [AdminEmailSignatureController::class, 'index'])->name('index');
+            Route::get('/create', [AdminEmailSignatureController::class, 'create'])->name('create');
+            Route::post('/', [AdminEmailSignatureController::class, 'store'])->name('store');
+            Route::get('/{emailSignature}/edit', [AdminEmailSignatureController::class, 'edit'])->name('edit');
+            Route::put('/{emailSignature}', [AdminEmailSignatureController::class, 'update'])->name('update');
+            Route::delete('/{emailSignature}', [AdminEmailSignatureController::class, 'destroy'])->name('destroy');
         });
     });
 
@@ -121,7 +152,7 @@ Route::get('/services/{slug}', [ServicePagesController::class, 'show'])->name('s
 // Page publique contact (formulaire)
 Route::get('/contact', [ContactController::class, 'index'])->name('contact.page');
 Route::post('/contact', [ContactController::class, 'store'])
-    ->middleware('throttle:10,1')
+    ->middleware('throttle:6,1')
     ->name('contact.store');
 Route::get('/contact/merci', [ContactController::class, 'success'])->name('contact.success');
 
@@ -135,7 +166,7 @@ Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 // Franchise (candidature)
 Route::get('/franchise', [FranchiseController::class, 'index'])->name('franchise.page');
 Route::post('/franchise', [FranchiseController::class, 'store'])
-    ->middleware('throttle:8,1')
+    ->middleware('throttle:5,1')
     ->name('franchise.store');
 Route::get('/franchise/merci', [FranchiseController::class, 'success'])->name('franchise.success');
 
@@ -146,7 +177,9 @@ Route::get('/realisations/{portfolio_project}', [RealisationsController::class, 
 // Simulateur de devis (multi-étapes)
 Route::get('/simulateur', [SimulateurController::class, 'start'])->name('simulateur.start');
 Route::get('/simulateur/etape-1', [SimulateurController::class, 'step1'])->name('simulateur.step1');
-Route::post('/simulateur/etape-1', [SimulateurController::class, 'step1Store'])->name('simulateur.step1.store');
+Route::post('/simulateur/etape-1', [SimulateurController::class, 'step1Store'])
+    ->middleware('throttle:6,1')
+    ->name('simulateur.step1.store');
 Route::get('/simulateur/etape-2', [SimulateurController::class, 'step2'])->name('simulateur.step2');
 Route::post('/simulateur/etape-2', [SimulateurController::class, 'step2Store'])->name('simulateur.step2.store');
 Route::get('/simulateur/etape-3', [SimulateurController::class, 'step3'])->name('simulateur.step3');
@@ -154,8 +187,14 @@ Route::post('/simulateur/etape-3', [SimulateurController::class, 'step3Store'])-
 Route::get('/simulateur/etape-4', [SimulateurController::class, 'step4'])->name('simulateur.step4');
 Route::post('/simulateur/etape-4', [SimulateurController::class, 'step4Store'])->name('simulateur.step4.store');
 Route::get('/simulateur/etape-5', [SimulateurController::class, 'step5'])->name('simulateur.step5');
-Route::post('/simulateur/finaliser', [SimulateurController::class, 'finish'])->name('simulateur.finish');
+Route::post('/simulateur/finaliser', [SimulateurController::class, 'finish'])
+    ->middleware('throttle:6,1')
+    ->name('simulateur.finish');
 Route::get('/simulateur/ok', [SimulateurController::class, 'success'])->name('simulateur.success');
+
+Route::get('/signature-mail/{emailSignature:slug}', [EmailSignatureController::class, 'show'])->name('email_signatures.show');
+Route::get('/signature-mail/{emailSignature:slug}/html', [EmailSignatureController::class, 'html'])->name('email_signatures.html');
+Route::get('/signature-mail/{emailSignature:slug}/download', [EmailSignatureController::class, 'download'])->name('email_signatures.download');
 
 // Admin : pages dédiées aux services
 Route::middleware('admin')->prefix('admin')->group(function () {

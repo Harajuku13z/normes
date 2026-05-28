@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ContactInquiry;
 use App\Services\ContactMailer;
 use App\Services\HomePageService;
+use App\Support\FormSpamGuard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -21,11 +22,21 @@ class ContactController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        app(FormSpamGuard::class)->ensureValid($request, 'contact', [
+            'nom_complet',
+            'email',
+            'telephone',
+            'code_postal',
+            'service',
+            'message',
+            'autres_infos',
+        ]);
+
         $validated = $request->validate([
             'nom_complet'  => ['nullable', 'string', 'max:150'],
             'email'        => ['nullable', 'email', 'max:150'],
             'telephone'    => ['nullable', 'string', 'max:30'],
-            'code_postal'  => ['nullable', 'string', 'max:10'],
+            'code_postal'  => ['nullable', 'regex:/^\d{5}$/'],
             'service'      => ['nullable', 'string', 'max:150'],
             'message'      => ['nullable', 'string', 'max:5000'],
             'autres_infos' => ['nullable', 'string', 'max:3000'],

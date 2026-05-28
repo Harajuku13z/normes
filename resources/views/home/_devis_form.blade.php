@@ -39,6 +39,7 @@
 
     <form class="flex flex-1 flex-col text-brand-dark" action="{{ route('contact.store') }}" method="post" enctype="multipart/form-data">
         @csrf
+        @include('partials.form_spam_shield', ['form' => 'contact'])
         <p class="mb-4 text-sm font-semibold text-slate-600">{{ data_get($d, 'form.note') }}</p>
         <div class="grid gap-3 sm:grid-cols-2">
             <div class="sm:col-span-2">
@@ -60,7 +61,8 @@
                     name="code_postal"
                     type="text"
                     inputmode="numeric"
-                    maxlength="10"
+                    maxlength="5"
+                    pattern="[0-9]{5}"
                     autocomplete="postal-code"
                     value="{{ old('code_postal') }}"
                     class="w-full rounded-lg border border-slate-200 px-3 py-2.5 text-sm focus:border-brand-blue focus:outline-none focus:ring-2 focus:ring-brand-blue/25"
@@ -93,4 +95,3 @@
         <p class="mt-3 text-center text-xs text-slate-500">{{ data_get($d, 'form.footer_note') }}</p>
     </form>
 </div>
-

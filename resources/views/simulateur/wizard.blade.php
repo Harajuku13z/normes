@@ -81,6 +81,7 @@
 
                 <form method="post" action="{{ route('simulateur.step1.store') }}" class="mt-5 grid gap-4 sm:grid-cols-2">
                     @csrf
+                    @include('partials.form_spam_shield', ['form' => 'simulateur-step1'])
                     <div class="sm:col-span-2">
                         <label class="mb-1 block text-sm font-semibold">Nom et prénom</label>
                         <input name="nom_prenom" value="{{ old('nom_prenom', data_get($s, 'nom_prenom', '')) }}" required class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm">
@@ -319,6 +320,7 @@
 
                 <form method="post" action="{{ route('simulateur.finish') }}" class="mt-5 grid gap-4 sm:grid-cols-2" id="simFinishForm" onsubmit="(function(f){var btn=f.querySelector('[data-finish-btn]');if(btn){btn.disabled=true;btn.textContent='Envoi en cours…';}})(this)">
                     @csrf
+                    @include('partials.form_spam_shield', ['form' => 'simulateur-finish'])
                     <div>
                         <label class="mb-1 block text-sm font-semibold">Téléphone</label>
                         <input name="telephone" value="{{ old('telephone', data_get($s, 'telephone', '')) }}" required class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm">

@@ -112,6 +112,17 @@ class AdminSimulateurSettingsController extends Controller
         }
     }
 
+    public function destroyLead(SimulateurLead $simulateurLead): RedirectResponse
+    {
+        $label = trim((string) ($simulateurLead->nom_prenom ?: $simulateurLead->email ?: 'Lead #'.$simulateurLead->id));
+
+        $simulateurLead->delete();
+
+        return redirect()
+            ->route('admin.simulateur_leads.index')
+            ->with('status', 'Lead supprimé : '.$label.'.');
+    }
+
     public function update(Request $request): RedirectResponse
     {
         $data = $request->validate([

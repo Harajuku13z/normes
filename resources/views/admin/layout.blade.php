@@ -212,6 +212,15 @@
                 Legacy URLs SEO
             </a>
 
+            <a href="{{ route('admin.email_signatures.index') }}"
+               class="group mb-1 flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition-colors
+                      {{ nav_active($r, ['admin.email_signatures']) ? 'bg-brand-600 text-white' : 'text-slate-400 hover:bg-slate-800 hover:text-white' }}">
+                <svg class="h-4 w-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 7.5v9A2.25 2.25 0 0 1 19.5 18.75h-15A2.25 2.25 0 0 1 2.25 16.5v-9m19.5 0A2.25 2.25 0 0 0 19.5 5.25h-15A2.25 2.25 0 0 0 2.25 7.5m19.5 0-8.69 5.516a2.25 2.25 0 0 1-2.12 0L2.25 7.5"/>
+                </svg>
+                Signatures mail
+            </a>
+
             {{-- PARAMÈTRES --}}
             <p class="mt-5 mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">Paramètres</p>
 

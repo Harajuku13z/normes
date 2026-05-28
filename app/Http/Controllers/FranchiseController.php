@@ -6,6 +6,7 @@ use App\Http\Requests\FranchiseInquiryRequest;
 use App\Models\FranchiseInquiry;
 use App\Services\HomePageService;
 use App\Services\SimulateurMailer;
+use App\Support\FormSpamGuard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
@@ -24,6 +25,16 @@ class FranchiseController extends Controller
 
     public function store(FranchiseInquiryRequest $request, HomePageService $homePage): RedirectResponse
     {
+        app(FormSpamGuard::class)->ensureValid($request, 'franchise', [
+            'name',
+            'phone',
+            'email',
+            'postal_code',
+            'geographic_sector',
+            'personal_contribution',
+            'message',
+        ]);
+
         $payload = $request->inquiryPayload();
         $payload['ip_address'] = $request->ip();
 
