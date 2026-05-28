@@ -31,17 +31,23 @@
             <div class="max-w-3xl w-full text-white">
                 <div class="rounded-3xl border border-white/15 bg-brand-dark/35 p-6 shadow-soft backdrop-blur-md sm:p-8">
 
-                    {{-- Grand slogan --}}
-                    <p class="mb-1 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">Normes &amp; Rénovation</p>
+                    {{-- Eyebrow --}}
+                    <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">Normes &amp; Rénovation · Bourgogne</p>
+
+                    {{-- Grand slogan animé --}}
                     <h1 class="mb-3 leading-[0.95] tracking-tight drop-shadow">
-                        <span class="block font-black italic text-white" style="font-size:clamp(2.4rem,6vw,4.5rem)">Oui, c'est nous&nbsp;!</span>
+                        <span id="heroSlogan"
+                              class="hero-slogan-anim block font-black italic text-white"
+                              style="font-size:clamp(2.6rem,6.5vw,5rem);letter-spacing:-0.02em">
+                            Oui, c'est nous&nbsp;!
+                        </span>
                         <span class="mt-2 block text-2xl font-black text-white sm:text-3xl lg:text-4xl">Expert en rénovation pour l'habitat<span class="text-brand-yellow">.</span></span>
-                        <span class="mt-1 block text-base font-semibold text-white/70 sm:text-lg">Bourgogne · Certifié RGE · Devis gratuit</span>
+                        <span class="mt-1 block text-base font-semibold text-white/70 sm:text-lg">Certifié RGE · Devis gratuit</span>
                     </h1>
 
                     {{-- Stats --}}
                     <div class="mb-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-white/10 pt-4">
-                        @foreach([['+5 000','chantiers'],[' 98 %','satisfaction'],['RGE','certifié'],['48 h','réponse']] as [$v,$l])
+                        @foreach([['+5 000','chantiers'],[' 98 %','satisfaction'],['RGE','certifié'],['24 h','réponse']] as [$v,$l])
                         <div class="flex items-baseline gap-1.5">
                             <span class="text-lg font-black text-brand-yellow sm:text-xl">{{ $v }}</span>
                             <span class="text-xs font-semibold uppercase tracking-wide text-white/55">{{ $l }}</span>
@@ -70,19 +76,6 @@
             </div>
 
             <div class="hidden lg:block lg:w-[200px]"></div>
-        </div>
-
-            {{-- Badge avis flottant --}}
-            <div class="mt-8 inline-flex w-fit items-center gap-3 rounded-2xl bg-white/10 px-4 py-3 backdrop-blur-sm">
-                <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-brand-yellow text-sm font-black text-brand-dark">5.0</div>
-                <div>
-                    <div class="text-xs font-bold text-white">Avis Google vérifiés</div>
-                    <div class="text-sm text-brand-yellow">★★★★★ <span class="text-white/60 text-xs">+100 avis</span></div>
-                </div>
-                <div class="ml-2 rounded-lg bg-brand-dark/50 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wide text-brand-yellow">
-                    ✓ RGE
-                </div>
-            </div>
         </div>
     </div>
 
