@@ -289,7 +289,7 @@
                 const idx = slideIds.indexOf(currentHeroSlide);
                 const next = idx >= 0 && idx < slideIds.length - 1 ? slideIds[idx + 1] : slideIds[0];
                 setHeroSlide(next || 1);
-            }, 4500);
+            }, 6000);
         };
         const stopHeroAutoplay = () => {
             if (heroAutoplay) {
