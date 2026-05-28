@@ -147,15 +147,5 @@
                 animation: none;
             }
         }
-        /* ── Slogan hero identité — typewriter cursor ── */
-        @keyframes cursorBlink {
-            0%,100% { opacity:1; }
-            50%     { opacity:0; }
-        }
-        .hero-cursor {
-            display:inline-block;
-            color:#FADF70;
-            animation:cursorBlink .65s step-end infinite;
-        }
     </style>
 </head>

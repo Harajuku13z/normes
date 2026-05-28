@@ -15,74 +15,72 @@
     <div id="heroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image:{{ $firstBgFull }}"></div>
 
     {{-- ===================================================
-         SLIDE 1 — IDENTITÉ : layout magazine plein écran
+         SLIDE 1 — IDENTITÉ : style PPF blanc + couleurs marque
          =================================================== --}}
     <div id="heroIdentityBlock"
-         class="{{ $isIdentity ? 'flex' : 'hidden' }} absolute inset-0 z-10">
+         class="{{ $isIdentity ? 'flex' : 'hidden' }} absolute inset-0 z-10 items-center">
 
-        {{-- Dégradé latéral — un peu plus clair pour laisser respirer la photo --}}
-        <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-brand-dark/80 via-brand-dark/50 to-transparent"></div>
-        <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-36 bg-gradient-to-t from-brand-dark/60 to-transparent"></div>
+        {{-- Voile blanc à gauche, transparent à droite — laisse la photo respirer --}}
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-white via-white/97 to-white/10"></div>
+        {{-- Voile mobile : couvre tout légèrement pour lisibilité --}}
+        <div class="pointer-events-none absolute inset-0 bg-white/60 sm:hidden"></div>
 
-        {{-- Contenu — même positionnement que les autres slides --}}
-        <div class="relative z-10 mx-auto flex h-full w-[95%] flex-col justify-end px-4 pb-28 pt-8 sm:pb-10 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
+        {{-- Contenu --}}
+        <div class="relative z-10 w-full max-w-xl px-6 pb-28 pt-10 sm:pb-12 sm:pl-10 lg:pl-16">
 
-            {{-- Carte glassmorphism — identique aux autres slides --}}
-            <div class="max-w-3xl w-full text-white">
-                <div class="rounded-3xl border border-white/15 bg-brand-dark/35 p-6 shadow-soft backdrop-blur-md sm:p-8">
+            {{-- Grand titre style PPF --}}
+            <h1 class="mb-4 leading-none">
+                <span style="font-family:'Anton',sans-serif;font-size:clamp(3.8rem,9vw,7.5rem);letter-spacing:0.01em"
+                      class="block text-brand-dark">OUI,</span>
+                <span style="font-family:'Anton',sans-serif;font-size:clamp(2.2rem,5.5vw,4.5rem);letter-spacing:0.01em"
+                      class="block text-brand-yellow">c'est nous&nbsp;!</span>
+            </h1>
 
-                    {{-- Grand slogan Anton animé --}}
-                    <h1 class="mb-4 leading-[0.95] drop-shadow">
-                        <span id="heroSlogan"
-                              class="block"
-                              style="font-family:'Anton',sans-serif;font-size:clamp(1.6rem,7.5vw,5.8rem);letter-spacing:0.01em;min-height:1.1em;white-space:nowrap"></span>
-                        <span class="mt-1 block text-xl font-black text-white/90 sm:mt-2 sm:text-3xl lg:text-4xl">Expert en rénovation pour l'habitat<span class="text-brand-yellow">.</span></span>
-                    </h1>
+            <p class="mb-8 text-base font-semibold leading-relaxed text-brand-dark/70 sm:text-lg">
+                L'expert en rénovation énergétique<br class="hidden sm:block">
+                et entretien de la maison en Bourgogne.
+            </p>
 
-                    {{-- Stats avec icônes --}}
-                    <div class="mb-6 grid grid-cols-4 gap-3 border-t border-white/10 pt-5">
-                        @php
-                        $heroStats = [
-                            ['+5 000','Chantiers','M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z'],
-                            ['98 %','Satisfaction','M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z'],
-                            ['RGE','Certifié','M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z'],
-                            ['24 h','Réponse','M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z'],
-                        ];
-                        @endphp
-                        @foreach($heroStats as [$val, $lbl, $path])
-                        <div class="flex flex-col items-center gap-1.5 text-center">
-                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-yellow/20 ring-1 ring-brand-yellow/40">
-                                <svg class="h-5 w-5 text-brand-yellow" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $path }}"/>
-                                </svg>
-                            </div>
-                            <span class="text-base font-black leading-none text-white sm:text-lg">{{ $val }}</span>
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-white/50">{{ $lbl }}</span>
-                        </div>
-                        @endforeach
+            {{-- Stats cercles jaunes style PPF --}}
+            @php
+            $heroStats = [
+                ['+5 000','Chantiers','M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z'],
+                ['98 %','Satisfaction','M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z'],
+                ['RGE','Certifié','M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z'],
+                ['24 h','Réponse','M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z'],
+            ];
+            @endphp
+            <div class="mb-8 grid grid-cols-4 gap-3 border-t-2 border-brand-yellow/30 pt-6">
+                @foreach($heroStats as [$val, $lbl, $path])
+                <div class="flex flex-col items-center gap-2 text-center">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-yellow shadow-sm">
+                        <svg class="h-5 w-5 text-brand-dark" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="{{ $path }}"/>
+                        </svg>
                     </div>
-
-                    {{-- CTAs --}}
-                    <div class="flex flex-wrap gap-3">
-                        <a href="#devis"
-                           class="inline-flex items-center gap-2 rounded-xl bg-brand-yellow px-6 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:-translate-y-0.5 hover:bg-yellow-300">
-                            Devis gratuit →
-                        </a>
-                        <a href="#services"
-                           class="inline-flex items-center gap-2 rounded-xl bg-brand-blue px-6 py-3 text-sm font-extrabold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-sky-500">
-                            Nos services
-                        </a>
-                        <a href="tel:+33385419886"
-                           class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-brand-dark px-5 py-3 text-sm font-extrabold uppercase tracking-wide text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-slate-900">
-                            <svg class="h-4 w-4 text-brand-yellow" fill="currentColor" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
-                            03 85 41 98 86
-                        </a>
-                    </div>
-
+                    <span class="text-sm font-black leading-none text-brand-dark sm:text-base">{{ $val }}</span>
+                    <span class="text-[9px] font-bold uppercase tracking-widest text-brand-dark/50">{{ $lbl }}</span>
                 </div>
+                @endforeach
             </div>
 
-            <div class="hidden lg:block lg:w-[200px]"></div>
+            {{-- CTAs --}}
+            <div class="flex flex-wrap gap-3">
+                <a href="#devis"
+                   class="inline-flex items-center gap-2 rounded-xl bg-brand-yellow px-6 py-3 text-sm font-extrabold text-brand-dark shadow-sm transition hover:-translate-y-0.5 hover:bg-yellow-300">
+                    Devis gratuit →
+                </a>
+                <a href="#services"
+                   class="inline-flex items-center gap-2 rounded-xl bg-brand-dark px-6 py-3 text-sm font-extrabold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-700">
+                    Nos services
+                </a>
+                <a href="tel:+33385419886"
+                   class="inline-flex items-center gap-2 rounded-xl border-2 border-brand-dark/15 bg-white px-5 py-3 text-sm font-extrabold text-brand-dark shadow-sm transition hover:-translate-y-0.5 hover:border-brand-yellow">
+                    <svg class="h-4 w-4 text-brand-yellow" fill="currentColor" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+                    03 85 41 98 86
+                </a>
+            </div>
+
         </div>
     </div>
 
