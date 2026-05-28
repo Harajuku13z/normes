@@ -35,7 +35,7 @@
                     <h1 class="mb-4 leading-[0.95] drop-shadow">
                         <span id="heroSlogan"
                               class="block"
-                              style="font-family:'Anton',sans-serif;font-size:clamp(3rem,7.5vw,5.8rem);letter-spacing:0.01em;min-height:1.1em"></span>
+                              style="font-family:'Anton',sans-serif;font-size:clamp(1.6rem,7.5vw,5.8rem);letter-spacing:0.01em;min-height:1.1em;white-space:nowrap"></span>
                         <span class="mt-1 block text-xl font-black text-white/90 sm:mt-2 sm:text-3xl lg:text-4xl">Expert en rénovation pour l'habitat<span class="text-brand-yellow">.</span></span>
                     </h1>
 
