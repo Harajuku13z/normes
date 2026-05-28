@@ -230,8 +230,11 @@ class HomePageService
                 $n = $i + 1;
                 $img = (string) ($slide['image'] ?? '');
                 $url = $this->publicUrl($img);
+                $a1 = ! empty($slide['identity']) ? '.80' : '.74';
+                $a2 = ! empty($slide['identity']) ? '.40' : '.32';
                 $slidesJs[$n] = [
-                    'bg' => "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('{$url}')",
+                    'bg' => "linear-gradient(110deg, rgba(47,66,81,{$a1}), rgba(47,66,81,{$a2})), url('{$url}')",
+                    'identity' => ! empty($slide['identity']),
                     'title' => (string) ($slide['title'] ?? ''),
                     'subtitle' => (string) ($slide['subtitle'] ?? ''),
                     'primaryText' => (string) ($slide['primary_text'] ?? ''),

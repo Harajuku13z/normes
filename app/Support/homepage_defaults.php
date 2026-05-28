@@ -47,6 +47,16 @@ return [
     'hero' => [
         'slides' => [
             [
+                'identity' => true,
+                'image' => 'slide/toiture.png',
+                'title' => "L'expert rénovation énergétique et entretien de la maison en Bourgogne",
+                'subtitle' => 'Normes & Rénovation accompagne vos projets de rénovation, thermique, toiture et énergie solaire. Certifié RGE, devis gratuit.',
+                'primary_text' => 'Devis gratuit',
+                'primary_href' => '#devis',
+                'secondary_text' => 'Nos services',
+                'secondary_href' => '#services',
+            ],
+            [
                 'image' => 'slide/toiture.png',
                 'title' => 'Travaux de toiture durables et performants',
                 'subtitle' => 'Protection, étanchéité et rénovation complète de votre toiture pour valoriser votre maison.',

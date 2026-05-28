@@ -235,32 +235,48 @@
         const heroPrimaryCta = document.getElementById('heroPrimaryCta');
         const heroSecondaryCta = document.getElementById('heroSecondaryCta');
         const heroLearnMoreCta = document.getElementById('heroLearnMoreCta');
+        const heroIdentityBlock = document.getElementById('heroIdentityBlock');
+        const heroRegularBlock = document.getElementById('heroRegularBlock');
+        const heroSection = document.getElementById('top');
         const thumbs = Array.from(document.querySelectorAll('.hero-thumb'));
         const slides = @json($slidesJs);
+        const identitySlideId = @json(data_get($home, 'hero.slides.0.identity') ? 1 : 0);
 
         const slideIds = Object.keys(slides).map((k) => Number(k)).filter((n) => !Number.isNaN(n)).sort((a, b) => a - b);
         const maxSlideId = slideIds.length ? slideIds[slideIds.length - 1] : 1;
 
         const applySlide = (slideId) => {
             const slide = slides[String(slideId)] || slides[slideId];
-            if (!slide || !hero) {
-                return;
-            }
+            if (!slide || !hero) return;
+
+            const isIdentity = identitySlideId && Number(slideId) === identitySlideId;
+
+            // Toggle layout blocks
+            if (heroIdentityBlock) heroIdentityBlock.classList.toggle('hidden', !isIdentity);
+            if (heroIdentityBlock) heroIdentityBlock.classList.toggle('flex', isIdentity);
+            if (heroRegularBlock) heroRegularBlock.classList.toggle('hidden', isIdentity);
+            if (heroRegularBlock) heroRegularBlock.classList.toggle('flex', !isIdentity);
+            if (heroSection) heroSection.classList.toggle('min-h-[600px]', isIdentity);
+            if (heroSection) heroSection.classList.toggle('sm:min-h-[700px]', isIdentity);
+            if (heroSection) heroSection.classList.toggle('min-h-[540px]', !isIdentity);
+            if (heroSection) heroSection.classList.toggle('sm:min-h-[620px]', !isIdentity);
+
             hero.style.backgroundImage = slide.bg;
-            if (heroTitle) heroTitle.textContent = slide.title;
-            if (heroSubtitle) heroSubtitle.textContent = slide.subtitle;
-            if (heroPrimaryCta) {
-                heroPrimaryCta.textContent = slide.primaryText;
-                heroPrimaryCta.setAttribute('href', slide.primaryHref);
-            }
-            if (heroSecondaryCta) {
-                heroSecondaryCta.textContent = slide.secondaryText;
-                heroSecondaryCta.setAttribute('href', slide.secondaryHref);
-            }
-            // Ensure the "En savoir plus" CTA stays visible.
-            if (heroLearnMoreCta) {
-                heroLearnMoreCta.style.display = '';
-                if (!heroLearnMoreCta.getAttribute('href')) heroLearnMoreCta.setAttribute('href', '#services');
+            if (!isIdentity) {
+                if (heroTitle) heroTitle.textContent = slide.title;
+                if (heroSubtitle) heroSubtitle.textContent = slide.subtitle;
+                if (heroPrimaryCta) {
+                    heroPrimaryCta.textContent = slide.primaryText;
+                    heroPrimaryCta.setAttribute('href', slide.primaryHref);
+                }
+                if (heroSecondaryCta) {
+                    heroSecondaryCta.textContent = slide.secondaryText;
+                    heroSecondaryCta.setAttribute('href', slide.secondaryHref);
+                }
+                if (heroLearnMoreCta) {
+                    heroLearnMoreCta.style.display = '';
+                    if (!heroLearnMoreCta.getAttribute('href')) heroLearnMoreCta.setAttribute('href', '#services');
+                }
             }
         };
 
@@ -269,11 +285,19 @@
         const setHeroSlide = (slideId) => {
             currentHeroSlide = Number(slideId);
             applySlide(String(currentHeroSlide));
-            thumbs.forEach((t) => t.classList.remove('border-brand-blue'));
-            const activeThumb = thumbs.find((t) => Number(t.dataset.bg) === currentHeroSlide);
-            if (activeThumb) {
-                activeThumb.classList.add('border-brand-blue');
-            }
+            // Update pill dots (identity block)
+            thumbs.forEach((t) => {
+                const isActive = Number(t.dataset.bg) === currentHeroSlide;
+                if (t.closest('#heroIdentityBlock') !== null || !t.style.backgroundImage || t.style.backgroundImage === 'none') {
+                    t.classList.toggle('w-8', isActive);
+                    t.classList.toggle('bg-brand-yellow', isActive);
+                    t.classList.toggle('w-2', !isActive);
+                    t.classList.toggle('bg-white/40', !isActive);
+                } else {
+                    t.classList.remove('border-brand-blue');
+                    if (isActive) t.classList.add('border-brand-blue');
+                }
+            });
         };
         const startHeroAutoplay = () => {
             if (heroAutoplay) {
@@ -297,7 +321,6 @@
                 setHeroSlide(thumb.dataset.bg);
             });
         });
-        const heroSection = document.getElementById('top');
         if (heroSection) {
             heroSection.addEventListener('mouseenter', stopHeroAutoplay);
             heroSection.addEventListener('mouseleave', startHeroAutoplay);
