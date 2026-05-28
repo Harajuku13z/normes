@@ -254,6 +254,12 @@
             if (heroIdentityBlock) { heroIdentityBlock.classList.toggle('hidden', !isIdentity); heroIdentityBlock.classList.toggle('flex', isIdentity); }
             if (heroRegularBlock) { heroRegularBlock.classList.toggle('hidden', isIdentity); heroRegularBlock.classList.toggle('flex', !isIdentity); }
 
+            // Re-trigger slogan animation on identity slide
+            if (isIdentity) {
+                const slogan = document.getElementById('heroSlogan');
+                if (slogan) { slogan.classList.remove('hero-slogan-anim'); void slogan.offsetWidth; slogan.classList.add('hero-slogan-anim'); }
+            }
+
             hero.style.backgroundImage = slide.bg;
 
             if (!isIdentity) {

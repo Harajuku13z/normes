@@ -25,7 +25,7 @@
         <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-36 bg-gradient-to-t from-brand-dark/60 to-transparent"></div>
 
         {{-- Contenu — même positionnement que les autres slides --}}
-        <div class="relative z-10 mx-auto flex h-full w-[95%] flex-col justify-end px-4 pb-10 pt-8 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
+        <div class="relative z-10 mx-auto flex h-full w-[95%] flex-col justify-end px-4 pb-28 pt-8 sm:pb-10 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
 
             {{-- Carte glassmorphism — identique aux autres slides --}}
             <div class="max-w-3xl w-full text-white">
@@ -34,11 +34,11 @@
                     {{-- Grand slogan Anton animé --}}
                     <h1 class="mb-4 leading-[0.95] drop-shadow">
                         <span id="heroSlogan"
-                              class="hero-slogan-anim block text-white"
+                              class="hero-slogan-anim block"
                               style="font-family:'Anton',sans-serif;font-size:clamp(3rem,7.5vw,5.8rem);letter-spacing:0.01em">
-                            Oui, c'est nous&nbsp;!
+                            <span class="text-brand-blue">Oui</span><span class="text-white">,</span> <span class="text-brand-yellow">c'est nous&nbsp;!</span>
                         </span>
-                        <span class="mt-2 block text-2xl font-black text-white sm:text-3xl lg:text-4xl">Expert en rénovation pour l'habitat<span class="text-brand-yellow">.</span></span>
+                        <span class="mt-1 block text-xl font-black text-white/90 sm:mt-2 sm:text-3xl lg:text-4xl">Expert en rénovation pour l'habitat<span class="text-brand-yellow">.</span></span>
                     </h1>
 
                     {{-- Stats avec icônes --}}
