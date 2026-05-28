@@ -4,151 +4,174 @@
     $first = $slides[0] ?? [];
     $isIdentity = !empty($first['identity']);
     $firstBg = \App\Support\HomeView::url(data_get($first, 'image', 'slide/toiture.png'));
-    $firstBgFull = "linear-gradient(110deg, rgba(47,66,81,.80), rgba(47,66,81,.40)), url('".$firstBg."')";
-    $avisUrl = data_get($h, 'sidebar_avis.google_url');
+    $firstBgFull = $isIdentity
+        ? "linear-gradient(135deg, rgba(20,35,50,.55), rgba(47,66,81,.30)), url('".$firstBg."')"
+        : "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('".$firstBg."')";
 @endphp
-<section id="top" class="relative overflow-hidden {{ $isIdentity ? 'min-h-[600px] sm:min-h-[700px]' : 'min-h-[540px] sm:min-h-[620px]' }}">
-    <div id="heroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image:{{ $firstBgFull }}"></div>
 
-    {{-- ===== SLIDE IDENTITÉ (PPF-style) ===== --}}
-    <div id="heroIdentityBlock" class="{{ $isIdentity ? 'flex' : 'hidden' }} relative z-10 mx-auto min-h-[600px] w-[95%] flex-col justify-center gap-8 px-4 py-12 sm:min-h-[700px] sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:px-8">
+<section id="top" class="relative overflow-hidden {{ $isIdentity ? 'min-h-[680px] sm:min-h-[760px]' : 'min-h-[580px] sm:min-h-[660px]' }}">
 
-        {{-- Colonne gauche --}}
-        <div class="max-w-2xl flex-1 text-white">
-            {{-- Badge --}}
-            <div class="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-yellow/40 bg-brand-yellow/10 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-brand-yellow backdrop-blur-sm">
-                <span class="h-1.5 w-1.5 rounded-full bg-brand-yellow"></span>
-                Rénovation énergétique · Bourgogne · Certifié RGE
-            </div>
+    {{-- Fond image --}}
+    <div id="heroBg"
+         class="absolute inset-0 bg-cover bg-center transition-all duration-700"
+         style="background-image:{{ $firstBgFull }}">
+    </div>
 
-            {{-- Grand titre PPF-style --}}
-            <div class="mb-2 leading-none">
-                <span class="block text-5xl font-black tracking-tight drop-shadow sm:text-6xl lg:text-7xl">L'EXPERT<span class="text-brand-yellow">.</span></span>
-                <span class="block text-3xl font-black uppercase tracking-tight text-brand-yellow drop-shadow sm:text-4xl lg:text-5xl">Rénovation Énergétique</span>
-                <span class="mt-1 block text-xl font-semibold text-white/85 sm:text-2xl">et entretien de la maison en Bourgogne</span>
-            </div>
+    {{-- ===================================================
+         SLIDE 1 — IDENTITÉ (style PPF)
+         =================================================== --}}
+    <div id="heroIdentityBlock"
+         class="{{ $isIdentity ? 'flex' : 'hidden' }} relative z-10 w-full flex-col items-center justify-center px-4 py-8 sm:px-6 lg:px-8"
+         style="min-height:inherit">
 
-            {{-- Description --}}
-            <p class="mb-6 mt-4 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
-                Normes &amp; Rénovation accompagne vos projets de rénovation, isolation, toiture et énergie solaire. Une équipe de professionnels certifiés RGE, à votre écoute en Bourgogne.
-            </p>
+        <div class="mx-auto w-full max-w-6xl">
 
-            {{-- Stats PPF-style --}}
-            <div class="mb-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div class="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-center backdrop-blur-sm">
-                    <div class="text-2xl font-black text-brand-yellow">+5 000</div>
-                    <div class="mt-0.5 text-xs font-semibold uppercase tracking-wide text-white/70">Chantiers réalisés</div>
-                </div>
-                <div class="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-center backdrop-blur-sm">
-                    <div class="text-2xl font-black text-brand-yellow">RGE</div>
-                    <div class="mt-0.5 text-xs font-semibold uppercase tracking-wide text-white/70">Certifié Qualibat</div>
-                </div>
-                <div class="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-center backdrop-blur-sm">
-                    <div class="text-2xl font-black text-brand-yellow">6</div>
-                    <div class="mt-0.5 text-xs font-semibold uppercase tracking-wide text-white/70">Corps de métier</div>
-                </div>
-                <div class="rounded-2xl border border-white/10 bg-white/10 px-4 py-3 text-center backdrop-blur-sm">
-                    <div class="text-2xl font-black text-brand-yellow">48h</div>
-                    <div class="mt-0.5 text-xs font-semibold uppercase tracking-wide text-white/70">Prise en charge</div>
-                </div>
-            </div>
+            {{-- Carte blanche principale --}}
+            <div class="overflow-hidden rounded-3xl bg-white/96 shadow-[0_20px_80px_rgba(0,0,0,.35)] backdrop-blur-sm">
 
-            {{-- CTAs --}}
-            <div class="flex flex-wrap gap-3">
-                <a href="#devis" class="inline-flex items-center gap-2 rounded-xl bg-brand-yellow px-6 py-3.5 text-sm font-extrabold text-brand-dark shadow-soft transition hover:-translate-y-0.5 hover:bg-yellow-300">
-                    Devis gratuit <span>→</span>
-                </a>
-                <a href="#services" class="inline-flex items-center gap-2 rounded-xl bg-white/15 px-6 py-3.5 text-sm font-extrabold text-white shadow-soft backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/25">
-                    Nos services
-                </a>
-                <a href="tel:+33385419886" class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-brand-dark/40 px-6 py-3.5 text-sm font-extrabold text-white shadow-soft backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-brand-dark/60">
-                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
-                    03 85 41 98 86
-                </a>
-            </div>
-        </div>
+                {{-- Partie haute : 2 colonnes --}}
+                <div class="flex flex-col lg:flex-row">
 
-        {{-- Colonne droite : carte certifications --}}
-        <div class="hidden lg:flex lg:flex-shrink-0 lg:items-center lg:justify-center">
-            <div class="relative w-72 xl:w-80">
-                {{-- Cercle décoratif (comme PPF) --}}
-                <div class="relative overflow-hidden rounded-[2.5rem] border-2 border-white/20 bg-white/10 p-6 shadow-[0_8px_60px_rgba(0,0,0,.4)] backdrop-blur-md">
-                    {{-- Logo --}}
-                    <div class="mb-4 flex justify-center">
-                        <img src="/logo.png" alt="Normes & Rénovation" class="h-14 drop-shadow">
+                    {{-- Colonne gauche : texte --}}
+                    <div class="flex flex-1 flex-col justify-center p-8 sm:p-10 lg:p-12">
+
+                        {{-- Eyebrow --}}
+                        <p class="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-brand-blue">
+                            Rénovation énergétique · Bourgogne
+                        </p>
+
+                        {{-- Grand titre PPF --}}
+                        <div class="mb-5 leading-none">
+                            <span class="block text-[3.5rem] font-black leading-none tracking-tight text-brand-dark sm:text-[4.5rem] lg:text-[5.5rem]">QUI ?<span class="text-brand-yellow">•</span></span>
+                            <span class="mt-1 block text-2xl font-black text-brand-dark sm:text-3xl lg:text-4xl">sommes-nous</span>
+                        </div>
+
+                        {{-- Description --}}
+                        <p class="mb-7 max-w-lg text-base leading-relaxed text-brand-dark/70 sm:text-lg">
+                            <strong class="font-bold text-brand-dark">Normes &amp; Rénovation</strong> est l'expert rénovation énergétique et entretien de la maison en Bourgogne. Toiture, isolation, énergie solaire, ventilation — une équipe certifiée RGE à vos côtés.
+                        </p>
+
+                        {{-- CTAs --}}
+                        <div class="flex flex-wrap gap-3">
+                            <a href="#devis"
+                               class="inline-flex items-center gap-2 rounded-xl bg-brand-dark px-6 py-3.5 text-sm font-extrabold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-slate-700">
+                                Devis gratuit <span>→</span>
+                            </a>
+                            <a href="#services"
+                               class="inline-flex items-center gap-2 rounded-xl border-2 border-brand-dark px-6 py-3.5 text-sm font-extrabold text-brand-dark transition hover:-translate-y-0.5 hover:bg-brand-dark hover:text-white">
+                                Nos services
+                            </a>
+                            <a href="tel:+33385419886"
+                               class="inline-flex items-center gap-2 rounded-xl bg-brand-yellow px-6 py-3.5 text-sm font-extrabold text-brand-dark shadow-soft transition hover:-translate-y-0.5 hover:bg-yellow-300">
+                                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+                                03 85 41 98 86
+                            </a>
+                        </div>
                     </div>
-                    {{-- Score avis --}}
-                    <div class="mb-4 rounded-xl bg-white/15 px-4 py-3 text-center">
-                        <div class="text-2xl font-black text-white">5.0 / 5</div>
-                        <div class="mt-0.5 text-sm text-brand-yellow">★★★★★</div>
-                        <div class="mt-0.5 text-xs font-semibold text-white/70">+100 avis Google</div>
-                    </div>
-                    {{-- USPs --}}
-                    <ul class="space-y-2 text-sm text-white/90">
-                        <li class="flex items-center gap-2">
-                            <span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-brand-yellow text-xs font-black text-brand-dark">✓</span>
-                            Devis gratuit &amp; sans engagement
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-brand-yellow text-xs font-black text-brand-dark">✓</span>
-                            Entreprise certifiée RGE Qualibat
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-brand-yellow text-xs font-black text-brand-dark">✓</span>
-                            Aides jusqu'à 90 % des travaux
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-brand-yellow text-xs font-black text-brand-dark">✓</span>
-                            Intervention en Bourgogne
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
 
-        {{-- Thumbnails en bas --}}
-        <div id="heroThumbsIdentity" class="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2">
-            @foreach ($slides as $idx => $slide)
-                @php
-                    $n = $idx + 1;
-                    $u = \App\Support\HomeView::url(data_get($slide, 'image'));
-                @endphp
-                <button type="button"
-                    class="hero-thumb h-2 rounded-full transition-all duration-300 {{ $n === 1 ? 'w-8 bg-brand-yellow' : 'w-2 bg-white/40 hover:bg-white/70' }}"
-                    data-bg="{{ $n }}"
-                    style="background-image:none"
-                    aria-label="Slide {{ $n }}">
-                </button>
-            @endforeach
+                    {{-- Colonne droite : image circulaire --}}
+                    <div class="hidden items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-10 lg:flex lg:w-[340px] xl:w-[400px]">
+                        <div class="relative">
+                            {{-- Cercle image principal --}}
+                            <div class="h-64 w-64 overflow-hidden rounded-full border-4 border-white shadow-[0_8px_40px_rgba(0,0,0,.18)] xl:h-72 xl:w-72">
+                                <img src="{{ \App\Support\HomeView::url('slide/toiture.png') }}"
+                                     alt="Rénovation toiture Bourgogne"
+                                     class="h-full w-full object-cover">
+                            </div>
+                            {{-- Badge flottant avis --}}
+                            <div class="absolute -bottom-3 -right-3 rounded-2xl bg-white px-4 py-2.5 shadow-[0_4px_20px_rgba(0,0,0,.15)]">
+                                <div class="flex items-center gap-2">
+                                    <div class="flex h-9 w-9 items-center justify-center rounded-full bg-brand-yellow text-xs font-black text-brand-dark">5.0</div>
+                                    <div>
+                                        <div class="text-xs font-bold text-brand-dark">Avis Google</div>
+                                        <div class="text-xs text-brand-yellow">★★★★★</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- Badge certif --}}
+                            <div class="absolute -top-3 -left-3 rounded-2xl bg-brand-dark px-3 py-2 shadow-lg">
+                                <div class="text-xs font-extrabold uppercase tracking-wide text-brand-yellow">✓ Certifié RGE</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Barre stats (style PPF) --}}
+                <div class="border-t border-gray-100 bg-gray-50/60 px-6 py-5 sm:px-10">
+                    <div class="grid grid-cols-2 gap-4 sm:grid-cols-5">
+                        @php
+                        $stats = [
+                            ['icon'=>'M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z', 'value'=>'+5 000', 'label'=>'Chantiers réalisés'],
+                            ['icon'=>'M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z', 'value'=>'Certifié', 'label'=>'RGE Qualibat'],
+                            ['icon'=>'M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z', 'value'=>'98 %', 'label'=>'Satisfaction client'],
+                            ['icon'=>'M14.25 7.756a4.5 4.5 0 100 8.488M7.5 10.5h5.25m-5.25 3h5.25M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'value'=>'Jusqu\'à 90 %', 'label'=>'Aides travaux'],
+                            ['icon'=>'M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z', 'value'=>'6', 'label'=>'Corps de métier'],
+                        ];
+                        @endphp
+                        @foreach ($stats as $stat)
+                        <div class="flex flex-col items-center gap-2 text-center">
+                            <div class="flex h-14 w-14 items-center justify-center rounded-full bg-brand-yellow shadow-sm">
+                                <svg class="h-7 w-7 text-brand-dark" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $stat['icon'] }}"/>
+                                </svg>
+                            </div>
+                            <div class="text-sm font-black text-brand-dark sm:text-base">{{ $stat['value'] }}</div>
+                            <div class="text-xs text-gray-500 leading-tight">{{ $stat['label'] }}</div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+
+            </div>{{-- fin carte blanche --}}
         </div>
     </div>
 
-    {{-- ===== SLIDES CLASSIQUES ===== --}}
-    <div id="heroRegularBlock" class="{{ $isIdentity ? 'hidden' : 'flex' }} relative z-10 mx-auto min-h-[540px] w-[95%] flex-col justify-end gap-5 px-4 py-8 sm:min-h-[620px] sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
+    {{-- ===================================================
+         SLIDES CLASSIQUES (2, 3…)
+         =================================================== --}}
+    <div id="heroRegularBlock"
+         class="{{ $isIdentity ? 'hidden' : 'flex' }} relative z-10 mx-auto w-[95%] flex-col justify-end gap-5 px-4 py-8 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8"
+         style="min-height:inherit">
+
         <div class="max-w-3xl text-white">
             <div class="rounded-3xl border border-white/15 bg-brand-dark/35 p-6 shadow-soft backdrop-blur-md sm:p-8">
                 <h1 id="heroTitle" class="mb-3 text-4xl font-black leading-[1.02] tracking-tight drop-shadow sm:text-5xl lg:text-6xl">{{ data_get($first, 'title') }}</h1>
                 <p id="heroSubtitle" class="mb-6 text-lg font-semibold text-slate-100/95 drop-shadow sm:text-xl">{{ data_get($first, 'subtitle') }}</p>
                 <div class="flex flex-wrap gap-3">
-                    <a id="heroPrimaryCta" href="{{ data_get($first, 'primary_href', '#devis') }}" class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-sky-500">{{ data_get($first, 'primary_text') }}</a>
-                    <a id="heroSecondaryCta" href="{{ data_get($first, 'secondary_href', '#devis') }}" class="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:-translate-y-0.5 hover:bg-yellow-300">{{ data_get($first, 'secondary_text') }}</a>
+                    <a id="heroPrimaryCta" href="{{ data_get($first, 'primary_href', '#devis') }}"
+                       class="rounded-xl bg-brand-blue px-5 py-3 text-sm font-extrabold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-sky-500">{{ data_get($first, 'primary_text') }}</a>
+                    <a id="heroSecondaryCta" href="{{ data_get($first, 'secondary_href', '#devis') }}"
+                       class="rounded-xl bg-brand-yellow px-5 py-3 text-sm font-extrabold text-brand-dark shadow-soft transition hover:-translate-y-0.5 hover:bg-yellow-300">{{ data_get($first, 'secondary_text') }}</a>
                     <a id="heroLearnMoreCta" href="#services"
-                       class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-white/15 bg-brand-dark px-5 py-3 text-sm font-extrabold uppercase tracking-wide text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow">
-                        En savoir plus <span aria-hidden="true">→</span>
+                       class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-white/15 bg-brand-dark px-5 py-3 text-sm font-extrabold uppercase tracking-wide text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-slate-900">
+                        En savoir plus <span>→</span>
                     </a>
                 </div>
             </div>
         </div>
 
-        <div id="heroThumbs" class="flex w-full gap-2 pb-1 lg:w-auto">
-            @foreach ($slides as $idx => $slide)
-                @php
-                    $n = $idx + 1;
-                    $u = \App\Support\HomeView::url(data_get($slide, 'image'));
-                    $thumbStyle = "background-image:url('".$u."')";
-                @endphp
-                <button type="button" class="hero-thumb h-20 min-w-0 flex-1 rounded-xl border-2 {{ $n === 1 ? 'border-brand-blue' : 'border-transparent' }} bg-cover bg-center shadow-soft lg:h-24 lg:w-32 lg:flex-none" data-bg="{{ $n }}" style="{{ $thumbStyle }}" aria-label="Slider {{ $n }}"></button>
-            @endforeach
-        </div>
+        {{-- Espace réservé pour aligner avec les thumbs en bas --}}
+        <div class="hidden lg:block lg:w-[280px] xl:w-[320px]"></div>
     </div>
+
+    {{-- ===================================================
+         MINIATURES — toujours visibles, bas-droite
+         =================================================== --}}
+    <div id="heroThumbs"
+         class="absolute bottom-5 right-5 z-20 flex gap-2 sm:bottom-6 sm:right-6">
+        @foreach ($slides as $idx => $slide)
+            @php
+                $n   = $idx + 1;
+                $u   = \App\Support\HomeView::url(data_get($slide, 'image'));
+                $act = $n === 1 ? 'border-brand-yellow' : 'border-white/40';
+            @endphp
+            <button type="button"
+                    class="hero-thumb h-16 w-24 overflow-hidden rounded-xl border-2 {{ $act }} bg-cover bg-center shadow-[0_4px_16px_rgba(0,0,0,.4)] transition-all duration-300 hover:scale-105 hover:border-brand-yellow sm:h-20 sm:w-28"
+                    data-bg="{{ $n }}"
+                    style="background-image:url('{{ $u }}')"
+                    aria-label="Slide {{ $n }}">
+            </button>
+        @endforeach
+    </div>
+
 </section>
