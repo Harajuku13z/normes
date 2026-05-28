@@ -147,19 +147,15 @@
                 animation: none;
             }
         }
-        /* ── Slogan hero identité ── */
-        @keyframes sloganReveal {
-            0%   { opacity:0; transform: translateY(18px) skewX(-4deg); filter: blur(4px); }
-            60%  { opacity:1; transform: translateY(-3px) skewX(-1deg); filter: blur(0); }
-            100% { opacity:1; transform: translateY(0)    skewX(0deg);  filter: blur(0); }
+        /* ── Slogan hero identité — typewriter cursor ── */
+        @keyframes cursorBlink {
+            0%,100% { opacity:1; }
+            50%     { opacity:0; }
         }
-        @keyframes sloganGlow {
-            0%,100% { text-shadow: 0 0 0 transparent; }
-            50%      { text-shadow: 0 0 40px rgba(251,191,36,.25); }
-        }
-        .hero-slogan-anim {
-            animation: sloganReveal .9s cubic-bezier(.22,1,.36,1) .15s both,
-                       sloganGlow   3.5s ease-in-out 1.1s infinite;
+        .hero-cursor {
+            display:inline-block;
+            color:#FADF70;
+            animation:cursorBlink .65s step-end infinite;
         }
     </style>
 </head>

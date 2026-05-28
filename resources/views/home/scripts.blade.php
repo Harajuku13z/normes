@@ -254,11 +254,8 @@
             if (heroIdentityBlock) { heroIdentityBlock.classList.toggle('hidden', !isIdentity); heroIdentityBlock.classList.toggle('flex', isIdentity); }
             if (heroRegularBlock) { heroRegularBlock.classList.toggle('hidden', isIdentity); heroRegularBlock.classList.toggle('flex', !isIdentity); }
 
-            // Re-trigger slogan animation on identity slide
-            if (isIdentity) {
-                const slogan = document.getElementById('heroSlogan');
-                if (slogan) { slogan.classList.remove('hero-slogan-anim'); void slogan.offsetWidth; slogan.classList.add('hero-slogan-anim'); }
-            }
+            // Re-trigger typewriter on identity slide
+            if (isIdentity) startTypewriter();
 
             hero.style.backgroundImage = slide.bg;
 
@@ -310,6 +307,50 @@
             heroSection.addEventListener('mouseenter', stopHeroAutoplay);
             heroSection.addEventListener('mouseleave', startHeroAutoplay);
         }
+        // ── Typewriter pour le slogan identité ──────────────────────────
+        const twSegments = [
+            { t: 'Oui',          c: '#60B4F9' },
+            { t: ', ',           c: '#ffffff' },
+            { t: "c'est nous !", c: '#FADF70' },
+        ];
+        const twChars = [];
+        for (const seg of twSegments) {
+            for (const ch of [...seg.t]) twChars.push({ ch, c: seg.c });
+        }
+        let twTimer = null;
+        function startTypewriter() {
+            const el = document.getElementById('heroSlogan');
+            if (!el) return;
+            if (twTimer) { clearTimeout(twTimer); twTimer = null; }
+            let pos = 0, erasing = false;
+            function render() {
+                let html = '', lastC = null;
+                for (let i = 0; i < pos; i++) {
+                    const { ch, c } = twChars[i];
+                    if (c !== lastC) { if (lastC) html += '</span>'; html += `<span style="color:${c}">`; lastC = c; }
+                    html += ch === ' ' ? ' ' : ch;
+                }
+                if (lastC) html += '</span>';
+                html += '<span class="hero-cursor">|</span>';
+                el.innerHTML = html;
+            }
+            function tick() {
+                render();
+                if (!erasing) {
+                    pos++;
+                    if (pos > twChars.length) { erasing = true; twTimer = setTimeout(tick, 2200); return; }
+                    twTimer = setTimeout(tick, 85);
+                } else {
+                    pos--;
+                    if (pos < 0) { pos = 0; erasing = false; twTimer = setTimeout(tick, 500); return; }
+                    twTimer = setTimeout(tick, 45);
+                }
+            }
+            el.innerHTML = '<span class="hero-cursor">|</span>';
+            twTimer = setTimeout(tick, 400);
+        }
+        // ────────────────────────────────────────────────────────────────
+
         setHeroSlide(slideIds[0] || 1);
         startHeroAutoplay();
 

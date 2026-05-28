@@ -34,10 +34,8 @@
                     {{-- Grand slogan Anton animé --}}
                     <h1 class="mb-4 leading-[0.95] drop-shadow">
                         <span id="heroSlogan"
-                              class="hero-slogan-anim block"
-                              style="font-family:'Anton',sans-serif;font-size:clamp(3rem,7.5vw,5.8rem);letter-spacing:0.01em">
-                            <span class="text-brand-blue">Oui</span><span class="text-white">,</span> <span class="text-brand-yellow">c'est nous&nbsp;!</span>
-                        </span>
+                              class="block"
+                              style="font-family:'Anton',sans-serif;font-size:clamp(3rem,7.5vw,5.8rem);letter-spacing:0.01em;min-height:1.1em"></span>
                         <span class="mt-1 block text-xl font-black text-white/90 sm:mt-2 sm:text-3xl lg:text-4xl">Expert en rénovation pour l'habitat<span class="text-brand-yellow">.</span></span>
                     </h1>
 
@@ -92,7 +90,7 @@
          SLIDES CLASSIQUES (2, 3…)
          =================================================== --}}
     <div id="heroRegularBlock"
-         class="{{ $isIdentity ? 'hidden' : 'flex' }} relative z-10 mx-auto w-[95%] flex-col justify-end gap-5 px-4 py-8 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8"
+         class="{{ $isIdentity ? 'hidden' : 'flex' }} relative z-10 mx-auto w-[95%] flex-col justify-end gap-5 px-4 pb-28 pt-8 sm:py-8 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8"
          style="min-height:inherit">
 
         <div class="max-w-3xl text-white">
