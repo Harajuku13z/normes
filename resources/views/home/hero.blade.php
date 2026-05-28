@@ -20,38 +20,26 @@
     <div id="heroIdentityBlock"
          class="{{ $isIdentity ? 'flex' : 'hidden' }} absolute inset-0 z-10">
 
-        {{-- Dégradé latéral --}}
-        <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-brand-dark/90 via-brand-dark/65 to-brand-dark/10"></div>
-        <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-36 bg-gradient-to-t from-brand-dark/70 to-transparent"></div>
+        {{-- Dégradé latéral — un peu plus clair pour laisser respirer la photo --}}
+        <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-brand-dark/80 via-brand-dark/50 to-transparent"></div>
+        <div class="pointer-events-none absolute bottom-0 left-0 right-0 h-36 bg-gradient-to-t from-brand-dark/60 to-transparent"></div>
 
         {{-- Contenu — même positionnement que les autres slides --}}
         <div class="relative z-10 mx-auto flex h-full w-[95%] flex-col justify-end px-4 pb-10 pt-8 sm:px-6 lg:flex-row lg:items-end lg:justify-between lg:px-8">
 
-            {{-- Carte principale — style identique aux autres slides --}}
+            {{-- Carte glassmorphism — identique aux autres slides --}}
             <div class="max-w-3xl w-full text-white">
-                <div class="rounded-3xl border border-white/15 bg-brand-dark/40 p-6 shadow-soft backdrop-blur-md sm:p-8">
+                <div class="rounded-3xl border border-white/15 bg-brand-dark/35 p-6 shadow-soft backdrop-blur-md sm:p-8">
 
-                    {{-- Slogan accroche --}}
-                    <p class="mb-3 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">
-                        <span class="mr-2 inline-block rounded-full bg-brand-yellow/20 px-2 py-0.5">✦</span>Oui c'est nous !
-                    </p>
-
-                    {{-- Titre --}}
-                    <h1 class="mb-2 leading-[1.02] tracking-tight drop-shadow">
-                        <span class="block text-4xl font-black text-white sm:text-5xl lg:text-6xl">L'Expert Rénovation<span class="text-brand-yellow">.</span></span>
-                        <span class="block text-xl font-bold text-white/80 sm:text-2xl lg:text-3xl">Bourgogne — Certifié RGE</span>
+                    {{-- Grand slogan --}}
+                    <p class="mb-1 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">Normes &amp; Rénovation</p>
+                    <h1 class="mb-3 leading-[0.95] tracking-tight drop-shadow">
+                        <span class="block font-black italic text-white" style="font-size:clamp(2.4rem,6vw,4.5rem)">Oui, c'est nous&nbsp;!</span>
+                        <span class="mt-2 block text-2xl font-black text-white sm:text-3xl lg:text-4xl">Expert en rénovation pour l'habitat<span class="text-brand-yellow">.</span></span>
+                        <span class="mt-1 block text-base font-semibold text-white/70 sm:text-lg">Bourgogne · Certifié RGE · Devis gratuit</span>
                     </h1>
 
-                    {{-- Spécialités tags --}}
-                    <div class="mb-5 mt-4 flex flex-wrap gap-2">
-                        @foreach(['Traitement des tuiles', 'Couverture', 'Photovoltaïque', 'Isolation', 'Façade'] as $s)
-                        <span class="inline-flex items-center gap-1.5 rounded-full border border-brand-yellow/30 bg-brand-yellow/10 px-3 py-1 text-xs font-bold text-brand-yellow">
-                            <span class="h-1 w-1 rounded-full bg-brand-yellow"></span>{{ $s }}
-                        </span>
-                        @endforeach
-                    </div>
-
-                    {{-- Stats ligne --}}
+                    {{-- Stats --}}
                     <div class="mb-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-white/10 pt-4">
                         @foreach([['+5 000','chantiers'],[' 98 %','satisfaction'],['RGE','certifié'],['48 h','réponse']] as [$v,$l])
                         <div class="flex items-baseline gap-1.5">
@@ -72,24 +60,15 @@
                             Nos services
                         </a>
                         <a href="tel:+33385419886"
-                           class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/20">
+                           class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-brand-dark px-5 py-3 text-sm font-extrabold uppercase tracking-wide text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-slate-900">
                             <svg class="h-4 w-4 text-brand-yellow" fill="currentColor" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
                             03 85 41 98 86
                         </a>
-                        {{-- Badge avis --}}
-                        <div class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm">
-                            <span class="text-base font-black text-brand-yellow">5.0</span>
-                            <div>
-                                <div class="text-[10px] font-bold uppercase tracking-wide text-white/60">Avis Google</div>
-                                <div class="text-xs text-brand-yellow">★★★★★ <span class="text-white/50">+100</span></div>
-                            </div>
-                        </div>
                     </div>
 
                 </div>
             </div>
 
-            {{-- Espace côté droit --}}
             <div class="hidden lg:block lg:w-[200px]"></div>
         </div>
 
