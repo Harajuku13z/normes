@@ -69,7 +69,7 @@
                     Devis gratuit →
                 </a>
                 <a href="#services"
-                   class="inline-flex items-center gap-2 rounded-xl bg-white/15 px-6 py-3 text-sm font-extrabold text-white shadow-sm backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/25">
+                   class="inline-flex items-center gap-2 rounded-xl bg-brand-yellow px-6 py-3 text-sm font-extrabold text-brand-dark shadow-sm transition hover:-translate-y-0.5 hover:bg-yellow-300">
                     Nos services
                 </a>
                 <a href="tel:+33385419886"
