@@ -31,7 +31,7 @@
                 <span style="font-family:'Anton',sans-serif;font-size:clamp(3.8rem,9vw,7.5rem);letter-spacing:0.01em"
                       class="block text-white drop-shadow-lg">OUI,</span>
                 <span style="font-family:'Anton',sans-serif;font-size:clamp(2.2rem,5.5vw,4.5rem);letter-spacing:0.01em"
-                      class="block text-brand-yellow drop-shadow-lg">c'est nous&nbsp;!</span>
+                      class="block text-brand-blue drop-shadow-lg">c'est nous&nbsp;!</span>
             </h1>
 
             <p class="mb-8 text-base font-semibold leading-relaxed text-white/90 sm:text-lg">
@@ -51,8 +51,8 @@
             <div class="mb-8 grid grid-cols-4 gap-3 border-t border-white/20 pt-6">
                 @foreach($heroStats as [$val, $lbl, $path])
                 <div class="flex flex-col items-center gap-2 text-center">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-yellow shadow-md">
-                        <svg class="h-5 w-5 text-brand-dark" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <div class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-blue shadow-md">
+                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="{{ $path }}"/>
                         </svg>
                     </div>
@@ -65,7 +65,7 @@
             {{-- CTAs --}}
             <div class="flex flex-wrap gap-3">
                 <a href="#devis"
-                   class="inline-flex items-center gap-2 rounded-xl bg-brand-yellow px-6 py-3 text-sm font-extrabold text-brand-dark shadow-sm transition hover:-translate-y-0.5 hover:bg-yellow-300">
+                   class="inline-flex items-center gap-2 rounded-xl bg-brand-blue px-6 py-3 text-sm font-extrabold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-sky-400">
                     Devis gratuit →
                 </a>
                 <a href="#services"
@@ -74,7 +74,7 @@
                 </a>
                 <a href="tel:+33385419886"
                    class="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-extrabold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/20">
-                    <svg class="h-4 w-4 text-brand-yellow" fill="currentColor" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+                    <svg class="h-4 w-4 text-brand-blue" fill="currentColor" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
                     03 85 41 98 86
                 </a>
             </div>
