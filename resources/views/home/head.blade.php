@@ -35,6 +35,9 @@
     <meta property="og:site_name" content="{{ data_get($h, 'meta.site_name') }}">
     <meta name="theme-color" content="{{ data_get($h, 'meta.theme_color', '#2F4251') }}">
     <link rel="icon" type="image/png" href="{{ data_get($h, 'meta.favicon', '/iconne.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
     @if (isset($preloadImages) && is_array($preloadImages) && $preloadImages !== [])
         @foreach (array_slice($preloadImages, 0, 8) as $preloadHref)
             @if (is_string($preloadHref) && trim($preloadHref) !== '')

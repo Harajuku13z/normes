@@ -31,26 +31,35 @@
             <div class="max-w-3xl w-full text-white">
                 <div class="rounded-3xl border border-white/15 bg-brand-dark/35 p-6 shadow-soft backdrop-blur-md sm:p-8">
 
-                    {{-- Eyebrow --}}
-                    <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.22em] text-brand-yellow">Normes &amp; Rénovation · Bourgogne</p>
-
-                    {{-- Grand slogan animé --}}
-                    <h1 class="mb-3 leading-[0.95] tracking-tight drop-shadow">
+                    {{-- Grand slogan Anton animé --}}
+                    <h1 class="mb-4 leading-[0.95] drop-shadow">
                         <span id="heroSlogan"
-                              class="hero-slogan-anim block font-black italic text-white"
-                              style="font-size:clamp(2.6rem,6.5vw,5rem);letter-spacing:-0.02em">
+                              class="hero-slogan-anim block text-white"
+                              style="font-family:'Anton',sans-serif;font-size:clamp(3rem,7.5vw,5.8rem);letter-spacing:0.01em">
                             Oui, c'est nous&nbsp;!
                         </span>
                         <span class="mt-2 block text-2xl font-black text-white sm:text-3xl lg:text-4xl">Expert en rénovation pour l'habitat<span class="text-brand-yellow">.</span></span>
-                        <span class="mt-1 block text-base font-semibold text-white/70 sm:text-lg">Certifié RGE · Devis gratuit</span>
                     </h1>
 
-                    {{-- Stats --}}
-                    <div class="mb-6 flex flex-wrap gap-x-5 gap-y-2 border-t border-white/10 pt-4">
-                        @foreach([['+5 000','chantiers'],[' 98 %','satisfaction'],['RGE','certifié'],['24 h','réponse']] as [$v,$l])
-                        <div class="flex items-baseline gap-1.5">
-                            <span class="text-lg font-black text-brand-yellow sm:text-xl">{{ $v }}</span>
-                            <span class="text-xs font-semibold uppercase tracking-wide text-white/55">{{ $l }}</span>
+                    {{-- Stats avec icônes --}}
+                    <div class="mb-6 grid grid-cols-4 gap-3 border-t border-white/10 pt-5">
+                        @php
+                        $heroStats = [
+                            ['+5 000','Chantiers','M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z'],
+                            ['98 %','Satisfaction','M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z'],
+                            ['RGE','Certifié','M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z'],
+                            ['24 h','Réponse','M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z'],
+                        ];
+                        @endphp
+                        @foreach($heroStats as [$val, $lbl, $path])
+                        <div class="flex flex-col items-center gap-1.5 text-center">
+                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-brand-yellow/20 ring-1 ring-brand-yellow/40">
+                                <svg class="h-5 w-5 text-brand-yellow" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="{{ $path }}"/>
+                                </svg>
+                            </div>
+                            <span class="text-base font-black leading-none text-white sm:text-lg">{{ $val }}</span>
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-white/50">{{ $lbl }}</span>
                         </div>
                         @endforeach
                     </div>
