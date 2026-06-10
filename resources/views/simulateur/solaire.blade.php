@@ -105,6 +105,72 @@ html,body{
 }
 .addr-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .addr-input::placeholder{color:var(--muted)}
+/* ── Zone type toggle ── */
+.zone-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.zone-btn{
+  border:1.5px solid var(--line);background:#fff;border-radius:11px;
+  padding:12px 8px;cursor:pointer;text-align:center;transition:.15s ease;
+}
+.zone-btn:hover{border-color:var(--accent);background:var(--accent-soft)}
+.zone-btn.active{border-color:var(--accent);background:var(--accent-soft)}
+.zone-btn .zb-icon{font-size:26px;display:block;margin-bottom:5px}
+.zone-btn .zb-label{font-size:12.5px;font-weight:700;color:var(--ink);display:block}
+.zone-btn .zb-sub{font-size:11px;color:var(--muted);display:block;margin-top:2px}
+.zone-btn.active .zb-label{color:var(--accent-deep)}
+
+/* Surface display */
+.surface-display{display:flex;align-items:baseline;gap:6px;margin:10px 0 4px}
+.surface-display .s-val{font-size:40px;font-weight:800;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+.surface-display .s-unit{font-size:16px;font-weight:600;color:var(--slate)}
+.surface-sub{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:16px}
+
+/* Draw hint overlay on map */
+.draw-hint{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:rgba(15,34,49,.85);color:#fff;
+  padding:14px 22px;border-radius:12px;
+  font:600 13.5px 'Inter',sans-serif;
+  display:flex;align-items:center;gap:12px;
+  pointer-events:none;backdrop-filter:blur(6px);
+  box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:8;
+  transition:opacity .3s ease;
+}
+.draw-hint.hidden{opacity:0;pointer-events:none}
+.draw-hint .dot{
+  width:10px;height:10px;border-radius:50%;background:var(--accent);flex-shrink:0;
+  box-shadow:0 0 0 4px rgba(19,166,232,.35);animation:pulse 1.6s infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(19,166,232,.35)}50%{box-shadow:0 0 0 10px rgba(19,166,232,0)}}
+
+/* Map cursor override during drawing */
+.map-wrap.drawing #mapDiv{cursor:crosshair!important}
+.map-wrap.drawing .gm-style{cursor:crosshair!important}
+
+/* Validated zone row */
+.zone-validated{
+  display:flex;align-items:center;gap:8px;padding:10px 12px;
+  background:var(--ok-soft);border:1px solid #c9ead6;border-radius:10px;
+  margin-top:12px;font-size:13px;color:#13643f;font-weight:600;
+}
+.zone-validated .check{width:18px;height:18px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;flex-shrink:0}
+.zone-validated button{margin-left:auto;background:transparent;border:0;color:#13643f;font-weight:700;font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+
+/* Undo / clear map toolbar */
+.map-draw-toolbar{
+  position:absolute;left:50%;bottom:80px;transform:translateX(-50%);z-index:10;
+  display:flex;gap:8px;background:rgba(255,255,255,.95);
+  border-radius:12px;padding:8px;box-shadow:0 4px 14px rgba(0,0,0,.18);
+  backdrop-filter:blur(6px);
+}
+.map-draw-toolbar.hidden{display:none}
+.mdt-btn{
+  border:1px solid var(--line);background:#fff;border-radius:9px;
+  padding:8px 14px;font:600 12.5px 'Inter',sans-serif;color:var(--ink);
+  cursor:pointer;display:flex;align-items:center;gap:7px;transition:.15s ease;
+}
+.mdt-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.mdt-btn.danger:hover{border-color:var(--danger);color:var(--danger);background:var(--danger-soft)}
+
 /* Custom autocomplete dropdown */
 .autocomplete-list{
   position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:200;
@@ -368,7 +434,7 @@ html,body{
     <nav class="stepper" aria-label="Progression">
       <div class="step active" id="step1-nav"><div class="num">1</div><span>Adresse</span></div>
       <div class="step-sep" id="sep1"></div>
-      <div class="step" id="step2-nav"><div class="num">2</div><span>Analyse</span></div>
+      <div class="step" id="step2-nav"><div class="num">2</div><span>Zone</span></div>
       <div class="step-sep" id="sep2"></div>
       <div class="step" id="step3-nav"><div class="num">3</div><span>Résultats</span></div>
       <div class="step-sep" id="sep3"></div>
@@ -414,7 +480,54 @@ html,body{
         </div>
       </section>
 
-      {{-- Roof config (appears after API response) --}}
+      {{-- ── Étape 2 : Dessiner la zone ── --}}
+      <section class="card" id="cardDraw" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
+          <h2 style="font-size:16px">Votre zone d'installation</h2>
+          <span style="background:var(--accent-soft);color:var(--accent-deep);padding:3px 10px;border-radius:999px;font-weight:700;font-size:11px;letter-spacing:.04em" id="drawModeBadge">TOITURE</span>
+        </div>
+        <p class="lede" style="margin-bottom:12px">Choisissez le type d'installation, puis cliquez sur la carte pour tracer votre zone.</p>
+
+        {{-- Toggle type --}}
+        <div class="zone-toggle">
+          <button class="zone-btn active" id="zoneBtnRoof" data-zone="roof">
+            <span class="zb-icon">🏠</span>
+            <span class="zb-label">Toiture</span>
+            <span class="zb-sub">Panneaux inclinés</span>
+          </button>
+          <button class="zone-btn" id="zoneBtnGarden" data-zone="garden">
+            <span class="zb-icon">🌿</span>
+            <span class="zb-label">Sol / Jardin</span>
+            <span class="zb-sub">Installation au sol</span>
+          </button>
+        </div>
+
+        {{-- Surface --}}
+        <div class="meta-label">Surface tracée</div>
+        <div class="surface-display">
+          <span class="s-val" id="surfaceVal">0</span>
+          <span class="s-unit">m²</span>
+        </div>
+        <div class="surface-sub" id="surfaceSub">Tracez votre zone sur la carte satellite</div>
+
+        {{-- Actions --}}
+        <button class="btn btn-primary" id="validateZoneBtn" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Valider cette zone
+        </button>
+        <button class="btn btn-outline" id="clearZoneBtn" style="margin-top:8px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          Effacer et recommencer
+        </button>
+
+        <div class="zone-validated" id="zoneValidatedRow" style="display:none">
+          <span class="check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>Zone validée — <span id="zoneValidatedArea">0</span> m²</span>
+          <button id="editZoneBtn">Modifier</button>
+        </div>
+      </section>
+
+      {{-- Roof config (appears after zone validated) --}}
       <section class="card" id="cardRoof" style="display:none">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
           <h2 style="font-size:16px">Informations toiture</h2>
@@ -477,6 +590,24 @@ html,body{
       <div class="map-loading" id="mapLoading">
         <div class="spinner"></div>
         <p id="mapLoadingText">Chargement de la carte…</p>
+      </div>
+
+      {{-- Draw hint --}}
+      <div class="draw-hint hidden" id="drawHint">
+        <span class="dot"></span>
+        <span id="drawHintText">Cliquez sur la carte pour placer les premiers points</span>
+      </div>
+
+      {{-- Draw toolbar (undo / clear) --}}
+      <div class="map-draw-toolbar hidden" id="drawToolbar">
+        <button class="mdt-btn" id="undoPointBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
+          Annuler point
+        </button>
+        <button class="mdt-btn danger" id="clearDrawBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          Tout effacer
+        </button>
       </div>
 
       <div class="map-info-bar" id="mapInfoBar">
@@ -824,11 +955,17 @@ async function fetchSolarData(){
 
     state.results = data;
     displayResults(data);
-    cardRoof.style.display = 'block';
-    mapInfoText.innerHTML = `<b>Analyse complète !</b> ${fmt(data.panelCount)} panneaux potentiels · ${fmt(data.areaM2)} m² de surface exploitable.`;
-    setStep(3);
-    showToast('Analyse solaire complète ✓');
+
+    // Afficher étape dessin de zone
+    $('cardDraw').style.display = 'block';
+    $('cardRoof').style.display = 'none';
+    mapInfoText.innerHTML = `<b>Potentiel détecté !</b> Tracez maintenant votre zone d'installation sur la carte (toiture ou sol).`;
+    setStep(2);
+    showToast('Adresse analysée — tracez votre zone ✓');
     fAdresse.value = state.address;
+
+    // Démarrer le mode dessin automatiquement
+    if(typeof startDrawMode === 'function') startDrawMode();
 
   } catch(e){
     mapInfoText.innerHTML = `<b>Données non disponibles</b> pour cette adresse. Essayez une adresse voisine ou contactez-nous directement.`;
@@ -838,6 +975,239 @@ async function fetchSolarData(){
     mapLoading.classList.add('hidden');
   }
 }
+
+// ── Drawing state ─────────────────────────────────────────────────
+const draw = {
+  active: false,       // mode dessin actif
+  validated: false,    // zone validée
+  zoneType: 'roof',   // 'roof' | 'garden'
+  points: [],          // google.maps.LatLng[]
+  polygon: null,       // google.maps.Polygon
+  markers: [],         // vertex markers
+  clickListener: null,
+};
+
+// Surface au sol en m² via Shoelace + conversion lat/lng
+function computeAreaM2(latLngs){
+  const n = latLngs.length;
+  if(n < 3) return 0;
+  const R = 6371000;
+  let area = 0;
+  for(let i = 0; i < n; i++){
+    const p1 = latLngs[i], p2 = latLngs[(i+1) % n];
+    const φ1 = p1.lat() * Math.PI/180, φ2 = p2.lat() * Math.PI/180;
+    const λ1 = p1.lng() * Math.PI/180, λ2 = p2.lng() * Math.PI/180;
+    area += (λ2 - λ1) * (2 + Math.sin(φ1) + Math.sin(φ2));
+  }
+  return Math.abs(area * R * R / 2);
+}
+
+// Calcul panneaux depuis surface tracée
+function panelsFromArea(m2, zoneType){
+  // Roof: 1.7m² / panneau (1.722m × 1.013m standard)
+  // Garden: 2.5m² / panneau (inter-rangs inclus)
+  const m2PerPanel = zoneType === 'garden' ? 2.5 : 1.7;
+  return Math.max(1, Math.floor(m2 / m2PerPanel));
+}
+
+function updateDrawUI(){
+  const m2 = computeAreaM2(draw.points);
+  const rounded = Math.round(m2);
+  $('surfaceVal').textContent = rounded;
+
+  if(draw.points.length < 3){
+    $('surfaceSub').textContent = draw.points.length === 0
+      ? 'Tracez votre zone sur la carte satellite'
+      : draw.points.length === 1
+      ? 'Continuez à cliquer pour former la zone…'
+      : 'Encore un point pour fermer la zone…';
+    $('validateZoneBtn').disabled = true;
+  } else {
+    const panels = panelsFromArea(m2, draw.zoneType);
+    const kwc    = (panels * 0.425).toFixed(2);
+    $('surfaceSub').textContent = `≈ ${panels} panneaux · ${kwc} kWc`;
+    $('validateZoneBtn').disabled = false;
+  }
+
+  // Toolbar visibility
+  const toolbar = $('drawToolbar');
+  if(draw.points.length > 0 && !draw.validated) toolbar.classList.remove('hidden');
+  else toolbar.classList.add('hidden');
+
+  // Draw hint
+  const hint = $('drawHint');
+  if(!draw.validated && draw.points.length === 0){
+    hint.classList.remove('hidden');
+    $('drawHintText').textContent = draw.zoneType === 'garden'
+      ? 'Cliquez sur votre jardin/terrain pour délimiter la zone'
+      : 'Cliquez sur votre toiture pour délimiter la zone';
+  } else {
+    hint.classList.add('hidden');
+  }
+}
+
+function drawPolygon(){
+  if(draw.polygon){ draw.polygon.setMap(null); draw.polygon = null; }
+
+  if(draw.points.length >= 2){
+    draw.polygon = new google.maps.Polygon({
+      paths: draw.points,
+      strokeColor: '#13a6e8',
+      strokeOpacity: 1,
+      strokeWeight: 2.5,
+      fillColor: '#13a6e8',
+      fillOpacity: draw.validated ? 0.35 : 0.20,
+      map,
+      clickable: false,
+      zIndex: 1,
+    });
+    if(draw.validated){
+      draw.polygon.setOptions({strokeColor:'#1f8a5b', fillColor:'#1f8a5b'});
+    }
+  }
+}
+
+function addVertexMarker(latlng, idx){
+  const m = new google.maps.Marker({
+    position: latlng,
+    map,
+    icon: {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: idx === 0 ? 9 : 7,
+      fillColor: '#13a6e8',
+      fillOpacity: 1,
+      strokeColor: '#fff',
+      strokeWeight: 2.5,
+    },
+    title: `Point ${idx+1}`,
+    clickable: !draw.validated,
+    zIndex: 10 + idx,
+  });
+  draw.markers.push(m);
+}
+
+function clearDrawing(keepValidated = false){
+  if(draw.polygon){ draw.polygon.setMap(null); draw.polygon = null; }
+  draw.markers.forEach(m => m.setMap(null));
+  draw.markers = [];
+  draw.points  = [];
+  if(!keepValidated) draw.validated = false;
+  updateDrawUI();
+}
+
+function startDrawMode(){
+  draw.active    = true;
+  draw.validated = false;
+  clearDrawing();
+  document.querySelector('.map-wrap').classList.add('drawing');
+  // Remove previous listener
+  if(draw.clickListener) google.maps.event.removeListener(draw.clickListener);
+  draw.clickListener = map.addListener('click', e => {
+    if(draw.validated) return;
+    draw.points.push(e.latLng);
+    addVertexMarker(e.latLng, draw.points.length - 1);
+    drawPolygon();
+    updateDrawUI();
+  });
+  updateDrawUI();
+}
+
+function stopDrawMode(){
+  draw.active = false;
+  document.querySelector('.map-wrap').classList.remove('drawing');
+  if(draw.clickListener){ google.maps.event.removeListener(draw.clickListener); draw.clickListener = null; }
+}
+
+function validateZone(){
+  if(draw.points.length < 3) return;
+  draw.validated = true;
+  stopDrawMode();
+  drawPolygon();
+
+  const m2      = computeAreaM2(draw.points);
+  const panels  = panelsFromArea(m2, draw.zoneType);
+  const kwc     = +(panels * 0.425).toFixed(2);
+
+  // Production basée sur les données Solar API ou ratio standard France
+  const baseRatio = state.results
+    ? state.results.yearlyKwh / Math.max(state.results.kwc, 0.1)
+    : 1180; // kWh/kWc/an
+  const orientCoeff = {Sud:1.0,'Sud-Est':.95,'Sud-Ouest':.95,'Est':.85,'Ouest':.85,'Nord':.65};
+  const inclCoeff   = {0:.85,15:.92,30:1.0,45:.97,60:.90};
+  const orient = $('orientSelect')?.value || 'Sud';
+  const incl   = $('inclSelect')?.value   || '30';
+  const gardenBonus = draw.zoneType === 'garden' ? 1.05 : 1; // au sol légèrement + exposé
+  const yearlyKwh   = Math.round(kwc * baseRatio * (orientCoeff[orient]||1) * (inclCoeff[incl]||1) * gardenBonus);
+
+  const electricityPrice = 0.2276, selfRate = 0.35, resalePrice = 0.1269;
+  const annualSavings    = Math.round(yearlyKwh * selfRate * electricityPrice + yearlyKwh * (1-selfRate) * resalePrice);
+
+  // Calcul budget (toiture vs sol)
+  const budgetFactorMin = draw.zoneType === 'garden' ? 1800 : 2000;
+  const budgetFactorMax = draw.zoneType === 'garden' ? 2400 : 2800;
+
+  // Update right panel
+  const r = {
+    panelCount: panels, kwc, yearlyKwh, annualSavings,
+    budgetMin: Math.round(kwc * budgetFactorMin / 100) * 100,
+    budgetMax: Math.round(kwc * budgetFactorMax / 100) * 100,
+    monthlyKwh: [.045,.06,.085,.10,.115,.125,.13,.12,.095,.07,.045,.035].map(w => Math.round(yearlyKwh * w)),
+    areaM2: Math.round(m2),
+  };
+  state.drawResults = r;
+  displayResults(r);
+
+  // UI updates
+  $('surfaceVal').textContent = Math.round(m2);
+  $('surfaceSub').textContent = `${panels} panneaux · ${kwc} kWc`;
+  $('zoneValidatedArea').textContent = Math.round(m2);
+  $('zoneValidatedRow').style.display = 'flex';
+  $('validateZoneBtn').style.display  = 'none';
+  $('clearZoneBtn').style.display     = 'none';
+
+  // Afficher config toiture
+  $('cardRoof').style.display = 'block';
+  $('cardRoof').scrollIntoView({behavior:'smooth', block:'nearest'});
+  setStep(3);
+  showToast(`Zone validée — ${Math.round(m2)} m² · ${panels} panneaux ✓`);
+  mapInfoText.innerHTML = `<b>Zone tracée :</b> ${Math.round(m2)} m² · ${panels} panneaux · ${fmt(yearlyKwh)} kWh/an estimés.`;
+}
+
+// ── Zone type toggle ──────────────────────────────────────────────
+[$('zoneBtnRoof'), $('zoneBtnGarden')].forEach(btn => {
+  btn?.addEventListener('click', () => {
+    [$('zoneBtnRoof'), $('zoneBtnGarden')].forEach(b => b?.classList.remove('active'));
+    btn.classList.add('active');
+    draw.zoneType = btn.dataset.zone;
+    $('drawModeBadge').textContent = draw.zoneType === 'garden' ? 'SOL/JARDIN' : 'TOITURE';
+    updateDrawUI();
+    // Recalcul si déjà des points
+    if(draw.points.length >= 3) updateDrawUI();
+  });
+});
+
+// ── Validate / Clear / Edit buttons ─────────────────────────────
+$('validateZoneBtn')?.addEventListener('click', validateZone);
+$('clearZoneBtn')?.addEventListener('click', () => { clearDrawing(); updateDrawUI(); });
+$('editZoneBtn')?.addEventListener('click', () => {
+  draw.validated = false;
+  $('zoneValidatedRow').style.display = 'none';
+  $('validateZoneBtn').style.display  = '';
+  $('clearZoneBtn').style.display     = '';
+  $('cardRoof').style.display         = 'none';
+  clearDrawing();
+  startDrawMode();
+  setStep(2);
+});
+$('undoPointBtn')?.addEventListener('click', () => {
+  if(!draw.points.length) return;
+  draw.points.pop();
+  const last = draw.markers.pop();
+  if(last) last.setMap(null);
+  drawPolygon();
+  updateDrawUI();
+});
+$('clearDrawBtn')?.addEventListener('click', () => { clearDrawing(); updateDrawUI(); });
 
 // ── Autocomplétion custom via Nominatim (backend) ────────────────
 const autocompleteList = $('autocompleteList');
@@ -1000,6 +1370,19 @@ changeAddrBtn.addEventListener('click', () => {
   addressInput.focus();
   analyzeBtn.disabled = true;
   cardRoof.style.display = 'none';
+  $('cardDraw').style.display = 'none';
+  // Reset dessin
+  if(typeof clearDrawing === 'function'){ clearDrawing(); stopDrawMode(); }
+  // Reset métriques
+  ['metricPanels','metricKwc','metricKwh','metricSavings','budgetCard'].forEach(id => {
+    const el = $(id); if(el) el.classList.add('skeleton');
+  });
+  $('valPanels').innerHTML = '— <small>panneaux</small>';
+  $('valKwc').innerHTML    = '— <small>kWc</small>';
+  $('valKwh').innerHTML    = '— <small>kWh/an</small>';
+  $('valSavings').innerHTML= '— <small>€/an</small>';
+  $('valBudget').innerHTML = '— <small>€</small>';
+  state.results = null; state.lat = null; state.lng = null;
   setStep(1);
 });
 
