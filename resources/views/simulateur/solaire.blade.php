@@ -592,6 +592,16 @@ html,body{
         <p id="mapLoadingText">Chargement de la carte…</p>
       </div>
 
+      {{-- Banner démo animée --}}
+      <div id="demoBanner" style="display:none;position:absolute;top:72px;left:50%;transform:translateX(-50%);z-index:15;
+        background:rgba(245,196,0,.95);color:#0f2231;padding:10px 18px;border-radius:10px;
+        font:700 13px 'Inter',sans-serif;align-items:center;gap:10px;
+        box-shadow:0 4px 16px rgba(0,0,0,.2);white-space:nowrap;backdrop-filter:blur(4px)">
+        <span style="font-size:16px">🎬</span>
+        Exemple — cliquez sur la carte pour tracer votre vraie zone
+        <button onclick="clearDemo()" style="background:rgba(0,0,0,.12);border:0;border-radius:6px;padding:3px 10px;font:600 12px 'Inter',sans-serif;cursor:pointer;color:#0f2231">Passer</button>
+      </div>
+
       {{-- Draw hint --}}
       <div class="draw-hint hidden" id="drawHint">
         <span class="dot"></span>
@@ -1095,21 +1105,124 @@ function clearDrawing(keepValidated = false){
   updateDrawUI();
 }
 
+// ── Démo animée ─────────────────────────────────────────────────
+let demoRunning = false;
+const demoState = { markers: [], polygon: null, timeout: [] };
+
+function clearDemo(){
+  demoRunning = false;
+  demoState.timeout.forEach(clearTimeout);
+  demoState.timeout = [];
+  demoState.markers.forEach(m => m.setMap(null));
+  demoState.markers = [];
+  if(demoState.polygon){ demoState.polygon.setMap(null); demoState.polygon = null; }
+  // Masquer le banner démo
+  const banner = $('demoBanner');
+  if(banner) banner.style.display = 'none';
+}
+
+function runDemo(){
+  clearDemo();
+  demoRunning = true;
+
+  // Afficher banner
+  const banner = $('demoBanner');
+  if(banner) banner.style.display = 'flex';
+
+  const center = map.getCenter();
+  const lat = center.lat(), lng = center.lng();
+
+  // Décalages en degrés (~10–20m à zoom 21) formant un polygon toiture typique
+  const roofOffsets = [
+    [-0.00012, -0.00018],
+    [-0.00012,  0.00018],
+    [ 0.00005,  0.00018],
+    [ 0.00005, -0.00018],
+  ];
+  // Jardin (plus grand)
+  const gardenOffsets = [
+    [-0.00020, -0.00025],
+    [-0.00020,  0.00025],
+    [ 0.00010,  0.00025],
+    [ 0.00010, -0.00025],
+  ];
+
+  const offsets = draw.zoneType === 'garden' ? gardenOffsets : roofOffsets;
+  const demoPoints = offsets.map(([dlat, dlng]) => new google.maps.LatLng(lat + dlat, lng + dlng));
+
+  const demoIcon = (i) => ({
+    path: google.maps.SymbolPath.CIRCLE,
+    scale: 8,
+    fillColor: '#f5c400',
+    fillOpacity: 1,
+    strokeColor: '#fff',
+    strokeWeight: 2,
+  });
+
+  let currentPts = [];
+  offsets.forEach((_, i) => {
+    const t1 = setTimeout(() => {
+      if(!demoRunning) return;
+      currentPts.push(demoPoints[i]);
+
+      // Marker jaune
+      const m = new google.maps.Marker({
+        position: demoPoints[i], map,
+        icon: demoIcon(i), zIndex: 50 + i, clickable: false,
+      });
+      demoState.markers.push(m);
+
+      // Polygon démo
+      if(demoState.polygon){ demoState.polygon.setMap(null); }
+      if(currentPts.length >= 2){
+        demoState.polygon = new google.maps.Polygon({
+          paths: currentPts,
+          strokeColor: '#f5c400', strokeOpacity: .85, strokeWeight: 2.5,
+          fillColor: '#f5c400', fillOpacity: .2,
+          map, clickable: false, zIndex: 5,
+        });
+      }
+    }, i * 700);
+    demoState.timeout.push(t1);
+  });
+
+  // Fin démo : flash vert + message
+  const tEnd = setTimeout(() => {
+    if(!demoRunning) return;
+    if(demoState.polygon) demoState.polygon.setOptions({strokeColor:'#1f8a5b', fillColor:'#1f8a5b'});
+    const t2 = setTimeout(() => {
+      clearDemo();
+      // Mettre à jour le hint
+      $('drawHintText').textContent = draw.zoneType === 'garden'
+        ? 'À vous ! Cliquez sur votre jardin pour tracer votre zone'
+        : 'À vous ! Cliquez sur votre toiture pour tracer votre zone';
+      $('drawHint').classList.remove('hidden');
+    }, 900);
+    demoState.timeout.push(t2);
+  }, offsets.length * 700 + 400);
+  demoState.timeout.push(tEnd);
+}
+
 function startDrawMode(){
   draw.active    = true;
   draw.validated = false;
   clearDrawing();
   document.querySelector('.map-wrap').classList.add('drawing');
-  // Remove previous listener
+
   if(draw.clickListener) google.maps.event.removeListener(draw.clickListener);
   draw.clickListener = map.addListener('click', e => {
     if(draw.validated) return;
+    clearDemo(); // stoppe la démo dès le premier clic réel
     draw.points.push(e.latLng);
     addVertexMarker(e.latLng, draw.points.length - 1);
     drawPolygon();
     updateDrawUI();
   });
+
   updateDrawUI();
+  // Lancer la démo animée après 600ms (le temps que la carte finisse de charger)
+  const t = setTimeout(runDemo, 600);
+  demoState.timeout.push(t);
 }
 
 function stopDrawMode(){
@@ -1181,8 +1294,9 @@ function validateZone(){
     draw.zoneType = btn.dataset.zone;
     $('drawModeBadge').textContent = draw.zoneType === 'garden' ? 'SOL/JARDIN' : 'TOITURE';
     updateDrawUI();
-    // Recalcul si déjà des points
-    if(draw.points.length >= 3) updateDrawUI();
+    // Relancer la démo si aucun point n'a encore été tracé
+    if(draw.points.length === 0 && draw.active && typeof runDemo === 'function') runDemo();
+    else if(draw.points.length >= 3) updateDrawUI();
   });
 });
 
@@ -1223,8 +1337,9 @@ function openAddress(item){
   addrPill.style.display   = 'flex';
   addrSearchWrap.style.display = 'none';
   if(map){
+    map.setTilt(0); // vue satellite parfaitement à plat (pas de 45°)
     map.setCenter({lat: item.lat, lng: item.lng});
-    map.setZoom(19);
+    map.setZoom(21); // zoom max pour voir la toiture de près
     if(marker){ marker.setPosition({lat: item.lat, lng: item.lng}); marker.setVisible(true); }
   }
   fAdresse.value = item.label;
