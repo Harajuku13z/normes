@@ -1076,67 +1076,121 @@ function clearSolarPanels(){
   solarPanelOverlays = [];
 }
 
+// ── Intersection de deux droites (en mètres) ─────────────────────
+function lineIntersectM(p1, p2, p3, p4){
+  const d1x = p2.x-p1.x, d1y = p2.y-p1.y;
+  const d2x = p4.x-p3.x, d2y = p4.y-p3.y;
+  const den = d1x*d2y - d1y*d2x;
+  if(Math.abs(den) < 1e-10) return {x:(p1.x+p3.x)/2, y:(p1.y+p3.y)/2};
+  const t = ((p3.x-p1.x)*d2y - (p3.y-p1.y)*d2x) / den;
+  return {x: p1.x + t*d1x, y: p1.y + t*d1y};
+}
+
 /**
- * Génère une grille de panneaux à l'intérieur du polygone dessiné,
- * alignés sur l'orientation du toit (angle du bord le plus long).
+ * Applique un retrait (inset) de `insetM` mètres à l'intérieur du polygone.
+ * Chaque arête est décalée vers l'intérieur, puis les nouvelles arêtes sont intersectées.
+ */
+function insetPolygonM(polyPoints, insetM){
+  const n = polyPoints.length;
+  if(n < 3) return polyPoints;
+  const centLat = polyPoints.reduce((s,p) => s+p.lat(),0)/n;
+  const centLng = polyPoints.reduce((s,p) => s+p.lng(),0)/n;
+  const mPerLat = 111320;
+  const mPerLng = 111320 * Math.cos(centLat * Math.PI/180);
+
+  // Convertir en mètres
+  const pts = polyPoints.map(p => ({
+    x: (p.lng()-centLng)*mPerLng,
+    y: (p.lat()-centLat)*mPerLat
+  }));
+
+  // Orientation du polygone (aire signée)
+  let area = 0;
+  for(let i=0;i<n;i++){ const j=(i+1)%n; area += pts[i].x*pts[j].y - pts[j].x*pts[i].y; }
+  const isCCW = area > 0;
+
+  // Décaler chaque arête vers l'intérieur
+  const offEdges = pts.map((p, i) => {
+    const q = pts[(i+1)%n];
+    const dx = q.x-p.x, dy = q.y-p.y;
+    const len = Math.sqrt(dx*dx+dy*dy) || 1;
+    const nx = isCCW ?  dy/len : -dy/len;
+    const ny = isCCW ? -dx/len :  dx/len;
+    return {
+      p1: {x: p.x+nx*insetM, y: p.y+ny*insetM},
+      p2: {x: q.x+nx*insetM, y: q.y+ny*insetM},
+    };
+  });
+
+  // Intersections des arêtes décalées consécutives
+  return offEdges.map((e, i) => {
+    const prev = offEdges[(i+n-1)%n];
+    const pt   = lineIntersectM(prev.p1, prev.p2, e.p1, e.p2);
+    return new google.maps.LatLng(
+      centLat + pt.y/mPerLat,
+      centLng + pt.x/mPerLng
+    );
+  });
+}
+
+/**
+ * Génère une grille de panneaux à l'intérieur du polygone dessiné.
+ * - Retrait de sécurité de 0.5 m sur tous les bords
+ * - Alignement sur l'angle du bord le plus long (orientation du toit)
+ * - Taille réelle des panneaux (panelH × panelW en mètres)
  */
 function generatePanelsInPolygon(polyPoints, panelH, panelW, gap){
   if(!polyPoints || polyPoints.length < 3) return [];
 
-  const centLat = polyPoints.reduce((s,p) => s + p.lat(), 0) / polyPoints.length;
-  const centLng = polyPoints.reduce((s,p) => s + p.lng(), 0) / polyPoints.length;
-  const mPerLat = 111320;
-  const mPerLng = 111320 * Math.cos(centLat * Math.PI / 180);
+  // 1. Appliquer le retrait de sécurité 0.5 m
+  const insetPts = insetPolygonM(polyPoints, 0.5);
+  if(!insetPts || insetPts.length < 3) return [];
 
-  // Trouver l'angle du bord le plus long pour aligner les panneaux
+  const centLat = insetPts.reduce((s,p) => s+p.lat(),0)/insetPts.length;
+  const centLng = insetPts.reduce((s,p) => s+p.lng(),0)/insetPts.length;
+  const mPerLat = 111320;
+  const mPerLng = 111320 * Math.cos(centLat * Math.PI/180);
+
+  // 2. Angle du bord le plus long (orientation du toit)
   let maxLen = 0, angle = 0;
-  for(let i = 0; i < polyPoints.length; i++){
-    const p1 = polyPoints[i], p2 = polyPoints[(i+1) % polyPoints.length];
-    const dlat = (p2.lat() - p1.lat()) * mPerLat;
-    const dlng = (p2.lng() - p1.lng()) * mPerLng;
-    const len  = Math.sqrt(dlat*dlat + dlng*dlng);
+  for(let i=0;i<insetPts.length;i++){
+    const p1 = insetPts[i], p2 = insetPts[(i+1)%insetPts.length];
+    const dlat = (p2.lat()-p1.lat())*mPerLat;
+    const dlng = (p2.lng()-p1.lng())*mPerLng;
+    const len  = Math.sqrt(dlat*dlat+dlng*dlng);
     if(len > maxLen){ maxLen = len; angle = Math.atan2(dlng, dlat); }
   }
 
-  // Rotation d'un point autour du centroïde
+  // Rotation locale autour du centroïde
   const rot = (lat, lng, a) => {
-    const dy = (lat - centLat) * mPerLat;
-    const dx = (lng - centLng) * mPerLng;
+    const dy = (lat-centLat)*mPerLat, dx = (lng-centLng)*mPerLng;
     const cos = Math.cos(a), sin = Math.sin(a);
-    return { lat: centLat + (dy*cos - dx*sin)/mPerLat,
-             lng: centLng + (dy*sin + dx*cos)/mPerLng };
+    return { lat: centLat+(dy*cos-dx*sin)/mPerLat, lng: centLng+(dy*sin+dx*cos)/mPerLng };
   };
 
-  // Pivoter le polygone pour aligner le bord principal avec l'axe X
-  const rotPoly = polyPoints.map(p => rot(p.lat(), p.lng(), -angle));
-  const minLat  = Math.min(...rotPoly.map(p => p.lat));
-  const maxLat  = Math.max(...rotPoly.map(p => p.lat));
-  const minLng  = Math.min(...rotPoly.map(p => p.lng));
-  const maxLng  = Math.max(...rotPoly.map(p => p.lng));
+  // 3. Pivoter le polygone inset pour aligner sur l'axe
+  const rotPoly = insetPts.map(p => rot(p.lat(), p.lng(), -angle));
+  const minLat  = Math.min(...rotPoly.map(p=>p.lat));
+  const maxLat  = Math.max(...rotPoly.map(p=>p.lat));
+  const minLng  = Math.min(...rotPoly.map(p=>p.lng));
+  const maxLng  = Math.max(...rotPoly.map(p=>p.lng));
 
-  // Polygone Google Maps dans l'espace pivoté (pour containsLocation)
-  const gPoly = new google.maps.Polygon({
-    paths: rotPoly.map(p => ({lat: p.lat, lng: p.lng}))
-  });
+  const gPoly  = new google.maps.Polygon({ paths: rotPoly.map(p=>({lat:p.lat,lng:p.lng})) });
+  const hDeg   = panelH/mPerLat,  wDeg  = panelW/mPerLng;
+  const gapLat = gap/mPerLat,     gapLng = gap/mPerLng;
+  const stepH  = hDeg+gapLat,     stepW  = wDeg+gapLng;
 
-  const hDeg   = panelH / mPerLat;
-  const wDeg   = panelW / mPerLng;
-  const gapLat = gap / mPerLat;
-  const gapLng = gap / mPerLng;
-  const stepH  = hDeg + gapLat;
-  const stepW  = wDeg + gapLng;
-
+  // 4. Générer la grille et filtrer dans le polygone inset
   const panels = [];
-  for(let lat = minLat + hDeg/2 + gapLat; lat + hDeg/2 < maxLat; lat += stepH){
-    for(let lng = minLng + wDeg/2 + gapLng; lng + wDeg/2 < maxLng; lng += stepW){
+  for(let lat=minLat+hDeg/2; lat+hDeg/2 <= maxLat; lat+=stepH){
+    for(let lng=minLng+wDeg/2; lng+wDeg/2 <= maxLng; lng+=stepW){
       if(!google.maps.geometry.poly.containsLocation(
-            new google.maps.LatLng(lat, lng), gPoly)) continue;
-      // 4 coins du panneau dans l'espace pivoté
+          new google.maps.LatLng(lat,lng), gPoly)) continue;
       const corners = [
-        rot(lat - hDeg/2, lng - wDeg/2, angle),
-        rot(lat - hDeg/2, lng + wDeg/2, angle),
-        rot(lat + hDeg/2, lng + wDeg/2, angle),
-        rot(lat + hDeg/2, lng - wDeg/2, angle),
+        rot(lat-hDeg/2, lng-wDeg/2, angle),
+        rot(lat-hDeg/2, lng+wDeg/2, angle),
+        rot(lat+hDeg/2, lng+wDeg/2, angle),
+        rot(lat+hDeg/2, lng-wDeg/2, angle),
       ];
       panels.push(corners);
     }
@@ -1146,22 +1200,24 @@ function generatePanelsInPolygon(polyPoints, panelH, panelW, gap){
 
 function drawSolarPanelsOnMap(polyPoints, panelH, panelW){
   clearSolarPanels();
-  if(!map || !polyPoints || polyPoints.length < 3) return;
+  if(!map || !polyPoints || polyPoints.length < 3) return 0;
 
-  const gap    = 0.025; // 2.5 cm entre panneaux
-  const panels = generatePanelsInPolygon(polyPoints, panelH || 1.65, panelW || 1.0, gap);
+  // Dimensions réelles issues de l'API Solar (défaut standard si non dispo)
+  const h = panelH || 1.722;  // hauteur panneau standard 425Wc
+  const w = panelW || 1.134;  // largeur panneau standard 425Wc
+  const gap = 0.02;            // 2 cm espace entre panneaux
+
+  const panels = generatePanelsInPolygon(polyPoints, h, w, gap);
 
   panels.forEach(corners => {
     const poly = new google.maps.Polygon({
       paths: corners,
-      strokeColor:   '#1a4a7a',
-      strokeOpacity: 0.9,
-      strokeWeight:  1.2,
-      fillColor:     '#1e5fa8',
-      fillOpacity:   0.80,
-      map,
-      clickable: false,
-      zIndex: 4,
+      strokeColor:   '#0d2b52',
+      strokeOpacity: 1,
+      strokeWeight:  1,
+      fillColor:     '#1a4f8c',
+      fillOpacity:   0.82,
+      map, clickable: false, zIndex: 4,
     });
     solarPanelOverlays.push(poly);
   });
