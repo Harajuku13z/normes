@@ -1534,9 +1534,24 @@ function openAddress(item){
   addrPill.style.display   = 'flex';
   addrSearchWrap.style.display = 'none';
   if(map){
+    map.setMapTypeId('satellite');
     map.setTilt(0);
     map.setCenter({lat: item.lat, lng: item.lng});
-    map.setZoom(22); // zoom toiture (confirmé par utilisateur)
+
+    // MaxZoomService : zoom maximum disponible pour cette adresse (API officielle Google)
+    const maxZoomSvc = new google.maps.MaxZoomService();
+    maxZoomSvc.getMaxZoomAtLatLng({lat: item.lat, lng: item.lng}, function(result){
+      if(result.status === google.maps.MaxZoomStatus.OK){
+        // Zoom le plus élevé disponible (max 22, min 18)
+        const z = Math.max(18, Math.min(result.zoom, 22));
+        map.setZoom(z);
+        dbg('INFO', 'MaxZoom dispo: ' + result.zoom + ' → appliqué: ' + z);
+      } else {
+        map.setZoom(20);
+        dbg('WARN', 'MaxZoomService échec, fallback 20');
+      }
+    });
+
     if(marker){ marker.setPosition({lat: item.lat, lng: item.lng}); marker.setVisible(true); }
   }
   fAdresse.value = item.label;
