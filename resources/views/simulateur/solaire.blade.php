@@ -1544,7 +1544,7 @@ function openAddress(item){
     // MaxZoom - 1 : un cran en arrière du zoom maximum disponible
     const _mzs = new google.maps.MaxZoomService();
     _mzs.getMaxZoomAtLatLng({lat: item.lat, lng: item.lng}, function(r){
-      const z = (r.status === google.maps.MaxZoomStatus.OK ? r.zoom : 22) - 1;
+      const z = (r.status === google.maps.MaxZoomStatus.OK ? r.zoom : 21);  // zoom max dispo
       map.setZoom(Math.max(18, z));
       map.setTilt(0);
     });
@@ -1637,19 +1637,19 @@ function initMap(){
     mapTypeControl: false,
   });
 
-  // Icône SVG point bleu (compatible toutes versions Maps API)
-  const blueCircleSvg = encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">' +
-    '<circle cx="14" cy="14" r="10" fill="#13a6e8" stroke="white" stroke-width="3"/>' +
-    '<circle cx="14" cy="14" r="3" fill="white"/>' +
+  // Icône pin localisation SVG (forme épingle / goutte)
+  const pinSvg = encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">' +
+    '<path d="M16 0C7.163 0 0 7.163 0 16c0 10.5 16 26 16 26s16-15.5 16-26C32 7.163 24.837 0 16 0z" fill="#0f2231"/>' +
+    '<circle cx="16" cy="16" r="7" fill="white"/>' +
     '</svg>'
   );
   marker = new google.maps.Marker({
     map,
     icon: {
-      url: 'data:image/svg+xml;charset=UTF-8,' + blueCircleSvg,
-      scaledSize: new google.maps.Size(28, 28),
-      anchor: new google.maps.Point(14, 14),
+      url: 'data:image/svg+xml;charset=UTF-8,' + pinSvg,
+      scaledSize: new google.maps.Size(32, 42),
+      anchor: new google.maps.Point(16, 42),
     },
     visible: false,
   });
