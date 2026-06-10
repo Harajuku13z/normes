@@ -1086,16 +1086,17 @@ function loadMaps(){
     }
   };
 
-  const src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places&callback=initMapCallback&language=fr&region=FR`;
+  // v=weekly + sans loading=async dans l'URL, sans async/defer sur le tag
+  // Le callback gère l'ordre d'exécution — c'est le mode le plus stable
+  const src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places,geometry&callback=initMapCallback&language=fr&region=FR&v=weekly`;
   dbg('INFO', 'Chargement script Maps', src.replace(key, key.slice(0,10)+'…'));
 
   const mapsScript = document.createElement('script');
   mapsScript.src = src;
-  mapsScript.async = true;
-  mapsScript.defer = true;
+  // PAS de async/defer ici : le paramètre callback= suffit
   mapsScript.onerror = function(e){
-    dbg('ERROR', 'Échec du chargement du script Maps (onerror)', 'Vérifiez la connexion et que l\'API Maps JavaScript est activée dans Google Cloud Console.');
-    showMapError('Impossible de charger le script Google Maps. Vérifiez la clé et les APIs activées.');
+    dbg('ERROR', 'Échec chargement script Maps (onerror)', 'API Maps JavaScript non activée ou réseau indisponible.');
+    showMapError('Impossible de charger le script Google Maps. Vérifiez la connexion.');
   };
   document.head.appendChild(mapsScript);
 
