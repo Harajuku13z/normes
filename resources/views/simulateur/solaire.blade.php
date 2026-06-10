@@ -1638,18 +1638,22 @@ function initMap(){
   });
 
   // Icône pin localisation SVG (forme épingle / goutte)
+  // Pin rouge avec point accent au-dessus
   const pinSvg = encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="42" viewBox="0 0 32 42">' +
-    '<path d="M16 0C7.163 0 0 7.163 0 16c0 10.5 16 26 16 26s16-15.5 16-26C32 7.163 24.837 0 16 0z" fill="#0f2231"/>' +
-    '<circle cx="16" cy="16" r="7" fill="white"/>' +
+    '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="56" viewBox="0 0 40 56">' +
+    // Point accent bleu au-dessus du pin
+    '<circle cx="20" cy="5" r="5" fill="#13a6e8" stroke="white" stroke-width="2"/>' +
+    // Pin rouge
+    '<path d="M20 14C12.268 14 6 20.268 6 28c0 11 14 28 14 28s14-17 14-28C34 20.268 27.732 14 20 14z" fill="#e23a3a"/>' +
+    '<circle cx="20" cy="28" r="6" fill="white" fill-opacity="0.9"/>' +
     '</svg>'
   );
   marker = new google.maps.Marker({
     map,
     icon: {
       url: 'data:image/svg+xml;charset=UTF-8,' + pinSvg,
-      scaledSize: new google.maps.Size(32, 42),
-      anchor: new google.maps.Point(16, 42),
+      scaledSize: new google.maps.Size(40, 56),
+      anchor: new google.maps.Point(20, 56),
     },
     visible: false,
   });
