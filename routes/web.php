@@ -29,6 +29,7 @@ use App\Http\Controllers\LegacyPageController;
 use App\Http\Controllers\RealisationsController;
 use App\Http\Controllers\ServicePagesController;
 use App\Http\Controllers\SimulateurController;
+use App\Http\Controllers\SolarSimulatorController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Admin\AdminContactInquiriesController;
 use App\Http\Controllers\Admin\AdminEmailSignatureController;
@@ -173,6 +174,15 @@ Route::get('/franchise/merci', [FranchiseController::class, 'success'])->name('f
 // Réalisations (portfolio)
 Route::get('/realisations', [RealisationsController::class, 'index'])->name('realisations.page');
 Route::get('/realisations/{portfolio_project}', [RealisationsController::class, 'show'])->name('realisations.show');
+
+// Simulateur solaire
+Route::get('/simulateur-solaire', [SolarSimulatorController::class, 'index'])->name('simulateur.solaire');
+Route::post('/api/solar-estimate', [SolarSimulatorController::class, 'estimate'])
+    ->middleware('throttle:20,1')
+    ->name('api.solar.estimate');
+Route::post('/api/solar-lead', [SolarSimulatorController::class, 'saveLead'])
+    ->middleware('throttle:5,1')
+    ->name('api.solar.lead');
 
 // Simulateur de devis (multi-étapes)
 Route::get('/simulateur', [SimulateurController::class, 'start'])->name('simulateur.start');

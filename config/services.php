@@ -40,4 +40,9 @@ return [
     */
     'franchise_notify_email' => env('FRANCHISE_NOTIFY_EMAIL'),
 
+    'google' => [
+        'solar_key'        => env('GOOGLE_SOLAR_API_KEY'),
+        'maps_browser_key' => env('GOOGLE_MAPS_BROWSER_KEY'),
+    ],
+
 ];
