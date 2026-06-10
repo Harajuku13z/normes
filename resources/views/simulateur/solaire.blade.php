@@ -173,11 +173,51 @@ html,body{
 .demo-img-wrap img{width:100%;max-height:360px;object-fit:cover;display:block}
 .demo-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 /* SVG animation */
-.dp-line{stroke:#13a6e8;stroke-width:3.5;fill:none;stroke-linecap:round;stroke-linejoin:round;
-  stroke-dasharray:700;stroke-dashoffset:700;vector-effect:non-scaling-stroke}
-.dp-fill{fill:rgba(19,166,232,.2);stroke:none}
-.dp-dot{fill:#13a6e8;stroke:#fff;stroke-width:3;r:8;vector-effect:non-scaling-stroke;
-  transform-origin:center;transform:scale(0)}
+/* ── Animation SVG en boucle ── */
+/* Durée totale du cycle : 5s */
+.dp-dot{
+  fill:#13a6e8;stroke:#fff;stroke-width:2.5;
+  vector-effect:non-scaling-stroke;
+  transform-origin:center;
+}
+.dp-line{
+  stroke:#13a6e8;stroke-width:3;fill:none;
+  stroke-linecap:round;stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;
+  stroke-dasharray:1600;stroke-dashoffset:1600;
+}
+.dp-fill{fill:rgba(19,166,232,.22);stroke:none;opacity:0}
+.dp-badge{opacity:0}
+.dp-labels{opacity:0}
+
+/* Keyframes points */
+@keyframes dotPop{
+  0%,4%    {transform:scale(0);opacity:0}
+  12%,78%  {transform:scale(1);opacity:1}
+  90%,100% {transform:scale(0);opacity:0}
+}
+/* Ligne tracée */
+@keyframes lineTrace{
+  0%,8%    {stroke-dashoffset:1600}
+  55%,80%  {stroke-dashoffset:0}
+  92%,100% {stroke-dashoffset:1600}
+}
+/* Fill + labels + badge */
+@keyframes fadeInOut{
+  0%,52%   {opacity:0}
+  65%,80%  {opacity:1}
+  92%,100% {opacity:0}
+}
+
+/* Application des animations (cycle 5s en boucle) */
+.demo-anim-running .dp-dot#dp1{animation:dotPop 5s ease infinite;animation-delay:0s}
+.demo-anim-running .dp-dot#dp2{animation:dotPop 5s ease infinite;animation-delay:.55s}
+.demo-anim-running .dp-dot#dp3{animation:dotPop 5s ease infinite;animation-delay:1.1s}
+.demo-anim-running .dp-dot#dp4{animation:dotPop 5s ease infinite;animation-delay:1.65s}
+.demo-anim-running .dp-line    {animation:lineTrace 5s ease infinite}
+.demo-anim-running .dp-fill    {animation:fadeInOut 5s ease infinite}
+.demo-anim-running .dp-badge   {animation:fadeInOut 5s ease infinite}
+.demo-anim-running .dp-labels  {animation:fadeInOut 5s ease infinite}
 /* type badge in demo */
 .demo-type-badge{
   position:absolute;top:12px;left:12px;
@@ -838,38 +878,29 @@ html,body{
       <img id="demoImg" src="" alt="Vue satellite de la toiture" loading="lazy">
       <div class="demo-type-badge" id="demoTypeBadge">🏠 Toiture</div>
 
-      {{-- SVG animé en overlay — points et lignes du polygon démo --}}
-      <svg class="demo-svg" id="demoSvg" viewBox="0 0 720 400" preserveAspectRatio="xMidYMid slice">
-        {{-- Polygon fill — pan gauche de la toiture --}}
-        <polygon class="dp-fill" id="dpFill"
-          points="202,80 120,155 120,258 206,288"
-          style="opacity:0;transition:opacity .4s ease .1s"/>
-
-        {{-- Ligne du polygon --}}
-        <polyline class="dp-line" id="dpLine"
-          points="202,80 120,155 120,258 206,288 202,80"
-          style="stroke-dasharray:700;stroke-dashoffset:700;transition:stroke-dashoffset 1.6s ease"/>
-
-        {{-- Points (vertices) avec délai progressif --}}
-        <circle class="dp-dot" id="dp1" cx="202" cy="80"  style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) 0s"/>
-        <circle class="dp-dot" id="dp2" cx="120" cy="155" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) .55s"/>
-        <circle class="dp-dot" id="dp3" cx="120" cy="258" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) 1.1s"/>
-        <circle class="dp-dot" id="dp4" cx="206" cy="288" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) 1.65s"/>
-
-        {{-- Labels numérotés --}}
-        <g id="dpLabels" style="opacity:0;transition:opacity .3s ease 2s">
-          <text x="210" y="76"  fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">1</text>
-          <text x="88"  y="158" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">2</text>
-          <text x="88"  y="268" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">3</text>
-          <text x="214" y="294" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">4</text>
+      {{-- SVG animé — viewBox dynamique calé sur l'image via JS (coords espace image 1536×1024) --}}
+      <svg class="demo-svg" id="demoSvg" viewBox="0 175 1536 675" preserveAspectRatio="none">
+        {{-- Pan W de la toiture (triangle gauche) : P1=haut, P2=gauche, P3=bas, P4=intérieur --}}
+        <polygon class="dp-fill" id="dpFill" points="432,258 352,490 433,722 600,490"/>
+        <polyline class="dp-line" id="dpLine" points="432,258 352,490 433,722 600,490 432,258"/>
+        <circle class="dp-dot" id="dp1" cx="432" cy="258" r="18"/>
+        <circle class="dp-dot" id="dp2" cx="352" cy="490" r="18"/>
+        <circle class="dp-dot" id="dp3" cx="433" cy="722" r="18"/>
+        <circle class="dp-dot" id="dp4" cx="600" cy="490" r="18"/>
+        <g class="dp-labels" id="dpLabels">
+          <circle cx="432" cy="258" r="28" fill="rgba(19,166,232,.9)"/>
+          <text x="432" y="267" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">1</text>
+          <circle cx="352" cy="490" r="28" fill="rgba(19,166,232,.9)"/>
+          <text x="352" y="499" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">2</text>
+          <circle cx="433" cy="722" r="28" fill="rgba(19,166,232,.9)"/>
+          <text x="433" y="731" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">3</text>
+          <circle cx="600" cy="490" r="28" fill="rgba(19,166,232,.9)"/>
+          <text x="600" y="499" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">4</text>
         </g>
-
-        {{-- Badge surface --}}
-        <rect x="118" y="193" width="90" height="28" rx="6" fill="rgba(15,34,49,.88)" id="dpSurfBg"
-          style="opacity:0;transition:opacity .35s ease 2.4s"/>
-        <text x="163" y="211" fill="#fff" font-family="Inter,sans-serif" font-size="13" font-weight="800"
-          text-anchor="middle" id="dpSurfText"
-          style="opacity:0;transition:opacity .35s ease 2.4s">≈ 35 m²</text>
+        <g class="dp-badge" id="dpBadge">
+          <rect x="400" y="450" width="220" height="60" rx="12" fill="rgba(15,34,49,.88)"/>
+          <text x="510" y="490" fill="#fff" font-family="Inter,sans-serif" font-size="34" font-weight="800" text-anchor="middle">≈ 35 m²</text>
+        </g>
       </svg>
     </div>
 
@@ -1248,100 +1279,117 @@ const demoPopup  = $('demoPopup');
 const demoImg    = $('demoImg');
 let   demoSvgAnimStarted = false;
 
+function calibrateDemoSvg(){
+  // Recalcule le viewBox SVG pour coller exactement à l'image affichée.
+  // L'image (1536×1024) est affichée via object-fit:cover dans le conteneur.
+  // Le SVG (inset:0) doit utiliser les mêmes coordonnées image.
+  const svg  = $('demoSvg');
+  const img  = demoImg;
+  const wrap = img.parentElement;
+  if(!svg || !wrap) return;
+
+  const W = wrap.clientWidth  || 720;
+  const H = wrap.clientHeight || 360;
+  const imgW = 1536, imgH = 1024;
+
+  // object-fit:cover : scale = le plus grand des deux ratios
+  const scale = Math.max(W / imgW, H / imgH);
+  const rendW = imgW * scale, rendH = imgH * scale;
+
+  // Crop (en px image originale) pour centrer
+  const cropX = (rendW - W) / 2 / scale;  // px originaux rognés à gauche
+  const cropY = (rendH - H) / 2 / scale;  // px originaux rognés en haut
+
+  const visW  = W / scale;  // largeur visible en px image
+  const visH  = H / scale;  // hauteur visible en px image
+
+  svg.setAttribute('viewBox', `${cropX} ${cropY} ${visW} ${visH}`);
+  // preserveAspectRatio=none → le viewBox remplit exactement le conteneur
+}
+
 function openDemoPopup(){
   if(!demoPopup) return;
 
   const isGarden = draw.zoneType === 'garden';
-
-  demoImg.src = isGarden
-    ? '/slide/demo-jardin-aerien.jpg'
-    : '/slide/demo-toiture-aerienne.png';
+  demoImg.src = isGarden ? '/slide/demo-jardin-aerien.jpg' : '/slide/demo-toiture-aerienne.png';
 
   $('demoTypeBadge').textContent = isGarden ? '🌿 Sol / Jardin' : '🏠 Toiture';
   $('demoTitle').textContent = isGarden
     ? 'Comment tracer votre zone au sol / jardin'
     : 'Comment tracer votre zone de toiture';
 
+  // Adapter les coords en espace image original selon le type
+  const svg = $('demoSvg');
   if(isGarden){
-    // Tracé sur la pelouse verte de l'image jardin (centre-gauche)
-    $('dp1').setAttribute('cx','155'); $('dp1').setAttribute('cy','110');
-    $('dp2').setAttribute('cx','155'); $('dp2').setAttribute('cy','290');
-    $('dp3').setAttribute('cx','480'); $('dp3').setAttribute('cy','290');
-    $('dp4').setAttribute('cx','480'); $('dp4').setAttribute('cy','110');
-    $('dpFill').setAttribute('points','155,110 155,290 480,290 480,110');
-    $('dpLine').setAttribute('points','155,110 155,290 480,290 480,110 155,110');
-    $('dpSurfText').textContent = '≈ 120 m²';
-    $('dpSurfBg').setAttribute('x','278'); $('dpSurfBg').setAttribute('y','192');
-    $('dpSurfText').setAttribute('x','323');
-    const ls = $('dpLabels').querySelectorAll('text');
-    [[122,108],[122,298],[488,298],[488,108]].forEach(([x,y],i) => {
-      ls[i].setAttribute('x',x); ls[i].setAttribute('y',y);
+    // Jardin : image 1024×820 (jardin-aerien) — grand rectangle sur la pelouse centrale
+    // points en espace image 800×500
+    svg.setAttribute('viewBox','0 0 800 500');
+    const pts = '150,100 150,400 550,400 550,100';
+    $('dpFill').setAttribute('points', pts);
+    $('dpLine').setAttribute('points', pts + ' 150,100');
+    $('dp1').setAttribute('cx','150'); $('dp1').setAttribute('cy','100');
+    $('dp2').setAttribute('cx','150'); $('dp2').setAttribute('cy','400');
+    $('dp3').setAttribute('cx','550'); $('dp3').setAttribute('cy','400');
+    $('dp4').setAttribute('cx','550'); $('dp4').setAttribute('cy','100');
+    // Labels
+    const circles = $('dpLabels').querySelectorAll('circle');
+    const texts   = $('dpLabels').querySelectorAll('text');
+    const lc = [[150,100],[150,400],[550,400],[550,100]];
+    lc.forEach(([x,y],i) => {
+      if(circles[i]){ circles[i].setAttribute('cx',x); circles[i].setAttribute('cy',y); }
+      if(texts[i])  { texts[i].setAttribute('x',x);   texts[i].setAttribute('y',y+9); }
     });
+    // Badge
+    const bg = $('dpBadge')?.querySelector('rect');
+    const bt = $('dpBadge')?.querySelector('text');
+    if(bg){ bg.setAttribute('x','270'); bg.setAttribute('y','228'); }
+    if(bt){ bt.setAttribute('x','380'); bt.setAttribute('y','268'); bt.textContent='≈ 120 m²'; }
   } else {
-    // Image originale : 1536×1024 px, maison avec piscine à gauche
-    // Dans le popup (max ~820px large, max-height:360px, object-fit:cover)
-    // → scale ≈ 0.469, crop vertical ≈ 40px en haut en coordonnées SVG
-    //
-    // Pan gauche de la toiture (celui avec le rouge sur l'annotation) :
-    // Coords originales → SVG (x*0.469, y*0.469 - 40)
-    // P1 (ridge haut)   : orig (430,255) → SVG (202, 80)
-    // P2 (avant-toit G) : orig (255,415) → SVG (120,155)
-    // P3 (avant-toit BG): orig (255,635) → SVG (120,258)
-    // P4 (ridge bas)    : orig (440,700) → SVG (206,288)
-    $('dp1').setAttribute('cx','202'); $('dp1').setAttribute('cy','80');
-    $('dp2').setAttribute('cx','120'); $('dp2').setAttribute('cy','155');
-    $('dp3').setAttribute('cx','120'); $('dp3').setAttribute('cy','258');
-    $('dp4').setAttribute('cx','206'); $('dp4').setAttribute('cy','288');
-    $('dpFill').setAttribute('points','202,80 120,155 120,258 206,288');
-    $('dpLine').setAttribute('points','202,80 120,155 120,258 206,288 202,80');
-    $('dpSurfText').textContent = '≈ 35 m²';
-    $('dpSurfBg').setAttribute('x','118'); $('dpSurfBg').setAttribute('y','193');
-    $('dpSurfText').setAttribute('x','163');
-    const ls = $('dpLabels').querySelectorAll('text');
-    [[210,76],[88,158],[88,268],[214,294]].forEach(([x,y],i) => {
-      ls[i].setAttribute('x',x); ls[i].setAttribute('y',y);
+    // Toiture : image aerial.png 1536×1024
+    // Pan W (gauche) : P1=haut-gauche, P2=max-gauche, P3=bas-gauche, P4=intérieur
+    // Coords en espace image original (1536×1024)
+    const pts = '432,258 352,490 433,722 600,490';
+    $('dpFill').setAttribute('points', pts);
+    $('dpLine').setAttribute('points', pts + ' 432,258');
+    $('dp1').setAttribute('cx','432'); $('dp1').setAttribute('cy','258');
+    $('dp2').setAttribute('cx','352'); $('dp2').setAttribute('cy','490');
+    $('dp3').setAttribute('cx','433'); $('dp3').setAttribute('cy','722');
+    $('dp4').setAttribute('cx','600'); $('dp4').setAttribute('cy','490');
+    const circles = $('dpLabels').querySelectorAll('circle');
+    const texts   = $('dpLabels').querySelectorAll('text');
+    const lc = [[432,258],[352,490],[433,722],[600,490]];
+    lc.forEach(([x,y],i) => {
+      if(circles[i]){ circles[i].setAttribute('cx',x); circles[i].setAttribute('cy',y); }
+      if(texts[i])  { texts[i].setAttribute('x',x);   texts[i].setAttribute('y',y+9); }
     });
+    const bg = $('dpBadge')?.querySelector('rect');
+    const bt = $('dpBadge')?.querySelector('text');
+    if(bg){ bg.setAttribute('x','400'); bg.setAttribute('y','450'); }
+    if(bt){ bt.setAttribute('x','510'); bt.setAttribute('y','490'); bt.textContent='≈ 35 m²'; }
   }
 
-  // Reset animation SVG
-  resetDemoSvg();
   demoPopup.style.display = 'flex';
   document.body.style.overflow = 'hidden';
 
-  // Lancer l'animation SVG après 400ms
-  setTimeout(animateDemoSvg, 400);
-}
+  // Calibrer le viewBox après que l'image soit chargée et affichée
+  const doCalibrate = () => {
+    if(!isGarden) calibrateDemoSvg(); // pour la toiture seulement (coords en espace image)
+    // Lancer l'animation CSS infinie
+    const svgEl = $('demoSvg');
+    if(svgEl){ svgEl.classList.remove('demo-anim-running'); void svgEl.offsetWidth; svgEl.classList.add('demo-anim-running'); }
+  };
 
-function resetDemoSvg(){
-  ['dp1','dp2','dp3','dp4'].forEach(id => {
-    const el = $(id); if(el) el.style.transform = 'scale(0)';
-  });
-  const line = $('dpLine'); if(line) line.style.strokeDashoffset = '600';
-  const fill = $('dpFill'); if(fill) fill.style.opacity = '0';
-  const lbl  = $('dpLabels'); if(lbl) lbl.style.opacity = '0';
-  const sb   = $('dpSurfBg');  if(sb)  sb.style.opacity  = '0';
-  const st   = $('dpSurfText'); if(st) st.style.opacity  = '0';
-}
-
-function animateDemoSvg(){
-  // Points apparaissent un par un via CSS transition (delay défini inline)
-  ['dp1','dp2','dp3','dp4'].forEach(id => {
-    const el = $(id); if(el) el.style.transform = 'scale(1)';
-  });
-  // Ligne tracée après 600ms
-  setTimeout(() => {
-    const line = $('dpLine'); if(line) line.style.strokeDashoffset = '0';
-  }, 600);
-  // Fill + labels + surface après ~2s
-  setTimeout(() => {
-    const fill = $('dpFill'); if(fill) fill.style.opacity = '1';
-    const lbl  = $('dpLabels'); if(lbl) lbl.style.opacity  = '1';
-    const sb   = $('dpSurfBg');  if(sb)  sb.style.opacity  = '1';
-    const st   = $('dpSurfText'); if(st) st.style.opacity  = '1';
-  }, 2000);
+  if(demoImg.complete && demoImg.naturalWidth > 0) {
+    setTimeout(doCalibrate, 50);
+  } else {
+    demoImg.onload = () => setTimeout(doCalibrate, 50);
+    setTimeout(doCalibrate, 400); // fallback
+  }
 }
 
 function closeDemoPopup(){
+  const svgEl = $("demoSvg");
+  if(svgEl) svgEl.classList.remove("demo-anim-running");
   demoPopup.classList.add('closing');
   setTimeout(() => {
     demoPopup.style.display = 'none';
