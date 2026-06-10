@@ -1326,7 +1326,7 @@ function openDemoPopup(){
     svg.setAttribute('viewBox','0 0 800 500');
     const pts = '150,100 150,400 550,400 550,100';
     $('dpFill').setAttribute('points', pts);
-    $('dpLine').setAttribute('points', pts + ' 150,100');
+    $('dpLine').setAttribute('points', pts + ' ' + pts.split(' ')[0]);
     $('dp1').setAttribute('cx','150'); $('dp1').setAttribute('cy','100');
     $('dp2').setAttribute('cx','150'); $('dp2').setAttribute('cy','400');
     $('dp3').setAttribute('cx','550'); $('dp3').setAttribute('cy','400');
@@ -1350,7 +1350,7 @@ function openDemoPopup(){
     // Coords en espace image original (1536×1024)
     const pts = '241,92 518,92 518,378 241,378';  // P1=NW P3=SW P4=centre
     $('dpFill').setAttribute('points', pts);
-    $('dpLine').setAttribute('points', pts + ' 432,258');
+    $('dpLine').setAttribute('points', pts + ' ' + pts.split(' ')[0]);
     $('dp1').setAttribute('cx','241'); $('dp1').setAttribute('cy','92');
     $('dp2').setAttribute('cx','518'); $('dp2').setAttribute('cy','92'); $('dp2').setAttribute('r','18'); $('dp2').style.display='';
     $('dp3').setAttribute('cx','518'); $('dp3').setAttribute('cy','378');
