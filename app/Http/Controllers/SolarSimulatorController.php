@@ -68,79 +68,114 @@ class SolarSimulatorController extends Controller
     }
 
     /**
-     * Géocode via l'API Adresse officielle française (Base Adresse Nationale).
-     * Gratuite, sans clé, 100% des adresses françaises, très précise.
-     * https://adresse.data.gouv.fr/api-doc/adresse
+     * Extrait le code postal 5 chiffres d'une chaîne et retourne
+     * [q_sans_cp, postcode].
      */
-    private function banGeocode(string $addr): ?array
+    private function extractPostcode(string $addr): array
     {
+        if (preg_match('/\b(\d{5})\b/', $addr, $m)) {
+            $postcode = $m[1];
+            // Supprimer le CP et la ville qui suit éventuellement
+            $q = trim((string) preg_replace('/\s*,?\s*\d{5}\b[^,]*/', '', $addr));
+            $q = trim((string) preg_replace('/\s+/', ' ', $q));
+            return [$q, $postcode];
+        }
+        return [$addr, null];
+    }
+
+    /**
+     * Requête BAN avec stratégie intelligente :
+     * - Si CP détecté → q=numero+rue, postcode=CP (bien meilleur résultat)
+     * - Sinon → q=adresse complète
+     */
+    private function banQuery(string $addr, int $limit = 8, bool $autocomplete = true): array
+    {
+        [$q, $postcode] = $this->extractPostcode($addr);
+
+        $params = ['q' => $q, 'limit' => $limit, 'autocomplete' => $autocomplete ? 1 : 0];
+        if ($postcode) {
+            $params['postcode'] = $postcode;
+        }
+
         try {
-            $resp = Http::timeout(6)
+            $resp = Http::timeout(5)
                 ->withHeaders(['User-Agent' => 'NormesRenovation/1.0'])
-                ->get('https://api-adresse.data.gouv.fr/search/', [
-                    'q'      => $addr,
-                    'limit'  => 1,
-                    'autocomplete' => 0,
-                ]);
+                ->get('https://api-adresse.data.gouv.fr/search/', $params);
 
             $features = $resp->json()['features'] ?? [];
-            if (empty($features)) {
-                return null;
+
+            // Si le score est mauvais ET qu'on a un CP, essayer sans correction (requête brute)
+            if (empty($features) || (isset($features[0]['properties']['score']) && $features[0]['properties']['score'] < 0.3)) {
+                $resp2 = Http::timeout(5)
+                    ->withHeaders(['User-Agent' => 'NormesRenovation/1.0'])
+                    ->get('https://api-adresse.data.gouv.fr/search/', [
+                        'q' => $addr, 'limit' => $limit, 'autocomplete' => $autocomplete ? 1 : 0,
+                    ]);
+                $features2 = $resp2->json()['features'] ?? [];
+                // Garder le meilleur résultat
+                $features = array_merge($features, $features2);
+                usort($features, fn ($a, $b) => ($b['properties']['score'] ?? 0) <=> ($a['properties']['score'] ?? 0));
+                $features = array_slice($features, 0, $limit);
             }
 
-            $f   = $features[0];
-            $p   = $f['properties'] ?? [];
-            $geo = $f['geometry']['coordinates'] ?? null; // [lng, lat]
-
-            if (! $geo) {
-                return null;
-            }
-
-            return [
-                'lat'               => (float) $geo[1],
-                'lng'               => (float) $geo[0],
-                'formatted_address' => $p['label'] ?? $addr,
-                'score'             => (float) ($p['score'] ?? 0),
-            ];
+            return $features;
         } catch (\Throwable) {
-            return null;
+            return [];
         }
     }
 
     /**
-     * Autocomplétion BAN → retourne les suggestions en temps réel.
+     * Géocode via l'API Adresse officielle française (BAN).
+     */
+    private function banGeocode(string $addr): ?array
+    {
+        $features = $this->banQuery($addr, 1, false);
+
+        if (empty($features)) {
+            return null;
+        }
+
+        $f   = $features[0];
+        $p   = $f['properties'] ?? [];
+        $geo = $f['geometry']['coordinates'] ?? null;
+
+        if (! $geo) {
+            return null;
+        }
+
+        return [
+            'lat'               => (float) $geo[1],
+            'lng'               => (float) $geo[0],
+            'formatted_address' => $p['label'] ?? $addr,
+            'score'             => (float) ($p['score'] ?? 0),
+        ];
+    }
+
+    /**
+     * Autocomplétion BAN en temps réel.
      */
     private function banAutocomplete(string $q): array
     {
-        try {
-            $resp = Http::timeout(4)
-                ->withHeaders(['User-Agent' => 'NormesRenovation/1.0'])
-                ->get('https://api-adresse.data.gouv.fr/search/', [
-                    'q'            => $q,
-                    'limit'        => 8,
-                    'autocomplete' => 1,
-                ]);
+        $features = $this->banQuery($q, 8, true);
 
-            return collect($resp->json()['features'] ?? [])
-                ->map(function ($f) {
-                    $p   = $f['properties'] ?? [];
-                    $geo = $f['geometry']['coordinates'] ?? [0, 0];
-                    return [
-                        'label' => $p['label']    ?? '',
-                        'full'  => $p['label']    ?? '',
-                        'lat'   => (float) $geo[1],
-                        'lng'   => (float) $geo[0],
-                        'score' => (float) ($p['score'] ?? 0),
-                        'type'  => $p['type'] ?? 'housenumber',
-                        'city'  => $p['city'] ?? '',
-                        'postcode' => $p['postcode'] ?? '',
-                    ];
-                })
-                ->values()
-                ->all();
-        } catch (\Throwable) {
-            return [];
-        }
+        return collect($features)
+            ->map(function ($f) {
+                $p   = $f['properties'] ?? [];
+                $geo = $f['geometry']['coordinates'] ?? [0, 0];
+                return [
+                    'label'    => $p['label']    ?? '',
+                    'full'     => $p['label']    ?? '',
+                    'lat'      => (float) $geo[1],
+                    'lng'      => (float) $geo[0],
+                    'score'    => (float) ($p['score'] ?? 0),
+                    'type'     => $p['type']     ?? 'housenumber',
+                    'city'     => $p['city']     ?? '',
+                    'postcode' => $p['postcode'] ?? '',
+                ];
+            })
+            ->unique('label')
+            ->values()
+            ->all();
     }
 
     /** Fallback Nominatim si BAN échoue (DOM/TOM, hors France métro) */
@@ -186,45 +221,73 @@ class SolarSimulatorController extends Controller
     }
 
     /**
-     * Autocomplétion : BAN officielle France en priorité, fallback Nominatim.
-     * La BAN couvre 100% des adresses françaises avec numéro de rue.
+     * Recherche fuzzy via Photon (Komoot / OpenStreetMap).
+     * Gère les fautes de frappe et transpositions de lettres.
+     */
+    private function photonSearch(string $q, int $limit = 6): array
+    {
+        try {
+            $resp = Http::timeout(5)
+                ->withHeaders(['User-Agent' => 'NormesRenovation/1.0'])
+                ->get('https://photon.komoot.io/api/', [
+                    'q'     => $q,
+                    'limit' => $limit,
+                    'lang'  => 'fr',
+                    'layer' => 'house,street',
+                    'bbox'  => '-5.5,41.0,9.6,51.1', // France métropolitaine
+                ]);
+
+            return collect($resp->json()['features'] ?? [])
+                ->filter(fn ($f) => ($f['properties']['country_code'] ?? '') === 'FR')
+                ->map(function ($f) {
+                    $p   = $f['properties'] ?? [];
+                    $geo = $f['geometry']['coordinates'] ?? [0, 0];
+                    $parts = array_filter([
+                        $p['housenumber'] ?? '',
+                        $p['name']        ?? '',
+                        $p['postcode']    ?? '',
+                        $p['city']        ?? $p['town'] ?? '',
+                    ]);
+                    $label = implode(' ', $parts) ?: ($p['name'] ?? '');
+                    return [
+                        'label' => $label,
+                        'full'  => $label,
+                        'lat'   => (float) $geo[1],
+                        'lng'   => (float) $geo[0],
+                        'score' => 0.5, // score neutre pour Photon
+                    ];
+                })
+                ->filter(fn ($i) => $i['label'] !== '')
+                ->values()
+                ->all();
+        } catch (\Throwable) {
+            return [];
+        }
+    }
+
+    /**
+     * Autocomplétion : BAN France (précise) + Photon (fuzzy pour les fautes).
      */
     public function autocomplete(Request $request): JsonResponse
     {
         $data = $request->validate(['q' => ['required', 'string', 'min:2', 'max:200']]);
         $q    = $this->cleanAddress($data['q']);
 
-        // 1. API Adresse BAN (Base Adresse Nationale — gouvernement français)
-        $items = $this->banAutocomplete($q);
+        // 1. BAN avec stratégie code postal (très précise si orthographe OK)
+        $banItems = $this->banAutocomplete($q);
 
-        // 2. Si BAN ne retourne rien, fallback Nominatim
-        if (empty($items)) {
-            try {
-                $resp = Http::timeout(5)
-                    ->withHeaders(['User-Agent' => 'NormesRenovation/1.0 contact@normesrenovation.fr'])
-                    ->get('https://nominatim.openstreetmap.org/search', [
-                        'q' => $q, 'format' => 'json', 'addressdetails' => 1,
-                        'limit' => 6, 'countrycodes' => 'fr', 'accept-language' => 'fr',
-                    ]);
+        // 2. Photon en parallèle pour gérer les fautes (fuzzy)
+        $photonItems = $this->photonSearch($q, 5);
 
-                $items = collect($resp->json() ?? [])
-                    ->map(function ($r) {
-                        $a = $r['address'] ?? [];
-                        $parts = array_filter([
-                            trim(($a['house_number'] ?? '') . ' ' . ($a['road'] ?? '')),
-                            $a['city'] ?? $a['town'] ?? $a['village'] ?? '',
-                            $a['postcode'] ?? '',
-                        ]);
-                        return ['label' => implode(', ', $parts) ?: $r['display_name'],
-                                'full'  => $r['display_name'],
-                                'lat'   => (float) $r['lat'], 'lng' => (float) $r['lon']];
-                    })
-                    ->values()
-                    ->all();
-            } catch (\Throwable) {}
-        }
+        // 3. Fusionner : BAN en priorité, Photon complète (ou remplace si BAN vide)
+        $all = collect(array_merge($banItems, $photonItems))
+            ->unique(fn ($i) => strtolower(preg_replace('/\s+/', '', $i['label'] ?? '')))
+            ->sortByDesc('score')
+            ->take(8)
+            ->values()
+            ->all();
 
-        return response()->json($items);
+        return response()->json($all);
     }
 
     /**
@@ -236,20 +299,26 @@ class SolarSimulatorController extends Controller
         $data = $request->validate(['address' => ['required', 'string', 'max:255']]);
         $addr = $this->cleanAddress($data['address']);
 
-        // 1. API Adresse BAN — la meilleure pour les adresses françaises
+        // 1. BAN officielle France (précise, avec stratégie CP)
         $result = $this->banGeocode($addr);
-        if ($result && ($result['score'] ?? 0) >= 0.3) {
+        if ($result && ($result['score'] ?? 0) >= 0.4) {
             unset($result['score']);
             return response()->json($result);
         }
 
-        // 2. Nominatim (OpenStreetMap)
+        // 2. Photon (fuzzy — gère les fautes de frappe)
+        $photon = $this->photonSearch($addr, 1);
+        if (! empty($photon)) {
+            return response()->json($photon[0]);
+        }
+
+        // 3. Nominatim (OpenStreetMap)
         $result = $this->nominatimGeocode($addr);
         if ($result) {
             return response()->json($result);
         }
 
-        // 3. Google Geocoding API côté serveur (Referer header)
+        // 4. Google Geocoding API côté serveur (Referer header)
         $result = $this->googleGeocode($addr);
         if ($result) {
             return response()->json($result);
