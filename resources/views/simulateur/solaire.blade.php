@@ -840,36 +840,36 @@ html,body{
 
       {{-- SVG animé en overlay — points et lignes du polygon démo --}}
       <svg class="demo-svg" id="demoSvg" viewBox="0 0 720 400" preserveAspectRatio="xMidYMid slice">
-        {{-- Polygon fill (apparaît en dernier) --}}
+        {{-- Polygon fill --}}
         <polygon class="dp-fill" id="dpFill"
-          points="185,155 185,275 375,275 375,155"
+          points="370,135 210,235 370,330 540,235"
           style="opacity:0;transition:opacity .4s ease .1s"/>
 
-        {{-- Lignes du polygon --}}
+        {{-- Ligne du polygon --}}
         <polyline class="dp-line" id="dpLine"
-          points="185,155 185,275 375,275 375,155 185,155"
-          style="stroke-dashoffset:600;transition:stroke-dashoffset 1.2s ease"/>
+          points="370,135 210,235 370,330 540,235 370,135"
+          style="stroke-dashoffset:600;transition:stroke-dashoffset 1.4s ease"/>
 
-        {{-- Points (vertices) --}}
-        <circle class="dp-dot" id="dp1" cx="185" cy="155" style="transition:transform .3s cubic-bezier(.34,1.56,.64,1) 0s"/>
-        <circle class="dp-dot" id="dp2" cx="185" cy="275" style="transition:transform .3s cubic-bezier(.34,1.56,.64,1) .5s"/>
-        <circle class="dp-dot" id="dp3" cx="375" cy="275" style="transition:transform .3s cubic-bezier(.34,1.56,.64,1) 1s"/>
-        <circle class="dp-dot" id="dp4" cx="375" cy="155" style="transition:transform .3s cubic-bezier(.34,1.56,.64,1) 1.5s"/>
+        {{-- Points (vertices) avec délai progressif --}}
+        <circle class="dp-dot" id="dp1" cx="370" cy="135" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) 0s"/>
+        <circle class="dp-dot" id="dp2" cx="210" cy="235" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) .55s"/>
+        <circle class="dp-dot" id="dp3" cx="370" cy="330" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) 1.1s"/>
+        <circle class="dp-dot" id="dp4" cx="540" cy="235" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) 1.65s"/>
 
-        {{-- Labels clics --}}
-        <g id="dpLabels" style="opacity:0;transition:opacity .3s ease 1.8s">
-          <text x="155" y="152" fill="#fff" font-family="Inter,sans-serif" font-size="11" font-weight="700">1</text>
-          <text x="155" y="278" fill="#fff" font-family="Inter,sans-serif" font-size="11" font-weight="700">2</text>
-          <text x="382" y="278" fill="#fff" font-family="Inter,sans-serif" font-size="11" font-weight="700">3</text>
-          <text x="382" y="152" fill="#fff" font-family="Inter,sans-serif" font-size="11" font-weight="700">4</text>
+        {{-- Labels numérotés --}}
+        <g id="dpLabels" style="opacity:0;transition:opacity .3s ease 2s">
+          <text x="380" y="130" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">1</text>
+          <text x="178" y="240" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">2</text>
+          <text x="380" y="346" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">3</text>
+          <text x="552" y="240" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">4</text>
         </g>
 
         {{-- Badge surface --}}
-        <rect x="245" y="198" width="90" height="28" rx="6" fill="rgba(15,34,49,.8)" id="dpSurfBg"
-          style="opacity:0;transition:opacity .3s ease 2.2s"/>
-        <text x="290" y="216" fill="#fff" font-family="Inter,sans-serif" font-size="13" font-weight="800"
+        <rect x="330" y="228" width="90" height="28" rx="6" fill="rgba(15,34,49,.88)" id="dpSurfBg"
+          style="opacity:0;transition:opacity .35s ease 2.4s"/>
+        <text x="375" y="246" fill="#fff" font-family="Inter,sans-serif" font-size="13" font-weight="800"
           text-anchor="middle" id="dpSurfText"
-          style="opacity:0;transition:opacity .3s ease 2.2s">≈ 42 m²</text>
+          style="opacity:0;transition:opacity .35s ease 2.4s">≈ 55 m²</text>
       </svg>
     </div>
 
@@ -1244,48 +1244,49 @@ let   demoSvgAnimStarted = false;
 function openDemoPopup(){
   if(!demoPopup) return;
 
-  // Charger l'image satellite de l'adresse de l'utilisateur
-  const lat = state.lat || 47.322, lng = state.lng || 5.042;
-  const imgUrl = `/api/solar-demo-image?lat=${lat}&lng=${lng}&zoom=20`;
-  demoImg.src = imgUrl;
-
-  // Badge type
   const isGarden = draw.zoneType === 'garden';
+
+  // Images locales (Pexels, libre de droits)
+  demoImg.src = isGarden
+    ? '/slide/demo-jardin-aerien.jpg'
+    : '/slide/demo-toiture-aerienne.jpg';
+
   $('demoTypeBadge').textContent = isGarden ? '🌿 Sol / Jardin' : '🏠 Toiture';
   $('demoTitle').textContent = isGarden
     ? 'Comment tracer votre zone au sol / jardin'
     : 'Comment tracer votre zone de toiture';
 
-  // Adapter les points SVG selon toiture (petit) ou jardin (plus grand)
   if(isGarden){
-    // Points plus écartés pour représenter une zone au sol
-    $('dp1').setAttribute('cx','130'); $('dp1').setAttribute('cy','120');
-    $('dp2').setAttribute('cx','130'); $('dp2').setAttribute('cy','305');
-    $('dp3').setAttribute('cx','440'); $('dp3').setAttribute('cy','305');
-    $('dp4').setAttribute('cx','440'); $('dp4').setAttribute('cy','120');
-    $('dpFill').setAttribute('points','130,120 130,305 440,305 440,120');
-    $('dpLine').setAttribute('points','130,120 130,305 440,305 440,120 130,120');
+    // Tracé sur la pelouse verte de l'image jardin (centre-gauche)
+    $('dp1').setAttribute('cx','155'); $('dp1').setAttribute('cy','110');
+    $('dp2').setAttribute('cx','155'); $('dp2').setAttribute('cy','290');
+    $('dp3').setAttribute('cx','480'); $('dp3').setAttribute('cy','290');
+    $('dp4').setAttribute('cx','480'); $('dp4').setAttribute('cy','110');
+    $('dpFill').setAttribute('points','155,110 155,290 480,290 480,110');
+    $('dpLine').setAttribute('points','155,110 155,290 480,290 480,110 155,110');
     $('dpSurfText').textContent = '≈ 120 m²';
-    $('dpSurfBg').setAttribute('x','230'); $('dpSurfBg').setAttribute('y','198');
-    $('dpSurfText').setAttribute('x','275');
-    // Labels
+    $('dpSurfBg').setAttribute('x','278'); $('dpSurfBg').setAttribute('y','192');
+    $('dpSurfText').setAttribute('x','323');
     const ls = $('dpLabels').querySelectorAll('text');
-    const lc = [[100,117],[100,312],[448,312],[448,117]];
-    ls.forEach((l,i) => { l.setAttribute('x',lc[i][0]); l.setAttribute('y',lc[i][1]); });
+    [[122,108],[122,298],[488,298],[488,108]].forEach(([x,y],i) => {
+      ls[i].setAttribute('x',x); ls[i].setAttribute('y',y);
+    });
   } else {
-    // Toiture — valeurs par défaut du HTML
-    $('dp1').setAttribute('cx','185'); $('dp1').setAttribute('cy','155');
-    $('dp2').setAttribute('cx','185'); $('dp2').setAttribute('cy','275');
-    $('dp3').setAttribute('cx','375'); $('dp3').setAttribute('cy','275');
-    $('dp4').setAttribute('cx','375'); $('dp4').setAttribute('cy','155');
-    $('dpFill').setAttribute('points','185,155 185,275 375,275 375,155');
-    $('dpLine').setAttribute('points','185,155 185,275 375,275 375,155 185,155');
-    $('dpSurfText').textContent = '≈ 42 m²';
-    $('dpSurfBg').setAttribute('x','245'); $('dpSurfBg').setAttribute('y','198');
-    $('dpSurfText').setAttribute('x','290');
+    // Tracé sur le toit central de l'image toiture (tuiles rouges, toit plat bas-centre)
+    // Image = vue aérienne multi-toits, on cible le toit rectangulaire en bas à droite
+    $('dp1').setAttribute('cx','370'); $('dp1').setAttribute('cy','135');
+    $('dp2').setAttribute('cx','210'); $('dp2').setAttribute('cy','235');
+    $('dp3').setAttribute('cx','370'); $('dp3').setAttribute('cy','330');
+    $('dp4').setAttribute('cx','540'); $('dp4').setAttribute('cy','235');
+    $('dpFill').setAttribute('points','370,135 210,235 370,330 540,235');
+    $('dpLine').setAttribute('points','370,135 210,235 370,330 540,235 370,135');
+    $('dpSurfText').textContent = '≈ 55 m²';
+    $('dpSurfBg').setAttribute('x','330'); $('dpSurfBg').setAttribute('y','228');
+    $('dpSurfText').setAttribute('x','375');
     const ls = $('dpLabels').querySelectorAll('text');
-    const lc = [[155,152],[155,278],[382,278],[382,152]];
-    ls.forEach((l,i) => { l.setAttribute('x',lc[i][0]); l.setAttribute('y',lc[i][1]); });
+    [[380,130],[178,240],[380,346],[552,240]].forEach(([x,y],i) => {
+      ls[i].setAttribute('x',x); ls[i].setAttribute('y',y);
+    });
   }
 
   // Reset animation SVG
