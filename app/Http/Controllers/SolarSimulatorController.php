@@ -410,30 +410,66 @@ class SolarSimulatorController extends Controller
             $monthlyWeights = [0.045, 0.060, 0.085, 0.100, 0.115, 0.125, 0.130, 0.120, 0.095, 0.070, 0.045, 0.035];
             $monthlyKwh     = array_map(fn ($w) => (int) round($yearlyKwh * $w), $monthlyWeights);
 
-            // Roof segments for info
+            // Sunshine hours & CO2
+            $sunshineHoursPerYear = (float) ($potential['maxSunshineHoursPerYear'] ?? 1180);
+            $co2SavingsMwh        = round($yearlyKwh * 0.4 / 1000, 1); // ~0.4 kg CO2/kWh FR
+
+            // Meilleur segment de toiture : celui avec le plus d'ensoleillement
             $roofSegments = collect($potential['roofSegmentStats'] ?? [])
                 ->map(fn ($s) => [
-                    'pitchDeg'         => round((float) ($s['pitchDeg'] ?? 0)),
-                    'azimuthDeg'       => round((float) ($s['azimuthDeg'] ?? 0)),
-                    'areaM2'           => round((float) ($s['stats']['areaMeters2'] ?? 0), 1),
-                    'sunshineHoursAvg' => round((float) ($s['stats']['sunshineQuantiles'][5] ?? 0)),
+                    'pitchDeg'    => round((float) ($s['pitchDeg'] ?? 0)),
+                    'azimuthDeg'  => round((float) ($s['azimuthDeg'] ?? 0)),
+                    'areaM2'      => round((float) ($s['stats']['areaMeters2'] ?? 0), 1),
+                    'sunshineAvg' => round((float) ($s['stats']['sunshineQuantiles'][5] ?? 0)),
                 ])
-                ->sortByDesc('areaM2')
+                ->sortByDesc('sunshineAvg') // trier par ensoleillement, pas par surface
                 ->values()
-                ->take(3)
+                ->take(4)
+                ->all();
+
+            // Dimensions des panneaux pour la visualisation sur la carte
+            $panelH = (float) ($potential['panelHeightMeters'] ?? 1.65);
+            $panelW = (float) ($potential['panelWidthMeters'] ?? 1.0);
+
+            // Positions des panneaux solaires (max 50 pour la visu carte)
+            $solarPanels = collect($potential['solarPanels'] ?? [])
+                ->take($panelCount) // seulement les panneaux du config optimal
+                ->map(fn ($p) => [
+                    'lat'         => (float) ($p['center']['latitude'] ?? 0),
+                    'lng'         => (float) ($p['center']['longitude'] ?? 0),
+                    'orientation' => $p['orientation'] ?? 'LANDSCAPE',
+                    'yearlyKwh'   => round((float) ($p['yearlyEnergyDcKwh'] ?? 0) * 0.85, 1),
+                ])
+                ->filter(fn ($p) => $p['lat'] !== 0.0 && $p['lng'] !== 0.0)
+                ->values()
+                ->all();
+
+            // Configs pour le slider (panelsCount → yearlyKwh)
+            $configSlider = collect($configs)
+                ->map(fn ($c) => [
+                    'count'      => (int) ($c['panelsCount'] ?? 0),
+                    'yearlyKwh'  => (int) round((float) ($c['yearlyEnergyDcKwh'] ?? 0) * 0.85),
+                ])
+                ->values()
                 ->all();
 
             return response()->json([
-                'panelCount'   => $panelCount,
-                'maxPanels'    => $maxPanels,
-                'areaM2'       => round($maxAreaM2, 1),
-                'kwc'          => round($kwc, 2),
-                'yearlyKwh'    => (int) round($yearlyKwh),
-                'annualSavings' => (int) round($annualSavings),
-                'budgetMin'    => (int) round($budgetMin, -2),
-                'budgetMax'    => (int) round($budgetMax, -2),
-                'monthlyKwh'   => $monthlyKwh,
-                'roofSegments' => $roofSegments,
+                'panelCount'          => $panelCount,
+                'maxPanels'           => $maxPanels,
+                'areaM2'              => round($maxAreaM2, 1),
+                'kwc'                 => round($kwc, 2),
+                'yearlyKwh'           => (int) round($yearlyKwh),
+                'annualSavings'       => (int) round($annualSavings),
+                'budgetMin'           => (int) round($budgetMin, -2),
+                'budgetMax'           => (int) round($budgetMax, -2),
+                'monthlyKwh'          => $monthlyKwh,
+                'roofSegments'        => $roofSegments,
+                'sunshineHoursPerYear'=> (int) $sunshineHoursPerYear,
+                'co2SavingsMwh'       => $co2SavingsMwh,
+                'solarPanels'         => $solarPanels,
+                'panelHeightMeters'   => $panelH,
+                'panelWidthMeters'    => $panelW,
+                'configSlider'        => $configSlider,
             ]);
         } catch (\Throwable $e) {
             logger()->error('SolarEstimate error: ' . $e->getMessage());

@@ -764,6 +764,16 @@ html,body{
         <div class="budget-range" id="valBudget">— <small>€</small></div>
       </div>
 
+      {{-- Slider nombre de panneaux --}}
+      <div id="panelSliderWrap" style="display:none;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600">Nombre de panneaux</span>
+          <span id="sliderVal" style="font-size:12px;font-weight:700;color:var(--ink)"></span>
+        </div>
+        <input type="range" id="panelSlider" style="width:100%;accent-color:var(--accent)">
+        <p style="font-size:11px;color:var(--muted);margin-top:6px">Ajustez pour voir les panneaux sur la carte</p>
+      </div>
+
       <div class="card chart-card" id="chartCard">
         <div class="lbl">Production mensuelle (kWh)</div>
         <div class="chart" id="monthChart">
@@ -1050,6 +1060,55 @@ function showToast(msg, isError = false){
 const fmt = n => Math.round(n).toLocaleString('fr-FR');
 
 // ── Update metrics in right panel ────────────────────────────────
+const azimuthToLabel = az => {
+  if(az >= 337.5 || az < 22.5) return 'Nord';
+  if(az < 67.5) return 'Nord-Est'; if(az < 112.5) return 'Est';
+  if(az < 157.5) return 'Sud-Est'; if(az < 202.5) return 'Sud';
+  if(az < 247.5) return 'Sud-Ouest'; if(az < 292.5) return 'Ouest';
+  return 'Nord-Ouest';
+};
+
+// ── Visualisation panneaux solaires sur la carte ───────────────────
+let solarPanelOverlays = [];
+
+function clearSolarPanels(){
+  solarPanelOverlays.forEach(p => p.setMap(null));
+  solarPanelOverlays = [];
+}
+
+function drawSolarPanelsOnMap(panels, panelH, panelW){
+  clearSolarPanels();
+  if(!map || !panels || !panels.length) return;
+
+  panels.forEach(p => {
+    if(!p.lat || !p.lng) return;
+    const lat = p.lat, lng = p.lng;
+    // Convertir dimensions en degrés
+    const hDeg = (panelH / 2) / 111320;
+    const wDeg = (panelW / 2) / (111320 * Math.cos(lat * Math.PI / 180));
+
+    // Orientation : PORTRAIT = h > w, LANDSCAPE = w > h
+    const dH = p.orientation === 'PORTRAIT' ? hDeg : wDeg;
+    const dW = p.orientation === 'PORTRAIT' ? wDeg : hDeg;
+
+    const rect = new google.maps.Rectangle({
+      bounds: {
+        north: lat + dH, south: lat - dH,
+        east:  lng + dW, west:  lng - dW,
+      },
+      strokeColor:   '#13a6e8',
+      strokeOpacity: 0.9,
+      strokeWeight:  1,
+      fillColor:     '#13a6e8',
+      fillOpacity:   0.55,
+      map,
+      clickable: false,
+      zIndex: 3,
+    });
+    solarPanelOverlays.push(rect);
+  });
+}
+
 function displayResults(r){
   ['metricPanels','metricKwc','metricKwh','metricSavings','budgetCard'].forEach(id => {
     const el = $(id);
@@ -1064,28 +1123,60 @@ function displayResults(r){
 
   drawChart(r.monthlyKwh);
 
+  // Infos toiture — meilleur segment (trié par ensoleillement)
   if(r.roofSegments && r.roofSegments.length){
-    const seg = r.roofSegments[0];
-    const azimuthToLabel = az => {
-      if(az >= 337.5 || az < 22.5) return 'Nord';
-      if(az < 67.5) return 'Nord-Est'; if(az < 112.5) return 'Est';
-      if(az < 157.5) return 'Sud-Est'; if(az < 202.5) return 'Sud';
-      if(az < 247.5) return 'Sud-Ouest'; if(az < 292.5) return 'Ouest';
-      return 'Nord-Ouest';
-    };
+    const seg = r.roofSegments[0]; // déjà trié par ensoleillement côté serveur
     roofInfoRows.innerHTML = `
+      <div class="roof-info-row">
+        <div class="ri-icon">☀️</div>
+        <div><div class="ri-label">Ensoleillement</div><div class="ri-val">${fmt(r.sunshineHoursPerYear || 0)} h/an</div></div>
+      </div>
       <div class="roof-info-row">
         <div class="ri-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 12 2 21 11"/><path d="M3 11v10h5v-7h8v7h5V11"/></svg></div>
         <div><div class="ri-label">Surface utilisable</div><div class="ri-val">${fmt(r.areaM2)} m²</div></div>
       </div>
       <div class="roof-info-row">
-        <div class="ri-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-        <div><div class="ri-label">Orientation détectée</div><div class="ri-val">${azimuthToLabel(seg.azimuthDeg)} (${seg.azimuthDeg}°)</div></div>
+        <div class="ri-icon">🧭</div>
+        <div><div class="ri-label">Meilleure orientation</div><div class="ri-val">${azimuthToLabel(seg.azimuthDeg)} — ${seg.sunshineAvg} h/an</div></div>
       </div>
       <div class="roof-info-row">
-        <div class="ri-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20"/></svg></div>
-        <div><div class="ri-label">Inclinaison détectée</div><div class="ri-val">${seg.pitchDeg}°</div></div>
+        <div class="ri-icon">📐</div>
+        <div><div class="ri-label">Inclinaison</div><div class="ri-val">${seg.pitchDeg}°</div></div>
+      </div>
+      <div class="roof-info-row">
+        <div class="ri-icon">🌿</div>
+        <div><div class="ri-label">CO₂ évité/an</div><div class="ri-val">${r.co2SavingsMwh || '—'} MWh</div></div>
       </div>`;
+  }
+
+  // Dessiner les panneaux solaires sur la carte
+  if(r.solarPanels && r.solarPanels.length){
+    drawSolarPanelsOnMap(r.solarPanels, r.panelHeightMeters || 1.65, r.panelWidthMeters || 1.0);
+  }
+
+  // Slider de panneaux si configs disponibles
+  if(r.configSlider && r.configSlider.length && $('panelSliderWrap')){
+    const slider = $('panelSlider');
+    slider.min   = 1;
+    slider.max   = r.configSlider.length - 1;
+    slider.value = r.configSlider.length - 1;
+    $('panelSliderWrap').style.display = 'block';
+    slider.oninput = function(){
+      const cfg = r.configSlider[+this.value];
+      if(!cfg) return;
+      const cnt    = cfg.count;
+      const kwc2   = (cnt * 0.425).toFixed(2);
+      const kwh2   = cfg.yearlyKwh;
+      const sav2   = Math.round(kwh2 * 0.35 * 0.2276 + kwh2 * 0.65 * 0.1269);
+      $('valPanels').innerHTML  = `${cnt} <small>panneaux</small>`;
+      $('valKwc').innerHTML     = `${kwc2.replace('.',',')} <small>kWc</small>`;
+      $('valKwh').innerHTML     = `${fmt(kwh2)} <small>kWh/an</small>`;
+      $('valSavings').innerHTML = `${fmt(sav2)} <small>€/an</small>`;
+      $('sliderVal').textContent = cnt + ' panneaux / ' + r.maxPanels + ' max';
+      // Re-dessiner les N premiers panneaux
+      drawSolarPanelsOnMap(r.solarPanels.slice(0, cnt), r.panelHeightMeters, r.panelWidthMeters);
+    };
+    $('sliderVal').textContent = r.panelCount + ' panneaux / ' + r.maxPanels + ' max';
   }
 }
 
@@ -1552,6 +1643,7 @@ function openAddress(item){
     });
 
     if(marker){ marker.setPosition({lat: item.lat, lng: item.lng}); marker.setVisible(true); }
+  clearSolarPanels();
   }
   fAdresse.value = item.label;
   fetchSolarData();
