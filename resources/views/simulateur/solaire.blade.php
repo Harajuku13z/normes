@@ -1131,7 +1131,7 @@ async function fetchSolarData(){
     // Afficher étape dessin de zone
     $('cardDraw').style.display = 'block';
     $('cardRoof').style.display = 'none';
-    mapInfoText.innerHTML = `<b>Potentiel détecté !</b> Tracez maintenant votre zone d'installation sur la carte (toiture ou sol).`;
+    mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
     setStep(2);
     showToast('Adresse analysée — tracez votre zone ✓');
     fAdresse.value = state.address;
@@ -1144,7 +1144,7 @@ async function fetchSolarData(){
     // avec des valeurs estimatives (sans données Solar API)
     $('cardDraw').style.display = 'block';
     $('cardRoof').style.display = 'none';
-    mapInfoText.innerHTML = `<b>Carte chargée.</b> Tracez votre zone d'installation — les estimations seront calculées depuis la surface tracée.`;
+    mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
     setStep(2);
     fAdresse.value = state.address;
     if(typeof startDrawMode === 'function') startDrawMode();
@@ -1536,7 +1536,7 @@ function openAddress(item){
   if(map){
     map.setTilt(0);
     map.setCenter({lat: item.lat, lng: item.lng});
-    map.setZoom(22); // zoom maximum pour voir les tuiles de toiture
+    map.setZoom(20); // zoom pour voir la toiture entière avec contexte
     if(marker){ marker.setPosition({lat: item.lat, lng: item.lng}); marker.setVisible(true); }
   }
   fAdresse.value = item.label;
