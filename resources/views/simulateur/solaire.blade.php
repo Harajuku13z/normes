@@ -1068,7 +1068,7 @@ const azimuthToLabel = az => {
   return 'Nord-Ouest';
 };
 
-// ── Visualisation panneaux solaires sur la carte ───────────────────
+// ── Panneaux solaires en grille dans le polygone dessiné ──────────
 let solarPanelOverlays = [];
 
 function clearSolarPanels(){
@@ -1076,37 +1076,97 @@ function clearSolarPanels(){
   solarPanelOverlays = [];
 }
 
-function drawSolarPanelsOnMap(panels, panelH, panelW){
+/**
+ * Génère une grille de panneaux à l'intérieur du polygone dessiné,
+ * alignés sur l'orientation du toit (angle du bord le plus long).
+ */
+function generatePanelsInPolygon(polyPoints, panelH, panelW, gap){
+  if(!polyPoints || polyPoints.length < 3) return [];
+
+  const centLat = polyPoints.reduce((s,p) => s + p.lat(), 0) / polyPoints.length;
+  const centLng = polyPoints.reduce((s,p) => s + p.lng(), 0) / polyPoints.length;
+  const mPerLat = 111320;
+  const mPerLng = 111320 * Math.cos(centLat * Math.PI / 180);
+
+  // Trouver l'angle du bord le plus long pour aligner les panneaux
+  let maxLen = 0, angle = 0;
+  for(let i = 0; i < polyPoints.length; i++){
+    const p1 = polyPoints[i], p2 = polyPoints[(i+1) % polyPoints.length];
+    const dlat = (p2.lat() - p1.lat()) * mPerLat;
+    const dlng = (p2.lng() - p1.lng()) * mPerLng;
+    const len  = Math.sqrt(dlat*dlat + dlng*dlng);
+    if(len > maxLen){ maxLen = len; angle = Math.atan2(dlng, dlat); }
+  }
+
+  // Rotation d'un point autour du centroïde
+  const rot = (lat, lng, a) => {
+    const dy = (lat - centLat) * mPerLat;
+    const dx = (lng - centLng) * mPerLng;
+    const cos = Math.cos(a), sin = Math.sin(a);
+    return { lat: centLat + (dy*cos - dx*sin)/mPerLat,
+             lng: centLng + (dy*sin + dx*cos)/mPerLng };
+  };
+
+  // Pivoter le polygone pour aligner le bord principal avec l'axe X
+  const rotPoly = polyPoints.map(p => rot(p.lat(), p.lng(), -angle));
+  const minLat  = Math.min(...rotPoly.map(p => p.lat));
+  const maxLat  = Math.max(...rotPoly.map(p => p.lat));
+  const minLng  = Math.min(...rotPoly.map(p => p.lng));
+  const maxLng  = Math.max(...rotPoly.map(p => p.lng));
+
+  // Polygone Google Maps dans l'espace pivoté (pour containsLocation)
+  const gPoly = new google.maps.Polygon({
+    paths: rotPoly.map(p => ({lat: p.lat, lng: p.lng}))
+  });
+
+  const hDeg   = panelH / mPerLat;
+  const wDeg   = panelW / mPerLng;
+  const gapLat = gap / mPerLat;
+  const gapLng = gap / mPerLng;
+  const stepH  = hDeg + gapLat;
+  const stepW  = wDeg + gapLng;
+
+  const panels = [];
+  for(let lat = minLat + hDeg/2 + gapLat; lat + hDeg/2 < maxLat; lat += stepH){
+    for(let lng = minLng + wDeg/2 + gapLng; lng + wDeg/2 < maxLng; lng += stepW){
+      if(!google.maps.geometry.poly.containsLocation(
+            new google.maps.LatLng(lat, lng), gPoly)) continue;
+      // 4 coins du panneau dans l'espace pivoté
+      const corners = [
+        rot(lat - hDeg/2, lng - wDeg/2, angle),
+        rot(lat - hDeg/2, lng + wDeg/2, angle),
+        rot(lat + hDeg/2, lng + wDeg/2, angle),
+        rot(lat + hDeg/2, lng - wDeg/2, angle),
+      ];
+      panels.push(corners);
+    }
+  }
+  return panels;
+}
+
+function drawSolarPanelsOnMap(polyPoints, panelH, panelW){
   clearSolarPanels();
-  if(!map || !panels || !panels.length) return;
+  if(!map || !polyPoints || polyPoints.length < 3) return;
 
-  panels.forEach(p => {
-    if(!p.lat || !p.lng) return;
-    const lat = p.lat, lng = p.lng;
-    // Convertir dimensions en degrés
-    const hDeg = (panelH / 2) / 111320;
-    const wDeg = (panelW / 2) / (111320 * Math.cos(lat * Math.PI / 180));
+  const gap    = 0.025; // 2.5 cm entre panneaux
+  const panels = generatePanelsInPolygon(polyPoints, panelH || 1.65, panelW || 1.0, gap);
 
-    // Orientation : PORTRAIT = h > w, LANDSCAPE = w > h
-    const dH = p.orientation === 'PORTRAIT' ? hDeg : wDeg;
-    const dW = p.orientation === 'PORTRAIT' ? wDeg : hDeg;
-
-    const rect = new google.maps.Rectangle({
-      bounds: {
-        north: lat + dH, south: lat - dH,
-        east:  lng + dW, west:  lng - dW,
-      },
-      strokeColor:   '#13a6e8',
+  panels.forEach(corners => {
+    const poly = new google.maps.Polygon({
+      paths: corners,
+      strokeColor:   '#1a4a7a',
       strokeOpacity: 0.9,
-      strokeWeight:  1,
-      fillColor:     '#13a6e8',
-      fillOpacity:   0.55,
+      strokeWeight:  1.2,
+      fillColor:     '#1e5fa8',
+      fillOpacity:   0.80,
       map,
       clickable: false,
-      zIndex: 3,
+      zIndex: 4,
     });
-    solarPanelOverlays.push(rect);
+    solarPanelOverlays.push(poly);
   });
+
+  return panels.length;
 }
 
 function displayResults(r){
@@ -1558,55 +1618,62 @@ function validateZone(){
   state.drawResults = r;
   displayResults(r);
 
-  // ── Afficher les panneaux Solar API dans la zone dessinée ──────────
-  const sr = state.results; // données Solar API
-  if(sr && sr.solarPanels && sr.solarPanels.length){
-    clearSolarPanels();
+  // ── Dessiner les panneaux en grille dans la zone dessinée ──────────
+  const sr = state.results;
+  const pH = sr?.panelHeightMeters || 1.65;
+  const pW = sr?.panelWidthMeters  || 1.0;
 
-    // Créer un google.maps.Polygon à partir des points dessinés
-    // pour filtrer les panneaux qui sont DEDANS
-    const drawnPolygon = new google.maps.Polygon({ paths: draw.points });
+  // Générer et afficher les panneaux dans le polygone
+  const drawnCount = drawSolarPanelsOnMap(draw.points, pH, pW);
 
-    // Filtrer les panneaux Solar API dans la zone dessinée
-    let panelsInZone = sr.solarPanels.filter(p => {
-      if(!p.lat || !p.lng) return false;
-      try {
-        return google.maps.geometry.poly.containsLocation(
-          new google.maps.LatLng(p.lat, p.lng), drawnPolygon
-        );
-      } catch(e) { return false; }
-    });
+  // Mettre à jour le comptage réel avec les panneaux qui tiennent dans la zone
+  const realPanels = drawnCount > 0 ? drawnCount : panels;
+  const realKwc    = +(realPanels * 0.425).toFixed(2);
+  const baseRatio2 = sr ? sr.yearlyKwh / Math.max(sr.kwc, 0.1) : 1180;
+  const realKwh    = Math.round(realKwc * baseRatio2 * (orientCoeff[orient]||1) * (inclCoeff[incl]||1) * gardenBonus);
+  const realSav    = Math.round(realKwh * 0.35 * 0.2276 + realKwh * 0.65 * 0.1269);
 
-    // Si pas assez dans la zone (zone dessinée ailleurs que la toiture analysée)
-    // → utiliser les N premiers panneaux de l'API (basés sur le count calculé)
-    if(panelsInZone.length < Math.min(3, panels)){
-      panelsInZone = sr.solarPanels.slice(0, panels);
-    }
+  $('valPanels').innerHTML  = `${realPanels} <small>panneaux</small>`;
+  $('valKwc').innerHTML     = `${realKwc.toFixed(2).replace('.',',')} <small>kWc</small>`;
+  $('valKwh').innerHTML     = `${fmt(realKwh)} <small>kWh/an</small>`;
+  $('valSavings').innerHTML = `${fmt(realSav)} <small>€/an</small>`;
+  $('surfaceSub').textContent = `${realPanels} panneaux · ${realKwc} kWc`;
 
-    // Limiter au nombre calculé depuis la surface dessinée
-    panelsInZone = panelsInZone.slice(0, panels);
-
-    drawSolarPanelsOnMap(panelsInZone, sr.panelHeightMeters || 1.65, sr.panelWidthMeters || 1.0);
-
-    // Mettre à jour le slider avec les panneaux en zone
-    if(sr.configSlider && sr.configSlider.length && $('panelSliderWrap')){
-      const slider = $('panelSlider');
-      slider.max   = Math.min(sr.solarPanels.length, sr.maxPanels);
-      slider.value = panelsInZone.length;
-      $('sliderVal').textContent = panelsInZone.length + ' panneaux / ' + sr.maxPanels + ' max';
-      $('panelSliderWrap').style.display = 'block';
-      slider.oninput = function(){
-        const cnt = +this.value;
-        drawSolarPanelsOnMap(
-          (panelsInZone.length >= cnt ? panelsInZone : sr.solarPanels).slice(0, cnt),
-          sr.panelHeightMeters, sr.panelWidthMeters
-        );
-        const kwc2 = (cnt * 0.425).toFixed(2);
-        $('valPanels').innerHTML = `${cnt} <small>panneaux</small>`;
-        $('valKwc').innerHTML    = `${kwc2.replace('.',',')} <small>kWc</small>`;
-        $('sliderVal').textContent = cnt + ' panneaux / ' + sr.maxPanels + ' max';
-      };
-    }
+  // Slider pour ajuster le nombre de panneaux visibles
+  if($('panelSliderWrap')){
+    const slider = $('panelSlider');
+    slider.min   = 1;
+    slider.max   = realPanels;
+    slider.value = realPanels;
+    $('sliderVal').textContent = realPanels + ' panneaux';
+    $('panelSliderWrap').style.display = 'block';
+    let sliderTimer;
+    slider.oninput = function(){
+      clearTimeout(sliderTimer);
+      sliderTimer = setTimeout(() => {
+        // Réduire les panneaux visibles en rognant le polygone progressivement
+        // On redessine avec un sous-ensemble des lignes de la grille
+        const ratio = +this.value / realPanels;
+        // Méthode simple : recalculer avec une surface réduite
+        const subPts = draw.points; // même zone, on limite via le nombre
+        clearSolarPanels();
+        const allCorners = generatePanelsInPolygon(subPts, pH, pW, 0.025);
+        const keepN = Math.round(allCorners.length * ratio);
+        allCorners.slice(0, keepN).forEach(corners => {
+          const p = new google.maps.Polygon({
+            paths: corners,
+            strokeColor:'#1a4a7a', strokeOpacity:.9, strokeWeight:1.2,
+            fillColor:'#1e5fa8', fillOpacity:.80,
+            map, clickable:false, zIndex:4,
+          });
+          solarPanelOverlays.push(p);
+        });
+        $('sliderVal').textContent = keepN + ' panneaux';
+        $('valPanels').innerHTML   = `${keepN} <small>panneaux</small>`;
+        const kwc2 = (keepN * 0.425).toFixed(2);
+        $('valKwc').innerHTML      = `${kwc2.replace('.',',')} <small>kWc</small>`;
+      }, 80);
+    };
   }
 
   // UI updates
