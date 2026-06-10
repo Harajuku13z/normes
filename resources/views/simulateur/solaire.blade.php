@@ -1540,11 +1540,13 @@ function openAddress(item){
 
     // Zoom maximum : on demande 25 (Google cap automatiquement au max dispo pour la zone)
     // On attend que les tuiles soient chargées pour appliquer le zoom
-    map.setZoom(20); // zoom initial pour centrer rapidement
-    google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
-      map.setZoom(22);
+    map.setZoom(19);
+    // MaxZoom - 1 : un cran en arrière du zoom maximum disponible
+    const _mzs = new google.maps.MaxZoomService();
+    _mzs.getMaxZoomAtLatLng({lat: item.lat, lng: item.lng}, function(r){
+      const z = (r.status === google.maps.MaxZoomStatus.OK ? r.zoom : 22) - 1;
+      map.setZoom(Math.max(18, z));
       map.setTilt(0);
-      dbg('INFO', 'tilesloaded → setZoom(22) appliqué');
     });
 
     if(marker){ marker.setPosition({lat: item.lat, lng: item.lng}); marker.setVisible(true); }
