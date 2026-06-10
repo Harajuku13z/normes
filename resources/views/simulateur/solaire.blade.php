@@ -1544,7 +1544,7 @@ function openAddress(item){
     google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
       map.setZoom(22);
       map.setTilt(0);
-      dbg('INFO', 'tilesloaded → setZoom(25) appliqué');
+      dbg('INFO', 'tilesloaded → setZoom(22) appliqué');
     });
 
     if(marker){ marker.setPosition({lat: item.lat, lng: item.lng}); marker.setVisible(true); }
