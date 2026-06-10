@@ -177,6 +177,9 @@ Route::get('/realisations/{portfolio_project}', [RealisationsController::class, 
 
 // Simulateur solaire
 Route::get('/simulateur-solaire', [SolarSimulatorController::class, 'index'])->name('simulateur.solaire');
+Route::get('/api/solar-demo-image', [SolarSimulatorController::class, 'demoImage'])
+    ->middleware('throttle:30,1')
+    ->name('api.solar.demoImage');
 Route::get('/api/solar-autocomplete', [SolarSimulatorController::class, 'autocomplete'])
     ->middleware('throttle:60,1')
     ->name('api.solar.autocomplete');

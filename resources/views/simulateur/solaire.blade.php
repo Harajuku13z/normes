@@ -142,6 +142,65 @@ html,body{
 }
 @keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(19,166,232,.35)}50%{box-shadow:0 0 0 10px rgba(19,166,232,0)}}
 
+/* ── Popup démo ── */
+.demo-backdrop{
+  position:fixed;inset:0;background:rgba(15,34,49,.7);z-index:500;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  backdrop-filter:blur(6px);animation:fadeIn .25s ease;
+}
+.demo-backdrop.closing{animation:fadeOut .25s ease forwards}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0}}
+.demo-box{
+  background:#fff;border-radius:20px;max-width:820px;width:100%;
+  box-shadow:0 32px 80px rgba(15,34,49,.3);overflow:hidden;
+  animation:slideUp .3s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
+.demo-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 24px;border-bottom:1px solid var(--line);
+}
+.demo-head h3{font-size:17px;font-weight:800;color:var(--ink)}
+.demo-head p{font-size:13px;color:var(--slate);margin-top:2px}
+.demo-close{
+  width:36px;height:36px;border-radius:10px;border:1.5px solid var(--line);
+  background:#fff;cursor:pointer;display:grid;place-items:center;
+  flex-shrink:0;transition:.15s;color:var(--ink);
+}
+.demo-close:hover{background:var(--line-2);border-color:#cdd6dd}
+.demo-img-wrap{position:relative;overflow:hidden;background:#1a2a35;line-height:0}
+.demo-img-wrap img{width:100%;max-height:360px;object-fit:cover;display:block}
+.demo-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+/* SVG animation */
+.dp-line{stroke:#13a6e8;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:600;stroke-dashoffset:600;vector-effect:non-scaling-stroke}
+.dp-fill{fill:rgba(19,166,232,.2);stroke:none}
+.dp-dot{fill:#13a6e8;stroke:#fff;stroke-width:3;r:8;vector-effect:non-scaling-stroke;
+  transform-origin:center;transform:scale(0)}
+/* type badge in demo */
+.demo-type-badge{
+  position:absolute;top:12px;left:12px;
+  background:rgba(15,34,49,.85);color:#fff;
+  padding:5px 12px;border-radius:8px;font:700 12px 'Inter',sans-serif;
+  backdrop-filter:blur(4px);
+}
+.demo-steps{display:flex;gap:0;border-top:1px solid var(--line)}
+.demo-step{flex:1;padding:14px 16px;border-right:1px solid var(--line);text-align:center}
+.demo-step:last-child{border-right:0}
+.demo-step .ds-num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;
+  font:800 12px 'Inter',sans-serif;display:grid;place-items:center;margin:0 auto 6px}
+.demo-step .ds-label{font-size:12px;font-weight:600;color:var(--ink);line-height:1.4}
+.demo-step .ds-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.demo-foot{padding:16px 24px;display:flex;gap:12px;align-items:center;border-top:1px solid var(--line);background:#f8fafc}
+.demo-foot p{font-size:12.5px;color:var(--slate);flex:1}
+.demo-start-btn{
+  border:0;background:var(--ink);color:#fff;padding:12px 22px;
+  border-radius:11px;font:700 14px 'Inter',sans-serif;cursor:pointer;
+  display:flex;align-items:center;gap:8px;transition:.15s ease;white-space:nowrap;
+}
+.demo-start-btn:hover{background:#0a1a26;transform:translateY(-1px)}
+
 /* Map cursor override during drawing */
 .map-wrap.drawing #mapDiv{cursor:crosshair!important}
 .map-wrap.drawing .gm-style{cursor:crosshair!important}
@@ -592,16 +651,6 @@ html,body{
         <p id="mapLoadingText">Chargement de la carte…</p>
       </div>
 
-      {{-- Banner démo animée --}}
-      <div id="demoBanner" style="display:none;position:absolute;top:72px;left:50%;transform:translateX(-50%);z-index:15;
-        background:rgba(245,196,0,.95);color:#0f2231;padding:10px 18px;border-radius:10px;
-        font:700 13px 'Inter',sans-serif;align-items:center;gap:10px;
-        box-shadow:0 4px 16px rgba(0,0,0,.2);white-space:nowrap;backdrop-filter:blur(4px)">
-        <span style="font-size:16px">🎬</span>
-        Exemple — cliquez sur la carte pour tracer votre vraie zone
-        <button onclick="clearDemo()" style="background:rgba(0,0,0,.12);border:0;border-radius:6px;padding:3px 10px;font:600 12px 'Inter',sans-serif;cursor:pointer;color:#0f2231">Passer</button>
-      </div>
-
       {{-- Draw hint --}}
       <div class="draw-hint hidden" id="drawHint">
         <span class="dot"></span>
@@ -767,6 +816,88 @@ html,body{
       <h4>Demande envoyée !</h4>
       <p>Merci <strong id="successName"></strong> ! Nos experts vous contacteront dans les <strong>24 heures</strong> pour personnaliser votre devis solaire.</p>
       <button class="btn btn-outline" style="width:auto;margin:20px auto 0;padding:10px 24px;border-radius:10px" id="closeSuccessBtn">Fermer</button>
+    </div>
+  </div>
+</div>
+
+{{-- ── Popup démo ── --}}
+<div class="demo-backdrop" id="demoPopup" style="display:none" role="dialog" aria-modal="true" aria-label="Comment tracer votre zone">
+  <div class="demo-box">
+    <div class="demo-head">
+      <div>
+        <h3 id="demoTitle">Comment tracer votre zone d'installation</h3>
+        <p>Regardez l'exemple ci-dessous, puis fermez pour commencer à tracer sur votre toiture.</p>
+      </div>
+      <button class="demo-close" id="demoCloseBtn" aria-label="Fermer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    {{-- Image satellite + animation SVG --}}
+    <div class="demo-img-wrap" id="demoImgWrap">
+      <img id="demoImg" src="" alt="Vue satellite de la toiture" loading="lazy">
+      <div class="demo-type-badge" id="demoTypeBadge">🏠 Toiture</div>
+
+      {{-- SVG animé en overlay — points et lignes du polygon démo --}}
+      <svg class="demo-svg" id="demoSvg" viewBox="0 0 720 400" preserveAspectRatio="xMidYMid slice">
+        {{-- Polygon fill (apparaît en dernier) --}}
+        <polygon class="dp-fill" id="dpFill"
+          points="185,155 185,275 375,275 375,155"
+          style="opacity:0;transition:opacity .4s ease .1s"/>
+
+        {{-- Lignes du polygon --}}
+        <polyline class="dp-line" id="dpLine"
+          points="185,155 185,275 375,275 375,155 185,155"
+          style="stroke-dashoffset:600;transition:stroke-dashoffset 1.2s ease"/>
+
+        {{-- Points (vertices) --}}
+        <circle class="dp-dot" id="dp1" cx="185" cy="155" style="transition:transform .3s cubic-bezier(.34,1.56,.64,1) 0s"/>
+        <circle class="dp-dot" id="dp2" cx="185" cy="275" style="transition:transform .3s cubic-bezier(.34,1.56,.64,1) .5s"/>
+        <circle class="dp-dot" id="dp3" cx="375" cy="275" style="transition:transform .3s cubic-bezier(.34,1.56,.64,1) 1s"/>
+        <circle class="dp-dot" id="dp4" cx="375" cy="155" style="transition:transform .3s cubic-bezier(.34,1.56,.64,1) 1.5s"/>
+
+        {{-- Labels clics --}}
+        <g id="dpLabels" style="opacity:0;transition:opacity .3s ease 1.8s">
+          <text x="155" y="152" fill="#fff" font-family="Inter,sans-serif" font-size="11" font-weight="700">1</text>
+          <text x="155" y="278" fill="#fff" font-family="Inter,sans-serif" font-size="11" font-weight="700">2</text>
+          <text x="382" y="278" fill="#fff" font-family="Inter,sans-serif" font-size="11" font-weight="700">3</text>
+          <text x="382" y="152" fill="#fff" font-family="Inter,sans-serif" font-size="11" font-weight="700">4</text>
+        </g>
+
+        {{-- Badge surface --}}
+        <rect x="245" y="198" width="90" height="28" rx="6" fill="rgba(15,34,49,.8)" id="dpSurfBg"
+          style="opacity:0;transition:opacity .3s ease 2.2s"/>
+        <text x="290" y="216" fill="#fff" font-family="Inter,sans-serif" font-size="13" font-weight="800"
+          text-anchor="middle" id="dpSurfText"
+          style="opacity:0;transition:opacity .3s ease 2.2s">≈ 42 m²</text>
+      </svg>
+    </div>
+
+    {{-- Étapes --}}
+    <div class="demo-steps">
+      <div class="demo-step">
+        <div class="ds-num">1</div>
+        <div class="ds-label">Cliquez sur un coin</div>
+        <div class="ds-sub">de votre toiture ou terrain</div>
+      </div>
+      <div class="demo-step">
+        <div class="ds-num">2</div>
+        <div class="ds-label">Tracez le contour</div>
+        <div class="ds-sub">en cliquant point par point</div>
+      </div>
+      <div class="demo-step">
+        <div class="ds-num">3</div>
+        <div class="ds-label">Validez la zone</div>
+        <div class="ds-sub">dès 3 points — surface calculée</div>
+      </div>
+    </div>
+
+    <div class="demo-foot">
+      <p>💡 Tracez uniquement la surface utile. Vous pouvez effacer et recommencer à tout moment.</p>
+      <button class="demo-start-btn" id="demoStartBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        Commencer à tracer
+      </button>
     </div>
   </div>
 </div>
@@ -1105,103 +1236,108 @@ function clearDrawing(keepValidated = false){
   updateDrawUI();
 }
 
-// ── Démo animée ─────────────────────────────────────────────────
-let demoRunning = false;
-const demoState = { markers: [], polygon: null, timeout: [] };
+// ── Popup démo ───────────────────────────────────────────────────
+const demoPopup  = $('demoPopup');
+const demoImg    = $('demoImg');
+let   demoSvgAnimStarted = false;
 
-function clearDemo(){
-  demoRunning = false;
-  demoState.timeout.forEach(clearTimeout);
-  demoState.timeout = [];
-  demoState.markers.forEach(m => m.setMap(null));
-  demoState.markers = [];
-  if(demoState.polygon){ demoState.polygon.setMap(null); demoState.polygon = null; }
-  // Masquer le banner démo
-  const banner = $('demoBanner');
-  if(banner) banner.style.display = 'none';
+function openDemoPopup(){
+  if(!demoPopup) return;
+
+  // Charger l'image satellite de l'adresse de l'utilisateur
+  const lat = state.lat || 47.322, lng = state.lng || 5.042;
+  const imgUrl = `/api/solar-demo-image?lat=${lat}&lng=${lng}&zoom=20`;
+  demoImg.src = imgUrl;
+
+  // Badge type
+  const isGarden = draw.zoneType === 'garden';
+  $('demoTypeBadge').textContent = isGarden ? '🌿 Sol / Jardin' : '🏠 Toiture';
+  $('demoTitle').textContent = isGarden
+    ? 'Comment tracer votre zone au sol / jardin'
+    : 'Comment tracer votre zone de toiture';
+
+  // Adapter les points SVG selon toiture (petit) ou jardin (plus grand)
+  if(isGarden){
+    // Points plus écartés pour représenter une zone au sol
+    $('dp1').setAttribute('cx','130'); $('dp1').setAttribute('cy','120');
+    $('dp2').setAttribute('cx','130'); $('dp2').setAttribute('cy','305');
+    $('dp3').setAttribute('cx','440'); $('dp3').setAttribute('cy','305');
+    $('dp4').setAttribute('cx','440'); $('dp4').setAttribute('cy','120');
+    $('dpFill').setAttribute('points','130,120 130,305 440,305 440,120');
+    $('dpLine').setAttribute('points','130,120 130,305 440,305 440,120 130,120');
+    $('dpSurfText').textContent = '≈ 120 m²';
+    $('dpSurfBg').setAttribute('x','230'); $('dpSurfBg').setAttribute('y','198');
+    $('dpSurfText').setAttribute('x','275');
+    // Labels
+    const ls = $('dpLabels').querySelectorAll('text');
+    const lc = [[100,117],[100,312],[448,312],[448,117]];
+    ls.forEach((l,i) => { l.setAttribute('x',lc[i][0]); l.setAttribute('y',lc[i][1]); });
+  } else {
+    // Toiture — valeurs par défaut du HTML
+    $('dp1').setAttribute('cx','185'); $('dp1').setAttribute('cy','155');
+    $('dp2').setAttribute('cx','185'); $('dp2').setAttribute('cy','275');
+    $('dp3').setAttribute('cx','375'); $('dp3').setAttribute('cy','275');
+    $('dp4').setAttribute('cx','375'); $('dp4').setAttribute('cy','155');
+    $('dpFill').setAttribute('points','185,155 185,275 375,275 375,155');
+    $('dpLine').setAttribute('points','185,155 185,275 375,275 375,155 185,155');
+    $('dpSurfText').textContent = '≈ 42 m²';
+    $('dpSurfBg').setAttribute('x','245'); $('dpSurfBg').setAttribute('y','198');
+    $('dpSurfText').setAttribute('x','290');
+    const ls = $('dpLabels').querySelectorAll('text');
+    const lc = [[155,152],[155,278],[382,278],[382,152]];
+    ls.forEach((l,i) => { l.setAttribute('x',lc[i][0]); l.setAttribute('y',lc[i][1]); });
+  }
+
+  // Reset animation SVG
+  resetDemoSvg();
+  demoPopup.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  // Lancer l'animation SVG après 400ms
+  setTimeout(animateDemoSvg, 400);
 }
 
-function runDemo(){
-  clearDemo();
-  demoRunning = true;
-
-  // Afficher banner
-  const banner = $('demoBanner');
-  if(banner) banner.style.display = 'flex';
-
-  const center = map.getCenter();
-  const lat = center.lat(), lng = center.lng();
-
-  // Décalages en degrés (~10–20m à zoom 21) formant un polygon toiture typique
-  const roofOffsets = [
-    [-0.00012, -0.00018],
-    [-0.00012,  0.00018],
-    [ 0.00005,  0.00018],
-    [ 0.00005, -0.00018],
-  ];
-  // Jardin (plus grand)
-  const gardenOffsets = [
-    [-0.00020, -0.00025],
-    [-0.00020,  0.00025],
-    [ 0.00010,  0.00025],
-    [ 0.00010, -0.00025],
-  ];
-
-  const offsets = draw.zoneType === 'garden' ? gardenOffsets : roofOffsets;
-  const demoPoints = offsets.map(([dlat, dlng]) => new google.maps.LatLng(lat + dlat, lng + dlng));
-
-  const demoIcon = (i) => ({
-    path: google.maps.SymbolPath.CIRCLE,
-    scale: 8,
-    fillColor: '#f5c400',
-    fillOpacity: 1,
-    strokeColor: '#fff',
-    strokeWeight: 2,
+function resetDemoSvg(){
+  ['dp1','dp2','dp3','dp4'].forEach(id => {
+    const el = $(id); if(el) el.style.transform = 'scale(0)';
   });
-
-  let currentPts = [];
-  offsets.forEach((_, i) => {
-    const t1 = setTimeout(() => {
-      if(!demoRunning) return;
-      currentPts.push(demoPoints[i]);
-
-      // Marker jaune
-      const m = new google.maps.Marker({
-        position: demoPoints[i], map,
-        icon: demoIcon(i), zIndex: 50 + i, clickable: false,
-      });
-      demoState.markers.push(m);
-
-      // Polygon démo
-      if(demoState.polygon){ demoState.polygon.setMap(null); }
-      if(currentPts.length >= 2){
-        demoState.polygon = new google.maps.Polygon({
-          paths: currentPts,
-          strokeColor: '#f5c400', strokeOpacity: .85, strokeWeight: 2.5,
-          fillColor: '#f5c400', fillOpacity: .2,
-          map, clickable: false, zIndex: 5,
-        });
-      }
-    }, i * 700);
-    demoState.timeout.push(t1);
-  });
-
-  // Fin démo : flash vert + message
-  const tEnd = setTimeout(() => {
-    if(!demoRunning) return;
-    if(demoState.polygon) demoState.polygon.setOptions({strokeColor:'#1f8a5b', fillColor:'#1f8a5b'});
-    const t2 = setTimeout(() => {
-      clearDemo();
-      // Mettre à jour le hint
-      $('drawHintText').textContent = draw.zoneType === 'garden'
-        ? 'À vous ! Cliquez sur votre jardin pour tracer votre zone'
-        : 'À vous ! Cliquez sur votre toiture pour tracer votre zone';
-      $('drawHint').classList.remove('hidden');
-    }, 900);
-    demoState.timeout.push(t2);
-  }, offsets.length * 700 + 400);
-  demoState.timeout.push(tEnd);
+  const line = $('dpLine'); if(line) line.style.strokeDashoffset = '600';
+  const fill = $('dpFill'); if(fill) fill.style.opacity = '0';
+  const lbl  = $('dpLabels'); if(lbl) lbl.style.opacity = '0';
+  const sb   = $('dpSurfBg');  if(sb)  sb.style.opacity  = '0';
+  const st   = $('dpSurfText'); if(st) st.style.opacity  = '0';
 }
+
+function animateDemoSvg(){
+  // Points apparaissent un par un via CSS transition (delay défini inline)
+  ['dp1','dp2','dp3','dp4'].forEach(id => {
+    const el = $(id); if(el) el.style.transform = 'scale(1)';
+  });
+  // Ligne tracée après 600ms
+  setTimeout(() => {
+    const line = $('dpLine'); if(line) line.style.strokeDashoffset = '0';
+  }, 600);
+  // Fill + labels + surface après ~2s
+  setTimeout(() => {
+    const fill = $('dpFill'); if(fill) fill.style.opacity = '1';
+    const lbl  = $('dpLabels'); if(lbl) lbl.style.opacity  = '1';
+    const sb   = $('dpSurfBg');  if(sb)  sb.style.opacity  = '1';
+    const st   = $('dpSurfText'); if(st) st.style.opacity  = '1';
+  }, 2000);
+}
+
+function closeDemoPopup(){
+  demoPopup.classList.add('closing');
+  setTimeout(() => {
+    demoPopup.style.display = 'none';
+    demoPopup.classList.remove('closing');
+    document.body.style.overflow = '';
+  }, 240);
+}
+
+$('demoCloseBtn')?.addEventListener('click', closeDemoPopup);
+$('demoStartBtn')?.addEventListener('click', closeDemoPopup);
+demoPopup?.addEventListener('click', e => { if(e.target === demoPopup) closeDemoPopup(); });
 
 function startDrawMode(){
   draw.active    = true;
@@ -1212,7 +1348,6 @@ function startDrawMode(){
   if(draw.clickListener) google.maps.event.removeListener(draw.clickListener);
   draw.clickListener = map.addListener('click', e => {
     if(draw.validated) return;
-    clearDemo(); // stoppe la démo dès le premier clic réel
     draw.points.push(e.latLng);
     addVertexMarker(e.latLng, draw.points.length - 1);
     drawPolygon();
@@ -1220,9 +1355,8 @@ function startDrawMode(){
   });
 
   updateDrawUI();
-  // Lancer la démo animée après 600ms (le temps que la carte finisse de charger)
-  const t = setTimeout(runDemo, 600);
-  demoState.timeout.push(t);
+  // Ouvrir le popup démo
+  setTimeout(openDemoPopup, 500);
 }
 
 function stopDrawMode(){
@@ -1294,8 +1428,8 @@ function validateZone(){
     draw.zoneType = btn.dataset.zone;
     $('drawModeBadge').textContent = draw.zoneType === 'garden' ? 'SOL/JARDIN' : 'TOITURE';
     updateDrawUI();
-    // Relancer la démo si aucun point n'a encore été tracé
-    if(draw.points.length === 0 && draw.active && typeof runDemo === 'function') runDemo();
+    // Rouvrir le popup démo si aucun point tracé
+    if(draw.points.length === 0 && draw.active && typeof openDemoPopup === 'function') openDemoPopup();
     else if(draw.points.length >= 3) updateDrawUI();
   });
 });
@@ -1337,9 +1471,9 @@ function openAddress(item){
   addrPill.style.display   = 'flex';
   addrSearchWrap.style.display = 'none';
   if(map){
-    map.setTilt(0); // vue satellite parfaitement à plat (pas de 45°)
+    map.setTilt(0);
     map.setCenter({lat: item.lat, lng: item.lng});
-    map.setZoom(21); // zoom max pour voir la toiture de près
+    map.setZoom(22); // zoom maximum pour voir les tuiles de toiture
     if(marker){ marker.setPosition({lat: item.lat, lng: item.lng}); marker.setVisible(true); }
   }
   fAdresse.value = item.label;

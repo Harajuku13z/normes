@@ -20,6 +20,45 @@ class SolarSimulatorController extends Controller
         ]);
     }
 
+    /** Image satellite (Google Static Maps) proxifiée pour le popup de démo */
+    public function demoImage(Request $request): \Illuminate\Http\Response
+    {
+        $lat  = (float) $request->query('lat', 47.322);
+        $lng  = (float) $request->query('lng', 5.042);
+        $zoom = (int)   $request->query('zoom', 20);
+        $zoom = max(18, min(21, $zoom));
+
+        $apiKey = config('services.google.solar_key');
+
+        try {
+            $response = \Illuminate\Support\Facades\Http::timeout(10)
+                ->withHeaders([
+                    'Referer' => 'https://normesrenovation.fr/',
+                    'Origin'  => 'https://normesrenovation.fr',
+                ])
+                ->get('https://maps.googleapis.com/maps/api/staticmap', [
+                    'center'  => "{$lat},{$lng}",
+                    'zoom'    => $zoom,
+                    'size'    => '720x400',
+                    'scale'   => '2',
+                    'maptype' => 'satellite',
+                    'key'     => $apiKey,
+                ]);
+
+            if ($response->successful()) {
+                return response($response->body(), 200, [
+                    'Content-Type'  => 'image/png',
+                    'Cache-Control' => 'public, max-age=3600',
+                ]);
+            }
+        } catch (\Throwable) {}
+
+        // Fallback : image placeholder SVG si Static Maps échoue
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="720" height="400"><rect width="720" height="400" fill="#1a2a35"/><text x="360" y="200" fill="#fff" font-family="Inter,sans-serif" font-size="16" text-anchor="middle">Vue satellite indisponible</text></svg>';
+
+        return response($svg, 200, ['Content-Type' => 'image/svg+xml']);
+    }
+
     /** Autocomplétion d'adresse via Nominatim (OpenStreetMap) — aucune clé requise */
     public function autocomplete(Request $request): JsonResponse
     {
