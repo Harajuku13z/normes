@@ -1635,15 +1635,19 @@ function initMap(){
     mapTypeControl: false,
   });
 
+  // Icône SVG point bleu (compatible toutes versions Maps API)
+  const blueCircleSvg = encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">' +
+    '<circle cx="14" cy="14" r="10" fill="#13a6e8" stroke="white" stroke-width="3"/>' +
+    '<circle cx="14" cy="14" r="3" fill="white"/>' +
+    '</svg>'
+  );
   marker = new google.maps.Marker({
     map,
     icon: {
-      path: google.maps.SymbolPath.CIRCLE,
-      scale: 10,
-      fillColor: '#13a6e8',
-      fillOpacity: 1,
-      strokeColor: '#fff',
-      strokeWeight: 3,
+      url: 'data:image/svg+xml;charset=UTF-8,' + blueCircleSvg,
+      scaledSize: new google.maps.Size(28, 28),
+      anchor: new google.maps.Point(14, 14),
     },
     visible: false,
   });
