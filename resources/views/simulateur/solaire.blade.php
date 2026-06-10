@@ -126,7 +126,7 @@ html,body{
 
 /* Draw hint overlay on map */
 .draw-hint{
-  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  position:absolute;left:50%;bottom:80px;transform:translateX(-50%);top:auto;
   background:rgba(15,34,49,.85);color:#fff;
   padding:14px 22px;border-radius:12px;
   font:600 13.5px 'Inter',sans-serif;
@@ -1536,7 +1536,7 @@ function openAddress(item){
   if(map){
     map.setTilt(0);
     map.setCenter({lat: item.lat, lng: item.lng});
-    map.setZoom(20); // zoom pour voir la toiture entière avec contexte
+    map.setZoom(21); // zoom rapproché sur la toiture
     if(marker){ marker.setPosition({lat: item.lat, lng: item.lng}); marker.setVisible(true); }
   }
   fAdresse.value = item.label;
