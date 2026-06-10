@@ -1542,7 +1542,7 @@ function openAddress(item){
     // On attend que les tuiles soient chargées pour appliquer le zoom
     map.setZoom(20); // zoom initial pour centrer rapidement
     google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
-      map.setZoom(25); // Google limitera au max réel disponible par les tuiles satellite
+      map.setZoom(22);
       map.setTilt(0);
       dbg('INFO', 'tilesloaded → setZoom(25) appliqué');
     });
