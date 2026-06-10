@@ -184,7 +184,7 @@ html,body{
   stroke:#13a6e8;stroke-width:3;fill:none;
   stroke-linecap:round;stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
-  stroke-dasharray:1600;stroke-dashoffset:1600;
+  stroke-dasharray:1200;stroke-dashoffset:1200;
 }
 .dp-fill{fill:rgba(19,166,232,.22);stroke:none;opacity:0}
 .dp-badge{opacity:0}
@@ -198,9 +198,9 @@ html,body{
 }
 /* Ligne tracée */
 @keyframes lineTrace{
-  0%,8%    {stroke-dashoffset:1600}
+  0%,8%    {stroke-dashoffset:1200}
   55%,80%  {stroke-dashoffset:0}
-  92%,100% {stroke-dashoffset:1600}
+  92%,100% {stroke-dashoffset:1200}
 }
 /* Fill + labels + badge */
 @keyframes fadeInOut{
@@ -1311,7 +1311,7 @@ function openDemoPopup(){
   if(!demoPopup) return;
 
   const isGarden = draw.zoneType === 'garden';
-  demoImg.src = isGarden ? '/slide/demo-jardin-aerien.jpg' : '/slide/demo-toiture-aerienne.png';
+  demoImg.src = isGarden ? '/slide/demo-jardin-aerien.jpg' : '/slide/demo-toiture-crop.jpg';
 
   $('demoTypeBadge').textContent = isGarden ? '🌿 Sol / Jardin' : '🏠 Toiture';
   $('demoTitle').textContent = isGarden
