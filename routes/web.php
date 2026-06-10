@@ -177,6 +177,9 @@ Route::get('/realisations/{portfolio_project}', [RealisationsController::class, 
 
 // Simulateur solaire
 Route::get('/simulateur-solaire', [SolarSimulatorController::class, 'index'])->name('simulateur.solaire');
+Route::post('/api/solar-geocode', [SolarSimulatorController::class, 'geocode'])
+    ->middleware('throttle:30,1')
+    ->name('api.solar.geocode');
 Route::post('/api/solar-estimate', [SolarSimulatorController::class, 'estimate'])
     ->middleware('throttle:20,1')
     ->name('api.solar.estimate');

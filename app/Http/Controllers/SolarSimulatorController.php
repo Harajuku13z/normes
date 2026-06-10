@@ -20,6 +20,43 @@ class SolarSimulatorController extends Controller
         ]);
     }
 
+    public function geocode(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'address' => ['required', 'string', 'max:255'],
+        ]);
+
+        $apiKey = config('services.google.solar_key');
+
+        try {
+            $response = Http::timeout(8)->get('https://maps.googleapis.com/maps/api/geocode/json', [
+                'address'  => $data['address'],
+                'region'   => 'fr',
+                'language' => 'fr',
+                'key'      => $apiKey,
+            ]);
+
+            $json = $response->json();
+
+            if (($json['status'] ?? '') !== 'OK' || empty($json['results'])) {
+                return response()->json(['error' => 'Adresse introuvable. Essayez d\'être plus précis.'], 422);
+            }
+
+            $result   = $json['results'][0];
+            $location = $result['geometry']['location'];
+
+            return response()->json([
+                'lat'               => $location['lat'],
+                'lng'               => $location['lng'],
+                'formatted_address' => $result['formatted_address'],
+            ]);
+        } catch (\Throwable $e) {
+            logger()->error('Geocode error: ' . $e->getMessage());
+
+            return response()->json(['error' => 'Erreur de géocodage. Veuillez réessayer.'], 500);
+        }
+    }
+
     public function estimate(Request $request): JsonResponse
     {
         $data = $request->validate([

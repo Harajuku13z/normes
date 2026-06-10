@@ -627,7 +627,8 @@ html,body{
 window.__mapsKey = @json($mapsKey);
 window.__csrfToken = @json(csrf_token());
 window.__estimateUrl = @json(route('api.solar.estimate'));
-window.__leadUrl = @json(route('api.solar.lead'));
+window.__geocodeUrl  = @json(route('api.solar.geocode'));
+window.__leadUrl     = @json(route('api.solar.lead'));
 
 // Doit être global ET défini AVANT le chargement du script Maps
 window.gm_authFailure = function(){
@@ -700,7 +701,7 @@ const fPrenom = $('fPrenom'), fNom = $('fNom'), fTel = $('fTel'),
 const successName  = $('successName');
 
 let projectType = 'autoconsommation';
-let map, marker, autocomplete;
+let map, marker;
 
 // ── Stepper ─────────────────────────────────────────────────────────
 function setStep(n){
@@ -824,28 +825,50 @@ async function fetchSolarData(){
   }
 }
 
-// ── Address selection ─────────────────────────────────────────────
-function onAddressSelected(place){
-  if(!place || !place.geometry) return;
-  const loc = place.geometry.location;
-  state.lat  = loc.lat();
-  state.lng  = loc.lng();
-  state.address = place.formatted_address || addressInput.value;
+// ── Geocode via backend (évite Places Autocomplete côté browser) ──
+async function geocodeAddress(addr){
+  mapLoading.classList.remove('hidden');
+  mapLoadingText.textContent = 'Recherche de l\'adresse…';
+  analyzeBtn.disabled = true;
 
-  // Show pill
-  addrPillText.textContent = state.address;
-  addrPill.style.display = 'flex';
-  addrSearchWrap.style.display = 'none';
+  try {
+    const resp = await fetch(window.__geocodeUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': window.__csrfToken,
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({ address: addr }),
+    });
+    const data = await resp.json();
+    if(!resp.ok || data.error) throw new Error(data.error || 'Adresse introuvable');
 
-  // Move map
-  map.setCenter({lat: state.lat, lng: state.lng});
-  map.setZoom(19);
-  if(marker) marker.setPosition({lat: state.lat, lng: state.lng});
+    state.lat     = data.lat;
+    state.lng     = data.lng;
+    state.address = data.formatted_address;
 
-  fetchSolarData();
+    addrPillText.textContent = state.address;
+    addrPill.style.display   = 'flex';
+    addrSearchWrap.style.display = 'none';
+
+    if(map){
+      map.setCenter({lat: state.lat, lng: state.lng});
+      map.setZoom(19);
+      if(marker){ marker.setPosition({lat: state.lat, lng: state.lng}); marker.setVisible(true); }
+    }
+
+    fAdresse.value = state.address;
+    await fetchSolarData();
+
+  } catch(e){
+    showToast(e.message || 'Adresse introuvable', true);
+    mapLoading.classList.add('hidden');
+    analyzeBtn.disabled = false;
+  }
 }
 
-// ── Init Google Maps ─────────────────────────────────────────────
+// ── Init Google Maps (sans Places Autocomplete) ───────────────────
 function initMap(){
   map = new google.maps.Map($('mapDiv'), {
     center: {lat: 46.603354, lng: 1.888334},
@@ -855,7 +878,6 @@ function initMap(){
     disableDefaultUI: true,
     zoomControl: true,
     zoomControlOptions: {position: google.maps.ControlPosition.RIGHT_CENTER},
-    scaleControl: false,
     streetViewControl: false,
     fullscreenControl: false,
     mapTypeControl: false,
@@ -875,63 +897,29 @@ function initMap(){
   });
 
   // Layer switch
-  document.querySelector('.layer-switch [data-type="satellite"]').addEventListener('click', () => {
-    map.setMapTypeId('satellite');
-    document.querySelectorAll('.layer-switch button').forEach(b => b.classList.toggle('active', b.dataset.type === 'satellite'));
-  });
-  document.querySelector('.layer-switch [data-type="roadmap"]').addEventListener('click', () => {
-    map.setMapTypeId('roadmap');
-    document.querySelectorAll('.layer-switch button').forEach(b => b.classList.toggle('active', b.dataset.type === 'roadmap'));
-  });
+  const lsBtns = document.querySelectorAll('.layer-switch button');
+  lsBtns.forEach(b => b.addEventListener('click', () => {
+    map.setMapTypeId(b.dataset.type);
+    lsBtns.forEach(x => x.classList.toggle('active', x === b));
+  }));
 
-  // Places Autocomplete on left panel input
-  autocomplete = new google.maps.places.Autocomplete(addressInput, {
-    componentRestrictions: {country: 'fr'},
-    fields: ['geometry', 'formatted_address', 'address_components'],
-  });
-  autocomplete.addListener('place_changed', () => {
-    const place = autocomplete.getPlace();
-    analyzeBtn.disabled = !place?.geometry;
-    onAddressSelected(place);
-  });
-
+  // Input listeners — pas de Places Autocomplete, tout passe par le backend
   addressInput.addEventListener('input', () => {
     analyzeBtn.disabled = addressInput.value.trim().length < 5;
   });
-
+  addressInput.addEventListener('keydown', e => {
+    if(e.key === 'Enter' && addressInput.value.trim().length >= 5){
+      e.preventDefault();
+      geocodeAddress(addressInput.value.trim());
+    }
+  });
   analyzeBtn.addEventListener('click', () => {
-    const place = autocomplete.getPlace();
-    if(place?.geometry){
-      onAddressSelected(place);
-    } else {
-      // Trigger geocode manually
-      geocodeAddress(addressInput.value);
-    }
+    const addr = addressInput.value.trim();
+    if(addr.length >= 5) geocodeAddress(addr);
   });
 
+  dbg('INFO', 'Carte initialisée ✓');
   mapLoading.classList.add('hidden');
-}
-
-// ── Manual geocode fallback ───────────────────────────────────────
-function geocodeAddress(addr){
-  const geocoder = new google.maps.Geocoder();
-  geocoder.geocode({address: addr, region: 'fr'}, (results, status) => {
-    if(status === 'OK' && results[0]){
-      const place = results[0];
-      state.lat  = place.geometry.location.lat();
-      state.lng  = place.geometry.location.lng();
-      state.address = place.formatted_address;
-      addrPillText.textContent = state.address;
-      addrPill.style.display = 'flex';
-      addrSearchWrap.style.display = 'none';
-      map.setCenter({lat: state.lat, lng: state.lng});
-      map.setZoom(19);
-      if(marker){ marker.setPosition({lat: state.lat, lng: state.lng}); marker.setVisible(true); }
-      fetchSolarData();
-    } else {
-      showToast('Adresse introuvable. Essayez d\'être plus précis.', true);
-    }
-  });
 }
 
 // ── Change address ────────────────────────────────────────────────
@@ -1088,7 +1076,8 @@ function loadMaps(){
 
   // v=weekly + sans loading=async dans l'URL, sans async/defer sur le tag
   // Le callback gère l'ordre d'exécution — c'est le mode le plus stable
-  const src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places,geometry&callback=initMapCallback&language=fr&region=FR&v=weekly`;
+  // Plus besoin de "places" — le géocodage passe par le backend
+  const src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMapCallback&language=fr&region=FR&v=weekly`;
   dbg('INFO', 'Chargement script Maps', src.replace(key, key.slice(0,10)+'…'));
 
   const mapsScript = document.createElement('script');
