@@ -1407,6 +1407,8 @@ function startDrawMode(){
   draw.validated = false;
   clearDrawing();
   document.querySelector('.map-wrap').classList.add('drawing');
+  // Cacher le pin adresse pendant le dessin (il gêne et n'est plus utile)
+  if(marker) marker.setVisible(false);
 
   if(draw.clickListener) google.maps.event.removeListener(draw.clickListener);
   draw.clickListener = map.addListener('click', e => {
@@ -1640,20 +1642,17 @@ function initMap(){
   // Icône pin localisation SVG (forme épingle / goutte)
   // Pin rouge avec point accent au-dessus
   const pinSvg = encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="56" viewBox="0 0 40 56">' +
-    // Point accent bleu au-dessus du pin
-    '<circle cx="20" cy="5" r="5" fill="#13a6e8" stroke="white" stroke-width="2"/>' +
-    // Pin rouge
-    '<path d="M20 14C12.268 14 6 20.268 6 28c0 11 14 28 14 28s14-17 14-28C34 20.268 27.732 14 20 14z" fill="#e23a3a"/>' +
-    '<circle cx="20" cy="28" r="6" fill="white" fill-opacity="0.9"/>' +
+    '<svg xmlns="http://www.w3.org/2000/svg" width="30" height="42" viewBox="0 0 30 42">' +
+    '<path d="M15 0C6.716 0 0 6.716 0 15c0 10.5 15 27 15 27s15-16.5 15-27C30 6.716 23.284 0 15 0z" fill="#e23a3a"/>' +
+    '<circle cx="15" cy="15" r="6" fill="white" fill-opacity="0.9"/>' +
     '</svg>'
   );
   marker = new google.maps.Marker({
     map,
     icon: {
       url: 'data:image/svg+xml;charset=UTF-8,' + pinSvg,
-      scaledSize: new google.maps.Size(40, 56),
-      anchor: new google.maps.Point(20, 56),
+      scaledSize: new google.maps.Size(30, 42),
+      anchor: new google.maps.Point(15, 42),
     },
     visible: false,
   });
