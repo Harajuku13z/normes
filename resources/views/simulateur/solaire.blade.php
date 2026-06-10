@@ -879,27 +879,27 @@ html,body{
       <div class="demo-type-badge" id="demoTypeBadge">🏠 Toiture</div>
 
       {{-- SVG animé — viewBox dynamique calé sur l'image via JS (coords espace image 1536×1024) --}}
-      <svg class="demo-svg" id="demoSvg" viewBox="0 0 720 520" preserveAspectRatio="none">
+      <svg class="demo-svg" id="demoSvg" viewBox="0 0 720 540" preserveAspectRatio="none">
         {{-- Pan W de la toiture (triangle gauche) : P1=haut, P2=gauche, P3=bas, P4=intérieur --}}
-        <polygon class="dp-fill" id="dpFill" points="150,22 325,22 325,215 150,215"/>
-        <polyline class="dp-line" id="dpLine" points="150,22 325,22 325,215 150,215 150,22"/>
-        <circle class="dp-dot" id="dp1" cx="150" cy="22" r="18"/>
-        <circle class="dp-dot" id="dp2" cx="325" cy="22" r="18"/>
-        <circle class="dp-dot" id="dp3" cx="325" cy="215" r="18"/>
-        <circle class="dp-dot" id="dp4" cx="150" cy="215" r="18"/>
+        <polygon class="dp-fill" id="dpFill" points="241,92 518,92 518,378 241,378"/>
+        <polyline class="dp-line" id="dpLine" points="241,92 518,92 518,378 241,378 241,92"/>
+        <circle class="dp-dot" id="dp1" cx="241" cy="92" r="18"/>
+        <circle class="dp-dot" id="dp2" cx="518" cy="92" r="18"/>
+        <circle class="dp-dot" id="dp3" cx="518" cy="378" r="18"/>
+        <circle class="dp-dot" id="dp4" cx="241" cy="378" r="18"/>
         <g class="dp-labels" id="dpLabels">
-          <circle cx="150" cy="22" r="28" fill="rgba(19,166,232,.9)"/>
-          <text x="150" y="31" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">1</text>
-          <circle cx="325" cy="22" r="28" fill="rgba(19,166,232,.9)"/>
-          <text x="325" y="31" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">2</text>
-          <circle cx="325" cy="215" r="28" fill="rgba(19,166,232,.9)"/>
-          <text x="325" y="224" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">3</text>
-          <circle cx="150" cy="215" r="28" fill="rgba(19,166,232,.9)"/>
-          <text x="150" y="224" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">4</text>
+          <circle cx="241" cy="92" r="28" fill="rgba(19,166,232,.9)"/>
+          <text x="241" y="101" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">1</text>
+          <circle cx="518" cy="92" r="28" fill="rgba(19,166,232,.9)"/>
+          <text x="518" y="101" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">2</text>
+          <circle cx="518" cy="378" r="28" fill="rgba(19,166,232,.9)"/>
+          <text x="518" y="387" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">3</text>
+          <circle cx="241" cy="378" r="28" fill="rgba(19,166,232,.9)"/>
+          <text x="241" y="387" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">4</text>
         </g>
         <g class="dp-badge" id="dpBadge">
-          <rect x="150" y="102" width="175" height="60" rx="12" fill="rgba(15,34,49,.88)"/>
-          <text x="238" y="133" fill="#fff" font-family="Inter,sans-serif" font-size="34" font-weight="800" text-anchor="middle">≈ 35 m²</text>
+          <rect x="310" y="210" width="200" height="60" rx="12" fill="rgba(15,34,49,.88)"/>
+          <text x="410" y="241" fill="#fff" font-family="Inter,sans-serif" font-size="34" font-weight="800" text-anchor="middle">≈ 35 m²</text>
         </g>
       </svg>
     </div>
@@ -1348,24 +1348,24 @@ function openDemoPopup(){
     // Toiture : image aerial.png 1536×1024
     // Pan W (gauche) : P1=haut-gauche, P2=max-gauche, P3=bas-gauche, P4=intérieur
     // Coords en espace image original (1536×1024)
-    const pts = '150,22 325,22 325,215 150,215';  // P1=NW P3=SW P4=centre
+    const pts = '241,92 518,92 518,378 241,378';  // P1=NW P3=SW P4=centre
     $('dpFill').setAttribute('points', pts);
     $('dpLine').setAttribute('points', pts + ' 432,258');
-    $('dp1').setAttribute('cx','150'); $('dp1').setAttribute('cy','22');
-    $('dp2').setAttribute('cx','325'); $('dp2').setAttribute('cy','22'); $('dp2').setAttribute('r','18'); $('dp2').style.display='';
-    $('dp3').setAttribute('cx','325'); $('dp3').setAttribute('cy','215');
-    $('dp4').setAttribute('cx','150'); $('dp4').setAttribute('cy','215');
+    $('dp1').setAttribute('cx','241'); $('dp1').setAttribute('cy','92');
+    $('dp2').setAttribute('cx','518'); $('dp2').setAttribute('cy','92'); $('dp2').setAttribute('r','18'); $('dp2').style.display='';
+    $('dp3').setAttribute('cx','518'); $('dp3').setAttribute('cy','378');
+    $('dp4').setAttribute('cx','241'); $('dp4').setAttribute('cy','378');
     const circles = $('dpLabels').querySelectorAll('circle');
     const texts   = $('dpLabels').querySelectorAll('text');
-    const lc = [[150,22],[325,22],[325,215],[150,215]];
+    const lc = [[241,92],[518,92],[518,378],[241,378]];
     lc.forEach(([x,y],i) => {
       if(circles[i]){ circles[i].setAttribute('cx',x); circles[i].setAttribute('cy',y); }
       if(texts[i])  { texts[i].setAttribute('x',x);   texts[i].setAttribute('y',y+9); }
     });
     const bg = $('dpBadge')?.querySelector('rect');
     const bt = $('dpBadge')?.querySelector('text');
-    if(bg){ bg.setAttribute('x','150'); bg.setAttribute('y','102'); }
-    if(bt){ bt.setAttribute('x','238'); bt.setAttribute('y','133'); bt.textContent='≈ 35 m²'; }
+    if(bg){ bg.setAttribute('x','310'); bg.setAttribute('y','210'); }
+    if(bt){ bt.setAttribute('x','410'); bt.setAttribute('y','241'); bt.textContent='≈ 35 m²'; }
   }
 
   demoPopup.style.display = 'flex';
