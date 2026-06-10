@@ -59,63 +59,110 @@ class SolarSimulatorController extends Controller
         return response($svg, 200, ['Content-Type' => 'image/svg+xml']);
     }
 
-    /** Nettoie une adresse française : espace avant le CP collé, etc. */
+    /** Nettoie une adresse : espace avant CP collé, trim */
     private function cleanAddress(string $addr): string
     {
         $addr = trim($addr);
-        // Ajouter espace entre rue et CP collé : "Coubertin71100" → "Coubertin 71100"
         $addr = (string) preg_replace('/([A-Za-zÀ-ÿ\-])(\d{5})/', '$1 $2', $addr);
-        // Nettoyer espaces multiples
         return (string) preg_replace('/\s+/', ' ', $addr);
     }
 
-    /** Géocode via Nominatim — plusieurs tentatives (q simple, puis structuré) */
+    /**
+     * Géocode via l'API Adresse officielle française (Base Adresse Nationale).
+     * Gratuite, sans clé, 100% des adresses françaises, très précise.
+     * https://adresse.data.gouv.fr/api-doc/adresse
+     */
+    private function banGeocode(string $addr): ?array
+    {
+        try {
+            $resp = Http::timeout(6)
+                ->withHeaders(['User-Agent' => 'NormesRenovation/1.0'])
+                ->get('https://api-adresse.data.gouv.fr/search/', [
+                    'q'      => $addr,
+                    'limit'  => 1,
+                    'autocomplete' => 0,
+                ]);
+
+            $features = $resp->json()['features'] ?? [];
+            if (empty($features)) {
+                return null;
+            }
+
+            $f   = $features[0];
+            $p   = $f['properties'] ?? [];
+            $geo = $f['geometry']['coordinates'] ?? null; // [lng, lat]
+
+            if (! $geo) {
+                return null;
+            }
+
+            return [
+                'lat'               => (float) $geo[1],
+                'lng'               => (float) $geo[0],
+                'formatted_address' => $p['label'] ?? $addr,
+                'score'             => (float) ($p['score'] ?? 0),
+            ];
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    /**
+     * Autocomplétion BAN → retourne les suggestions en temps réel.
+     */
+    private function banAutocomplete(string $q): array
+    {
+        try {
+            $resp = Http::timeout(4)
+                ->withHeaders(['User-Agent' => 'NormesRenovation/1.0'])
+                ->get('https://api-adresse.data.gouv.fr/search/', [
+                    'q'            => $q,
+                    'limit'        => 8,
+                    'autocomplete' => 1,
+                ]);
+
+            return collect($resp->json()['features'] ?? [])
+                ->map(function ($f) {
+                    $p   = $f['properties'] ?? [];
+                    $geo = $f['geometry']['coordinates'] ?? [0, 0];
+                    return [
+                        'label' => $p['label']    ?? '',
+                        'full'  => $p['label']    ?? '',
+                        'lat'   => (float) $geo[1],
+                        'lng'   => (float) $geo[0],
+                        'score' => (float) ($p['score'] ?? 0),
+                        'type'  => $p['type'] ?? 'housenumber',
+                        'city'  => $p['city'] ?? '',
+                        'postcode' => $p['postcode'] ?? '',
+                    ];
+                })
+                ->values()
+                ->all();
+        } catch (\Throwable) {
+            return [];
+        }
+    }
+
+    /** Fallback Nominatim si BAN échoue (DOM/TOM, hors France métro) */
     private function nominatimGeocode(string $addr): ?array
     {
-        $headers = ['User-Agent' => 'NormesRenovation/1.0 contact@normesrenovation.fr'];
-        $base    = ['format' => 'json', 'addressdetails' => 1, 'limit' => 1,
-                    'countrycodes' => 'fr', 'accept-language' => 'fr'];
-
-        // Tentative 1 : recherche brute
-        $resp = Http::timeout(6)->withHeaders($headers)
-            ->get('https://nominatim.openstreetmap.org/search', array_merge($base, ['q' => $addr]));
-        $results = $resp->json() ?? [];
-        if (! empty($results)) {
-            return ['lat' => (float) $results[0]['lat'], 'lng' => (float) $results[0]['lon'],
-                    'formatted_address' => $results[0]['display_name']];
-        }
-
-        // Tentative 2 : sans le numéro de rue (juste rue + ville)
-        $withoutNum = (string) preg_replace('/^\d+[A-Za-z]?\s+/', '', $addr);
-        if ($withoutNum !== $addr) {
-            $resp2 = Http::timeout(6)->withHeaders($headers)
-                ->get('https://nominatim.openstreetmap.org/search',
-                    array_merge($base, ['q' => $withoutNum]));
-            $r2 = $resp2->json() ?? [];
-            if (! empty($r2)) {
-                return ['lat' => (float) $r2[0]['lat'], 'lng' => (float) $r2[0]['lon'],
-                        'formatted_address' => $r2[0]['display_name']];
+        try {
+            $resp = Http::timeout(6)
+                ->withHeaders(['User-Agent' => 'NormesRenovation/1.0 contact@normesrenovation.fr'])
+                ->get('https://nominatim.openstreetmap.org/search', [
+                    'q' => $addr, 'format' => 'json', 'limit' => 1,
+                    'countrycodes' => 'fr', 'accept-language' => 'fr',
+                ]);
+            $r = $resp->json() ?? [];
+            if (! empty($r)) {
+                return ['lat' => (float) $r[0]['lat'], 'lng' => (float) $r[0]['lon'],
+                        'formatted_address' => $r[0]['display_name']];
             }
-        }
-
-        // Tentative 3 : juste la ville/CP (les 2 derniers tokens)
-        $tokens = explode(' ', $withoutNum);
-        if (count($tokens) >= 2) {
-            $cityQuery = implode(' ', array_slice($tokens, -2));
-            $resp3 = Http::timeout(6)->withHeaders($headers)
-                ->get('https://nominatim.openstreetmap.org/search',
-                    array_merge($base, ['q' => $cityQuery]));
-            $r3 = $resp3->json() ?? [];
-            if (! empty($r3)) {
-                return ['lat' => (float) $r3[0]['lat'], 'lng' => (float) $r3[0]['lon'],
-                        'formatted_address' => $addr . ' (approximatif — ' . $r3[0]['display_name'] . ')'];
-            }
-        }
-
+        } catch (\Throwable) {}
         return null;
     }
 
-    /** Géocode via Google Geocoding API (fallback serveur avec Referer) */
+    /** Fallback Google Geocoding API côté serveur avec Referer header */
     private function googleGeocode(string $addr): ?array
     {
         $key = config('services.google.solar_key');
@@ -135,71 +182,83 @@ class SolarSimulatorController extends Controller
                         'formatted_address' => $json['results'][0]['formatted_address']];
             }
         } catch (\Throwable) {}
-
         return null;
     }
 
-    /** Autocomplétion d'adresse via Nominatim (OpenStreetMap) — aucune clé requise */
+    /**
+     * Autocomplétion : BAN officielle France en priorité, fallback Nominatim.
+     * La BAN couvre 100% des adresses françaises avec numéro de rue.
+     */
     public function autocomplete(Request $request): JsonResponse
     {
         $data = $request->validate(['q' => ['required', 'string', 'min:2', 'max:200']]);
         $q    = $this->cleanAddress($data['q']);
 
-        try {
-            $response = Http::timeout(5)
-                ->withHeaders(['User-Agent' => 'NormesRenovation/1.0 contact@normesrenovation.fr'])
-                ->get('https://nominatim.openstreetmap.org/search', [
-                    'q'               => $q,
-                    'format'          => 'json',
-                    'addressdetails'  => 1,
-                    'limit'           => 8,
-                    'countrycodes'    => 'fr',
-                    'accept-language' => 'fr',
-                ]);
+        // 1. API Adresse BAN (Base Adresse Nationale — gouvernement français)
+        $items = $this->banAutocomplete($q);
 
-            $items = collect($response->json() ?? [])
-                ->map(function ($r) {
-                    $addr = $r['address'] ?? [];
-                    // Libellé compact : numéro+rue, ville, CP
-                    $parts = array_filter([
-                        trim(($addr['house_number'] ?? '') . ' ' . ($addr['road'] ?? '')),
-                        $addr['city'] ?? $addr['town'] ?? $addr['village'] ?? '',
-                        $addr['postcode'] ?? '',
+        // 2. Si BAN ne retourne rien, fallback Nominatim
+        if (empty($items)) {
+            try {
+                $resp = Http::timeout(5)
+                    ->withHeaders(['User-Agent' => 'NormesRenovation/1.0 contact@normesrenovation.fr'])
+                    ->get('https://nominatim.openstreetmap.org/search', [
+                        'q' => $q, 'format' => 'json', 'addressdetails' => 1,
+                        'limit' => 6, 'countrycodes' => 'fr', 'accept-language' => 'fr',
                     ]);
-                    $label = implode(', ', $parts) ?: $r['display_name'];
 
-                    return ['label' => $label, 'full' => $r['display_name'],
-                            'lat' => (float) $r['lat'], 'lng' => (float) $r['lon']];
-                })
-                ->values()
-                ->all();
-
-            return response()->json($items);
-        } catch (\Throwable) {
-            return response()->json([]);
+                $items = collect($resp->json() ?? [])
+                    ->map(function ($r) {
+                        $a = $r['address'] ?? [];
+                        $parts = array_filter([
+                            trim(($a['house_number'] ?? '') . ' ' . ($a['road'] ?? '')),
+                            $a['city'] ?? $a['town'] ?? $a['village'] ?? '',
+                            $a['postcode'] ?? '',
+                        ]);
+                        return ['label' => implode(', ', $parts) ?: $r['display_name'],
+                                'full'  => $r['display_name'],
+                                'lat'   => (float) $r['lat'], 'lng' => (float) $r['lon']];
+                    })
+                    ->values()
+                    ->all();
+            } catch (\Throwable) {}
         }
+
+        return response()->json($items);
     }
 
-    /** Géocodage d'une adresse : Nominatim en priorité, Google en fallback */
+    /**
+     * Géocodage : BAN (France officiel) → Nominatim → Google.
+     * La BAN est la plus précise pour les adresses françaises.
+     */
     public function geocode(Request $request): JsonResponse
     {
         $data = $request->validate(['address' => ['required', 'string', 'max:255']]);
         $addr = $this->cleanAddress($data['address']);
 
-        // 1. Nominatim (multi-tentatives)
+        // 1. API Adresse BAN — la meilleure pour les adresses françaises
+        $result = $this->banGeocode($addr);
+        if ($result && ($result['score'] ?? 0) >= 0.3) {
+            unset($result['score']);
+            return response()->json($result);
+        }
+
+        // 2. Nominatim (OpenStreetMap)
         $result = $this->nominatimGeocode($addr);
         if ($result) {
             return response()->json($result);
         }
 
-        // 2. Google Geocoding API côté serveur (clé avec Referer header)
+        // 3. Google Geocoding API côté serveur (Referer header)
         $result = $this->googleGeocode($addr);
         if ($result) {
             return response()->json($result);
         }
 
         logger()->warning("Geocode failed for: {$addr}");
-        return response()->json(['error' => 'Adresse introuvable. Vérifiez l\'orthographe ou choisissez une suggestion.'], 422);
+        return response()->json([
+            'error' => 'Adresse introuvable. Vérifiez l\'orthographe ou sélectionnez une suggestion dans la liste.',
+        ], 422);
     }
 
     public function estimate(Request $request): JsonResponse
