@@ -1538,18 +1538,13 @@ function openAddress(item){
     map.setTilt(0);
     map.setCenter({lat: item.lat, lng: item.lng});
 
-    // MaxZoomService : zoom maximum disponible pour cette adresse (API officielle Google)
-    const maxZoomSvc = new google.maps.MaxZoomService();
-    maxZoomSvc.getMaxZoomAtLatLng({lat: item.lat, lng: item.lng}, function(result){
-      if(result.status === google.maps.MaxZoomStatus.OK){
-        // Zoom le plus élevé disponible (max 22, min 18)
-        const z = Math.max(18, Math.min(result.zoom, 22));
-        map.setZoom(z);
-        dbg('INFO', 'MaxZoom dispo: ' + result.zoom + ' → appliqué: ' + z);
-      } else {
-        map.setZoom(20);
-        dbg('WARN', 'MaxZoomService échec, fallback 20');
-      }
+    // Zoom maximum : on demande 25 (Google cap automatiquement au max dispo pour la zone)
+    // On attend que les tuiles soient chargées pour appliquer le zoom
+    map.setZoom(20); // zoom initial pour centrer rapidement
+    google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
+      map.setZoom(25); // Google limitera au max réel disponible par les tuiles satellite
+      map.setTilt(0);
+      dbg('INFO', 'tilesloaded → setZoom(25) appliqué');
     });
 
     if(marker){ marker.setPosition({lat: item.lat, lng: item.lng}); marker.setVisible(true); }
