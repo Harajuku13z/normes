@@ -628,6 +628,40 @@ window.__mapsKey = @json($mapsKey);
 window.__csrfToken = @json(csrf_token());
 window.__estimateUrl = @json(route('api.solar.estimate'));
 window.__leadUrl = @json(route('api.solar.lead'));
+
+// Doit être global ET défini AVANT le chargement du script Maps
+window.gm_authFailure = function(){
+  var msg = [
+    '❌ gm_authFailure — causes possibles :',
+    '1. La clé n\'autorise pas le domaine "' + location.hostname + '" (restrictions HTTP referrer)',
+    '2. La Maps JavaScript API ou Places API n\'est pas activée dans Google Cloud Console',
+    '3. Pas de compte de facturation lié au projet Google Cloud',
+    '4. Quota dépassé',
+    '',
+    'URL actuelle : ' + location.href,
+    'Clé utilisée : ' + (window.__mapsKey||'').slice(0,12) + '…',
+  ].join('\n');
+  console.error(msg);
+  // Affiche dans le panneau de debug
+  var p = document.getElementById('debugPanel');
+  if(p){
+    p.innerHTML += '<div style="background:#fdecec;border:1px solid #e23a3a;border-radius:8px;padding:10px;margin-top:6px;font-size:12px;white-space:pre-wrap;color:#c00">' + msg + '</div>';
+    document.getElementById('debugContainer') && (document.getElementById('debugContainer').style.maxHeight='320px');
+  }
+  // Banner dans la carte
+  var ml = document.getElementById('mapLoading');
+  if(ml){
+    ml.innerHTML = '<div style="background:rgba(226,58,58,.15);border:1px solid #e23a3a;border-radius:12px;padding:24px;max-width:440px;text-align:left">'
+      + '<p style="color:#fff;font-size:18px;font-weight:800;margin-bottom:10px">⚠️ Clé API refusée</p>'
+      + '<p style="color:rgba(255,255,255,.9);font-size:13px;line-height:1.6;margin-bottom:8px"><b>gm_authFailure</b> déclenché par Google Maps.</p>'
+      + '<p style="color:rgba(255,255,255,.8);font-size:12.5px;line-height:1.6">Domaine testé : <b style="color:#fff">' + location.hostname + '</b><br>'
+      + 'Dans Google Cloud Console → Identifiants → votre clé → ajouter :<br>'
+      + '<code style="background:rgba(255,255,255,.15);padding:2px 6px;border-radius:4px">*.normesrenovation.fr/*</code><br>'
+      + '<code style="background:rgba(255,255,255,.15);padding:2px 6px;border-radius:4px">http://localhost/*</code></p>'
+      + '</div>';
+    ml.classList.remove('hidden');
+  }
+};
 </script>
 <script>
 (function(){
@@ -1039,11 +1073,7 @@ function loadMaps(){
     return;
   }
 
-  // Intercept Google Maps error events
-  window.gm_authFailure = function(){
-    dbg('ERROR', 'gm_authFailure déclenché → clé invalide, domaine non autorisé, ou API Maps JS non activée dans Google Cloud Console');
-    showMapError('Erreur d\'authentification Google Maps (gm_authFailure). Voir le panneau de debug ci-dessous.');
-  };
+  // gm_authFailure est déjà défini globalement avant ce script
 
   window.initMapCallback = function(){
     dbg('INFO', 'initMapCallback appelé — Google Maps chargé avec succès');
