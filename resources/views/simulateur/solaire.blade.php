@@ -173,8 +173,8 @@ html,body{
 .demo-img-wrap img{width:100%;max-height:360px;object-fit:cover;display:block}
 .demo-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 /* SVG animation */
-.dp-line{stroke:#13a6e8;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;
-  stroke-dasharray:600;stroke-dashoffset:600;vector-effect:non-scaling-stroke}
+.dp-line{stroke:#13a6e8;stroke-width:3.5;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:700;stroke-dashoffset:700;vector-effect:non-scaling-stroke}
 .dp-fill{fill:rgba(19,166,232,.2);stroke:none}
 .dp-dot{fill:#13a6e8;stroke:#fff;stroke-width:3;r:8;vector-effect:non-scaling-stroke;
   transform-origin:center;transform:scale(0)}
@@ -840,36 +840,36 @@ html,body{
 
       {{-- SVG animé en overlay — points et lignes du polygon démo --}}
       <svg class="demo-svg" id="demoSvg" viewBox="0 0 720 400" preserveAspectRatio="xMidYMid slice">
-        {{-- Polygon fill --}}
+        {{-- Polygon fill — pan gauche de la toiture --}}
         <polygon class="dp-fill" id="dpFill"
-          points="370,135 210,235 370,330 540,235"
+          points="202,80 120,155 120,258 206,288"
           style="opacity:0;transition:opacity .4s ease .1s"/>
 
         {{-- Ligne du polygon --}}
         <polyline class="dp-line" id="dpLine"
-          points="370,135 210,235 370,330 540,235 370,135"
-          style="stroke-dashoffset:600;transition:stroke-dashoffset 1.4s ease"/>
+          points="202,80 120,155 120,258 206,288 202,80"
+          style="stroke-dasharray:700;stroke-dashoffset:700;transition:stroke-dashoffset 1.6s ease"/>
 
         {{-- Points (vertices) avec délai progressif --}}
-        <circle class="dp-dot" id="dp1" cx="370" cy="135" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) 0s"/>
-        <circle class="dp-dot" id="dp2" cx="210" cy="235" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) .55s"/>
-        <circle class="dp-dot" id="dp3" cx="370" cy="330" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) 1.1s"/>
-        <circle class="dp-dot" id="dp4" cx="540" cy="235" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) 1.65s"/>
+        <circle class="dp-dot" id="dp1" cx="202" cy="80"  style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) 0s"/>
+        <circle class="dp-dot" id="dp2" cx="120" cy="155" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) .55s"/>
+        <circle class="dp-dot" id="dp3" cx="120" cy="258" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) 1.1s"/>
+        <circle class="dp-dot" id="dp4" cx="206" cy="288" style="transition:transform .35s cubic-bezier(.34,1.56,.64,1) 1.65s"/>
 
         {{-- Labels numérotés --}}
         <g id="dpLabels" style="opacity:0;transition:opacity .3s ease 2s">
-          <text x="380" y="130" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">1</text>
-          <text x="178" y="240" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">2</text>
-          <text x="380" y="346" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">3</text>
-          <text x="552" y="240" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">4</text>
+          <text x="210" y="76"  fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">1</text>
+          <text x="88"  y="158" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">2</text>
+          <text x="88"  y="268" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">3</text>
+          <text x="214" y="294" fill="#fff" font-family="Inter,sans-serif" font-size="12" font-weight="800">4</text>
         </g>
 
         {{-- Badge surface --}}
-        <rect x="330" y="228" width="90" height="28" rx="6" fill="rgba(15,34,49,.88)" id="dpSurfBg"
+        <rect x="118" y="193" width="90" height="28" rx="6" fill="rgba(15,34,49,.88)" id="dpSurfBg"
           style="opacity:0;transition:opacity .35s ease 2.4s"/>
-        <text x="375" y="246" fill="#fff" font-family="Inter,sans-serif" font-size="13" font-weight="800"
+        <text x="163" y="211" fill="#fff" font-family="Inter,sans-serif" font-size="13" font-weight="800"
           text-anchor="middle" id="dpSurfText"
-          style="opacity:0;transition:opacity .35s ease 2.4s">≈ 55 m²</text>
+          style="opacity:0;transition:opacity .35s ease 2.4s">≈ 35 m²</text>
       </svg>
     </div>
 
@@ -1246,10 +1246,9 @@ function openDemoPopup(){
 
   const isGarden = draw.zoneType === 'garden';
 
-  // Images locales (Pexels, libre de droits)
   demoImg.src = isGarden
     ? '/slide/demo-jardin-aerien.jpg'
-    : '/slide/demo-toiture-aerienne.jpg';
+    : '/slide/demo-toiture-aerienne.png';
 
   $('demoTypeBadge').textContent = isGarden ? '🌿 Sol / Jardin' : '🏠 Toiture';
   $('demoTitle').textContent = isGarden
@@ -1272,19 +1271,27 @@ function openDemoPopup(){
       ls[i].setAttribute('x',x); ls[i].setAttribute('y',y);
     });
   } else {
-    // Tracé sur le toit central de l'image toiture (tuiles rouges, toit plat bas-centre)
-    // Image = vue aérienne multi-toits, on cible le toit rectangulaire en bas à droite
-    $('dp1').setAttribute('cx','370'); $('dp1').setAttribute('cy','135');
-    $('dp2').setAttribute('cx','210'); $('dp2').setAttribute('cy','235');
-    $('dp3').setAttribute('cx','370'); $('dp3').setAttribute('cy','330');
-    $('dp4').setAttribute('cx','540'); $('dp4').setAttribute('cy','235');
-    $('dpFill').setAttribute('points','370,135 210,235 370,330 540,235');
-    $('dpLine').setAttribute('points','370,135 210,235 370,330 540,235 370,135');
-    $('dpSurfText').textContent = '≈ 55 m²';
-    $('dpSurfBg').setAttribute('x','330'); $('dpSurfBg').setAttribute('y','228');
-    $('dpSurfText').setAttribute('x','375');
+    // Image originale : 1536×1024 px, maison avec piscine à gauche
+    // Dans le popup (max ~820px large, max-height:360px, object-fit:cover)
+    // → scale ≈ 0.469, crop vertical ≈ 40px en haut en coordonnées SVG
+    //
+    // Pan gauche de la toiture (celui avec le rouge sur l'annotation) :
+    // Coords originales → SVG (x*0.469, y*0.469 - 40)
+    // P1 (ridge haut)   : orig (430,255) → SVG (202, 80)
+    // P2 (avant-toit G) : orig (255,415) → SVG (120,155)
+    // P3 (avant-toit BG): orig (255,635) → SVG (120,258)
+    // P4 (ridge bas)    : orig (440,700) → SVG (206,288)
+    $('dp1').setAttribute('cx','202'); $('dp1').setAttribute('cy','80');
+    $('dp2').setAttribute('cx','120'); $('dp2').setAttribute('cy','155');
+    $('dp3').setAttribute('cx','120'); $('dp3').setAttribute('cy','258');
+    $('dp4').setAttribute('cx','206'); $('dp4').setAttribute('cy','288');
+    $('dpFill').setAttribute('points','202,80 120,155 120,258 206,288');
+    $('dpLine').setAttribute('points','202,80 120,155 120,258 206,288 202,80');
+    $('dpSurfText').textContent = '≈ 35 m²';
+    $('dpSurfBg').setAttribute('x','118'); $('dpSurfBg').setAttribute('y','193');
+    $('dpSurfText').setAttribute('x','163');
     const ls = $('dpLabels').querySelectorAll('text');
-    [[380,130],[178,240],[380,346],[552,240]].forEach(([x,y],i) => {
+    [[210,76],[88,158],[88,268],[214,294]].forEach(([x,y],i) => {
       ls[i].setAttribute('x',x); ls[i].setAttribute('y',y);
     });
   }
