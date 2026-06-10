@@ -1007,30 +1007,137 @@ submitLeadBtn.addEventListener('click', async () => {
   }
 });
 
+// ── Debug logger ─────────────────────────────────────────────────
+const debugLogs = [];
+function dbg(level, msg, data){
+  const entry = { t: new Date().toISOString(), level, msg, data: data ?? null };
+  debugLogs.push(entry);
+  const icon = level === 'ERROR' ? '🔴' : level === 'WARN' ? '🟡' : '🟢';
+  console[level === 'ERROR' ? 'error' : level === 'WARN' ? 'warn' : 'log'](
+    `[Solar ${level}] ${msg}`, data ?? ''
+  );
+  // Write to visible debug panel
+  const panel = $('debugPanel');
+  if(panel){
+    const row = document.createElement('div');
+    row.style.cssText = 'font-size:12px;padding:4px 0;border-bottom:1px solid #eee;word-break:break-all';
+    row.innerHTML = `<span style="color:${level==='ERROR'?'#c00':level==='WARN'?'#a60':'#080'}">${icon} ${level}</span> <b>${msg}</b>` +
+      (data ? `<br><span style="color:#555;font-size:11px">${typeof data==='object'?JSON.stringify(data,null,0):data}</span>` : '');
+    panel.appendChild(row);
+    panel.scrollTop = panel.scrollHeight;
+  }
+}
+
 // ── Load Google Maps ──────────────────────────────────────────────
-window.initMapCallback = initMap;
-const mapsScript = document.createElement('script');
-mapsScript.src = `https://maps.googleapis.com/maps/api/js?key=${window.__mapsKey}&libraries=places&callback=initMapCallback&loading=async&language=fr&region=FR`;
-mapsScript.async = true;
-mapsScript.defer = true;
-document.head.appendChild(mapsScript);
+function loadMaps(){
+  const key = window.__mapsKey;
+  dbg('INFO', 'Clé Maps reçue', key ? `${key.slice(0,10)}…` : 'VIDE ❌');
+
+  if(!key || key.length < 20){
+    dbg('ERROR', 'Clé API Maps absente ou trop courte — vérifiez GOOGLE_MAPS_BROWSER_KEY dans .env');
+    showMapError('Clé API Google Maps manquante. Vérifiez la configuration serveur.');
+    return;
+  }
+
+  // Intercept Google Maps error events
+  window.gm_authFailure = function(){
+    dbg('ERROR', 'gm_authFailure déclenché → clé invalide, domaine non autorisé, ou API Maps JS non activée dans Google Cloud Console');
+    showMapError('Erreur d\'authentification Google Maps (gm_authFailure). Voir le panneau de debug ci-dessous.');
+  };
+
+  window.initMapCallback = function(){
+    dbg('INFO', 'initMapCallback appelé — Google Maps chargé avec succès');
+    try {
+      initMap();
+      dbg('INFO', 'Carte initialisée ✓');
+    } catch(e){
+      dbg('ERROR', 'Erreur initMap()', e.message);
+      showMapError('Erreur lors de l\'initialisation de la carte : ' + e.message);
+    }
+  };
+
+  const src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places&callback=initMapCallback&language=fr&region=FR`;
+  dbg('INFO', 'Chargement script Maps', src.replace(key, key.slice(0,10)+'…'));
+
+  const mapsScript = document.createElement('script');
+  mapsScript.src = src;
+  mapsScript.async = true;
+  mapsScript.defer = true;
+  mapsScript.onerror = function(e){
+    dbg('ERROR', 'Échec du chargement du script Maps (onerror)', 'Vérifiez la connexion et que l\'API Maps JavaScript est activée dans Google Cloud Console.');
+    showMapError('Impossible de charger le script Google Maps. Vérifiez la clé et les APIs activées.');
+  };
+  document.head.appendChild(mapsScript);
+
+  // Watchdog : si après 10 s la carte n'est toujours pas chargée
+  setTimeout(() => {
+    if(!map){
+      dbg('WARN', 'Timeout 10s — Maps n\'a pas appelé le callback. Probablement gm_authFailure silencieux.');
+    }
+  }, 10000);
+}
+
+function showMapError(msg){
+  const ml = $('mapLoading');
+  if(ml) {
+    ml.innerHTML = `<div style="background:rgba(226,58,58,.15);border:1px solid #e23a3a;border-radius:12px;padding:20px 24px;max-width:400px;text-align:center">
+      <div style="font-size:32px;margin-bottom:8px">⚠️</div>
+      <p style="color:#fff;font-weight:700;font-size:15px;margin-bottom:6px">Erreur Google Maps</p>
+      <p style="color:rgba(255,255,255,.8);font-size:13px;line-height:1.5">${msg}</p>
+      <p style="color:rgba(255,255,255,.6);font-size:12px;margin-top:8px">Voir le panneau de debug en bas de page</p>
+    </div>`;
+    ml.classList.remove('hidden');
+  }
+}
+
+// Lancer le chargement
+dbg('INFO', 'Page chargée — démarrage');
+dbg('INFO', 'URL de la page', window.location.href);
+dbg('INFO', 'User-Agent', navigator.userAgent.slice(0,80));
+loadMaps();
 
 })();
 </script>
 
-{{-- Layer switch buttons inside map (injected after map container) --}}
+{{-- ── Panneau de debug (visible, aide au diagnostic) ── --}}
+<div id="debugContainer" style="
+  position:fixed;bottom:0;right:0;width:420px;max-height:260px;
+  background:#fff;border:2px solid #e6ebef;border-radius:16px 0 0 0;
+  box-shadow:0 -4px 24px rgba(15,34,49,.12);z-index:9999;
+  display:flex;flex-direction:column;font-family:'Inter',monospace;
+">
+  <div style="
+    display:flex;align-items:center;justify-content:space-between;
+    padding:8px 14px;background:#0f2231;border-radius:14px 0 0 0;cursor:pointer;
+  " id="debugToggle">
+    <span style="color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em">🔍 DEBUG — Google Maps</span>
+    <span style="color:#8a96a0;font-size:11px" id="debugToggleLabel">Masquer</span>
+  </div>
+  <div id="debugPanel" style="overflow-y:auto;padding:10px 14px;flex:1;font-size:11.5px"></div>
+  <div style="padding:8px 14px;border-top:1px solid #eef2f5;display:flex;gap:8px">
+    <button onclick="copyDebugLogs()" style="flex:1;border:1px solid #e6ebef;background:#f4f6f8;border-radius:7px;padding:5px 10px;font-size:11px;cursor:pointer;font-weight:600">📋 Copier les logs</button>
+    <button onclick="document.getElementById('debugContainer').remove()" style="border:1px solid #e6ebef;background:#fff;border-radius:7px;padding:5px 10px;font-size:11px;cursor:pointer;color:#e23a3a;font-weight:600">✕ Fermer</button>
+  </div>
+</div>
 <script>
-// Insert layer switch and map info bar controls after DOM ready
+document.getElementById('debugToggle').addEventListener('click', function(){
+  const p = document.getElementById('debugPanel');
+  const l = document.getElementById('debugToggleLabel');
+  const c = document.getElementById('debugContainer');
+  if(p.style.display === 'none'){ p.style.display=''; c.style.maxHeight='260px'; l.textContent='Masquer'; }
+  else { p.style.display='none'; c.style.maxHeight='auto'; l.textContent='Afficher'; }
+});
+function copyDebugLogs(){
+  const text = (window.debugLogs||[]).map(e=>`[${e.t}] ${e.level} — ${e.msg}${e.data?' | '+JSON.stringify(e.data):''}`).join('\n');
+  navigator.clipboard.writeText(text).then(()=>alert('Logs copiés !')).catch(()=>prompt('Copiez les logs :',text));
+}
+// Layer switch inside map
 document.addEventListener('DOMContentLoaded', function(){
   const mapWrap = document.querySelector('.map-wrap');
-
-  // Layer switch
+  if(!mapWrap) return;
   const ls = document.createElement('div');
   ls.className = 'layer-switch';
-  ls.innerHTML = `
-    <button data-type="satellite" class="active">Satellite</button>
-    <button data-type="roadmap">Plan</button>
-  `;
+  ls.innerHTML = `<button data-type="satellite" class="active">Satellite</button><button data-type="roadmap">Plan</button>`;
   mapWrap.appendChild(ls);
 });
 </script>
