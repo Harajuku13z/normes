@@ -1149,10 +1149,8 @@ function displayResults(r){
       </div>`;
   }
 
-  // Dessiner les panneaux solaires sur la carte
-  if(r.solarPanels && r.solarPanels.length){
-    drawSolarPanelsOnMap(r.solarPanels, r.panelHeightMeters || 1.65, r.panelWidthMeters || 1.0);
-  }
+  // Panneaux solaires stockés — affichés après validation de la zone
+  // (voir validateZone())
 
   // Slider de panneaux si configs disponibles
   if(r.configSlider && r.configSlider.length && $('panelSliderWrap')){
@@ -1560,6 +1558,57 @@ function validateZone(){
   state.drawResults = r;
   displayResults(r);
 
+  // ── Afficher les panneaux Solar API dans la zone dessinée ──────────
+  const sr = state.results; // données Solar API
+  if(sr && sr.solarPanels && sr.solarPanels.length){
+    clearSolarPanels();
+
+    // Créer un google.maps.Polygon à partir des points dessinés
+    // pour filtrer les panneaux qui sont DEDANS
+    const drawnPolygon = new google.maps.Polygon({ paths: draw.points });
+
+    // Filtrer les panneaux Solar API dans la zone dessinée
+    let panelsInZone = sr.solarPanels.filter(p => {
+      if(!p.lat || !p.lng) return false;
+      try {
+        return google.maps.geometry.poly.containsLocation(
+          new google.maps.LatLng(p.lat, p.lng), drawnPolygon
+        );
+      } catch(e) { return false; }
+    });
+
+    // Si pas assez dans la zone (zone dessinée ailleurs que la toiture analysée)
+    // → utiliser les N premiers panneaux de l'API (basés sur le count calculé)
+    if(panelsInZone.length < Math.min(3, panels)){
+      panelsInZone = sr.solarPanels.slice(0, panels);
+    }
+
+    // Limiter au nombre calculé depuis la surface dessinée
+    panelsInZone = panelsInZone.slice(0, panels);
+
+    drawSolarPanelsOnMap(panelsInZone, sr.panelHeightMeters || 1.65, sr.panelWidthMeters || 1.0);
+
+    // Mettre à jour le slider avec les panneaux en zone
+    if(sr.configSlider && sr.configSlider.length && $('panelSliderWrap')){
+      const slider = $('panelSlider');
+      slider.max   = Math.min(sr.solarPanels.length, sr.maxPanels);
+      slider.value = panelsInZone.length;
+      $('sliderVal').textContent = panelsInZone.length + ' panneaux / ' + sr.maxPanels + ' max';
+      $('panelSliderWrap').style.display = 'block';
+      slider.oninput = function(){
+        const cnt = +this.value;
+        drawSolarPanelsOnMap(
+          (panelsInZone.length >= cnt ? panelsInZone : sr.solarPanels).slice(0, cnt),
+          sr.panelHeightMeters, sr.panelWidthMeters
+        );
+        const kwc2 = (cnt * 0.425).toFixed(2);
+        $('valPanels').innerHTML = `${cnt} <small>panneaux</small>`;
+        $('valKwc').innerHTML    = `${kwc2.replace('.',',')} <small>kWc</small>`;
+        $('sliderVal').textContent = cnt + ' panneaux / ' + sr.maxPanels + ' max';
+      };
+    }
+  }
+
   // UI updates
   $('surfaceVal').textContent = Math.round(m2);
   $('surfaceSub').textContent = `${panels} panneaux · ${kwc} kWc`;
@@ -1573,7 +1622,7 @@ function validateZone(){
   $('cardRoof').scrollIntoView({behavior:'smooth', block:'nearest'});
   setStep(3);
   showToast(`Zone validée — ${Math.round(m2)} m² · ${panels} panneaux ✓`);
-  mapInfoText.innerHTML = `<b>Zone tracée :</b> ${Math.round(m2)} m² · ${panels} panneaux · ${fmt(yearlyKwh)} kWh/an estimés.`;
+  mapInfoText.innerHTML = `<b>Zone validée :</b> ${Math.round(m2)} m² · ${panels} panneaux · ${fmt(yearlyKwh)} kWh/an.`;
 }
 
 // ── Zone type toggle ──────────────────────────────────────────────
@@ -1595,6 +1644,7 @@ $('validateZoneBtn')?.addEventListener('click', validateZone);
 $('clearZoneBtn')?.addEventListener('click', () => { clearDrawing(); updateDrawUI(); });
 $('editZoneBtn')?.addEventListener('click', () => {
   draw.validated = false;
+  clearSolarPanels();
   $('zoneValidatedRow').style.display = 'none';
   $('validateZoneBtn').style.display  = '';
   $('clearZoneBtn').style.display     = '';
@@ -1953,7 +2003,7 @@ function loadMaps(){
   // v=weekly + sans loading=async dans l'URL, sans async/defer sur le tag
   // Le callback gère l'ordre d'exécution — c'est le mode le plus stable
   // Plus besoin de "places" — le géocodage passe par le backend
-  const src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMapCallback&language=fr&region=FR&v=weekly`;
+  const src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=geometry&callback=initMapCallback&language=fr&region=FR&v=weekly`;
   dbg('INFO', 'Chargement script Maps', src.replace(key, key.slice(0,10)+'…'));
 
   const mapsScript = document.createElement('script');
