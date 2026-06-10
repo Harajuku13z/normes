@@ -105,10 +105,22 @@ html,body{
 }
 .addr-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
 .addr-input::placeholder{color:var(--muted)}
-.pac-container{border-radius:10px!important;box-shadow:0 8px 32px rgba(15,34,49,.15)!important;border:1px solid var(--line)!important;font-family:'Inter',sans-serif!important;margin-top:4px!important}
-.pac-item{padding:10px 14px!important;font-size:13px!important;cursor:pointer!important}
-.pac-item:hover{background:var(--accent-soft)!important}
-.pac-item-selected{background:var(--accent-soft)!important}
+/* Custom autocomplete dropdown */
+.autocomplete-list{
+  position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:200;
+  background:#fff;border:1px solid var(--line);border-radius:11px;
+  box-shadow:0 8px 32px rgba(15,34,49,.15);overflow:hidden;display:none;
+}
+.autocomplete-list.open{display:block}
+.autocomplete-item{
+  display:flex;align-items:flex-start;gap:10px;padding:11px 14px;
+  cursor:pointer;border-bottom:1px solid var(--line-2);transition:.12s ease;font-size:13px;
+}
+.autocomplete-item:last-child{border-bottom:0}
+.autocomplete-item:hover,.autocomplete-item.focused{background:var(--accent-soft)}
+.autocomplete-item .ai-icon{color:var(--accent);flex-shrink:0;margin-top:1px}
+.autocomplete-item .ai-label{color:var(--ink);font-weight:500;line-height:1.4}
+.autocomplete-item .ai-sub{color:var(--muted);font-size:11.5px;margin-top:1px}
 
 /* Buttons */
 .btn{
@@ -388,11 +400,12 @@ html,body{
         </div>
 
         <div id="addrSearchWrap">
-          <div class="addr-wrap">
+          <div class="addr-wrap" style="position:relative">
             <span class="addr-icon">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             </span>
-            <input type="text" id="addressInput" class="addr-input" placeholder="Ex. : 12 Rue de la Paix, 75002 Paris" autocomplete="off">
+            <input type="text" id="addressInput" class="addr-input" placeholder="Ex. : 12 Rue de la Paix, 75002 Paris" autocomplete="off" role="combobox" aria-expanded="false" aria-autocomplete="list">
+            <div class="autocomplete-list" id="autocompleteList" role="listbox"></div>
           </div>
           <button class="btn btn-primary" id="analyzeBtn" disabled>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -627,7 +640,8 @@ html,body{
 window.__mapsKey = @json($mapsKey);
 window.__csrfToken = @json(csrf_token());
 window.__estimateUrl = @json(route('api.solar.estimate'));
-window.__geocodeUrl  = @json(route('api.solar.geocode'));
+window.__geocodeUrl      = @json(route('api.solar.geocode'));
+window.__autocompleteUrl = @json(route('api.solar.autocomplete'));
 window.__leadUrl     = @json(route('api.solar.lead'));
 
 // Doit être global ET défini AVANT le chargement du script Maps
@@ -825,42 +839,88 @@ async function fetchSolarData(){
   }
 }
 
-// ── Geocode via backend (évite Places Autocomplete côté browser) ──
+// ── Autocomplétion custom via Nominatim (backend) ────────────────
+const autocompleteList = $('autocompleteList');
+let acItems = [], acFocused = -1, acDebounce;
+
+function openAddress(item){
+  state.lat     = item.lat;
+  state.lng     = item.lng;
+  state.address = item.label;
+  closeAutocomplete();
+  addressInput.value = item.label;
+  addrPillText.textContent = item.label;
+  addrPill.style.display   = 'flex';
+  addrSearchWrap.style.display = 'none';
+  if(map){
+    map.setCenter({lat: item.lat, lng: item.lng});
+    map.setZoom(19);
+    if(marker){ marker.setPosition({lat: item.lat, lng: item.lng}); marker.setVisible(true); }
+  }
+  fAdresse.value = item.label;
+  fetchSolarData();
+}
+
+function renderAutocomplete(items){
+  acItems = items;
+  acFocused = -1;
+  if(!items.length){ closeAutocomplete(); return; }
+  autocompleteList.innerHTML = items.map((it, i) => {
+    const parts = it.label.split(',');
+    const main = parts[0] || it.label;
+    const sub  = parts.slice(1, 3).join(',').trim();
+    return `<div class="autocomplete-item" data-i="${i}" role="option">
+      <span class="ai-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+      <div><div class="ai-label">${main}</div>${sub ? `<div class="ai-sub">${sub}</div>` : ''}</div>
+    </div>`;
+  }).join('');
+  autocompleteList.classList.add('open');
+  addressInput.setAttribute('aria-expanded', 'true');
+  autocompleteList.querySelectorAll('.autocomplete-item').forEach(el => {
+    el.addEventListener('mousedown', e => { e.preventDefault(); openAddress(acItems[+el.dataset.i]); });
+  });
+}
+
+function closeAutocomplete(){
+  autocompleteList.classList.remove('open');
+  autocompleteList.innerHTML = '';
+  addressInput.setAttribute('aria-expanded', 'false');
+  acFocused = -1; acItems = [];
+}
+
+function focusItem(idx){
+  const els = autocompleteList.querySelectorAll('.autocomplete-item');
+  els.forEach(e => e.classList.remove('focused'));
+  if(idx >= 0 && idx < els.length){ els[idx].classList.add('focused'); acFocused = idx; }
+}
+
+async function queryAutocomplete(q){
+  if(q.length < 3){ closeAutocomplete(); return; }
+  try {
+    const url = `${window.__autocompleteUrl}?q=${encodeURIComponent(q)}`;
+    const r = await fetch(url, { headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': window.__csrfToken } });
+    const data = await r.json();
+    renderAutocomplete(Array.isArray(data) ? data : []);
+  } catch(e){ closeAutocomplete(); }
+}
+
+// ── Geocode via backend (fallback si selection directe non faite) ──
 async function geocodeAddress(addr){
   mapLoading.classList.remove('hidden');
   mapLoadingText.textContent = 'Recherche de l\'adresse…';
   analyzeBtn.disabled = true;
+  closeAutocomplete();
 
   try {
     const resp = await fetch(window.__geocodeUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': window.__csrfToken,
-        'Accept': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': window.__csrfToken, 'Accept': 'application/json' },
       body: JSON.stringify({ address: addr }),
     });
     const data = await resp.json();
     if(!resp.ok || data.error) throw new Error(data.error || 'Adresse introuvable');
 
-    state.lat     = data.lat;
-    state.lng     = data.lng;
-    state.address = data.formatted_address;
-
-    addrPillText.textContent = state.address;
-    addrPill.style.display   = 'flex';
-    addrSearchWrap.style.display = 'none';
-
-    if(map){
-      map.setCenter({lat: state.lat, lng: state.lng});
-      map.setZoom(19);
-      if(marker){ marker.setPosition({lat: state.lat, lng: state.lng}); marker.setVisible(true); }
-    }
-
-    fAdresse.value = state.address;
-    await fetchSolarData();
-
+    openAddress({ lat: data.lat, lng: data.lng, label: data.formatted_address });
   } catch(e){
     showToast(e.message || 'Adresse introuvable', true);
     mapLoading.classList.add('hidden');
@@ -903,19 +963,29 @@ function initMap(){
     lsBtns.forEach(x => x.classList.toggle('active', x === b));
   }));
 
-  // Input listeners — pas de Places Autocomplete, tout passe par le backend
+  // Input listeners avec autocomplétion
   addressInput.addEventListener('input', () => {
-    analyzeBtn.disabled = addressInput.value.trim().length < 5;
+    const v = addressInput.value.trim();
+    analyzeBtn.disabled = v.length < 5;
+    clearTimeout(acDebounce);
+    acDebounce = setTimeout(() => queryAutocomplete(v), 280);
   });
   addressInput.addEventListener('keydown', e => {
-    if(e.key === 'Enter' && addressInput.value.trim().length >= 5){
+    if(e.key === 'ArrowDown'){ e.preventDefault(); focusItem(Math.min(acFocused + 1, acItems.length - 1)); return; }
+    if(e.key === 'ArrowUp'){   e.preventDefault(); focusItem(Math.max(acFocused - 1, 0)); return; }
+    if(e.key === 'Enter'){
       e.preventDefault();
-      geocodeAddress(addressInput.value.trim());
+      if(acFocused >= 0 && acItems[acFocused]){ openAddress(acItems[acFocused]); return; }
+      const v = addressInput.value.trim();
+      if(v.length >= 5) geocodeAddress(v);
+      return;
     }
+    if(e.key === 'Escape'){ closeAutocomplete(); }
   });
+  addressInput.addEventListener('blur', () => setTimeout(closeAutocomplete, 150));
   analyzeBtn.addEventListener('click', () => {
-    const addr = addressInput.value.trim();
-    if(addr.length >= 5) geocodeAddress(addr);
+    const v = addressInput.value.trim();
+    if(v.length >= 5) geocodeAddress(v);
   });
 
   dbg('INFO', 'Carte initialisée ✓');

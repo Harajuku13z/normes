@@ -20,35 +20,67 @@ class SolarSimulatorController extends Controller
         ]);
     }
 
-    public function geocode(Request $request): JsonResponse
+    /** Autocomplétion d'adresse via Nominatim (OpenStreetMap) — aucune clé requise */
+    public function autocomplete(Request $request): JsonResponse
     {
-        $data = $request->validate([
-            'address' => ['required', 'string', 'max:255'],
-        ]);
-
-        $apiKey = config('services.google.solar_key');
+        $data = $request->validate(['q' => ['required', 'string', 'min:3', 'max:200']]);
 
         try {
-            $response = Http::timeout(8)->get('https://maps.googleapis.com/maps/api/geocode/json', [
-                'address'  => $data['address'],
-                'region'   => 'fr',
-                'language' => 'fr',
-                'key'      => $apiKey,
-            ]);
+            $response = Http::timeout(5)
+                ->withHeaders(['User-Agent' => 'NormesRenovation/1.0 contact@normesrenovation.fr'])
+                ->get('https://nominatim.openstreetmap.org/search', [
+                    'q'               => $data['q'],
+                    'format'          => 'json',
+                    'addressdetails'  => 1,
+                    'limit'           => 6,
+                    'countrycodes'    => 'fr',
+                    'accept-language' => 'fr',
+                ]);
 
-            $json = $response->json();
+            $items = collect($response->json() ?? [])
+                ->map(fn ($r) => [
+                    'label' => $r['display_name'],
+                    'lat'   => (float) $r['lat'],
+                    'lng'   => (float) $r['lon'],
+                ])
+                ->values()
+                ->all();
 
-            if (($json['status'] ?? '') !== 'OK' || empty($json['results'])) {
-                return response()->json(['error' => 'Adresse introuvable. Essayez d\'être plus précis.'], 422);
+            return response()->json($items);
+        } catch (\Throwable $e) {
+            return response()->json([]);
+        }
+    }
+
+    /** Géocodage d'une adresse via Nominatim (fallback si autocomplétion non utilisée) */
+    public function geocode(Request $request): JsonResponse
+    {
+        $data = $request->validate(['address' => ['required', 'string', 'max:255']]);
+
+        try {
+            $response = Http::timeout(8)
+                ->withHeaders(['User-Agent' => 'NormesRenovation/1.0 contact@normesrenovation.fr'])
+                ->get('https://nominatim.openstreetmap.org/search', [
+                    'q'               => $data['address'],
+                    'format'          => 'json',
+                    'addressdetails'  => 1,
+                    'limit'           => 1,
+                    'countrycodes'    => 'fr',
+                    'accept-language' => 'fr',
+                ]);
+
+            $results = $response->json() ?? [];
+
+            if (empty($results)) {
+                return response()->json(['error' => 'Adresse introuvable. Essayez avec la ville ou le code postal.'], 422);
             }
 
-            $result   = $json['results'][0];
-            $location = $result['geometry']['location'];
+            $r = $results[0];
 
             return response()->json([
-                'lat'               => $location['lat'],
-                'lng'               => $location['lng'],
-                'formatted_address' => $result['formatted_address'],
+                'lat'               => (float) $r['lat'],
+                'lng'               => (float) $r['lon'],
+                'formatted_address' => $r['display_name'],
             ]);
         } catch (\Throwable $e) {
             logger()->error('Geocode error: ' . $e->getMessage());
@@ -66,8 +98,14 @@ class SolarSimulatorController extends Controller
 
         $apiKey = config('services.google.solar_key');
 
+        // Le Referer header permet à la clé "Websites" de fonctionner côté serveur
+        $solarHttp = Http::timeout(15)->withHeaders([
+            'Referer' => 'https://normesrenovation.fr/',
+            'Origin'  => 'https://normesrenovation.fr',
+        ]);
+
         try {
-            $response = Http::timeout(15)->get('https://solar.googleapis.com/v1/buildingInsights:findClosest', [
+            $response = $solarHttp->get('https://solar.googleapis.com/v1/buildingInsights:findClosest', [
                 'location.latitude'  => $data['lat'],
                 'location.longitude' => $data['lng'],
                 'requiredQuality'    => 'HIGH',
@@ -75,7 +113,7 @@ class SolarSimulatorController extends Controller
             ]);
 
             if ($response->serverError() || $response->status() === 404) {
-                $response = Http::timeout(15)->get('https://solar.googleapis.com/v1/buildingInsights:findClosest', [
+                $response = $solarHttp->get('https://solar.googleapis.com/v1/buildingInsights:findClosest', [
                     'location.latitude'  => $data['lat'],
                     'location.longitude' => $data['lng'],
                     'requiredQuality'    => 'MEDIUM',
