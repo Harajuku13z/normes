@@ -1536,7 +1536,7 @@ function openAddress(item){
   if(map){
     map.setTilt(0);
     map.setCenter({lat: item.lat, lng: item.lng});
-    map.setZoom(21); // zoom rapproché sur la toiture
+    map.setZoom(22); // zoom toiture (confirmé par utilisateur)
     if(marker){ marker.setPosition({lat: item.lat, lng: item.lng}); marker.setVisible(true); }
   }
   fAdresse.value = item.label;
