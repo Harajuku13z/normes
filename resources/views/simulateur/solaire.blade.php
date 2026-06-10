@@ -1109,9 +1109,16 @@ async function fetchSolarData(){
     if(typeof startDrawMode === 'function') startDrawMode();
 
   } catch(e){
-    mapInfoText.innerHTML = `<b>Données non disponibles</b> pour cette adresse. Essayez une adresse voisine ou contactez-nous directement.`;
-    showToast(e.message || 'Erreur lors de l\'analyse', true);
-    setStep(1);
+    // Solar API indisponible MAIS l'adresse est valide → on affiche quand même l'étape dessin
+    // avec des valeurs estimatives (sans données Solar API)
+    $('cardDraw').style.display = 'block';
+    $('cardRoof').style.display = 'none';
+    mapInfoText.innerHTML = `<b>Carte chargée.</b> Tracez votre zone d'installation — les estimations seront calculées depuis la surface tracée.`;
+    setStep(2);
+    fAdresse.value = state.address;
+    if(typeof startDrawMode === 'function') startDrawMode();
+    // Afficher une note discrète (pas une erreur bloquante)
+    dbg('WARN', 'Solar API indisponible — mode estimation locale', e.message);
   } finally {
     mapLoading.classList.add('hidden');
   }
@@ -1493,9 +1500,9 @@ function renderAutocomplete(items){
   acFocused = -1;
   if(!items.length){ closeAutocomplete(); return; }
   autocompleteList.innerHTML = items.map((it, i) => {
-    const parts = it.label.split(',');
-    const main = parts[0] || it.label;
-    const sub  = parts.slice(1, 3).join(',').trim();
+    // le backend renvoie maintenant {label, full, lat, lng}
+    const main = it.label || it.full || '';
+    const sub  = it.full && it.full !== main ? it.full.split(',').slice(1,3).join(',').trim() : '';
     return `<div class="autocomplete-item" data-i="${i}" role="option">
       <span class="ai-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
       <div><div class="ai-label">${main}</div>${sub ? `<div class="ai-sub">${sub}</div>` : ''}</div>
