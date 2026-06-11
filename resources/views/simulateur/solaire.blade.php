@@ -626,53 +626,15 @@ html,body{
         </div>
       </section>
 
-      {{-- Roof config (appears after zone validated) --}}
+      {{-- Roof recap (appears after zone validated) --}}
       <section class="card" id="cardRoof" style="display:none">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-          <h2 style="font-size:16px">Informations toiture</h2>
+          <h2 style="font-size:16px">Votre installation solaire</h2>
           <span style="background:var(--accent-soft);color:var(--accent-deep);padding:3px 10px;border-radius:999px;font-weight:700;font-size:11px;letter-spacing:.04em">SOLAIRE</span>
         </div>
-        <p class="lede" style="margin-bottom:12px">Affinez les paramètres pour une estimation précise.</p>
+        <p class="lede" style="margin-bottom:12px">Nous utilisons les données détectées automatiquement sur votre toiture quand elles sont disponibles.</p>
 
         <div id="roofInfoRows"></div>
-
-        <div class="field">
-          <label for="orientSelect">Orientation principale</label>
-          <div class="select">
-            <select id="orientSelect">
-              <option value="Sud" selected>Sud (optimal)</option>
-              <option value="Sud-Est">Sud-Est</option>
-              <option value="Sud-Ouest">Sud-Ouest</option>
-              <option value="Est">Est</option>
-              <option value="Ouest">Ouest</option>
-              <option value="Nord">Nord (déconseillé)</option>
-            </select>
-          </div>
-        </div>
-        <div class="field">
-          <label for="inclSelect">Inclinaison du toit</label>
-          <div class="select">
-            <select id="inclSelect">
-              <option value="0">Plat (0°)</option>
-              <option value="15">15°</option>
-              <option value="30" selected>30° (optimal)</option>
-              <option value="45">45°</option>
-              <option value="60">60°</option>
-            </select>
-          </div>
-        </div>
-        <div class="field" style="margin-bottom:16px">
-          <label for="ttypeSelect">Type de toiture</label>
-          <div class="select">
-            <select id="ttypeSelect">
-              <option value="tuiles">Tuiles</option>
-              <option value="ardoise">Ardoise</option>
-              <option value="bac-acier">Bac acier</option>
-              <option value="toit-plat">Toit plat</option>
-              <option value="zinc">Zinc</option>
-            </select>
-          </div>
-        </div>
 
         <button class="btn btn-yellow" id="quoteBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -1014,6 +976,8 @@ const addrPill     = $('addrPill');
 const addrPillText = $('addrPillText');
 const changeAddrBtn= $('changeAddrBtn');
 const addrSearchWrap = $('addrSearchWrap');
+const cardAddr     = $('cardAddr');
+const cardDraw     = $('cardDraw');
 const cardRoof     = $('cardRoof');
 const mapLoading   = $('mapLoading');
 const mapLoadingText = $('mapLoadingText');
@@ -1046,6 +1010,13 @@ function setStep(n){
       sep.className = 'step-sep' + (i < n ? ' done' : '');
     }
   });
+  updateLeftStepUI();
+}
+
+function updateLeftStepUI(){
+  if(cardAddr) cardAddr.style.display = state.currentStep === 1 ? 'block' : 'none';
+  if(cardDraw) cardDraw.style.display = state.currentStep === 2 ? 'block' : 'none';
+  if(cardRoof) cardRoof.style.display = state.currentStep >= 3 ? 'block' : 'none';
 }
 
 // ── Toast ────────────────────────────────────────────────────────────
@@ -1074,6 +1045,24 @@ const azimuthToLabel = az => {
   if(az < 247.5) return 'Sud-Ouest'; if(az < 292.5) return 'Ouest';
   return 'Nord-Ouest';
 };
+
+function getAutoRoofSettings(){
+  if(draw.zoneType === 'garden'){
+    return { orientation: 'Sud', pitchDeg: 30, pitchBucket: 30 };
+  }
+
+  const seg = state.baseResults?.roofSegments?.[0] || null;
+  const orientation = seg ? azimuthToLabel(seg.azimuthDeg) : 'Sud';
+  const nearestPitch = [0, 15, 30, 45, 60].reduce((best, value) => {
+    return Math.abs(value - (seg?.pitchDeg ?? 30)) < Math.abs(best - (seg?.pitchDeg ?? 30)) ? value : best;
+  }, 30);
+
+  return {
+    orientation,
+    pitchDeg: seg?.pitchDeg ?? 30,
+    pitchBucket: nearestPitch,
+  };
+}
 
 // ── Panneaux solaires en grille dans le polygone dessiné ──────────
 let solarPanelOverlays = [];
@@ -1217,11 +1206,23 @@ function computePanelLayoutVariant(insetPts, panelH, panelW, gap, orientationMod
   const hDeg   = panelH/mPerLat,  wDeg  = panelW/mPerLng;
   const gapLat = gap/mPerLat,     gapLng = gap/mPerLng;
   const stepH  = hDeg+gapLat,     stepW  = wDeg+gapLng;
+  const boxHeight = maxLat - minLat;
+  const boxWidth  = maxLng - minLng;
+  const rowCount  = Math.max(1, Math.floor((boxHeight - hDeg) / stepH) + 1);
+  const colCount  = Math.max(1, Math.floor((boxWidth - wDeg) / stepW) + 1);
+  const gridHeight = hDeg + ((rowCount - 1) * stepH);
+  const gridWidth  = wDeg + ((colCount - 1) * stepW);
+  const startLat = ((minLat + maxLat) / 2) - (gridHeight / 2) + (hDeg / 2);
+  const startLng = ((minLng + maxLng) / 2) - (gridWidth / 2) + (wDeg / 2);
+  const centerLat = (minLat + maxLat) / 2;
+  const centerLng = (minLng + maxLng) / 2;
 
   // Générer la grille et s'assurer que chaque panneau rentre entièrement dans la zone utile
   const panels = [];
-  for(let lat=minLat+hDeg/2; lat+hDeg/2 <= maxLat; lat+=stepH){
-    for(let lng=minLng+wDeg/2; lng+wDeg/2 <= maxLng; lng+=stepW){
+  for(let row=0; row<rowCount; row++){
+    const lat = startLat + (row * stepH);
+    for(let col=0; col<colCount; col++){
+      const lng = startLng + (col * stepW);
       const corners = [
         rot(lat-hDeg/2, lng-wDeg/2, angle),
         rot(lat-hDeg/2, lng+wDeg/2, angle),
@@ -1230,12 +1231,15 @@ function computePanelLayoutVariant(insetPts, panelH, panelW, gap, orientationMod
       ];
       const cornerPoints = corners.map(c => new google.maps.LatLng(c.lat, c.lng));
       if(!cornerPoints.every(point => pointInsideOrOnEdge(point, insetPoly))) continue;
-      panels.push(corners);
+      panels.push({
+        corners,
+        centerDist: Math.hypot(lat - centerLat, lng - centerLng),
+      });
     }
   }
 
   return {
-    panels,
+    panels: panels.sort((a, b) => a.centerDist - b.centerDist).map(panel => panel.corners),
     panelHeightMeters: panelH,
     panelWidthMeters: panelW,
     orientationMode,
@@ -1336,36 +1340,42 @@ function displayResults(r){
 
   drawChart(r.monthlyKwh);
 
-  // Infos toiture — meilleur segment (trié par ensoleillement)
-  if(r.roofSegments && r.roofSegments.length){
-    const seg = r.roofSegments[0]; // déjà trié par ensoleillement côté serveur
-    roofInfoRows.innerHTML = `
-      <div class="roof-info-row">
-        <div class="ri-icon">☀️</div>
-        <div><div class="ri-label">Ensoleillement</div><div class="ri-val">${fmt(r.sunshineHoursPerYear || 0)} h/an</div></div>
-      </div>
-      <div class="roof-info-row">
-        <div class="ri-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 12 2 21 11"/><path d="M3 11v10h5v-7h8v7h5V11"/></svg></div>
-        <div><div class="ri-label">Surface utilisable</div><div class="ri-val">${fmt(r.areaM2)} m²</div></div>
-      </div>
-      ${Number.isFinite(r.usableAreaM2) ? `
-      <div class="roof-info-row">
-        <div class="ri-icon">🟨</div>
-        <div><div class="ri-label">Zone utile panneaux</div><div class="ri-val">${fmt(r.usableAreaM2)} m² · retrait ${fmt1(r.panelSetbackMeters || SAFETY_SETBACK_METERS)} m</div></div>
-      </div>` : ''}
-      <div class="roof-info-row">
-        <div class="ri-icon">🧭</div>
-        <div><div class="ri-label">Meilleure orientation</div><div class="ri-val">${azimuthToLabel(seg.azimuthDeg)} — ${seg.sunshineAvg} h/an</div></div>
-      </div>
-      <div class="roof-info-row">
-        <div class="ri-icon">📐</div>
-        <div><div class="ri-label">Inclinaison</div><div class="ri-val">${seg.pitchDeg}°</div></div>
-      </div>
-      <div class="roof-info-row">
-        <div class="ri-icon">🌿</div>
-        <div><div class="ri-label">CO₂ évité/an</div><div class="ri-val">${r.co2SavingsMwh || '—'} MWh</div></div>
-      </div>`;
-  }
+  const seg = draw.zoneType === 'garden'
+    ? null
+    : (r.roofSegments?.[0] || state.baseResults?.roofSegments?.[0] || null);
+  const surfaceLabel = Number.isFinite(r.usableAreaM2) ? 'Zone utile panneaux' : 'Surface sélectionnée';
+  const surfaceValue = Number.isFinite(r.usableAreaM2)
+    ? `${fmt(r.usableAreaM2)} m² · retrait ${fmt1(r.panelSetbackMeters || SAFETY_SETBACK_METERS)} m`
+    : `${fmt(r.areaM2 || 0)} m²`;
+
+  roofInfoRows.innerHTML = `
+    <div class="roof-info-row">
+      <div class="ri-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 12 2 21 11"/><path d="M3 11v10h5v-7h8v7h5V11"/></svg></div>
+      <div><div class="ri-label">${surfaceLabel}</div><div class="ri-val">${surfaceValue}</div></div>
+    </div>
+    <div class="roof-info-row">
+      <div class="ri-icon">🔷</div>
+      <div><div class="ri-label">Calepinage</div><div class="ri-val">${fmt(r.panelCount || 0)} panneaux centrés dans la zone</div></div>
+    </div>
+    ${seg ? `
+    <div class="roof-info-row">
+      <div class="ri-icon">🧭</div>
+      <div><div class="ri-label">Orientation détectée</div><div class="ri-val">${azimuthToLabel(seg.azimuthDeg)}${seg.sunshineAvg ? ` · ${seg.sunshineAvg} h/an` : ''}</div></div>
+    </div>
+    <div class="roof-info-row">
+      <div class="ri-icon">📐</div>
+      <div><div class="ri-label">Inclinaison détectée</div><div class="ri-val">${seg.pitchDeg}°</div></div>
+    </div>` : ''}
+    ${r.sunshineHoursPerYear ? `
+    <div class="roof-info-row">
+      <div class="ri-icon">☀️</div>
+      <div><div class="ri-label">Ensoleillement</div><div class="ri-val">${fmt(r.sunshineHoursPerYear)} h/an</div></div>
+    </div>` : ''}
+    ${r.co2SavingsMwh ? `
+    <div class="roof-info-row">
+      <div class="ri-icon">🌿</div>
+      <div><div class="ri-label">CO₂ évité/an</div><div class="ri-val">${r.co2SavingsMwh} MWh</div></div>
+    </div>` : ''}`;
 
   // Panneaux solaires stockés — affichés après validation de la zone
   // (voir validateZone())
@@ -1416,8 +1426,6 @@ async function fetchSolarData(){
     displayResults(data);
 
     // Afficher étape dessin de zone
-    $('cardDraw').style.display = 'block';
-    $('cardRoof').style.display = 'none';
     mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
     setStep(2);
     showToast('Adresse analysée — tracez votre zone ✓');
@@ -1429,8 +1437,6 @@ async function fetchSolarData(){
   } catch(e){
     // Solar API indisponible MAIS l'adresse est valide → on affiche quand même l'étape dessin
     // avec des valeurs estimatives (sans données Solar API)
-    $('cardDraw').style.display = 'block';
-    $('cardRoof').style.display = 'none';
     mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
     setStep(2);
     fAdresse.value = state.address;
@@ -1728,10 +1734,11 @@ function computeMonthlyKwhBreakdown(yearlyKwh){
 function computeSimulationResults(panelCount, areaM2, usableAreaM2){
   const base = state.baseResults || state.results;
   const baseRatio = base ? base.yearlyKwh / Math.max(base.kwc, 0.1) : 1180;
-  const orientCoeff = {Sud:1.0,'Sud-Est':.95,'Sud-Ouest':.95,'Est':.85,'Ouest':.85,'Nord':.65};
+  const orientCoeff = {Sud:1.0,'Sud-Est':.95,'Sud-Ouest':.95,'Est':.85,'Ouest':.85,'Nord-Est':.72,'Nord-Ouest':.72,'Nord':.65};
   const inclCoeff   = {0:.85,15:.92,30:1.0,45:.97,60:.90};
-  const orient = $('orientSelect')?.value || 'Sud';
-  const incl   = $('inclSelect')?.value   || '30';
+  const autoRoof = getAutoRoofSettings();
+  const orient = autoRoof.orientation;
+  const incl   = autoRoof.pitchBucket;
   const gardenBonus = draw.zoneType === 'garden' ? 1.05 : 1;
   const kwc = +(panelCount * PANEL_POWER_KWC).toFixed(2);
   const yearlyKwh = panelCount > 0
@@ -1847,9 +1854,8 @@ function validateZone(){
   $('clearZoneBtn').style.display     = 'none';
 
   // Afficher config toiture
-  $('cardRoof').style.display = 'block';
-  $('cardRoof').scrollIntoView({behavior:'smooth', block:'nearest'});
   setStep(3);
+  $('cardRoof').scrollIntoView({behavior:'smooth', block:'nearest'});
   showToast(
     maxPanels > 0
       ? `Zone validée — ${Math.round(totalAreaM2)} m² · ${maxPanels} panneaux à l'échelle ✓`
@@ -1886,7 +1892,6 @@ $('editZoneBtn')?.addEventListener('click', () => {
   $('zoneValidatedRow').style.display = 'none';
   $('validateZoneBtn').style.display  = '';
   $('clearZoneBtn').style.display     = '';
-  $('cardRoof').style.display         = 'none';
   clearDrawing();
   startDrawMode();
   setStep(2);
@@ -1904,13 +1909,6 @@ $('clearDrawBtn')?.addEventListener('click', () => {
   hidePanelSlider();
   clearDrawing();
   updateDrawUI();
-});
-
-['orientSelect', 'inclSelect'].forEach(id => {
-  $(id)?.addEventListener('change', () => {
-    if(!draw.validated || !state.panelLayout) return;
-    applyValidatedLayout(state.panelLayout.activeCount);
-  });
 });
 
 // ── Autocomplétion custom via Nominatim (backend) ────────────────
@@ -1932,7 +1930,6 @@ function openAddress(item){
   $('zoneValidatedRow').style.display = 'none';
   $('validateZoneBtn').style.display  = '';
   $('clearZoneBtn').style.display     = '';
-  $('cardRoof').style.display         = 'none';
   closeAutocomplete();
   addressInput.value = item.label;
   addrPillText.textContent = item.label;
@@ -2103,8 +2100,6 @@ changeAddrBtn.addEventListener('click', () => {
   addressInput.value = '';
   addressInput.focus();
   analyzeBtn.disabled = true;
-  cardRoof.style.display = 'none';
-  $('cardDraw').style.display = 'none';
   // Reset dessin
   if(typeof clearDrawing === 'function'){ clearPanelLayout(); hidePanelSlider(); clearDrawing(); stopDrawMode(); }
   // Reset métriques
