@@ -1351,10 +1351,10 @@ function drawSafetyZone(layout){
   });
 
   solarSafetyOutline = new google.maps.Polyline({
-    path: closePolylinePath(layout.insetPoints),
+    path: closePolylinePath(draw.points),
     strokeColor: '#f5c400',
     strokeOpacity: 0,
-    strokeWeight: 2,
+    strokeWeight: 3,
     icons: [{
       icon: {
         path: 'M 0,-1 0,1',
@@ -1367,7 +1367,7 @@ function drawSafetyZone(layout){
     }],
     map,
     clickable: false,
-    zIndex: 3,
+    zIndex: 5,
   });
 
   solarUsableAreaOutline = new google.maps.Polyline({
@@ -1612,9 +1612,9 @@ function drawPolygon(){
     });
     if(draw.validated){
       draw.polygon.setOptions({
-        strokeColor:'#1f8a5b',
+        strokeOpacity: 0,
         fillColor:'#1f8a5b',
-        fillOpacity: 0.05,
+        fillOpacity: 0.03,
       });
     }
   }
