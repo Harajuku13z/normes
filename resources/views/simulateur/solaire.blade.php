@@ -123,6 +123,25 @@ html,body{
 .surface-display .s-val{font-size:40px;font-weight:800;color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
 .surface-display .s-unit{font-size:16px;font-weight:600;color:var(--slate)}
 .surface-sub{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:16px}
+.panel-adjust-wrap{
+  margin:14px 0 16px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#f8fbfd;
+}
+.panel-adjust-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.panel-adjust-head .meta-label{margin:0}
+.panel-adjust-max{font-size:11px;color:var(--muted);font-weight:600}
+.panel-counter{display:grid;grid-template-columns:48px 1fr 48px;gap:8px;align-items:center}
+.panel-counter-btn{
+  height:48px;border-radius:12px;border:1.5px solid var(--line);background:#fff;color:var(--ink);
+  font:700 22px/1 'Inter',sans-serif;display:grid;place-items:center;cursor:pointer;transition:.15s ease;
+}
+.panel-counter-btn:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft);color:var(--accent-deep)}
+.panel-counter-btn:disabled{opacity:.35;cursor:not-allowed}
+.panel-counter-display{
+  height:48px;border-radius:12px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.panel-counter-display strong{font-size:22px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.panel-counter-display span{font-size:11px;color:#a8b8c5;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.panel-adjust-sub{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.45}
 
 /* Draw hint overlay on map */
 .draw-hint{
@@ -636,6 +655,22 @@ html,body{
 
         <div id="roofInfoRows"></div>
 
+        <div class="panel-adjust-wrap" id="panelAdjustWrap" style="display:none">
+          <div class="panel-adjust-head">
+            <span>Ajuster les panneaux</span>
+            <span class="panel-adjust-max" id="panelMaxVal">0 max</span>
+          </div>
+          <div class="panel-counter">
+            <button type="button" class="panel-counter-btn" id="panelMinusBtn" aria-label="Réduire le nombre de panneaux">−</button>
+            <div class="panel-counter-display">
+              <strong id="panelCountVal">0</strong>
+              <span>panneaux affichés</span>
+            </div>
+            <button type="button" class="panel-counter-btn" id="panelPlusBtn" aria-label="Ajouter un panneau">+</button>
+          </div>
+          <div class="panel-adjust-sub" id="panelAdjustSub">Les panneaux restent centrés dans la zone utile.</div>
+        </div>
+
         <button class="btn btn-yellow" id="quoteBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
           Obtenir mon devis gratuit
@@ -724,16 +759,6 @@ html,body{
       <div class="budget-card skeleton" id="budgetCard">
         <div class="lbl">Budget estimé TTC</div>
         <div class="budget-range" id="valBudget">— <small>€</small></div>
-      </div>
-
-      {{-- Slider nombre de panneaux --}}
-      <div id="panelSliderWrap" style="display:none;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:9px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <span style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600">Nombre de panneaux</span>
-          <span id="sliderVal" style="font-size:12px;font-weight:700;color:var(--ink)"></span>
-        </div>
-        <input type="range" id="panelSlider" style="width:100%;accent-color:var(--accent)">
-        <p style="font-size:11px;color:var(--muted);margin-top:6px">Contour jaune = retrait de sécurité 0,5 m. Ajustez pour voir le calepinage réel.</p>
       </div>
 
       <div class="card chart-card" id="chartCard">
@@ -983,6 +1008,12 @@ const mapLoading   = $('mapLoading');
 const mapLoadingText = $('mapLoadingText');
 const mapInfoText  = $('mapInfoText');
 const roofInfoRows = $('roofInfoRows');
+const panelAdjustWrap = $('panelAdjustWrap');
+const panelMinusBtn = $('panelMinusBtn');
+const panelPlusBtn = $('panelPlusBtn');
+const panelCountVal = $('panelCountVal');
+const panelMaxVal = $('panelMaxVal');
+const panelAdjustSub = $('panelAdjustSub');
 const quoteBtn     = $('quoteBtn');
 const leadModal    = $('leadModal');
 const modalClose   = $('modalClose');
@@ -1088,15 +1119,37 @@ function clearPanelLayout(){
 
 function hidePanelSlider(){
   const wrap = $('panelSliderWrap');
-  const slider = $('panelSlider');
-  if(slider){
-    slider.oninput = null;
-    slider.min = 0;
-    slider.max = 0;
-    slider.value = 0;
-  }
   if(wrap) wrap.style.display = 'none';
-  if($('sliderVal')) $('sliderVal').textContent = '';
+  if(panelAdjustWrap) panelAdjustWrap.style.display = 'none';
+  if(panelCountVal) panelCountVal.textContent = '0';
+  if(panelMaxVal) panelMaxVal.textContent = '0 max';
+  if(panelAdjustSub) panelAdjustSub.textContent = 'Les panneaux restent centrés dans la zone utile.';
+  if(panelMinusBtn) panelMinusBtn.disabled = true;
+  if(panelPlusBtn) panelPlusBtn.disabled = true;
+}
+
+function updatePanelAdjustUi(){
+  const layout = state.panelLayout;
+  if(!layout || layout.maxPanels < 1){
+    hidePanelSlider();
+    return;
+  }
+
+  const count = Math.max(0, Math.min(layout.activeCount ?? layout.maxPanels, layout.maxPanels));
+  if(panelAdjustWrap) panelAdjustWrap.style.display = 'block';
+  if(panelCountVal) panelCountVal.textContent = fmt(count);
+  if(panelMaxVal) panelMaxVal.textContent = `${fmt(layout.maxPanels)} max`;
+  if(panelAdjustSub){
+    panelAdjustSub.textContent = `Contour jaune = retrait de sécurité ${fmt1(layout.safetyInsetMeters || SAFETY_SETBACK_METERS)} m. Les panneaux restent centrés dans la zone utile.`;
+  }
+  if(panelMinusBtn) panelMinusBtn.disabled = count <= 0;
+  if(panelPlusBtn) panelPlusBtn.disabled = count >= layout.maxPanels;
+}
+
+function stepPanelCount(delta){
+  const layout = state.panelLayout;
+  if(!layout) return;
+  applyValidatedLayout((layout.activeCount ?? 0) + delta);
 }
 
 function closePolylinePath(points){
@@ -1704,8 +1757,11 @@ function startDrawMode(){
   draw.validated = false;
   clearDrawing();
   document.querySelector('.map-wrap').classList.add('drawing');
-  // Cacher le pin adresse pendant le dessin (il gêne et n'est plus utile)
-  if(marker) marker.setVisible(false);
+  if(marker){
+    marker.setVisible(true);
+    marker.setOpacity(0.92);
+    marker.setZIndex(6);
+  }
 
   if(draw.clickListener) google.maps.event.removeListener(draw.clickListener);
   draw.clickListener = map.addListener('click', e => {
@@ -1725,6 +1781,10 @@ function stopDrawMode(){
   draw.active = false;
   document.querySelector('.map-wrap').classList.remove('drawing');
   if(draw.clickListener){ google.maps.event.removeListener(draw.clickListener); draw.clickListener = null; }
+  if(marker){
+    marker.setVisible(true);
+    marker.setOpacity(1);
+  }
 }
 
 function computeMonthlyKwhBreakdown(yearlyKwh){
@@ -1795,30 +1855,11 @@ function applyValidatedLayout(panelCount = state.panelLayout?.activeCount ?? 0){
   displayResults(nextResults);
   drawSolarPanelsOnMap(layout, safeCount);
   refreshValidatedZoneUi(nextResults);
+  updatePanelAdjustUi();
 }
 
 function setupPanelSlider(){
-  const wrap = $('panelSliderWrap');
-  const slider = $('panelSlider');
-  if(!wrap || !slider) return;
-
-  const layout = state.panelLayout;
-  if(!layout || layout.maxPanels < 1){
-    hidePanelSlider();
-    return;
-  }
-
-  slider.min = 1;
-  slider.max = layout.maxPanels;
-  slider.value = layout.activeCount;
-  $('sliderVal').textContent = `${layout.activeCount} panneau${layout.activeCount > 1 ? 'x' : ''}`;
-  wrap.style.display = 'block';
-
-  slider.oninput = function(){
-    const nextCount = Number(this.value);
-    $('sliderVal').textContent = `${nextCount} panneau${nextCount > 1 ? 'x' : ''}`;
-    applyValidatedLayout(nextCount);
-  };
+  updatePanelAdjustUi();
 }
 
 function validateZone(){
@@ -1879,6 +1920,8 @@ function validateZone(){
 
 // ── Validate / Clear / Edit buttons ─────────────────────────────
 $('validateZoneBtn')?.addEventListener('click', validateZone);
+panelMinusBtn?.addEventListener('click', () => stepPanelCount(-1));
+panelPlusBtn?.addEventListener('click', () => stepPanelCount(1));
 $('clearZoneBtn')?.addEventListener('click', () => {
   clearPanelLayout();
   hidePanelSlider();
@@ -1951,7 +1994,12 @@ function openAddress(item){
       map.setTilt(0);
     });
 
-    if(marker){ marker.setPosition({lat: item.lat, lng: item.lng}); marker.setVisible(true); }
+    if(marker){
+      marker.setPosition({lat: item.lat, lng: item.lng});
+      marker.setVisible(true);
+      marker.setOpacity(1);
+      marker.setZIndex(6);
+    }
   }
   fAdresse.value = item.label;
   fetchSolarData();
