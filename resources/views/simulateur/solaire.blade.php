@@ -668,7 +668,7 @@ html,body{
             </div>
             <button type="button" class="panel-counter-btn" id="panelPlusBtn" aria-label="Ajouter un panneau">+</button>
           </div>
-          <div class="panel-adjust-sub" id="panelAdjustSub">Les panneaux restent centrés dans la zone utile.</div>
+          <div class="panel-adjust-sub" id="panelAdjustSub">Les panneaux restent bien disposés dans la zone utile.</div>
         </div>
 
         <button class="btn btn-yellow" id="quoteBtn">
@@ -1065,10 +1065,8 @@ function showToast(msg, isError = false){
 const fmt = n => Math.round(n).toLocaleString('fr-FR');
 const fmt1 = n => Number(n || 0).toLocaleString('fr-FR', {minimumFractionDigits:1, maximumFractionDigits:1});
 const PANEL_POWER_KWC = 0.425;
-const KIT_POWER_KWC = 3;
-const PANELS_PER_KIT = Math.max(1, Math.round(KIT_POWER_KWC / PANEL_POWER_KWC));
 const PANEL_GAP_METERS = 0.02;
-const SAFETY_SETBACK_METERS = 0.5;
+const SAFETY_SETBACK_METERS = 1;
 const PANEL_INNER_CLEARANCE_METERS = 0.08;
 
 // ── Update metrics in right panel ────────────────────────────────
@@ -1101,25 +1099,18 @@ function getAutoRoofSettings(){
   };
 }
 
-function getKitAlignedPanelCount(rawCount, maxPanels = rawCount, mode = 'floor'){
+function getEvenPanelCount(rawCount, maxPanels = rawCount, mode = 'floor'){
   const safeMax = Math.max(0, Number(maxPanels) || 0);
   const safeCount = Math.max(0, Math.min(Number(rawCount) || 0, safeMax));
   if(safeMax === 0) return 0;
-  if(safeMax < PANELS_PER_KIT) return safeCount;
-
-  const kitRatio = safeCount / PANELS_PER_KIT;
-  if(mode === 'ceil') return Math.min(safeMax, Math.ceil(kitRatio) * PANELS_PER_KIT);
-  if(mode === 'nearest') return Math.min(safeMax, Math.max(PANELS_PER_KIT, Math.round(kitRatio) * PANELS_PER_KIT));
-  const floored = Math.floor(kitRatio) * PANELS_PER_KIT;
-  return floored >= PANELS_PER_KIT ? floored : 0;
+  if(safeMax < 2) return safeCount;
+  if(mode === 'ceil') return Math.min(safeMax, safeCount % 2 === 0 ? safeCount : safeCount + 1);
+  if(mode === 'nearest') return Math.min(safeMax, Math.max(2, Math.round(safeCount / 2) * 2));
+  return safeCount % 2 === 0 ? safeCount : safeCount - 1;
 }
 
-function formatKitLabel(panelCount){
+function formatPanelCountLabel(panelCount){
   const safeCount = Math.max(0, Number(panelCount) || 0);
-  const kitCount = safeCount >= PANELS_PER_KIT ? Math.round(safeCount / PANELS_PER_KIT) : 0;
-  if(kitCount > 0 && safeCount % PANELS_PER_KIT === 0){
-    return `${kitCount} kit${kitCount > 1 ? 's' : ''} de ${KIT_POWER_KWC} kWc`;
-  }
   return `${fmt(safeCount)} panneau${safeCount > 1 ? 'x' : ''}`;
 }
 
@@ -1155,7 +1146,7 @@ function hidePanelSlider(){
   if(panelAdjustWrap) panelAdjustWrap.style.display = 'none';
   if(panelCountVal) panelCountVal.textContent = '0';
   if(panelMaxVal) panelMaxVal.textContent = '0 max';
-  if(panelAdjustSub) panelAdjustSub.textContent = 'Les panneaux restent centrés dans la zone utile.';
+  if(panelAdjustSub) panelAdjustSub.textContent = 'Les panneaux restent bien disposés dans la zone utile.';
   if(panelMinusBtn) panelMinusBtn.disabled = true;
   if(panelPlusBtn) panelPlusBtn.disabled = true;
 }
@@ -1173,10 +1164,7 @@ function updatePanelAdjustUi(){
   if(panelCountVal) panelCountVal.textContent = fmt(count);
   if(panelMaxVal) panelMaxVal.textContent = `${fmt(maxSelectable)} max`;
   if(panelAdjustSub){
-    const stepLabel = layout.useKitSizing
-      ? `Ajustement par ${formatKitLabel(PANELS_PER_KIT)}.`
-      : 'Ajustement panneau par panneau.';
-    panelAdjustSub.textContent = `${stepLabel} Contour jaune = retrait de sécurité ${fmt1(layout.safetyInsetMeters || SAFETY_SETBACK_METERS)} m. Les panneaux restent centrés dans la zone utile.`;
+    panelAdjustSub.textContent = `Ajustement par nombres pairs. Contour jaune = retrait de sécurité ${fmt1(layout.safetyInsetMeters || SAFETY_SETBACK_METERS)} m. Les panneaux restent disposés dans la zone utile.`;
   }
   if(panelMinusBtn) panelMinusBtn.disabled = count <= 0;
   if(panelPlusBtn) panelPlusBtn.disabled = count >= maxSelectable;
@@ -1185,8 +1173,7 @@ function updatePanelAdjustUi(){
 function stepPanelCount(delta){
   const layout = state.panelLayout;
   if(!layout) return;
-  const stepSize = layout.useKitSizing ? PANELS_PER_KIT : 1;
-  applyValidatedLayout((layout.activeCount ?? 0) + (delta * stepSize));
+  applyValidatedLayout((layout.activeCount ?? 0) + (delta * 2));
 }
 
 function closePolylinePath(points){
@@ -1321,15 +1308,12 @@ function computePanelLayoutVariant(insetPts, panelH, panelW, gap, orientationMod
       ];
       const cornerPoints = corners.map(c => new google.maps.LatLng(c.lat, c.lng));
       if(!cornerPoints.every(point => pointInsideOrOnEdge(point, insetPoly))) continue;
-      panels.push({
-        corners,
-        centerDist: Math.hypot(lat - centerLat, lng - centerLng),
-      });
+      panels.push(corners);
     }
   }
 
   return {
-    panels: panels.sort((a, b) => a.centerDist - b.centerDist).map(panel => panel.corners),
+    panels,
     panelHeightMeters: panelH,
     panelWidthMeters: panelW,
     orientationMode,
@@ -1470,7 +1454,7 @@ function displayResults(r){
     </div>
     <div class="roof-info-row">
       <div class="ri-icon">🔷</div>
-      <div><div class="ri-label">Calepinage</div><div class="ri-val">${fmt(r.panelCount || 0)} panneaux centrés dans la zone · ${formatKitLabel(r.panelCount || 0)}</div></div>
+      <div><div class="ri-label">Calepinage</div><div class="ri-val">${formatPanelCountLabel(r.panelCount || 0)} disposés dans la zone utile</div></div>
     </div>
     ${seg ? `
     <div class="roof-info-row">
@@ -1613,7 +1597,7 @@ function updateDrawUI(){
   } else {
     const panels = panelsFromArea(m2, draw.zoneType);
     const kwc    = (panels * 0.425).toFixed(2);
-    $('surfaceSub').textContent = `≈ ${formatKitLabel(panels)} · ${kwc} kWc`;
+    $('surfaceSub').textContent = `≈ ${formatPanelCountLabel(panels)} · ${kwc} kWc`;
     $('validateZoneBtn').disabled = false;
   }
 
@@ -1910,13 +1894,11 @@ function applyValidatedLayout(panelCount = state.panelLayout?.activeCount ?? 0){
 
   const maxSelectable = layout.selectableMaxPanels ?? layout.maxPanels;
   const boundedCount = Math.max(0, Math.min(panelCount, maxSelectable));
-  const safeCount = layout.useKitSizing
-    ? getKitAlignedPanelCount(
-        boundedCount,
-        maxSelectable,
-        boundedCount >= (layout.activeCount ?? 0) ? 'floor' : 'ceil'
-      )
-    : boundedCount;
+  const safeCount = getEvenPanelCount(
+    boundedCount,
+    maxSelectable,
+    boundedCount >= (layout.activeCount ?? 0) ? 'floor' : 'ceil'
+  );
   layout.activeCount = safeCount;
 
   const nextResults = {
@@ -1951,10 +1933,7 @@ function validateZone(){
   const usableAreaM2 = fullLayout.insetPoints?.length >= 3 ? computeAreaM2(fullLayout.insetPoints) : totalAreaM2;
   const solarApiMax = base?.maxPanels || 0;
   const maxPanels = fullLayout.panels.length;
-  const useKitSizing = maxPanels >= PANELS_PER_KIT;
-  const selectableMaxPanels = useKitSizing
-    ? getKitAlignedPanelCount(maxPanels, maxPanels, 'floor')
-    : maxPanels;
+  const selectableMaxPanels = getEvenPanelCount(maxPanels, maxPanels, 'floor');
   const defaultPanelCount = selectableMaxPanels;
 
   state.panelLayout = {
@@ -1966,7 +1945,6 @@ function validateZone(){
     activeCount: defaultPanelCount,
     fullPanelCount: fullLayout.panels.length,
     solarApiSuggestedPanels: solarApiMax,
-    useKitSizing,
   };
 
   applyValidatedLayout(defaultPanelCount);
@@ -1982,7 +1960,7 @@ function validateZone(){
   $('cardRoof').scrollIntoView({behavior:'smooth', block:'nearest'});
   showToast(
     defaultPanelCount > 0
-      ? `Zone validée — ${Math.round(totalAreaM2)} m² · ${formatKitLabel(defaultPanelCount)} ✓`
+      ? `Zone validée — ${Math.round(totalAreaM2)} m² · ${formatPanelCountLabel(defaultPanelCount)} ✓`
       : `Zone validée — ${Math.round(totalAreaM2)} m² · zone trop petite pour un panneau`
   );
 }
