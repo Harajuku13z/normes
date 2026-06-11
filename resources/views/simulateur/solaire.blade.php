@@ -1410,7 +1410,7 @@ function drawSafetyZone(layout){
   });
 
   solarSafetyOutline = new google.maps.Polyline({
-    path: closePolylinePath(draw.points),
+    path: closePolylinePath(layout.insetPoints),
     strokeColor: '#f5c400',
     strokeOpacity: 0,
     strokeWeight: 3,
@@ -1426,7 +1426,7 @@ function drawSafetyZone(layout){
     }],
     map,
     clickable: false,
-    zIndex: 5,
+    zIndex: 4,
   });
 
   solarUsableAreaOutline = new google.maps.Polyline({
