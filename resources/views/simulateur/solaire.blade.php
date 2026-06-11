@@ -141,6 +141,14 @@ html,body{
 }
 .panel-counter-display strong{font-size:22px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .panel-counter-display span{font-size:11px;color:#a8b8c5;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.panel-quick-picks{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.panel-quick-btn{
+  min-height:42px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);
+  font:700 12px/1.2 'Inter',sans-serif;padding:8px 6px;cursor:pointer;transition:.15s ease;text-align:center;
+}
+.panel-quick-btn:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft);color:var(--accent-deep)}
+.panel-quick-btn.active{border-color:var(--accent);background:var(--accent);color:#fff}
+.panel-quick-btn:disabled{opacity:.38;cursor:not-allowed}
 .panel-adjust-sub{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.45}
 
 /* Draw hint overlay on map */
@@ -668,6 +676,12 @@ html,body{
             </div>
             <button type="button" class="panel-counter-btn" id="panelPlusBtn" aria-label="Ajouter un panneau">+</button>
           </div>
+          <div class="panel-quick-picks" id="panelQuickPicks">
+            <button type="button" class="panel-quick-btn" data-kwc="3">3 kWc</button>
+            <button type="button" class="panel-quick-btn" data-kwc="4">4 kWc</button>
+            <button type="button" class="panel-quick-btn" data-kwc="6">6 kWc</button>
+            <button type="button" class="panel-quick-btn" data-kwc="9">9 kWc</button>
+          </div>
           <div class="panel-adjust-sub" id="panelAdjustSub">Les panneaux restent bien disposés dans la zone utile.</div>
         </div>
 
@@ -1013,6 +1027,7 @@ const panelMinusBtn = $('panelMinusBtn');
 const panelPlusBtn = $('panelPlusBtn');
 const panelCountVal = $('panelCountVal');
 const panelMaxVal = $('panelMaxVal');
+const panelQuickPicks = $('panelQuickPicks');
 const panelAdjustSub = $('panelAdjustSub');
 const quoteBtn     = $('quoteBtn');
 const leadModal    = $('leadModal');
@@ -1127,6 +1142,11 @@ function formatRoofKitLabel(panelCount){
   return formatPanelCountLabel(safeCount);
 }
 
+function panelCountFromKwc(targetKwc){
+  const rawPanels = Math.round((Number(targetKwc) || 0) / PANEL_POWER_KWC);
+  return Math.max(1, rawPanels);
+}
+
 function getRoofDefaultPanelCount(maxPanels){
   const maxSelectable = getKitAlignedPanelCount(maxPanels, maxPanels, 'floor');
   if(maxSelectable >= PANELS_PER_KIT * 3) return PANELS_PER_KIT * 3;
@@ -1170,6 +1190,10 @@ function hidePanelSlider(){
   if(panelAdjustSub) panelAdjustSub.textContent = 'Les panneaux restent bien disposés dans la zone utile.';
   if(panelMinusBtn) panelMinusBtn.disabled = true;
   if(panelPlusBtn) panelPlusBtn.disabled = true;
+  panelQuickPicks?.querySelectorAll('.panel-quick-btn').forEach(btn => {
+    btn.disabled = true;
+    btn.classList.remove('active');
+  });
 }
 
 function updatePanelAdjustUi(){
@@ -1192,6 +1216,12 @@ function updatePanelAdjustUi(){
   }
   if(panelMinusBtn) panelMinusBtn.disabled = count <= 0;
   if(panelPlusBtn) panelPlusBtn.disabled = count >= maxSelectable;
+  panelQuickPicks?.querySelectorAll('.panel-quick-btn').forEach(btn => {
+    const targetPanels = panelCountFromKwc(btn.dataset.kwc);
+    const available = targetPanels <= maxSelectable;
+    btn.disabled = !available;
+    btn.classList.toggle('active', available && count === targetPanels);
+  });
 }
 
 function stepPanelCount(delta){
@@ -2028,6 +2058,12 @@ function validateZone(){
 $('validateZoneBtn')?.addEventListener('click', validateZone);
 panelMinusBtn?.addEventListener('click', () => stepPanelCount(-1));
 panelPlusBtn?.addEventListener('click', () => stepPanelCount(1));
+panelQuickPicks?.querySelectorAll('.panel-quick-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if(btn.disabled) return;
+    applyValidatedLayout(panelCountFromKwc(btn.dataset.kwc));
+  });
+});
 $('clearZoneBtn')?.addEventListener('click', () => {
   clearPanelLayout();
   hidePanelSlider();
