@@ -1065,6 +1065,8 @@ function showToast(msg, isError = false){
 const fmt = n => Math.round(n).toLocaleString('fr-FR');
 const fmt1 = n => Number(n || 0).toLocaleString('fr-FR', {minimumFractionDigits:1, maximumFractionDigits:1});
 const PANEL_POWER_KWC = 0.425;
+const KIT_POWER_KWC = 3;
+const PANELS_PER_KIT = Math.max(1, Math.round(KIT_POWER_KWC / PANEL_POWER_KWC));
 const PANEL_GAP_METERS = 0.02;
 const SAFETY_SETBACK_METERS = 0.5;
 
@@ -1079,20 +1081,45 @@ const azimuthToLabel = az => {
 
 function getAutoRoofSettings(){
   if(draw.zoneType === 'garden'){
-    return { orientation: 'Sud', pitchDeg: 30, pitchBucket: 30 };
+    return { orientation: 'Sud', hasPitch: false, pitchDeg: null, pitchBucket: null };
   }
 
   const seg = state.baseResults?.roofSegments?.[0] || null;
   const orientation = seg ? azimuthToLabel(seg.azimuthDeg) : 'Sud';
+  const hasPitch = Number.isFinite(seg?.pitchDeg);
+  const pitchSource = hasPitch ? seg.pitchDeg : null;
   const nearestPitch = [0, 15, 30, 45, 60].reduce((best, value) => {
-    return Math.abs(value - (seg?.pitchDeg ?? 30)) < Math.abs(best - (seg?.pitchDeg ?? 30)) ? value : best;
+    return Math.abs(value - (pitchSource ?? 30)) < Math.abs(best - (pitchSource ?? 30)) ? value : best;
   }, 30);
 
   return {
     orientation,
-    pitchDeg: seg?.pitchDeg ?? 30,
-    pitchBucket: nearestPitch,
+    hasPitch,
+    pitchDeg: pitchSource,
+    pitchBucket: hasPitch ? nearestPitch : null,
   };
+}
+
+function getKitAlignedPanelCount(rawCount, maxPanels = rawCount, mode = 'floor'){
+  const safeMax = Math.max(0, Number(maxPanels) || 0);
+  const safeCount = Math.max(0, Math.min(Number(rawCount) || 0, safeMax));
+  if(safeMax === 0) return 0;
+  if(safeMax < PANELS_PER_KIT) return safeCount;
+
+  const kitRatio = safeCount / PANELS_PER_KIT;
+  if(mode === 'ceil') return Math.min(safeMax, Math.ceil(kitRatio) * PANELS_PER_KIT);
+  if(mode === 'nearest') return Math.min(safeMax, Math.max(PANELS_PER_KIT, Math.round(kitRatio) * PANELS_PER_KIT));
+  const floored = Math.floor(kitRatio) * PANELS_PER_KIT;
+  return floored >= PANELS_PER_KIT ? floored : 0;
+}
+
+function formatKitLabel(panelCount){
+  const safeCount = Math.max(0, Number(panelCount) || 0);
+  const kitCount = safeCount >= PANELS_PER_KIT ? Math.round(safeCount / PANELS_PER_KIT) : 0;
+  if(kitCount > 0 && safeCount % PANELS_PER_KIT === 0){
+    return `${kitCount} kit${kitCount > 1 ? 's' : ''} de ${KIT_POWER_KWC} kWc`;
+  }
+  return `${fmt(safeCount)} panneau${safeCount > 1 ? 'x' : ''}`;
 }
 
 // ── Panneaux solaires en grille dans le polygone dessiné ──────────
@@ -1139,21 +1166,26 @@ function updatePanelAdjustUi(){
     return;
   }
 
-  const count = Math.max(0, Math.min(layout.activeCount ?? layout.maxPanels, layout.maxPanels));
+  const maxSelectable = layout.selectableMaxPanels ?? layout.maxPanels;
+  const count = Math.max(0, Math.min(layout.activeCount ?? maxSelectable, maxSelectable));
   if(panelAdjustWrap) panelAdjustWrap.style.display = 'block';
   if(panelCountVal) panelCountVal.textContent = fmt(count);
-  if(panelMaxVal) panelMaxVal.textContent = `${fmt(layout.maxPanels)} max`;
+  if(panelMaxVal) panelMaxVal.textContent = `${fmt(maxSelectable)} max`;
   if(panelAdjustSub){
-    panelAdjustSub.textContent = `Contour jaune = retrait de sécurité ${fmt1(layout.safetyInsetMeters || SAFETY_SETBACK_METERS)} m. Les panneaux restent centrés dans la zone utile.`;
+    const stepLabel = layout.useKitSizing
+      ? `Ajustement par ${formatKitLabel(PANELS_PER_KIT)}.`
+      : 'Ajustement panneau par panneau.';
+    panelAdjustSub.textContent = `${stepLabel} Contour jaune = retrait de sécurité ${fmt1(layout.safetyInsetMeters || SAFETY_SETBACK_METERS)} m. Les panneaux restent centrés dans la zone utile.`;
   }
   if(panelMinusBtn) panelMinusBtn.disabled = count <= 0;
-  if(panelPlusBtn) panelPlusBtn.disabled = count >= layout.maxPanels;
+  if(panelPlusBtn) panelPlusBtn.disabled = count >= maxSelectable;
 }
 
 function stepPanelCount(delta){
   const layout = state.panelLayout;
   if(!layout) return;
-  applyValidatedLayout((layout.activeCount ?? 0) + delta);
+  const stepSize = layout.useKitSizing ? PANELS_PER_KIT : 1;
+  applyValidatedLayout((layout.activeCount ?? 0) + (delta * stepSize));
 }
 
 function closePolylinePath(points){
@@ -1420,6 +1452,7 @@ function displayResults(r){
   const seg = draw.zoneType === 'garden'
     ? null
     : (r.roofSegments?.[0] || state.baseResults?.roofSegments?.[0] || null);
+  const autoRoof = getAutoRoofSettings();
   const surfaceLabel = Number.isFinite(r.usableAreaM2) ? 'Zone utile panneaux' : 'Surface sélectionnée';
   const surfaceValue = Number.isFinite(r.usableAreaM2)
     ? `${fmt(r.usableAreaM2)} m² · retrait ${fmt1(r.panelSetbackMeters || SAFETY_SETBACK_METERS)} m`
@@ -1432,17 +1465,18 @@ function displayResults(r){
     </div>
     <div class="roof-info-row">
       <div class="ri-icon">🔷</div>
-      <div><div class="ri-label">Calepinage</div><div class="ri-val">${fmt(r.panelCount || 0)} panneaux centrés dans la zone</div></div>
+      <div><div class="ri-label">Calepinage</div><div class="ri-val">${fmt(r.panelCount || 0)} panneaux centrés dans la zone · ${formatKitLabel(r.panelCount || 0)}</div></div>
     </div>
     ${seg ? `
     <div class="roof-info-row">
       <div class="ri-icon">🧭</div>
       <div><div class="ri-label">Orientation détectée</div><div class="ri-val">${azimuthToLabel(seg.azimuthDeg)}${seg.sunshineAvg ? ` · ${seg.sunshineAvg} h/an` : ''}</div></div>
     </div>
+    ${autoRoof.hasPitch ? `
     <div class="roof-info-row">
       <div class="ri-icon">📐</div>
       <div><div class="ri-label">Inclinaison détectée</div><div class="ri-val">${seg.pitchDeg}°</div></div>
-    </div>` : ''}
+    </div>` : ''}` : ''}
     ${r.sunshineHoursPerYear ? `
     <div class="roof-info-row">
       <div class="ri-icon">☀️</div>
@@ -1574,7 +1608,7 @@ function updateDrawUI(){
   } else {
     const panels = panelsFromArea(m2, draw.zoneType);
     const kwc    = (panels * 0.425).toFixed(2);
-    $('surfaceSub').textContent = `≈ ${panels} panneaux · ${kwc} kWc`;
+    $('surfaceSub').textContent = `≈ ${formatKitLabel(panels)} · ${kwc} kWc`;
     $('validateZoneBtn').disabled = false;
   }
 
@@ -1826,11 +1860,11 @@ function computeSimulationResults(panelCount, areaM2, usableAreaM2){
   const inclCoeff   = {0:.85,15:.92,30:1.0,45:.97,60:.90};
   const autoRoof = getAutoRoofSettings();
   const orient = autoRoof.orientation;
-  const incl   = autoRoof.pitchBucket;
+  const inclCoeffValue = autoRoof.hasPitch ? (inclCoeff[autoRoof.pitchBucket] || 1) : 1;
   const gardenBonus = draw.zoneType === 'garden' ? 1.05 : 1;
   const kwc = +(panelCount * PANEL_POWER_KWC).toFixed(2);
   const yearlyKwh = panelCount > 0
-    ? Math.round(kwc * baseRatio * (orientCoeff[orient] || 1) * (inclCoeff[incl] || 1) * gardenBonus)
+    ? Math.round(kwc * baseRatio * (orientCoeff[orient] || 1) * inclCoeffValue * gardenBonus)
     : 0;
   const annualSavings = Math.round(yearlyKwh * 0.35 * 0.2276 + yearlyKwh * 0.65 * 0.1269);
   const budgetFactorMin = draw.zoneType === 'garden' ? 1800 : 2000;
@@ -1869,7 +1903,15 @@ function applyValidatedLayout(panelCount = state.panelLayout?.activeCount ?? 0){
   const layout = state.panelLayout;
   if(!layout) return;
 
-  const safeCount = Math.max(0, Math.min(panelCount, layout.maxPanels));
+  const maxSelectable = layout.selectableMaxPanels ?? layout.maxPanels;
+  const boundedCount = Math.max(0, Math.min(panelCount, maxSelectable));
+  const safeCount = layout.useKitSizing
+    ? getKitAlignedPanelCount(
+        boundedCount,
+        maxSelectable,
+        boundedCount >= (layout.activeCount ?? 0) ? 'floor' : 'ceil'
+      )
+    : boundedCount;
   layout.activeCount = safeCount;
 
   const nextResults = {
@@ -1904,18 +1946,25 @@ function validateZone(){
   const usableAreaM2 = fullLayout.insetPoints?.length >= 3 ? computeAreaM2(fullLayout.insetPoints) : totalAreaM2;
   const solarApiMax = base?.maxPanels || 0;
   const maxPanels = fullLayout.panels.length;
+  const useKitSizing = maxPanels >= PANELS_PER_KIT;
+  const selectableMaxPanels = useKitSizing
+    ? getKitAlignedPanelCount(maxPanels, maxPanels, 'floor')
+    : maxPanels;
+  const defaultPanelCount = selectableMaxPanels;
 
   state.panelLayout = {
     ...fullLayout,
     totalAreaM2,
     usableAreaM2,
     maxPanels,
-    activeCount: maxPanels,
+    selectableMaxPanels,
+    activeCount: defaultPanelCount,
     fullPanelCount: fullLayout.panels.length,
     solarApiSuggestedPanels: solarApiMax,
+    useKitSizing,
   };
 
-  applyValidatedLayout(maxPanels);
+  applyValidatedLayout(defaultPanelCount);
   setupPanelSlider();
 
   // UI updates
@@ -1927,8 +1976,8 @@ function validateZone(){
   setStep(3);
   $('cardRoof').scrollIntoView({behavior:'smooth', block:'nearest'});
   showToast(
-    maxPanels > 0
-      ? `Zone validée — ${Math.round(totalAreaM2)} m² · ${maxPanels} panneaux à l'échelle ✓`
+    defaultPanelCount > 0
+      ? `Zone validée — ${Math.round(totalAreaM2)} m² · ${formatKitLabel(defaultPanelCount)} ✓`
       : `Zone validée — ${Math.round(totalAreaM2)} m² · zone trop petite pour un panneau`
   );
 }
