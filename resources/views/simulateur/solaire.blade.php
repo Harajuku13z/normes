@@ -1100,6 +1100,7 @@ let solarPanelOverlays = [];
 let solarSafetyBandOverlay = null;
 let solarSafetyOutline = null;
 let solarUsableAreaOverlay = null;
+let solarUsableAreaOutline = null;
 
 function clearSolarPanels(){
   solarPanelOverlays.forEach(p => p.setMap(null));
@@ -1107,10 +1108,11 @@ function clearSolarPanels(){
 }
 
 function clearSafetyZone(){
-  [solarSafetyBandOverlay, solarSafetyOutline, solarUsableAreaOverlay].forEach(overlay => overlay?.setMap(null));
+  [solarSafetyBandOverlay, solarSafetyOutline, solarUsableAreaOverlay, solarUsableAreaOutline].forEach(overlay => overlay?.setMap(null));
   solarSafetyBandOverlay = null;
   solarSafetyOutline = null;
   solarUsableAreaOverlay = null;
+  solarUsableAreaOutline = null;
 }
 
 function clearPanelLayout(){
@@ -1341,8 +1343,8 @@ function drawSafetyZone(layout){
   solarUsableAreaOverlay = new google.maps.Polygon({
     paths: layout.insetPoints,
     strokeOpacity: 0,
-    fillColor: '#22a06b',
-    fillOpacity: 0.10,
+    fillColor: '#ff3b30',
+    fillOpacity: 0.06,
     map,
     clickable: false,
     zIndex: 2,
@@ -1366,6 +1368,16 @@ function drawSafetyZone(layout){
     map,
     clickable: false,
     zIndex: 3,
+  });
+
+  solarUsableAreaOutline = new google.maps.Polyline({
+    path: closePolylinePath(layout.insetPoints),
+    strokeColor: '#ff3b30',
+    strokeOpacity: 1,
+    strokeWeight: 4,
+    map,
+    clickable: false,
+    zIndex: 4,
   });
 }
 
