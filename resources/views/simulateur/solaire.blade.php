@@ -1143,7 +1143,9 @@ function formatRoofKitLabel(panelCount){
 }
 
 function panelCountFromKwc(targetKwc){
-  const rawPanels = Math.round((Number(targetKwc) || 0) / PANEL_POWER_KWC);
+  const safeKwc = Number(targetKwc) || 0;
+  if(safeKwc === 3) return 8;
+  const rawPanels = Math.round(safeKwc / PANEL_POWER_KWC);
   return Math.max(1, rawPanels);
 }
 
@@ -1209,10 +1211,7 @@ function updatePanelAdjustUi(){
   if(panelCountVal) panelCountVal.textContent = fmt(count);
   if(panelMaxVal) panelMaxVal.textContent = `${fmt(maxSelectable)} max`;
   if(panelAdjustSub){
-    const stepLabel = draw.zoneType === 'roof'
-      ? `Ajustement par ${formatRoofKitLabel(PANELS_PER_KIT)}.`
-      : 'Ajustement panneau par panneau.';
-    panelAdjustSub.textContent = `${stepLabel} Contour jaune = retrait de sécurité ${fmt1(layout.safetyInsetMeters || SAFETY_SETBACK_METERS)} m. Les panneaux restent disposés uniquement à l'intérieur de la limite.`;
+    panelAdjustSub.textContent = `Ajustement panneau par panneau. Contour jaune = retrait de sécurité ${fmt1(layout.safetyInsetMeters || SAFETY_SETBACK_METERS)} m. Les panneaux restent disposés uniquement à l'intérieur de la limite.`;
   }
   if(panelMinusBtn) panelMinusBtn.disabled = count <= 0;
   if(panelPlusBtn) panelPlusBtn.disabled = count >= maxSelectable;
@@ -1227,8 +1226,7 @@ function updatePanelAdjustUi(){
 function stepPanelCount(delta){
   const layout = state.panelLayout;
   if(!layout) return;
-  const stepSize = draw.zoneType === 'roof' ? PANELS_PER_KIT : 1;
-  applyValidatedLayout((layout.activeCount ?? 0) + (delta * stepSize));
+  applyValidatedLayout((layout.activeCount ?? 0) + delta);
 }
 
 function closePolylinePath(points){
