@@ -1069,6 +1069,7 @@ const KIT_POWER_KWC = 3;
 const PANELS_PER_KIT = Math.max(1, Math.round(KIT_POWER_KWC / PANEL_POWER_KWC));
 const PANEL_GAP_METERS = 0.02;
 const SAFETY_SETBACK_METERS = 0.5;
+const PANEL_INNER_CLEARANCE_METERS = 0.08;
 
 // ── Update metrics in right panel ────────────────────────────────
 const azimuthToLabel = az => {
@@ -1340,10 +1341,12 @@ function generatePanelsInPolygon(polyPoints, panelH, panelW, gap = PANEL_GAP_MET
 
   const insetPts = insetPolygonM(polyPoints, setbackM);
   if(!insetPts || insetPts.length < 3) return { panels: [], insetPoints: [] };
+  const panelPlacementPts = insetPolygonM(polyPoints, setbackM + PANEL_INNER_CLEARANCE_METERS);
+  const panelAreaPts = panelPlacementPts?.length >= 3 ? panelPlacementPts : insetPts;
 
   const variants = [
-    computePanelLayoutVariant(insetPts, panelH, panelW, gap, 'portrait'),
-    computePanelLayoutVariant(insetPts, panelW, panelH, gap, 'landscape'),
+    computePanelLayoutVariant(panelAreaPts, panelH, panelW, gap, 'portrait'),
+    computePanelLayoutVariant(panelAreaPts, panelW, panelH, gap, 'landscape'),
   ].sort((a, b) => b.panels.length - a.panels.length);
 
   return {
@@ -1354,7 +1357,9 @@ function generatePanelsInPolygon(polyPoints, panelH, panelW, gap = PANEL_GAP_MET
       orientationMode: 'portrait',
     }),
     insetPoints: insetPts,
+    panelPlacementPoints: panelAreaPts,
     safetyInsetMeters: setbackM,
+    panelInnerClearanceMeters: PANEL_INNER_CLEARANCE_METERS,
   };
 }
 
