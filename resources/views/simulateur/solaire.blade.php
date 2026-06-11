@@ -1662,9 +1662,10 @@ function drawPolygon(){
     });
     if(draw.validated){
       draw.polygon.setOptions({
-        strokeOpacity: 0,
-        fillColor:'#1f8a5b',
-        fillOpacity: 0.03,
+        strokeColor:'#13a6e8',
+        strokeOpacity: 0.9,
+        strokeWeight: 2,
+        fillOpacity: 0,
       });
     }
   }
