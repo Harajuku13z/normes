@@ -1335,12 +1335,23 @@ function computePanelLayoutVariant(insetPts, panelH, panelW, gap, orientationMod
       const cornerPoints = corners.map(c => new google.maps.LatLng(c.lat, c.lng));
       if(!cornerPoints.every(point => pointInsideOrOnEdge(point, insetPoly))) continue;
       if(outerPoly && !cornerPoints.every(point => pointInsideOrOnEdge(point, outerPoly))) continue;
-      panels.push(corners);
+      panels.push({
+        corners,
+        centerDist: Math.hypot(lat - centerLat, lng - centerLng),
+        rowOffset: Math.abs(row - ((rowCount - 1) / 2)),
+        colOffset: Math.abs(col - ((colCount - 1) / 2)),
+      });
     }
   }
 
   return {
-    panels,
+    panels: panels
+      .sort((a, b) => (
+        a.centerDist - b.centerDist
+        || a.rowOffset - b.rowOffset
+        || a.colOffset - b.colOffset
+      ))
+      .map(panel => panel.corners),
     panelHeightMeters: panelH,
     panelWidthMeters: panelW,
     orientationMode,
