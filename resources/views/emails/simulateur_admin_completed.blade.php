@@ -14,6 +14,12 @@
             : url('/storage/'.ltrim($photoPath, '/'));
     }
     $recap = collect((array) $lead->selected_sub_services)->filter()->values();
+    $project = $lead->sub_service ?: ($recap->first(fn ($item) => str_contains(mb_strtolower($item), 'projet')) ?? null);
+    $panelCount = $recap->first(fn ($item) => str_contains(mb_strtolower($item), 'panneaux'));
+    $kwc = $recap->first(fn ($item) => str_contains(mb_strtolower($item), 'kwc'));
+    $yearlyKwh = $recap->first(fn ($item) => str_contains(mb_strtolower($item), 'kwh/an'));
+    $savings = $recap->first(fn ($item) => str_contains(mb_strtolower($item), 'économies') || str_contains(mb_strtolower($item), 'economies'));
+    $budget = $recap->first(fn ($item) => str_contains(mb_strtolower($item), 'budget'));
 @endphp
 <div style="margin:0;padding:24px;background:#eef4f8;font-family:Arial,sans-serif;color:#0f172a;">
     <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;">
@@ -39,9 +45,23 @@
                     <tr><td style="padding:8px 0;border-bottom:1px solid #e2e8f0;font-weight:700;">Message</td><td style="padding:8px 0;border-bottom:1px solid #e2e8f0;">{{ $lead->message ?: '-' }}</td></tr>
                     <tr><td style="padding:8px 0;font-weight:700;">Page source</td><td style="padding:8px 0;">{{ $lead->source_page ?: '-' }}</td></tr>
                 </table>
+                <div style="margin-top:18px;padding:16px;border:1px solid #e2e8f0;border-radius:12px;background:#ffffff;">
+                    <div style="font-size:14px;font-weight:700;margin-bottom:10px;">Lecture rapide de l'estimation</div>
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+                        <tr><td style="padding:10px 0;border-top:1px solid #eef2f7;font-weight:700;width:170px;">Projet</td><td style="padding:10px 0;border-top:1px solid #eef2f7;font-size:13px;color:#334155;">{{ $project ?: '-' }}</td></tr>
+                        <tr><td style="padding:10px 0;border-top:1px solid #eef2f7;font-weight:700;">Panneaux prévus</td><td style="padding:10px 0;border-top:1px solid #eef2f7;font-size:13px;color:#334155;">{{ $panelCount ?: '-' }}</td></tr>
+                        <tr><td style="padding:10px 0;border-top:1px solid #eef2f7;font-weight:700;">Puissance estimée</td><td style="padding:10px 0;border-top:1px solid #eef2f7;font-size:13px;color:#334155;">{{ $kwc ?: '-' }}</td></tr>
+                        <tr><td style="padding:10px 0;border-top:1px solid #eef2f7;font-weight:700;">Production annuelle estimée</td><td style="padding:10px 0;border-top:1px solid #eef2f7;font-size:13px;color:#334155;">{{ $yearlyKwh ?: '-' }}</td></tr>
+                        <tr><td style="padding:10px 0;border-top:1px solid #eef2f7;font-weight:700;">Économies annuelles estimées</td><td style="padding:10px 0;border-top:1px solid #eef2f7;font-size:13px;color:#334155;">{{ $savings ?: '-' }}</td></tr>
+                        <tr><td style="padding:10px 0;border-top:1px solid #eef2f7;font-weight:700;">Fourchette de prix</td><td style="padding:10px 0;border-top:1px solid #eef2f7;font-size:13px;color:#334155;">{{ $budget ?: '-' }}</td></tr>
+                    </table>
+                    <div style="margin-top:12px;font-size:13px;color:#64748b;line-height:1.6;">
+                        Le budget reste indicatif. Il pourra évoluer selon la toiture, l'accès, le matériel retenu, les protections électriques et les options éventuelles.
+                    </div>
+                </div>
                 @if ($recap->isNotEmpty())
                     <div style="margin-top:18px;padding:14px 16px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;">
-                        <div style="font-size:13px;font-weight:700;margin-bottom:8px;">Récapitulatif</div>
+                        <div style="font-size:13px;font-weight:700;margin-bottom:8px;">Récapitulatif technique</div>
                         <ul style="margin:0;padding-left:18px;color:#334155;font-size:13px;line-height:1.6;">
                             @foreach ($recap as $item)
                                 <li>{{ $item }}</li>

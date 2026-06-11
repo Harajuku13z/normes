@@ -617,16 +617,17 @@ class SolarSimulatorController extends Controller
     private function buildLeadSubServices(array $data): array
     {
         return array_values(array_filter([
-            $this->projectTypeLabel((string) $data['type_projet']),
-            isset($data['panel_count']) ? ((int) $data['panel_count']) . ' panneaux' : null,
-            isset($data['kwc']) ? $this->formatLeadNumber((float) $data['kwc']) . ' kWc' : null,
-            isset($data['yearly_kwh']) ? $this->formatLeadNumber((float) $data['yearly_kwh'], 0) . ' kWh/an' : null,
-            isset($data['annual_savings']) ? $this->formatLeadNumber((float) $data['annual_savings'], 0) . ' euros / an' : null,
+            'Projet choisi : ' . $this->projectTypeLabel((string) $data['type_projet']),
+            isset($data['panel_count']) ? 'Nombre de panneaux prévu : ' . ((int) $data['panel_count']) . ' panneaux' : null,
+            isset($data['kwc']) ? 'Puissance estimée : ' . $this->formatLeadNumber((float) $data['kwc']) . ' kWc' : null,
+            isset($data['yearly_kwh']) ? 'Production annuelle estimée : ' . $this->formatLeadNumber((float) $data['yearly_kwh'], 0) . ' kWh/an' : null,
+            isset($data['annual_savings']) ? 'Économies annuelles estimées : ' . $this->formatLeadNumber((float) $data['annual_savings'], 0) . ' euros / an' : null,
             (isset($data['budget_min']) || isset($data['budget_max']))
-                ? $this->formatLeadNumber((float) ($data['budget_min'] ?? 0), 0)
-                    . ' a '
+                ? 'Budget indicatif : '
+                    . $this->formatLeadNumber((float) ($data['budget_min'] ?? 0), 0)
+                    . ' à '
                     . $this->formatLeadNumber((float) ($data['budget_max'] ?? 0), 0)
-                    . ' euros'
+                    . ' euros TTC'
                 : null,
         ]));
     }
