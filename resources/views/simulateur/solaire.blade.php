@@ -651,6 +651,9 @@ html,body{
           <span>Zone validée — <span id="zoneValidatedArea">0</span> m²</span>
           <button id="editZoneBtn">Modifier</button>
         </div>
+        <button class="btn btn-outline" id="addZoneBtn" style="display:none;margin-top:8px">
+          Ajouter une autre zone
+        </button>
       </section>
 
       {{-- Roof recap (appears after zone validated) --}}
@@ -1029,6 +1032,7 @@ const panelCountVal = $('panelCountVal');
 const panelMaxVal = $('panelMaxVal');
 const panelQuickPicks = $('panelQuickPicks');
 const panelAdjustSub = $('panelAdjustSub');
+const addZoneBtn = $('addZoneBtn');
 const quoteBtn     = $('quoteBtn');
 const leadModal    = $('leadModal');
 const modalClose   = $('modalClose');
@@ -1169,8 +1173,16 @@ function clearSolarPanels(){
   solarPanelOverlays = [];
 }
 
+function clearOverlayEntry(entry){
+  if(Array.isArray(entry)){
+    entry.forEach(clearOverlayEntry);
+    return;
+  }
+  entry?.setMap?.(null);
+}
+
 function clearSafetyZone(){
-  [solarSafetyBandOverlay, solarSafetyOutline, solarUsableAreaOverlay, solarUsableAreaOutline].forEach(overlay => overlay?.setMap(null));
+  [solarSafetyBandOverlay, solarSafetyOutline, solarUsableAreaOverlay, solarUsableAreaOutline].forEach(clearOverlayEntry);
   solarSafetyBandOverlay = null;
   solarSafetyOutline = null;
   solarUsableAreaOverlay = null;
@@ -1424,59 +1436,91 @@ function generatePanelsInPolygon(polyPoints, panelH, panelW, gap = PANEL_GAP_MET
   };
 }
 
+function buildLayoutForZone(zonePoints, panelHeightMeters, panelWidthMeters){
+  const zoneLayout = generatePanelsInPolygon(zonePoints, panelHeightMeters, panelWidthMeters, PANEL_GAP_METERS, SAFETY_SETBACK_METERS);
+  return {
+    ...zoneLayout,
+    originalPoints: zonePoints,
+    totalAreaM2: computeAreaM2(zonePoints),
+    usableAreaM2: zoneLayout.insetPoints?.length >= 3 ? computeAreaM2(zoneLayout.insetPoints) : computeAreaM2(zonePoints),
+  };
+}
+
+function buildCombinedPanelLayout(zonePointSets, panelHeightMeters, panelWidthMeters){
+  const zoneLayouts = zonePointSets
+    .filter(points => Array.isArray(points) && points.length >= 3)
+    .map(points => buildLayoutForZone(points, panelHeightMeters, panelWidthMeters));
+
+  return {
+    zoneLayouts,
+    panels: zoneLayouts.flatMap(zone => zone.panels || []),
+    totalAreaM2: zoneLayouts.reduce((sum, zone) => sum + (zone.totalAreaM2 || 0), 0),
+    usableAreaM2: zoneLayouts.reduce((sum, zone) => sum + (zone.usableAreaM2 || 0), 0),
+    safetyInsetMeters: SAFETY_SETBACK_METERS,
+    panelInnerClearanceMeters: PANEL_INNER_CLEARANCE_METERS,
+  };
+}
+
 function drawSafetyZone(layout){
   clearSafetyZone();
-  if(!map || !layout?.insetPoints?.length || !draw.points?.length) return;
+  if(!map) return;
+  const zoneLayouts = layout?.zoneLayouts?.length ? layout.zoneLayouts : [];
+  if(!zoneLayouts.length) return;
 
-  solarSafetyBandOverlay = new google.maps.Polygon({
-    paths: [draw.points, [...layout.insetPoints].reverse()],
-    strokeOpacity: 0,
-    fillColor: '#f5c400',
-    fillOpacity: 0.22,
-    map,
-    clickable: false,
-    zIndex: 2,
-  });
-
-  solarUsableAreaOverlay = new google.maps.Polygon({
-    paths: layout.insetPoints,
-    strokeOpacity: 0,
-    fillColor: '#ff3b30',
-    fillOpacity: 0.06,
-    map,
-    clickable: false,
-    zIndex: 2,
-  });
-
-  solarSafetyOutline = new google.maps.Polyline({
-    path: closePolylinePath(layout.insetPoints),
-    strokeColor: '#f5c400',
-    strokeOpacity: 0,
-    strokeWeight: 3,
-    icons: [{
-      icon: {
-        path: 'M 0,-1 0,1',
+  const overlays = [];
+  zoneLayouts.forEach(zone => {
+    if(!zone.insetPoints?.length || !zone.originalPoints?.length) return;
+    overlays.push(
+      new google.maps.Polygon({
+        paths: [zone.originalPoints, [...zone.insetPoints].reverse()],
+        strokeOpacity: 0,
+        fillColor: '#f5c400',
+        fillOpacity: 0.22,
+        map,
+        clickable: false,
+        zIndex: 2,
+      }),
+      new google.maps.Polygon({
+        paths: zone.insetPoints,
+        strokeOpacity: 0,
+        fillColor: '#ff3b30',
+        fillOpacity: 0.06,
+        map,
+        clickable: false,
+        zIndex: 2,
+      }),
+      new google.maps.Polyline({
+        path: closePolylinePath(zone.insetPoints),
         strokeColor: '#f5c400',
+        strokeOpacity: 0,
+        strokeWeight: 3,
+        icons: [{
+          icon: {
+            path: 'M 0,-1 0,1',
+            strokeColor: '#f5c400',
+            strokeOpacity: 1,
+            scale: 4,
+          },
+          offset: '0',
+          repeat: '12px',
+        }],
+        map,
+        clickable: false,
+        zIndex: 4,
+      }),
+      new google.maps.Polyline({
+        path: closePolylinePath(zone.insetPoints),
+        strokeColor: '#ff3b30',
         strokeOpacity: 1,
-        scale: 4,
-      },
-      offset: '0',
-      repeat: '12px',
-    }],
-    map,
-    clickable: false,
-    zIndex: 4,
+        strokeWeight: 4,
+        map,
+        clickable: false,
+        zIndex: 4,
+      })
+    );
   });
 
-  solarUsableAreaOutline = new google.maps.Polyline({
-    path: closePolylinePath(layout.insetPoints),
-    strokeColor: '#ff3b30',
-    strokeOpacity: 1,
-    strokeWeight: 4,
-    map,
-    clickable: false,
-    zIndex: 4,
-  });
+  [solarSafetyBandOverlay, solarUsableAreaOverlay, solarSafetyOutline, solarUsableAreaOutline] = overlays;
 }
 
 function drawSolarPanelsOnMap(layout, limitCount = layout?.panels?.length ?? 0){
@@ -1628,6 +1672,7 @@ const draw = {
   points: [],          // google.maps.LatLng[]
   polygon: null,       // google.maps.Polygon
   markers: [],         // vertex markers
+  zones: [],           // zones validées [{ points, polygon, markers }]
   clickListener: null,
 };
 
@@ -1646,6 +1691,14 @@ function computeAreaM2(latLngs){
   return Math.abs(area * R * R / 2);
 }
 
+function getValidatedZonesAreaM2(){
+  return draw.zones.reduce((sum, zone) => sum + computeAreaM2(zone.points), 0);
+}
+
+function getAllZonePoints(){
+  return draw.zones.map(zone => zone.points);
+}
+
 // Calcul panneaux depuis surface tracée
 function panelsFromArea(m2, zoneType){
   // Roof: 1.7m² / panneau (1.722m × 1.013m standard)
@@ -1655,19 +1708,22 @@ function panelsFromArea(m2, zoneType){
 }
 
 function updateDrawUI(){
-  const m2 = computeAreaM2(draw.points);
-  const rounded = Math.round(m2);
+  const currentAreaM2 = computeAreaM2(draw.points);
+  const totalAreaM2 = getValidatedZonesAreaM2() + currentAreaM2;
+  const rounded = Math.round(totalAreaM2);
   $('surfaceVal').textContent = rounded;
 
   if(draw.points.length < 3){
     $('surfaceSub').textContent = draw.points.length === 0
-      ? 'Tracez votre zone sur la carte satellite'
+      ? draw.zones.length
+        ? 'Ajoutez une autre zone ou validez votre sélection'
+        : 'Tracez votre zone sur la carte satellite'
       : draw.points.length === 1
       ? 'Continuez à cliquer pour former la zone…'
       : 'Encore un point pour fermer la zone…';
     $('validateZoneBtn').disabled = true;
   } else {
-    const panels = panelsFromArea(m2, draw.zoneType);
+    const panels = panelsFromArea(totalAreaM2, draw.zoneType);
     const kwc    = (panels * 0.425).toFixed(2);
     $('surfaceSub').textContent = `≈ ${formatPanelCountLabel(panels)} · ${kwc} kWc`;
     $('validateZoneBtn').disabled = false;
@@ -1680,13 +1736,17 @@ function updateDrawUI(){
 
   // Draw hint
   const hint = $('drawHint');
-  if(!draw.validated && draw.points.length === 0){
+  if(!draw.validated && draw.points.length === 0 && draw.zones.length === 0){
     hint.classList.remove('hidden');
     $('drawHintText').textContent = draw.zoneType === 'garden'
       ? 'Cliquez sur votre jardin/terrain pour délimiter la zone'
       : 'Cliquez sur votre toiture pour délimiter la zone';
   } else {
     hint.classList.add('hidden');
+  }
+
+  if(addZoneBtn){
+    addZoneBtn.style.display = draw.validated && draw.zones.length > 0 ? '' : 'none';
   }
 }
 
@@ -1735,13 +1795,26 @@ function addVertexMarker(latlng, idx){
   draw.markers.push(m);
 }
 
-function clearDrawing(keepValidated = false){
+function clearCurrentDrawing(){
   if(draw.polygon){ draw.polygon.setMap(null); draw.polygon = null; }
   draw.markers.forEach(m => m.setMap(null));
   draw.markers = [];
   draw.points  = [];
+}
+
+function clearValidatedZones(){
+  draw.zones.forEach(zone => {
+    zone.polygon?.setMap(null);
+    zone.markers?.forEach(marker => marker.setMap(null));
+  });
+  draw.zones = [];
+}
+
+function clearDrawing(keepValidated = false){
+  clearCurrentDrawing();
   clearSafetyZone();
   if(!keepValidated){
+    clearValidatedZones();
     draw.validated = false;
     state.panelLayout = null;
   }
@@ -1876,10 +1949,11 @@ $('demoCloseBtn')?.addEventListener('click', closeDemoPopup);
 $('demoStartBtn')?.addEventListener('click', closeDemoPopup);
 demoPopup?.addEventListener('click', e => { if(e.target === demoPopup) closeDemoPopup(); });
 
-function startDrawMode(){
+function startDrawMode(options = {}){
+  const { preserveZones = false } = options;
   draw.active    = true;
   draw.validated = false;
-  clearDrawing();
+  clearDrawing(preserveZones);
   document.querySelector('.map-wrap').classList.add('drawing');
   if(marker){
     marker.setVisible(true);
@@ -1988,33 +2062,59 @@ function setupPanelSlider(){
   updatePanelAdjustUi();
 }
 
+function resetZoneSelection(startFresh = true){
+  draw.validated = false;
+  clearPanelLayout();
+  hidePanelSlider();
+  clearDrawing();
+  $('zoneValidatedRow').style.display = 'none';
+  $('validateZoneBtn').style.display  = '';
+  $('clearZoneBtn').style.display     = '';
+  if(addZoneBtn) addZoneBtn.style.display = 'none';
+  setStep(2);
+  mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
+  if(startFresh) startDrawMode();
+}
+
 function validateZone(){
   if(draw.points.length < 3) return;
+  const zonePolygon = draw.polygon;
+  const zoneMarkers = [...draw.markers];
+  const zonePoints = [...draw.points];
   draw.validated = true;
   stopDrawMode();
   drawPolygon();
 
-  const totalAreaM2 = computeAreaM2(draw.points);
+  if(zonePolygon){
+    zonePolygon.setOptions({
+      strokeColor:'#13a6e8',
+      strokeOpacity: 0.9,
+      strokeWeight: 2,
+      fillOpacity: 0,
+    });
+  }
+  draw.zones.push({ points: zonePoints, polygon: zonePolygon, markers: zoneMarkers });
+  draw.polygon = null;
+  draw.markers = [];
+  draw.points = [];
+
   const base = state.baseResults || state.results;
   const panelHeightMeters = base?.panelHeightMeters || 1.722;
   const panelWidthMeters  = base?.panelWidthMeters  || 1.134;
-  const fullLayout = generatePanelsInPolygon(draw.points, panelHeightMeters, panelWidthMeters, PANEL_GAP_METERS, SAFETY_SETBACK_METERS);
-  const usableAreaM2 = fullLayout.insetPoints?.length >= 3 ? computeAreaM2(fullLayout.insetPoints) : totalAreaM2;
+  const combinedLayout = buildCombinedPanelLayout(getAllZonePoints(), panelHeightMeters, panelWidthMeters);
   const solarApiMax = base?.maxPanels || 0;
-  const maxPanels = fullLayout.panels.length;
+  const maxPanels = combinedLayout.panels.length;
   const selectableMaxPanels = maxPanels;
   const defaultPanelCount = draw.zoneType === 'roof'
     ? getRoofDefaultPanelCount(maxPanels)
     : selectableMaxPanels;
 
   state.panelLayout = {
-    ...fullLayout,
-    totalAreaM2,
-    usableAreaM2,
+    ...combinedLayout,
     maxPanels,
     selectableMaxPanels,
     activeCount: defaultPanelCount,
-    fullPanelCount: fullLayout.panels.length,
+    fullPanelCount: combinedLayout.panels.length,
     solarApiSuggestedPanels: solarApiMax,
   };
 
@@ -2025,14 +2125,15 @@ function validateZone(){
   $('zoneValidatedRow').style.display = 'flex';
   $('validateZoneBtn').style.display  = 'none';
   $('clearZoneBtn').style.display     = 'none';
+  if(addZoneBtn) addZoneBtn.style.display = '';
 
   // Afficher config toiture
   setStep(3);
   $('cardRoof').scrollIntoView({behavior:'smooth', block:'nearest'});
   showToast(
     defaultPanelCount > 0
-      ? `Zone validée — ${Math.round(totalAreaM2)} m² · ${draw.zoneType === 'roof' ? formatRoofKitLabel(defaultPanelCount) : formatPanelCountLabel(defaultPanelCount)} ✓`
-      : `Zone validée — ${Math.round(totalAreaM2)} m² · zone trop petite pour un panneau`
+      ? `${draw.zones.length} zone${draw.zones.length > 1 ? 's' : ''} validée${draw.zones.length > 1 ? 's' : ''} — ${Math.round(combinedLayout.totalAreaM2)} m² · ${draw.zoneType === 'roof' ? formatRoofKitLabel(defaultPanelCount) : formatPanelCountLabel(defaultPanelCount)} ✓`
+      : `${draw.zones.length} zone${draw.zones.length > 1 ? 's' : ''} validée${draw.zones.length > 1 ? 's' : ''} — ${Math.round(combinedLayout.totalAreaM2)} m² · zone trop petite pour un panneau`
   );
 }
 
@@ -2061,21 +2162,14 @@ panelQuickPicks?.querySelectorAll('.panel-quick-btn').forEach(btn => {
   });
 });
 $('clearZoneBtn')?.addEventListener('click', () => {
-  clearPanelLayout();
-  hidePanelSlider();
-  clearDrawing();
-  updateDrawUI();
+  resetZoneSelection(true);
 });
 $('editZoneBtn')?.addEventListener('click', () => {
-  draw.validated = false;
-  clearPanelLayout();
-  hidePanelSlider();
-  $('zoneValidatedRow').style.display = 'none';
-  $('validateZoneBtn').style.display  = '';
-  $('clearZoneBtn').style.display     = '';
-  clearDrawing();
-  startDrawMode();
+  resetZoneSelection(true);
+});
+$('addZoneBtn')?.addEventListener('click', () => {
   setStep(2);
+  startDrawMode({ preserveZones: true });
 });
 $('undoPointBtn')?.addEventListener('click', () => {
   if(!draw.points.length) return;
@@ -2086,9 +2180,7 @@ $('undoPointBtn')?.addEventListener('click', () => {
   updateDrawUI();
 });
 $('clearDrawBtn')?.addEventListener('click', () => {
-  clearPanelLayout();
-  hidePanelSlider();
-  clearDrawing();
+  clearCurrentDrawing();
   updateDrawUI();
 });
 
