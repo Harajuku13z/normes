@@ -1484,7 +1484,7 @@ function displayResults(r){
   const autoRoof = getAutoRoofSettings();
   const surfaceLabel = Number.isFinite(r.usableAreaM2) ? 'Surface disponible' : 'Surface sélectionnée';
   const surfaceValue = Number.isFinite(r.usableAreaM2)
-    ? `${fmt(r.usableAreaM2)} m² · retrait ${fmt1(r.panelSetbackMeters || SAFETY_SETBACK_METERS)} m`
+    ? `${fmt(r.usableAreaM2)} m²`
     : `${fmt(r.areaM2 || 0)} m²`;
 
   roofInfoRows.innerHTML = `
@@ -1867,7 +1867,7 @@ $('demoStartBtn')?.addEventListener('click', closeDemoPopup);
 demoPopup?.addEventListener('click', e => { if(e.target === demoPopup) closeDemoPopup(); });
 
 function startDrawMode(options = {}){
-  const { preserveZones = false } = options;
+  const { preserveZones = false, skipDemoPopup = false } = options;
   draw.active    = true;
   draw.validated = false;
   clearDrawing(preserveZones);
@@ -1889,7 +1889,7 @@ function startDrawMode(options = {}){
 
   updateDrawUI();
   // Ouvrir le popup démo
-  setTimeout(openDemoPopup, 500);
+  if(!skipDemoPopup) setTimeout(openDemoPopup, 500);
 }
 
 function stopDrawMode(){
@@ -2128,8 +2128,7 @@ $('undoPointBtn')?.addEventListener('click', () => {
   updateDrawUI();
 });
 $('clearDrawBtn')?.addEventListener('click', () => {
-  clearCurrentDrawing();
-  updateDrawUI();
+  resetZoneSelection(true);
 });
 
 // ── Autocomplétion custom via Nominatim (backend) ────────────────
@@ -2280,6 +2279,16 @@ function initMap(){
       anchor: new google.maps.Point(15, 42),
     },
     visible: false,
+  });
+
+  map.addListener('click', e => {
+    if(draw.active || !draw.validated || !draw.zones.length) return;
+    setStep(2);
+    startDrawMode({ preserveZones: true, skipDemoPopup: true });
+    draw.points.push(e.latLng);
+    addVertexMarker(e.latLng, draw.points.length - 1);
+    drawPolygon();
+    updateDrawUI();
   });
 
   // Layer switch
