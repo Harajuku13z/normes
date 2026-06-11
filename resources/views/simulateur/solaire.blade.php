@@ -537,6 +537,12 @@ html,body{
 @media(max-width:960px){
   .grid{grid-template-columns:1fr;grid-template-rows:auto 420px auto}
   .stepper{display:none}
+  #leftCol{display:contents}
+  #cardAddr{order:1}
+  .map-wrap{order:2}
+  #cardDraw{order:3}
+  #cardRoof{order:4}
+  #rightCol{order:5}
   .map-wrap{min-height:420px}
 }
 @media(max-width:600px){
@@ -733,7 +739,7 @@ html,body{
     </section>
 
     {{-- ── RIGHT: results ── --}}
-    <aside>
+    <aside id="rightCol">
       <p class="estim-header">Estimation de votre installation</p>
 
       {{-- Metrics --}}
