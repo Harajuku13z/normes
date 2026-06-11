@@ -137,6 +137,10 @@ class AdminSimulateurSettingsController extends Controller
             'notifications.send_to_client' => ['nullable', 'boolean'],
             'notifications.send_to_admin_on_step1' => ['nullable', 'boolean'],
             'notifications.send_to_admin_on_completed' => ['nullable', 'boolean'],
+            'pricing.roof_min_per_kwc' => ['required', 'numeric', 'min:0'],
+            'pricing.roof_max_per_kwc' => ['required', 'numeric', 'min:0'],
+            'pricing.garden_min_per_kwc' => ['required', 'numeric', 'min:0'],
+            'pricing.garden_max_per_kwc' => ['required', 'numeric', 'min:0'],
         ]);
 
         $payload = [
@@ -154,6 +158,12 @@ class AdminSimulateurSettingsController extends Controller
                 'send_to_client' => (bool) data_get($data, 'notifications.send_to_client', false),
                 'send_to_admin_on_step1' => (bool) data_get($data, 'notifications.send_to_admin_on_step1', false),
                 'send_to_admin_on_completed' => (bool) data_get($data, 'notifications.send_to_admin_on_completed', false),
+            ],
+            'pricing' => [
+                'roof_min_per_kwc' => (float) data_get($data, 'pricing.roof_min_per_kwc', 2000),
+                'roof_max_per_kwc' => (float) data_get($data, 'pricing.roof_max_per_kwc', 2800),
+                'garden_min_per_kwc' => (float) data_get($data, 'pricing.garden_min_per_kwc', 1800),
+                'garden_max_per_kwc' => (float) data_get($data, 'pricing.garden_max_per_kwc', 2400),
             ],
         ];
 
@@ -194,6 +204,12 @@ class AdminSimulateurSettingsController extends Controller
                 'send_to_client' => (bool) data_get($payload, 'notifications.send_to_client', true),
                 'send_to_admin_on_step1' => (bool) data_get($payload, 'notifications.send_to_admin_on_step1', true),
                 'send_to_admin_on_completed' => (bool) data_get($payload, 'notifications.send_to_admin_on_completed', true),
+            ],
+            'pricing' => [
+                'roof_min_per_kwc' => (string) data_get($payload, 'pricing.roof_min_per_kwc', '2000'),
+                'roof_max_per_kwc' => (string) data_get($payload, 'pricing.roof_max_per_kwc', '2800'),
+                'garden_min_per_kwc' => (string) data_get($payload, 'pricing.garden_min_per_kwc', '1800'),
+                'garden_max_per_kwc' => (string) data_get($payload, 'pricing.garden_max_per_kwc', '2400'),
             ],
         ];
 

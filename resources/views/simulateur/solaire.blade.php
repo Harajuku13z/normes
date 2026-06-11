@@ -4,6 +4,7 @@
     $logo = HomeView::url((string) data_get($h, 'header.logo', '/logo.png'));
     $siteName = (string) data_get($h, 'meta.site_name', 'Normes Rénovation');
     $mapsKey = $googleMapsKey ?? '';
+    $pricing = $pricingSettings ?? [];
 @endphp
 <!DOCTYPE html>
 <html lang="fr">
@@ -882,6 +883,7 @@ window.__geocodeUrl      = @json(route('api.solar.geocode'));
 window.__autocompleteUrl = @json(route('api.solar.autocomplete'));
 window.__step4Url = @json(route('simulateur.solaire.confirmation'));
 window.__solarStep4StorageKey = 'solarSimulatorStep4';
+window.__pricingSettings = @json($pricing);
 
 // Doit être global ET défini AVANT le chargement du script Maps
 window.gm_authFailure = function(){
@@ -1000,6 +1002,12 @@ const PANELS_PER_KIT = Math.max(1, Math.round(KIT_POWER_KWC / PANEL_POWER_KWC));
 const PANEL_GAP_METERS = 0.02;
 const SAFETY_SETBACK_METERS = 1;
 const PANEL_INNER_CLEARANCE_METERS = 0.08;
+const PRICING = {
+  roofMinPerKwc: Number(window.__pricingSettings?.roof_min_per_kwc || 2000),
+  roofMaxPerKwc: Number(window.__pricingSettings?.roof_max_per_kwc || 2800),
+  gardenMinPerKwc: Number(window.__pricingSettings?.garden_min_per_kwc || 1800),
+  gardenMaxPerKwc: Number(window.__pricingSettings?.garden_max_per_kwc || 2400),
+};
 
 // ── Update metrics in right panel ────────────────────────────────
 const azimuthToLabel = az => {
@@ -1898,6 +1906,37 @@ function computeMonthlyKwhBreakdown(yearlyKwh){
   return [.045,.06,.085,.10,.115,.125,.13,.12,.095,.07,.045,.035].map(weight => Math.round(yearlyKwh * weight));
 }
 
+function serializeMapPoint(point){
+  if(!point) return null;
+  if(typeof point.lat === 'function' && typeof point.lng === 'function'){
+    return { lat: point.lat(), lng: point.lng() };
+  }
+  if(Number.isFinite(point.lat) && Number.isFinite(point.lng)){
+    return { lat: point.lat, lng: point.lng };
+  }
+  return null;
+}
+
+function serializeMapPath(points){
+  return (points || []).map(serializeMapPoint).filter(Boolean);
+}
+
+function buildSnapshotPayload(){
+  const layout = state.panelLayout;
+  if(!layout?.zoneLayouts?.length) return null;
+
+  return {
+    zones: layout.zoneLayouts.map(zone => ({
+      originalPoints: serializeMapPath(zone.originalPoints),
+      insetPoints: serializeMapPath(zone.insetPoints),
+      panelPlacementPoints: serializeMapPath(zone.panelPlacementPoints),
+    })),
+    panelPolygons: (layout.panels || [])
+      .slice(0, layout.activeCount || 0)
+      .map(panel => serializeMapPath(panel)),
+  };
+}
+
 function computeSimulationResults(panelCount, areaM2, usableAreaM2){
   const base = state.baseResults || state.results;
   const baseRatio = base ? base.yearlyKwh / Math.max(base.kwc, 0.1) : 1180;
@@ -1912,8 +1951,8 @@ function computeSimulationResults(panelCount, areaM2, usableAreaM2){
     ? Math.round(kwc * baseRatio * (orientCoeff[orient] || 1) * inclCoeffValue * gardenBonus)
     : 0;
   const annualSavings = Math.round(yearlyKwh * 0.35 * 0.2276 + yearlyKwh * 0.65 * 0.1269);
-  const budgetFactorMin = draw.zoneType === 'garden' ? 1800 : 2000;
-  const budgetFactorMax = draw.zoneType === 'garden' ? 2400 : 2800;
+  const budgetFactorMin = draw.zoneType === 'garden' ? PRICING.gardenMinPerKwc : PRICING.roofMinPerKwc;
+  const budgetFactorMax = draw.zoneType === 'garden' ? PRICING.gardenMaxPerKwc : PRICING.roofMaxPerKwc;
 
   return {
     panelCount,
@@ -2321,6 +2360,7 @@ quoteBtn.addEventListener('click', () => {
     budgetMin: state.results.budgetMin || 0,
     budgetMax: state.results.budgetMax || 0,
     surfaceM2: state.results.usableAreaM2 || state.results.areaM2 || 0,
+    snapshotPayload: buildSnapshotPayload(),
     selectedAt: new Date().toISOString(),
   };
 

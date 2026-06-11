@@ -183,6 +183,7 @@ h1{margin:14px 0 8px;font-size:34px;line-height:1.05;letter-spacing:-.03em}
         <input type="hidden" name="panel_count" id="panelCountInput" value="{{ old('panel_count') }}">
         <input type="hidden" name="annual_savings" id="annualSavingsInput" value="{{ old('annual_savings') }}">
         <input type="hidden" name="surface_m2" id="surfaceM2Input" value="{{ old('surface_m2') }}">
+        <input type="hidden" name="snapshot_payload" id="snapshotPayloadInput" value="{{ old('snapshot_payload') }}">
 
         <div class="row">
           <div class="field">
@@ -346,6 +347,9 @@ if(simulation){
   setValueIfEmpty('panelCountInput', simulation.panels || '');
   setValueIfEmpty('annualSavingsInput', simulation.annualSavings || '');
   setValueIfEmpty('surfaceM2Input', simulation.surfaceM2 || '');
+  if(simulation.snapshotPayload && !document.getElementById('snapshotPayloadInput').value){
+    document.getElementById('snapshotPayloadInput').value = JSON.stringify(simulation.snapshotPayload);
+  }
 } else {
   missingDataNotice.style.display = 'block';
   submitBtn.disabled = true;

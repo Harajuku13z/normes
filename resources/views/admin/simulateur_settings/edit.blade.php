@@ -81,6 +81,30 @@
                     </label>
                 </div>
 
+                <div class="rounded-xl border border-slate-200 bg-white p-4">
+                    <h2 class="text-lg font-extrabold text-slate-900">Solar pricing</h2>
+                    <p class="mt-1 text-sm text-slate-500">These values are used by the solar simulator to calculate the estimated budget shown to the client.</p>
+
+                    <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                        <label class="grid gap-1 text-sm font-semibold text-slate-700">
+                            <span>Roof min price per kWc *</span>
+                            <input type="number" step="0.01" min="0" name="pricing[roof_min_per_kwc]" value="{{ old('pricing.roof_min_per_kwc', data_get($settings, 'pricing.roof_min_per_kwc', '2000')) }}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">
+                        </label>
+                        <label class="grid gap-1 text-sm font-semibold text-slate-700">
+                            <span>Roof max price per kWc *</span>
+                            <input type="number" step="0.01" min="0" name="pricing[roof_max_per_kwc]" value="{{ old('pricing.roof_max_per_kwc', data_get($settings, 'pricing.roof_max_per_kwc', '2800')) }}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">
+                        </label>
+                        <label class="grid gap-1 text-sm font-semibold text-slate-700">
+                            <span>Ground min price per kWc *</span>
+                            <input type="number" step="0.01" min="0" name="pricing[garden_min_per_kwc]" value="{{ old('pricing.garden_min_per_kwc', data_get($settings, 'pricing.garden_min_per_kwc', '1800')) }}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">
+                        </label>
+                        <label class="grid gap-1 text-sm font-semibold text-slate-700">
+                            <span>Ground max price per kWc *</span>
+                            <input type="number" step="0.01" min="0" name="pricing[garden_max_per_kwc]" value="{{ old('pricing.garden_max_per_kwc', data_get($settings, 'pricing.garden_max_per_kwc', '2400')) }}" required class="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm">
+                        </label>
+                    </div>
+                </div>
+
                 <div>
                     <button class="inline-flex items-center rounded-xl bg-sky-600 px-4 py-2 text-sm font-extrabold text-white hover:bg-sky-700">
                         Save SMTP settings

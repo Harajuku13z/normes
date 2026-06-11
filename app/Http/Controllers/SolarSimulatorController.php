@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SimulateurLead;
 use App\Services\HomePageService;
+use App\Services\SolarLeadSnapshotService;
 use App\Services\SimulateurMailer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -15,9 +16,12 @@ class SolarSimulatorController extends Controller
 {
     public function index(HomePageService $homePage): View
     {
+        $settings = $this->simulatorSettings();
+
         return view('simulateur.solaire', [
             'home' => $homePage->merged(),
             'googleMapsKey' => config('services.google.maps_browser_key'),
+            'pricingSettings' => (array) data_get($settings, 'pricing', []),
         ]);
     }
 
@@ -493,10 +497,10 @@ class SolarSimulatorController extends Controller
         }
     }
 
-    public function storeConfirmation(Request $request, SimulateurMailer $mailer): RedirectResponse
+    public function storeConfirmation(Request $request, SimulateurMailer $mailer, SolarLeadSnapshotService $snapshotService): RedirectResponse
     {
         try {
-            $this->completeLead($this->validateLeadPayload($request), $mailer);
+            $this->completeLead($this->validateLeadPayload($request), $mailer, $snapshotService);
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
         } catch (\Throwable $e) {
@@ -510,10 +514,10 @@ class SolarSimulatorController extends Controller
         return redirect()->route('simulateur.solaire.success');
     }
 
-    public function saveLead(Request $request, SimulateurMailer $mailer): JsonResponse
+    public function saveLead(Request $request, SimulateurMailer $mailer, SolarLeadSnapshotService $snapshotService): JsonResponse
     {
         try {
-            $lead = $this->completeLead($this->validateLeadPayload($request), $mailer);
+            $lead = $this->completeLead($this->validateLeadPayload($request), $mailer, $snapshotService);
         } catch (\Throwable $e) {
             logger()->error('SolarLead API save failed: ' . $e->getMessage());
 
@@ -548,10 +552,11 @@ class SolarSimulatorController extends Controller
             'panel_count'    => ['nullable', 'integer'],
             'annual_savings' => ['nullable', 'numeric'],
             'surface_m2'     => ['nullable', 'numeric'],
+            'snapshot_payload' => ['nullable', 'string', 'max:120000'],
         ]);
     }
 
-    private function completeLead(array $data, SimulateurMailer $mailer): SimulateurLead
+    private function completeLead(array $data, SimulateurMailer $mailer, SolarLeadSnapshotService $snapshotService): SimulateurLead
     {
         $lead = SimulateurLead::create([
             'nom_prenom'            => trim($data['prenom'] . ' ' . $data['nom']),
@@ -565,10 +570,21 @@ class SolarSimulatorController extends Controller
             'service_title'         => 'Panneaux Solaires Photovoltaïques',
             'selected_services'     => ['Panneaux solaires'],
             'selected_sub_services' => $this->buildLeadSubServices($data),
+            'sub_service'           => $this->projectTypeLabel((string) $data['type_projet']),
             'message'               => $this->buildLeadMessage($data),
             'status'                => 'completed',
             'completed_at'          => now(),
         ]);
+
+        $photos = [];
+        $snapshotPayload = $this->decodeSnapshotPayload($data['snapshot_payload'] ?? null);
+        if ($snapshotPayload !== null) {
+            $snapshotPath = $snapshotService->storeLeadSnapshot($lead, $snapshotPayload);
+            if ($snapshotPath !== null) {
+                $photos[] = $snapshotPath;
+                $lead->forceFill(['photos' => $photos])->save();
+            }
+        }
 
         try {
             $mailer->sendCompleted($lead);
@@ -604,6 +620,14 @@ class SolarSimulatorController extends Controller
             $this->projectTypeLabel((string) $data['type_projet']),
             isset($data['panel_count']) ? ((int) $data['panel_count']) . ' panneaux' : null,
             isset($data['kwc']) ? $this->formatLeadNumber((float) $data['kwc']) . ' kWc' : null,
+            isset($data['yearly_kwh']) ? $this->formatLeadNumber((float) $data['yearly_kwh'], 0) . ' kWh/an' : null,
+            isset($data['annual_savings']) ? $this->formatLeadNumber((float) $data['annual_savings'], 0) . ' euros / an' : null,
+            (isset($data['budget_min']) || isset($data['budget_max']))
+                ? $this->formatLeadNumber((float) ($data['budget_min'] ?? 0), 0)
+                    . ' a '
+                    . $this->formatLeadNumber((float) ($data['budget_max'] ?? 0), 0)
+                    . ' euros'
+                : null,
         ]));
     }
 
@@ -651,5 +675,37 @@ class SolarSimulatorController extends Controller
     private function formatLeadNumber(float $value, int $decimals = 2): string
     {
         return rtrim(rtrim(number_format($value, $decimals, '.', ''), '0'), '.');
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function simulatorSettings(): array
+    {
+        $saved = \App\Models\HomeSection::query()->where('key', 'simulateur_settings')->first();
+        $payload = is_array($saved?->payload) ? $saved->payload : [];
+
+        return [
+            'pricing' => [
+                'roof_min_per_kwc' => (float) data_get($payload, 'pricing.roof_min_per_kwc', 2000),
+                'roof_max_per_kwc' => (float) data_get($payload, 'pricing.roof_max_per_kwc', 2800),
+                'garden_min_per_kwc' => (float) data_get($payload, 'pricing.garden_min_per_kwc', 1800),
+                'garden_max_per_kwc' => (float) data_get($payload, 'pricing.garden_max_per_kwc', 2400),
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private function decodeSnapshotPayload(mixed $payload): ?array
+    {
+        if (! is_string($payload) || trim($payload) === '') {
+            return null;
+        }
+
+        $decoded = json_decode($payload, true);
+
+        return is_array($decoded) ? $decoded : null;
     }
 }

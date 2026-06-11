@@ -49,6 +49,12 @@ class SmtpSettingsSeeder extends Seeder
                 'send_to_admin_on_step1'        => true,
                 'send_to_admin_on_completed'    => true,
             ],
+            'pricing' => [
+                'roof_min_per_kwc' => 2000,
+                'roof_max_per_kwc' => 2800,
+                'garden_min_per_kwc' => 1800,
+                'garden_max_per_kwc' => 2400,
+            ],
         ];
 
         HomeSection::query()->updateOrCreate(

@@ -6,6 +6,7 @@ use App\Models\HomeSection;
 use App\Models\SimulateurLead;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 
 class SimulateurMailer
@@ -74,13 +75,13 @@ class SimulateurMailer
 
         if ($sendAdmin && $adminEmail !== '') {
             $htmlAdmin = View::make('emails.simulateur_admin_completed', ['lead' => $lead])->render();
-            $this->sendHtml($settings, $adminEmail, 'Simulateur complété par '.$lead->nom_prenom, $htmlAdmin);
+            $this->sendHtml($settings, $adminEmail, 'Simulateur complété par '.$lead->nom_prenom, $htmlAdmin, $this->leadAttachmentPaths($lead));
         }
 
         $clientEmail = trim((string) ($lead->email ?? ''));
         if ($sendClient && $clientEmail !== '') {
             $htmlClient = View::make('emails.simulateur_client_confirmation', ['lead' => $lead])->render();
-            $this->sendHtml($settings, $clientEmail, 'Confirmation de votre demande de simulation', $htmlClient);
+            $this->sendHtml($settings, $clientEmail, 'Confirmation de votre demande de simulation', $htmlClient, $this->leadAttachmentPaths($lead));
         }
     }
 
@@ -100,7 +101,7 @@ class SimulateurMailer
             $subject = 'Nouveau lead simulateur démarré';
         }
 
-        $this->sendHtml($settings, $to, $subject, $html);
+        $this->sendHtml($settings, $to, $subject, $html, $this->leadAttachmentPaths($lead));
     }
 
     public function sendClientManual(SimulateurLead $lead, string $recipientEmail): void
@@ -112,7 +113,7 @@ class SimulateurMailer
 
         $settings = $this->settings();
         $html = View::make('emails.simulateur_client_confirmation', ['lead' => $lead])->render();
-        $this->sendHtml($settings, $to, 'Confirmation de votre demande de simulation', $html);
+        $this->sendHtml($settings, $to, 'Confirmation de votre demande de simulation', $html, $this->leadAttachmentPaths($lead));
     }
 
     /**
@@ -127,8 +128,9 @@ class SimulateurMailer
 
     /**
      * @param  array<string, mixed>  $settings
+     * @param  array<int, string>  $attachments
      */
-    private function sendHtml(array $settings, string $to, string $subject, string $html): void
+    private function sendHtml(array $settings, string $to, string $subject, string $html, array $attachments = []): void
     {
         $smtp = (array) data_get($settings, 'smtp', []);
         $host = (string) data_get($smtp, 'host', '');
@@ -162,8 +164,37 @@ class SimulateurMailer
             'mail.from.name'                  => (string) data_get($smtp, 'from_name', 'Normes & Renovation'),
         ]);
 
-        Mail::html($html, function ($message) use ($to, $subject): void {
+        Mail::html($html, function ($message) use ($to, $subject, $attachments): void {
             $message->to($to)->subject($subject);
+            foreach ($attachments as $attachment) {
+                if (is_file($attachment)) {
+                    $message->attach($attachment);
+                }
+            }
         });
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    private function leadAttachmentPaths(SimulateurLead $lead): array
+    {
+        return collect((array) ($lead->photos ?? []))
+            ->map(fn ($path) => trim((string) $path))
+            ->filter()
+            ->map(function (string $path): ?string {
+                if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+                    return null;
+                }
+
+                if (Storage::disk('public')->exists($path)) {
+                    return Storage::disk('public')->path($path);
+                }
+
+                return null;
+            })
+            ->filter()
+            ->values()
+            ->all();
     }
 }
