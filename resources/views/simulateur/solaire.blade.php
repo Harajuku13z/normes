@@ -124,7 +124,7 @@ html,body{
 .surface-display .s-unit{font-size:16px;font-weight:600;color:var(--slate)}
 .surface-sub{font-size:12px;color:var(--muted);font-style:italic;margin-bottom:16px}
 .panel-adjust-wrap{
-  margin:14px 0 16px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#f8fbfd;
+  margin:14px 0 16px;padding:14px;border:1px solid var(--line);border-radius:12px;background:#f8fbfd;position:relative;z-index:2;
 }
 .panel-adjust-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
 .panel-adjust-head .meta-label{margin:0}
@@ -132,7 +132,7 @@ html,body{
 .panel-counter{display:grid;grid-template-columns:48px 1fr 48px;gap:8px;align-items:center}
 .panel-counter-btn{
   height:48px;border-radius:12px;border:1.5px solid var(--line);background:#fff;color:var(--ink);
-  font:700 22px/1 'Inter',sans-serif;display:grid;place-items:center;cursor:pointer;transition:.15s ease;
+  font:700 22px/1 'Inter',sans-serif;display:grid;place-items:center;cursor:pointer;transition:.15s ease;pointer-events:auto;
 }
 .panel-counter-btn:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft);color:var(--accent-deep)}
 .panel-counter-btn:disabled{opacity:.35;cursor:not-allowed}
@@ -144,7 +144,7 @@ html,body{
 .panel-quick-picks{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
 .panel-quick-btn{
   min-height:42px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--ink);
-  font:700 12px/1.2 'Inter',sans-serif;padding:8px 6px;cursor:pointer;transition:.15s ease;text-align:center;
+  font:700 12px/1.2 'Inter',sans-serif;padding:8px 6px;cursor:pointer;transition:.15s ease;text-align:center;pointer-events:auto;
 }
 .panel-quick-btn:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft);color:var(--accent-deep)}
 .panel-quick-btn.active{border-color:var(--accent);background:var(--accent);color:#fff}
@@ -1229,6 +1229,17 @@ function stepPanelCount(delta){
   applyValidatedLayout((layout.activeCount ?? 0) + delta);
 }
 
+function bindPanelAdjustPress(el, handler){
+  if(!el) return;
+  const onPress = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    handler();
+  };
+  el.addEventListener('click', onPress);
+  el.addEventListener('touchend', onPress, { passive: false });
+}
+
 function closePolylinePath(points){
   if(!points?.length) return [];
   return [...points, points[0]];
@@ -2041,10 +2052,10 @@ function validateZone(){
 
 // ── Validate / Clear / Edit buttons ─────────────────────────────
 $('validateZoneBtn')?.addEventListener('click', validateZone);
-panelMinusBtn?.addEventListener('click', () => stepPanelCount(-1));
-panelPlusBtn?.addEventListener('click', () => stepPanelCount(1));
+bindPanelAdjustPress(panelMinusBtn, () => stepPanelCount(-1));
+bindPanelAdjustPress(panelPlusBtn, () => stepPanelCount(1));
 panelQuickPicks?.querySelectorAll('.panel-quick-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
+  bindPanelAdjustPress(btn, () => {
     if(btn.disabled) return;
     applyValidatedLayout(panelCountFromKwc(btn.dataset.kwc));
   });
