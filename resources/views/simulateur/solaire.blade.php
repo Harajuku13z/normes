@@ -795,85 +795,6 @@ html,body{
   </div>
 </div>
 
-{{-- ── Lead form modal ── --}}
-<div class="modal-backdrop hidden" id="leadModal" role="dialog" aria-modal="true" aria-label="Demande de devis">
-  <div class="modal-box">
-    <div class="modal-head">
-      <div>
-        <h3>Votre devis gratuit</h3>
-        <p>Nos experts vous recontactent sous 24 h pour affiner votre projet solaire.</p>
-      </div>
-      <button class="modal-close" id="modalClose" aria-label="Fermer">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-
-    {{-- Result summary in modal --}}
-    <div class="modal-summary" id="modalSummary"></div>
-
-    <div class="modal-body" id="modalBody">
-      <div class="form-row">
-        <div class="form-field">
-          <label for="fPrenom">Prénom *</label>
-          <input type="text" id="fPrenom" placeholder="Jean" autocomplete="given-name">
-        </div>
-        <div class="form-field">
-          <label for="fNom">Nom *</label>
-          <input type="text" id="fNom" placeholder="Dupont" autocomplete="family-name">
-        </div>
-      </div>
-      <div class="form-field">
-        <label for="fTel">Téléphone *</label>
-        <input type="tel" id="fTel" placeholder="06 12 34 56 78" autocomplete="tel">
-      </div>
-      <div class="form-field">
-        <label for="fEmail">Email *</label>
-        <input type="email" id="fEmail" placeholder="jean@exemple.fr" autocomplete="email">
-      </div>
-      <div class="form-field">
-        <label for="fAdresse">Adresse du projet *</label>
-        <input type="text" id="fAdresse" placeholder="12 Rue des Fleurs, 35000 Rennes" autocomplete="street-address">
-      </div>
-
-      <div class="form-field" style="margin-bottom:8px">
-        <label>Type de projet *</label>
-      </div>
-      <div class="project-type-grid" id="projectTypeGrid">
-        <button class="project-type-btn active" data-type="autoconsommation">
-          <span class="ptb-icon">⚡</span>
-          <span class="ptb-label">Autoconsommation</span>
-        </button>
-        <button class="project-type-btn" data-type="revente">
-          <span class="ptb-icon">↗️</span>
-          <span class="ptb-label">Revente totale</span>
-        </button>
-        <button class="project-type-btn" data-type="batterie">
-          <span class="ptb-icon">🔋</span>
-          <span class="ptb-label">Avec batterie</span>
-        </button>
-        <button class="project-type-btn" data-type="je-ne-sais-pas">
-          <span class="ptb-icon">🤔</span>
-          <span class="ptb-label">Je ne sais pas</span>
-        </button>
-      </div>
-
-      <button class="submit-btn" id="submitLeadBtn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        Envoyer ma demande de devis
-      </button>
-      <p class="submit-note">🔒 Vos données sont confidentielles et ne seront jamais revendues.</p>
-    </div>
-
-    {{-- Success view (hidden initially) --}}
-    <div class="modal-success hidden" id="modalSuccess">
-      <div class="ms-check">✅</div>
-      <h4>Demande envoyée !</h4>
-      <p>Merci <strong id="successName"></strong> ! Nos experts vous contacteront dans les <strong>24 heures</strong> pour personnaliser votre devis solaire.</p>
-      <button class="btn btn-outline" style="width:auto;margin:20px auto 0;padding:10px 24px;border-radius:10px" id="closeSuccessBtn">Fermer</button>
-    </div>
-  </div>
-</div>
-
 {{-- ── Popup démo ── --}}
 <div class="demo-backdrop" id="demoPopup" style="display:none" role="dialog" aria-modal="true" aria-label="Comment tracer votre zone">
   <div class="demo-box">
@@ -959,7 +880,8 @@ window.__csrfToken = @json(csrf_token());
 window.__estimateUrl = @json(route('api.solar.estimate'));
 window.__geocodeUrl      = @json(route('api.solar.geocode'));
 window.__autocompleteUrl = @json(route('api.solar.autocomplete'));
-window.__leadUrl     = @json(route('api.solar.lead'));
+window.__step4Url = @json(route('simulateur.solaire.confirmation'));
+window.__solarStep4StorageKey = 'solarSimulatorStep4';
 
 // Doit être global ET défini AVANT le chargement du script Maps
 window.gm_authFailure = function(){
@@ -1034,17 +956,6 @@ const panelQuickPicks = $('panelQuickPicks');
 const panelAdjustSub = $('panelAdjustSub');
 const addZoneBtn = $('addZoneBtn');
 const quoteBtn     = $('quoteBtn');
-const leadModal    = $('leadModal');
-const modalClose   = $('modalClose');
-const modalBody    = $('modalBody');
-const modalSuccess = $('modalSuccess');
-const modalSummary = $('modalSummary');
-const submitLeadBtn= $('submitLeadBtn');
-const fPrenom = $('fPrenom'), fNom = $('fNom'), fTel = $('fTel'),
-      fEmail = $('fEmail'), fAdresse = $('fAdresse');
-const successName  = $('successName');
-
-let projectType = 'autoconsommation';
 let map, marker;
 
 // ── Stepper ─────────────────────────────────────────────────────────
@@ -1645,7 +1556,6 @@ async function fetchSolarData(){
     mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
     setStep(2);
     showToast('Adresse analysée — tracez votre zone ✓');
-    fAdresse.value = state.address;
 
     // Démarrer le mode dessin automatiquement
     if(typeof startDrawMode === 'function') startDrawMode();
@@ -1655,7 +1565,6 @@ async function fetchSolarData(){
     // avec des valeurs estimatives (sans données Solar API)
     mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
     setStep(2);
-    fAdresse.value = state.address;
     if(typeof startDrawMode === 'function') startDrawMode();
     // Afficher une note discrète (pas une erreur bloquante)
     dbg('WARN', 'Solar API indisponible — mode estimation locale', e.message);
@@ -2231,7 +2140,6 @@ function openAddress(item){
       marker.setZIndex(6);
     }
   }
-  fAdresse.value = item.label;
   fetchSolarData();
 }
 
@@ -2397,100 +2305,32 @@ changeAddrBtn.addEventListener('click', () => {
   setStep(1);
 });
 
-// ── Lead modal ────────────────────────────────────────────────────
-quoteBtn.addEventListener('click', openModal);
-modalClose.addEventListener('click', closeModal);
-leadModal.addEventListener('click', e => { if(e.target === leadModal) closeModal(); });
-
-function openModal(){
+// ── Step 4 page ───────────────────────────────────────────────────
+quoteBtn.addEventListener('click', () => {
   if(!state.results){ showToast('Veuillez d\'abord analyser votre adresse', true); return; }
 
-  // Populate summary
-  const r = state.results;
-  modalSummary.innerHTML = `
-    <div class="ms-item"><div class="ms-val">${r.panelCount}</div><div class="ms-lbl">panneaux</div></div>
-    <div class="ms-item"><div class="ms-val">${r.kwc}</div><div class="ms-lbl">kWc</div></div>
-    <div class="ms-item"><div class="ms-val">${fmt(r.yearlyKwh)}</div><div class="ms-lbl">kWh/an</div></div>
-    <div class="ms-item"><div class="ms-val">${fmt(r.annualSavings)} €</div><div class="ms-lbl">éco/an</div></div>
-  `;
-
-  fAdresse.value = state.address;
-  modalSuccess.classList.add('hidden');
-  modalBody.style.display = 'block';
-  leadModal.classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-  setStep(4);
-}
-
-function closeModal(){
-  leadModal.classList.add('hidden');
-  document.body.style.overflow = '';
-}
-
-$('closeSuccessBtn').addEventListener('click', closeModal);
-
-// ── Project type selection ────────────────────────────────────────
-document.querySelectorAll('#projectTypeGrid .project-type-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('#projectTypeGrid .project-type-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    projectType = btn.dataset.type;
-  });
-});
-
-// ── Submit lead ───────────────────────────────────────────────────
-submitLeadBtn.addEventListener('click', async () => {
-  // Validate
-  let valid = true;
-  [fPrenom, fNom, fTel, fEmail, fAdresse].forEach(el => {
-    el.classList.remove('error');
-    if(!el.value.trim()){ el.classList.add('error'); valid = false; }
-  });
-  if(!valid){ showToast('Remplissez tous les champs obligatoires', true); return; }
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fEmail.value)){ fEmail.classList.add('error'); showToast('Email invalide', true); return; }
-
-  submitLeadBtn.disabled = true;
-  submitLeadBtn.innerHTML = '<div class="spinner" style="width:18px;height:18px;border-width:3px;margin:0"></div> Envoi…';
-
-  const r = state.results || {};
+  const payload = {
+    address: state.address || '',
+    lat: state.lat,
+    lng: state.lng,
+    zoneType: draw.zoneType,
+    panels: state.results.panelCount || 0,
+    kwc: state.results.kwc || 0,
+    yearlyKwh: state.results.yearlyKwh || 0,
+    annualSavings: state.results.annualSavings || 0,
+    budgetMin: state.results.budgetMin || 0,
+    budgetMax: state.results.budgetMax || 0,
+    surfaceM2: state.results.usableAreaM2 || state.results.areaM2 || 0,
+    selectedAt: new Date().toISOString(),
+  };
 
   try {
-    const resp = await fetch(window.__leadUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': window.__csrfToken,
-        'Accept': 'application/json',
-      },
-      body: JSON.stringify({
-        prenom: fPrenom.value.trim(),
-        nom: fNom.value.trim(),
-        telephone: fTel.value.trim(),
-        email: fEmail.value.trim(),
-        adresse: fAdresse.value.trim(),
-        type_projet: projectType,
-        kwc: r.kwc,
-        budget_min: r.budgetMin,
-        budget_max: r.budgetMax,
-        yearly_kwh: r.yearlyKwh,
-        panel_count: r.panelCount,
-        annual_savings: r.annualSavings,
-      }),
-    });
-
-    const data = await resp.json();
-    if(!resp.ok) throw new Error(data.message || 'Erreur serveur');
-
-    successName.textContent = fPrenom.value.trim();
-    modalBody.style.display = 'none';
-    modalSuccess.classList.remove('hidden');
-    showToast('Demande envoyée ! Nous vous contactons sous 24 h ✓');
-  } catch(e){
-    showToast(e.message || 'Erreur lors de l\'envoi', true);
-  } finally {
-    submitLeadBtn.disabled = false;
-    submitLeadBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Envoyer ma demande de devis';
+    window.sessionStorage.setItem(window.__solarStep4StorageKey, JSON.stringify(payload));
+  } catch (e) {
+    console.warn('Impossible de stocker les données étape 4', e);
   }
+
+  window.location.href = window.__step4Url;
 });
 
 // ── Debug logger ─────────────────────────────────────────────────

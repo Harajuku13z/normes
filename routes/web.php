@@ -177,6 +177,11 @@ Route::get('/realisations/{portfolio_project}', [RealisationsController::class, 
 
 // Simulateur solaire
 Route::get('/simulateur-solaire', [SolarSimulatorController::class, 'index'])->name('simulateur.solaire');
+Route::get('/simulateur-solaire/etape-4', [SolarSimulatorController::class, 'confirmation'])->name('simulateur.solaire.confirmation');
+Route::post('/simulateur-solaire/etape-4', [SolarSimulatorController::class, 'storeConfirmation'])
+    ->middleware('throttle:5,1')
+    ->name('simulateur.solaire.confirmation.store');
+Route::get('/simulateur-solaire/merci', [SolarSimulatorController::class, 'success'])->name('simulateur.solaire.success');
 Route::get('/api/solar-demo-image', [SolarSimulatorController::class, 'demoImage'])
     ->middleware('throttle:30,1')
     ->name('api.solar.demoImage');

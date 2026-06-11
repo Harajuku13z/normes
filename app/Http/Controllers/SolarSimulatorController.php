@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\SimulateurLead;
 use App\Services\HomePageService;
+use App\Services\SimulateurMailer;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
 class SolarSimulatorController extends Controller
@@ -17,6 +18,20 @@ class SolarSimulatorController extends Controller
         return view('simulateur.solaire', [
             'home' => $homePage->merged(),
             'googleMapsKey' => config('services.google.maps_browser_key'),
+        ]);
+    }
+
+    public function confirmation(HomePageService $homePage): View
+    {
+        return view('simulateur.solaire-confirmation', [
+            'home' => $homePage->merged(),
+        ]);
+    }
+
+    public function success(HomePageService $homePage): View
+    {
+        return view('simulateur.solaire-success', [
+            'home' => $homePage->merged(),
         ]);
     }
 
@@ -478,82 +493,163 @@ class SolarSimulatorController extends Controller
         }
     }
 
-    public function saveLead(Request $request): JsonResponse
+    public function storeConfirmation(Request $request, SimulateurMailer $mailer): RedirectResponse
     {
-        $data = $request->validate([
-            'prenom'       => ['required', 'string', 'max:100'],
-            'nom'          => ['required', 'string', 'max:100'],
-            'telephone'    => ['required', 'string', 'max:30'],
-            'email'        => ['required', 'email', 'max:190'],
-            'adresse'      => ['required', 'string', 'max:255'],
-            'type_projet'  => ['required', 'string', 'in:autoconsommation,revente,batterie,je-ne-sais-pas'],
-            'kwc'          => ['nullable', 'numeric'],
-            'budget_min'   => ['nullable', 'numeric'],
-            'budget_max'   => ['nullable', 'numeric'],
-            'yearly_kwh'   => ['nullable', 'numeric'],
-            'panel_count'  => ['nullable', 'integer'],
-            'annual_savings' => ['nullable', 'numeric'],
-        ]);
-
-        $nomPrenom = trim($data['prenom'] . ' ' . $data['nom']);
-        $message   = sprintf(
-            'Simulation solaire — Type: %s | %s kWc | %s kWh/an | Économies: %s €/an | Budget: %s € – %s € | %s panneaux',
-            $data['type_projet'],
-            $data['kwc'] ?? '?',
-            $data['yearly_kwh'] ?? '?',
-            $data['annual_savings'] ?? '?',
-            $data['budget_min'] ?? '?',
-            $data['budget_max'] ?? '?',
-            $data['panel_count'] ?? '?'
-        );
-
         try {
-            SimulateurLead::create([
-                'nom_prenom'    => $nomPrenom,
-                'telephone'     => $data['telephone'],
-                'email'         => $data['email'],
-                'address'       => $data['adresse'],
-                'source_page'   => '/simulateur-solaire',
-                'service_slug'  => 'photovoltaique',
-                'service_title' => 'Panneaux Solaires Photovoltaïques',
-                'message'       => $message,
-                'status'        => 'completed',
-                'completed_at'  => now(),
-            ]);
+            $this->completeLead($this->validateLeadPayload($request), $mailer);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            throw $e;
         } catch (\Throwable $e) {
-            logger()->error('SolarLead save failed: ' . $e->getMessage());
+            logger()->error('SolarLead confirmation failed: ' . $e->getMessage());
+
+            return back()
+                ->withInput()
+                ->withErrors(['form' => 'Impossible d\'envoyer votre demande pour le moment. Merci de réessayer.']);
         }
 
+        return redirect()->route('simulateur.solaire.success');
+    }
+
+    public function saveLead(Request $request, SimulateurMailer $mailer): JsonResponse
+    {
         try {
-            $adminMail = config('mail.from.address', 'contact@normesrenovationbretagne.fr');
-            Mail::raw(
-                implode("\n", [
-                    '🌞 NOUVEAU LEAD SIMULATEUR SOLAIRE',
-                    str_repeat('─', 50),
-                    "Nom : {$nomPrenom}",
-                    "Téléphone : {$data['telephone']}",
-                    "Email : {$data['email']}",
-                    "Adresse : {$data['adresse']}",
-                    "Type de projet : {$data['type_projet']}",
-                    '',
-                    '📊 RÉSULTATS DE LA SIMULATION',
-                    str_repeat('─', 50),
-                    "Puissance installée : " . ($data['kwc'] ?? '?') . " kWc",
-                    "Production annuelle : " . ($data['yearly_kwh'] ?? '?') . " kWh/an",
-                    "Économies annuelles : " . ($data['annual_savings'] ?? '?') . " €/an",
-                    "Budget estimé : " . ($data['budget_min'] ?? '?') . " € – " . ($data['budget_max'] ?? '?') . " €",
-                    "Nombre de panneaux : " . ($data['panel_count'] ?? '?') . " panneaux",
-                    '',
-                    'Généré via normesrenovation.fr/simulateur-solaire',
-                ]),
-                fn ($msg) => $msg
-                    ->to($adminMail)
-                    ->subject('🌞 Lead solaire — ' . $nomPrenom . ' — ' . ($data['kwc'] ?? '?') . ' kWc')
-            );
+            $lead = $this->completeLead($this->validateLeadPayload($request), $mailer);
         } catch (\Throwable $e) {
+            logger()->error('SolarLead API save failed: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Impossible d\'envoyer votre demande pour le moment.',
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'lead_id' => $lead->id,
+        ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function validateLeadPayload(Request $request): array
+    {
+        return $request->validate([
+            'prenom'         => ['required', 'string', 'max:100'],
+            'nom'            => ['required', 'string', 'max:100'],
+            'telephone'      => ['required', 'string', 'max:30'],
+            'email'          => ['required', 'email', 'max:190'],
+            'adresse'        => ['required', 'string', 'max:255'],
+            'type_projet'    => ['required', 'string', 'in:autoconsommation,revente,batterie,je-ne-sais-pas'],
+            'kwc'            => ['nullable', 'numeric'],
+            'budget_min'     => ['nullable', 'numeric'],
+            'budget_max'     => ['nullable', 'numeric'],
+            'yearly_kwh'     => ['nullable', 'numeric'],
+            'panel_count'    => ['nullable', 'integer'],
+            'annual_savings' => ['nullable', 'numeric'],
+            'surface_m2'     => ['nullable', 'numeric'],
+        ]);
+    }
+
+    private function completeLead(array $data, SimulateurMailer $mailer): SimulateurLead
+    {
+        $lead = SimulateurLead::create([
+            'nom_prenom'            => trim($data['prenom'] . ' ' . $data['nom']),
+            'code_postal'           => $this->extractLeadPostcode((string) $data['adresse']),
+            'surface_m2'            => $data['surface_m2'] ?? null,
+            'address'               => $data['adresse'],
+            'source_page'           => '/simulateur-solaire',
+            'telephone'             => $data['telephone'],
+            'email'                 => $data['email'],
+            'service_slug'          => 'photovoltaique',
+            'service_title'         => 'Panneaux Solaires Photovoltaïques',
+            'selected_services'     => ['Panneaux solaires'],
+            'selected_sub_services' => $this->buildLeadSubServices($data),
+            'message'               => $this->buildLeadMessage($data),
+            'status'                => 'completed',
+            'completed_at'          => now(),
+        ]);
+
+        try {
+            $mailer->sendCompleted($lead);
+
+            $settings = $mailer->settings();
+            $updates = [];
+            if ((bool) data_get($settings, 'notifications.send_to_admin_on_completed', false)
+                && (string) data_get($settings, 'notifications.admin_email', '') !== '') {
+                $updates['admin_notified_completed_at'] = now();
+            }
+            if ((bool) data_get($settings, 'notifications.send_to_client', false)
+                && trim((string) $lead->email) !== '') {
+                $updates['client_notified_at'] = now();
+            }
+            if ($updates !== []) {
+                $lead->forceFill($updates)->save();
+            }
+        } catch (\Throwable $e) {
+            $lead->forceFill(['mail_error' => $e->getMessage()])->save();
             logger()->error('SolarLead mail failed: ' . $e->getMessage());
         }
 
-        return response()->json(['success' => true]);
+        return $lead;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<int, string>
+     */
+    private function buildLeadSubServices(array $data): array
+    {
+        return array_values(array_filter([
+            $this->projectTypeLabel((string) $data['type_projet']),
+            isset($data['panel_count']) ? ((int) $data['panel_count']) . ' panneaux' : null,
+            isset($data['kwc']) ? $this->formatLeadNumber((float) $data['kwc']) . ' kWc' : null,
+        ]));
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    private function buildLeadMessage(array $data): string
+    {
+        return implode(' | ', array_filter([
+            'Projet : ' . $this->projectTypeLabel((string) $data['type_projet']),
+            isset($data['panel_count']) ? ((int) $data['panel_count']) . ' panneaux' : null,
+            isset($data['kwc']) ? $this->formatLeadNumber((float) $data['kwc']) . ' kWc' : null,
+            isset($data['yearly_kwh']) ? $this->formatLeadNumber((float) $data['yearly_kwh'], 0) . ' kWh/an' : null,
+            isset($data['annual_savings']) ? $this->formatLeadNumber((float) $data['annual_savings'], 0) . ' €/an d\'économies' : null,
+            (isset($data['budget_min']) || isset($data['budget_max']))
+                ? 'Budget estimé : '
+                    . ($this->formatLeadNumber((float) ($data['budget_min'] ?? 0), 0) ?: '0')
+                    . ' € à '
+                    . ($this->formatLeadNumber((float) ($data['budget_max'] ?? 0), 0) ?: '0')
+                    . ' €'
+                : null,
+            isset($data['surface_m2']) ? $this->formatLeadNumber((float) $data['surface_m2'], 0) . ' m² disponibles' : null,
+        ]));
+    }
+
+    private function extractLeadPostcode(string $address): ?string
+    {
+        if (preg_match('/\b(\d{5})\b/', $address, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
+    }
+
+    private function projectTypeLabel(string $type): string
+    {
+        return match ($type) {
+            'autoconsommation' => 'Autoconsommation',
+            'revente' => 'Revente totale',
+            'batterie' => 'Avec batterie',
+            default => 'Projet à définir',
+        };
+    }
+
+    private function formatLeadNumber(float $value, int $decimals = 2): string
+    {
+        return rtrim(rtrim(number_format($value, $decimals, '.', ''), '0'), '.');
     }
 }
