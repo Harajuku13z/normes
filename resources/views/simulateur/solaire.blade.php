@@ -1223,7 +1223,7 @@ function updatePanelAdjustUi(){
   if(panelCountVal) panelCountVal.textContent = fmt(count);
   if(panelMaxVal) panelMaxVal.textContent = `${fmt(maxSelectable)} max`;
   if(panelAdjustSub){
-    panelAdjustSub.textContent = `Ajustement panneau par panneau. Contour jaune = retrait de sécurité ${fmt1(layout.safetyInsetMeters || SAFETY_SETBACK_METERS)} m. Les panneaux restent disposés uniquement à l'intérieur de la limite.`;
+    panelAdjustSub.textContent = `Choisissez le nombre de panneaux. La ligne jaune garde un espace libre tout autour.`;
   }
   if(panelMinusBtn) panelMinusBtn.disabled = count <= 0;
   if(panelPlusBtn) panelPlusBtn.disabled = count >= maxSelectable;
@@ -1563,7 +1563,7 @@ function displayResults(r){
     ? null
     : (r.roofSegments?.[0] || state.baseResults?.roofSegments?.[0] || null);
   const autoRoof = getAutoRoofSettings();
-  const surfaceLabel = Number.isFinite(r.usableAreaM2) ? 'Zone utile panneaux' : 'Surface sélectionnée';
+  const surfaceLabel = Number.isFinite(r.usableAreaM2) ? 'Surface disponible' : 'Surface sélectionnée';
   const surfaceValue = Number.isFinite(r.usableAreaM2)
     ? `${fmt(r.usableAreaM2)} m² · retrait ${fmt1(r.panelSetbackMeters || SAFETY_SETBACK_METERS)} m`
     : `${fmt(r.areaM2 || 0)} m²`;
@@ -2027,11 +2027,11 @@ function refreshValidatedZoneUi(results){
   $('zoneValidatedArea').textContent = Math.round(layout?.totalAreaM2 || results.areaM2 || 0);
 
   if(currentCount > 0){
-    $('surfaceSub').textContent = `${currentCount} panneaux à l'échelle · retrait sécurité ${fmt1(layout?.safetyInsetMeters || SAFETY_SETBACK_METERS)} m`;
-    mapInfoText.innerHTML = `<b>Zone utile :</b> ${fmt(layout?.usableAreaM2 || results.usableAreaM2 || 0)} m² après retrait de sécurité de ${fmt1(layout?.safetyInsetMeters || SAFETY_SETBACK_METERS)} m. Les panneaux bleus sont dessinés à l'échelle réelle.`;
+    $('surfaceSub').textContent = `${currentCount} panneaux prévus`;
+    mapInfoText.innerHTML = `<b>${fmt(layout?.usableAreaM2 || results.usableAreaM2 || 0)} m² disponibles</b> pour placer vos panneaux.`;
   } else {
-    $('surfaceSub').textContent = `Zone utile ${fmt(layout?.usableAreaM2 || results.usableAreaM2 || 0)} m² · aucun panneau ne rentre`;
-    mapInfoText.innerHTML = `<b>Zone validée :</b> ${fmt(layout?.totalAreaM2 || results.areaM2 || 0)} m². La zone utile après retrait de sécurité de ${fmt1(layout?.safetyInsetMeters || SAFETY_SETBACK_METERS)} m est trop petite pour accueillir un panneau.`;
+    $('surfaceSub').textContent = `Cette zone est trop petite pour accueillir des panneaux`;
+    mapInfoText.innerHTML = `Cette zone ne permet pas de poser des panneaux.`;
   }
 }
 
