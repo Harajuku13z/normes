@@ -2583,38 +2583,7 @@ loadMaps();
 })();
 </script>
 
-{{-- ── Panneau de debug (visible, aide au diagnostic) ── --}}
-<div id="debugContainer" style="
-  position:fixed;bottom:0;right:0;width:420px;max-height:260px;
-  background:#fff;border:2px solid #e6ebef;border-radius:16px 0 0 0;
-  box-shadow:0 -4px 24px rgba(15,34,49,.12);z-index:9999;
-  display:flex;flex-direction:column;font-family:'Inter',monospace;
-">
-  <div style="
-    display:flex;align-items:center;justify-content:space-between;
-    padding:8px 14px;background:#0f2231;border-radius:14px 0 0 0;cursor:pointer;
-  " id="debugToggle">
-    <span style="color:#fff;font-size:12px;font-weight:700;letter-spacing:.04em">🔍 DEBUG — Google Maps</span>
-    <span style="color:#8a96a0;font-size:11px" id="debugToggleLabel">Masquer</span>
-  </div>
-  <div id="debugPanel" style="overflow-y:auto;padding:10px 14px;flex:1;font-size:11.5px"></div>
-  <div style="padding:8px 14px;border-top:1px solid #eef2f5;display:flex;gap:8px">
-    <button onclick="copyDebugLogs()" style="flex:1;border:1px solid #e6ebef;background:#f4f6f8;border-radius:7px;padding:5px 10px;font-size:11px;cursor:pointer;font-weight:600">📋 Copier les logs</button>
-    <button onclick="document.getElementById('debugContainer').remove()" style="border:1px solid #e6ebef;background:#fff;border-radius:7px;padding:5px 10px;font-size:11px;cursor:pointer;color:#e23a3a;font-weight:600">✕ Fermer</button>
-  </div>
-</div>
 <script>
-document.getElementById('debugToggle').addEventListener('click', function(){
-  const p = document.getElementById('debugPanel');
-  const l = document.getElementById('debugToggleLabel');
-  const c = document.getElementById('debugContainer');
-  if(p.style.display === 'none'){ p.style.display=''; c.style.maxHeight='260px'; l.textContent='Masquer'; }
-  else { p.style.display='none'; c.style.maxHeight='auto'; l.textContent='Afficher'; }
-});
-function copyDebugLogs(){
-  const text = (window.debugLogs||[]).map(e=>`[${e.t}] ${e.level} — ${e.msg}${e.data?' | '+JSON.stringify(e.data):''}`).join('\n');
-  navigator.clipboard.writeText(text).then(()=>alert('Logs copiés !')).catch(()=>prompt('Copiez les logs :',text));
-}
 // Layer switch inside map
 document.addEventListener('DOMContentLoaded', function(){
   const mapWrap = document.querySelector('.map-wrap');
