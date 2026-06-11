@@ -1099,6 +1099,7 @@ function getAutoRoofSettings(){
 let solarPanelOverlays = [];
 let solarSafetyBandOverlay = null;
 let solarSafetyOutline = null;
+let solarUsableAreaOverlay = null;
 
 function clearSolarPanels(){
   solarPanelOverlays.forEach(p => p.setMap(null));
@@ -1106,9 +1107,10 @@ function clearSolarPanels(){
 }
 
 function clearSafetyZone(){
-  [solarSafetyBandOverlay, solarSafetyOutline].forEach(overlay => overlay?.setMap(null));
+  [solarSafetyBandOverlay, solarSafetyOutline, solarUsableAreaOverlay].forEach(overlay => overlay?.setMap(null));
   solarSafetyBandOverlay = null;
   solarSafetyOutline = null;
+  solarUsableAreaOverlay = null;
 }
 
 function clearPanelLayout(){
@@ -1330,7 +1332,17 @@ function drawSafetyZone(layout){
     paths: [draw.points, [...layout.insetPoints].reverse()],
     strokeOpacity: 0,
     fillColor: '#f5c400',
-    fillOpacity: 0.15,
+    fillOpacity: 0.22,
+    map,
+    clickable: false,
+    zIndex: 2,
+  });
+
+  solarUsableAreaOverlay = new google.maps.Polygon({
+    paths: layout.insetPoints,
+    strokeOpacity: 0,
+    fillColor: '#22a06b',
+    fillOpacity: 0.10,
     map,
     clickable: false,
     zIndex: 2,
@@ -1587,7 +1599,11 @@ function drawPolygon(){
       zIndex: 1,
     });
     if(draw.validated){
-      draw.polygon.setOptions({strokeColor:'#1f8a5b', fillColor:'#1f8a5b'});
+      draw.polygon.setOptions({
+        strokeColor:'#1f8a5b',
+        fillColor:'#1f8a5b',
+        fillOpacity: 0.05,
+      });
     }
   }
 }
