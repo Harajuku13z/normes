@@ -1875,7 +1875,7 @@ function validateZone(){
   const fullLayout = generatePanelsInPolygon(draw.points, panelHeightMeters, panelWidthMeters, PANEL_GAP_METERS, SAFETY_SETBACK_METERS);
   const usableAreaM2 = fullLayout.insetPoints?.length >= 3 ? computeAreaM2(fullLayout.insetPoints) : totalAreaM2;
   const solarApiMax = base?.maxPanels || 0;
-  const maxPanels = solarApiMax > 0 ? Math.min(fullLayout.panels.length, solarApiMax) : fullLayout.panels.length;
+  const maxPanels = fullLayout.panels.length;
 
   state.panelLayout = {
     ...fullLayout,
@@ -1884,6 +1884,7 @@ function validateZone(){
     maxPanels,
     activeCount: maxPanels,
     fullPanelCount: fullLayout.panels.length,
+    solarApiSuggestedPanels: solarApiMax,
   };
 
   applyValidatedLayout(maxPanels);
