@@ -1065,6 +1065,8 @@ function showToast(msg, isError = false){
 const fmt = n => Math.round(n).toLocaleString('fr-FR');
 const fmt1 = n => Number(n || 0).toLocaleString('fr-FR', {minimumFractionDigits:1, maximumFractionDigits:1});
 const PANEL_POWER_KWC = 0.425;
+const KIT_POWER_KWC = 3;
+const PANELS_PER_KIT = Math.max(1, Math.round(KIT_POWER_KWC / PANEL_POWER_KWC));
 const PANEL_GAP_METERS = 0.02;
 const SAFETY_SETBACK_METERS = 1;
 const PANEL_INNER_CLEARANCE_METERS = 0.08;
@@ -1099,19 +1101,38 @@ function getAutoRoofSettings(){
   };
 }
 
-function getEvenPanelCount(rawCount, maxPanels = rawCount, mode = 'floor'){
+function getKitAlignedPanelCount(rawCount, maxPanels = rawCount, mode = 'floor'){
   const safeMax = Math.max(0, Number(maxPanels) || 0);
   const safeCount = Math.max(0, Math.min(Number(rawCount) || 0, safeMax));
   if(safeMax === 0) return 0;
-  if(safeMax < 2) return safeCount;
-  if(mode === 'ceil') return Math.min(safeMax, safeCount % 2 === 0 ? safeCount : safeCount + 1);
-  if(mode === 'nearest') return Math.min(safeMax, Math.max(2, Math.round(safeCount / 2) * 2));
-  return safeCount % 2 === 0 ? safeCount : safeCount - 1;
+  if(safeMax < PANELS_PER_KIT) return safeCount;
+  const kitRatio = safeCount / PANELS_PER_KIT;
+  if(mode === 'ceil') return Math.min(safeMax, Math.ceil(kitRatio) * PANELS_PER_KIT);
+  if(mode === 'nearest') return Math.min(safeMax, Math.max(PANELS_PER_KIT, Math.round(kitRatio) * PANELS_PER_KIT));
+  const floored = Math.floor(kitRatio) * PANELS_PER_KIT;
+  return floored >= PANELS_PER_KIT ? floored : 0;
 }
 
 function formatPanelCountLabel(panelCount){
   const safeCount = Math.max(0, Number(panelCount) || 0);
   return `${fmt(safeCount)} panneau${safeCount > 1 ? 'x' : ''}`;
+}
+
+function formatRoofKitLabel(panelCount){
+  const safeCount = Math.max(0, Number(panelCount) || 0);
+  const kitCount = safeCount >= PANELS_PER_KIT ? Math.round(safeCount / PANELS_PER_KIT) : 0;
+  if(kitCount > 0 && safeCount % PANELS_PER_KIT === 0){
+    return `${kitCount} kit${kitCount > 1 ? 's' : ''} de ${KIT_POWER_KWC} kWc`;
+  }
+  return formatPanelCountLabel(safeCount);
+}
+
+function getRoofDefaultPanelCount(maxPanels){
+  const maxSelectable = getKitAlignedPanelCount(maxPanels, maxPanels, 'floor');
+  if(maxSelectable >= PANELS_PER_KIT * 3) return PANELS_PER_KIT * 3;
+  if(maxSelectable >= PANELS_PER_KIT * 2) return PANELS_PER_KIT * 2;
+  if(maxSelectable >= PANELS_PER_KIT) return PANELS_PER_KIT;
+  return maxPanels;
 }
 
 // ── Panneaux solaires en grille dans le polygone dessiné ──────────
@@ -1164,7 +1185,10 @@ function updatePanelAdjustUi(){
   if(panelCountVal) panelCountVal.textContent = fmt(count);
   if(panelMaxVal) panelMaxVal.textContent = `${fmt(maxSelectable)} max`;
   if(panelAdjustSub){
-    panelAdjustSub.textContent = `Ajustement par nombres pairs. Contour jaune = retrait de sécurité ${fmt1(layout.safetyInsetMeters || SAFETY_SETBACK_METERS)} m. Les panneaux restent disposés dans la zone utile.`;
+    const stepLabel = draw.zoneType === 'roof'
+      ? `Ajustement par ${formatRoofKitLabel(PANELS_PER_KIT)}.`
+      : 'Ajustement panneau par panneau.';
+    panelAdjustSub.textContent = `${stepLabel} Contour jaune = retrait de sécurité ${fmt1(layout.safetyInsetMeters || SAFETY_SETBACK_METERS)} m. Les panneaux restent disposés uniquement à l'intérieur de la limite.`;
   }
   if(panelMinusBtn) panelMinusBtn.disabled = count <= 0;
   if(panelPlusBtn) panelPlusBtn.disabled = count >= maxSelectable;
@@ -1173,7 +1197,8 @@ function updatePanelAdjustUi(){
 function stepPanelCount(delta){
   const layout = state.panelLayout;
   if(!layout) return;
-  applyValidatedLayout((layout.activeCount ?? 0) + (delta * 2));
+  const stepSize = draw.zoneType === 'roof' ? PANELS_PER_KIT : 1;
+  applyValidatedLayout((layout.activeCount ?? 0) + (delta * stepSize));
 }
 
 function closePolylinePath(points){
@@ -1249,12 +1274,13 @@ function insetPolygonM(polyPoints, insetM){
  * - Alignement sur l'angle du bord le plus long (orientation du toit)
  * - Taille réelle des panneaux (panelH × panelW en mètres)
  */
-function computePanelLayoutVariant(insetPts, panelH, panelW, gap, orientationMode){
+function computePanelLayoutVariant(insetPts, panelH, panelW, gap, orientationMode, outerPts){
   const centLat = insetPts.reduce((s,p) => s+p.lat(),0)/insetPts.length;
   const centLng = insetPts.reduce((s,p) => s+p.lng(),0)/insetPts.length;
   const mPerLat = 111320;
   const mPerLng = 111320 * Math.cos(centLat * Math.PI/180);
   const insetPoly = new google.maps.Polygon({ paths: insetPts });
+  const outerPoly = outerPts?.length >= 3 ? new google.maps.Polygon({ paths: outerPts }) : null;
 
   // Angle du bord le plus long pour aligner les panneaux sur le pan sélectionné
   let maxLen = 0, angle = 0;
@@ -1308,6 +1334,7 @@ function computePanelLayoutVariant(insetPts, panelH, panelW, gap, orientationMod
       ];
       const cornerPoints = corners.map(c => new google.maps.LatLng(c.lat, c.lng));
       if(!cornerPoints.every(point => pointInsideOrOnEdge(point, insetPoly))) continue;
+      if(outerPoly && !cornerPoints.every(point => pointInsideOrOnEdge(point, outerPoly))) continue;
       panels.push(corners);
     }
   }
@@ -1329,8 +1356,8 @@ function generatePanelsInPolygon(polyPoints, panelH, panelW, gap = PANEL_GAP_MET
   const panelAreaPts = panelPlacementPts?.length >= 3 ? panelPlacementPts : insetPts;
 
   const variants = [
-    computePanelLayoutVariant(panelAreaPts, panelH, panelW, gap, 'portrait'),
-    computePanelLayoutVariant(panelAreaPts, panelW, panelH, gap, 'landscape'),
+    computePanelLayoutVariant(panelAreaPts, panelH, panelW, gap, 'portrait', polyPoints),
+    computePanelLayoutVariant(panelAreaPts, panelW, panelH, gap, 'landscape', polyPoints),
   ].sort((a, b) => b.panels.length - a.panels.length);
 
   return {
@@ -1454,7 +1481,7 @@ function displayResults(r){
     </div>
     <div class="roof-info-row">
       <div class="ri-icon">🔷</div>
-      <div><div class="ri-label">Calepinage</div><div class="ri-val">${formatPanelCountLabel(r.panelCount || 0)} disposés dans la zone utile</div></div>
+      <div><div class="ri-label">Calepinage</div><div class="ri-val">${draw.zoneType === 'roof' ? formatRoofKitLabel(r.panelCount || 0) : formatPanelCountLabel(r.panelCount || 0)} disposés dans la zone utile</div></div>
     </div>
     ${seg ? `
     <div class="roof-info-row">
@@ -1894,11 +1921,13 @@ function applyValidatedLayout(panelCount = state.panelLayout?.activeCount ?? 0){
 
   const maxSelectable = layout.selectableMaxPanels ?? layout.maxPanels;
   const boundedCount = Math.max(0, Math.min(panelCount, maxSelectable));
-  const safeCount = getEvenPanelCount(
-    boundedCount,
-    maxSelectable,
-    boundedCount >= (layout.activeCount ?? 0) ? 'floor' : 'ceil'
-  );
+  const safeCount = draw.zoneType === 'roof'
+    ? getKitAlignedPanelCount(
+        boundedCount,
+        maxSelectable,
+        boundedCount >= (layout.activeCount ?? 0) ? 'floor' : 'ceil'
+      )
+    : boundedCount;
   layout.activeCount = safeCount;
 
   const nextResults = {
@@ -1933,8 +1962,12 @@ function validateZone(){
   const usableAreaM2 = fullLayout.insetPoints?.length >= 3 ? computeAreaM2(fullLayout.insetPoints) : totalAreaM2;
   const solarApiMax = base?.maxPanels || 0;
   const maxPanels = fullLayout.panels.length;
-  const selectableMaxPanels = getEvenPanelCount(maxPanels, maxPanels, 'floor');
-  const defaultPanelCount = selectableMaxPanels;
+  const selectableMaxPanels = draw.zoneType === 'roof'
+    ? getKitAlignedPanelCount(maxPanels, maxPanels, 'floor')
+    : maxPanels;
+  const defaultPanelCount = draw.zoneType === 'roof'
+    ? getRoofDefaultPanelCount(maxPanels)
+    : selectableMaxPanels;
 
   state.panelLayout = {
     ...fullLayout,
@@ -1960,7 +1993,7 @@ function validateZone(){
   $('cardRoof').scrollIntoView({behavior:'smooth', block:'nearest'});
   showToast(
     defaultPanelCount > 0
-      ? `Zone validée — ${Math.round(totalAreaM2)} m² · ${formatPanelCountLabel(defaultPanelCount)} ✓`
+      ? `Zone validée — ${Math.round(totalAreaM2)} m² · ${draw.zoneType === 'roof' ? formatRoofKitLabel(defaultPanelCount) : formatPanelCountLabel(defaultPanelCount)} ✓`
       : `Zone validée — ${Math.round(totalAreaM2)} m² · zone trop petite pour un panneau`
   );
 }
