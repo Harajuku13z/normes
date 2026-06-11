@@ -1526,12 +1526,7 @@ function displayResults(r){
     <div class="roof-info-row">
       <div class="ri-icon">🧭</div>
       <div><div class="ri-label">Orientation détectée</div><div class="ri-val">${azimuthToLabel(seg.azimuthDeg)}${seg.sunshineAvg ? ` · ${seg.sunshineAvg} h/an` : ''}</div></div>
-    </div>
-    ${autoRoof.hasPitch ? `
-    <div class="roof-info-row">
-      <div class="ri-icon">📐</div>
-      <div><div class="ri-label">Inclinaison détectée</div><div class="ri-val">${seg.pitchDeg}°</div></div>
-    </div>` : ''}` : ''}
+    </div>` : ''}
     ${r.sunshineHoursPerYear ? `
     <div class="roof-info-row">
       <div class="ri-icon">☀️</div>
