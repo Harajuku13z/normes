@@ -1956,13 +1956,7 @@ function applyValidatedLayout(panelCount = state.panelLayout?.activeCount ?? 0){
 
   const maxSelectable = layout.selectableMaxPanels ?? layout.maxPanels;
   const boundedCount = Math.max(0, Math.min(panelCount, maxSelectable));
-  const safeCount = draw.zoneType === 'roof'
-    ? getKitAlignedPanelCount(
-        boundedCount,
-        maxSelectable,
-        boundedCount >= (layout.activeCount ?? 0) ? 'floor' : 'ceil'
-      )
-    : boundedCount;
+  const safeCount = boundedCount;
   layout.activeCount = safeCount;
 
   const nextResults = {
@@ -1997,9 +1991,7 @@ function validateZone(){
   const usableAreaM2 = fullLayout.insetPoints?.length >= 3 ? computeAreaM2(fullLayout.insetPoints) : totalAreaM2;
   const solarApiMax = base?.maxPanels || 0;
   const maxPanels = fullLayout.panels.length;
-  const selectableMaxPanels = draw.zoneType === 'roof'
-    ? getKitAlignedPanelCount(maxPanels, maxPanels, 'floor')
-    : maxPanels;
+  const selectableMaxPanels = maxPanels;
   const defaultPanelCount = draw.zoneType === 'roof'
     ? getRoofDefaultPanelCount(maxPanels)
     : selectableMaxPanels;
