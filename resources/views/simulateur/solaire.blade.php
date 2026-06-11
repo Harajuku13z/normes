@@ -771,7 +771,7 @@ html,body{
           <span id="sliderVal" style="font-size:12px;font-weight:700;color:var(--ink)"></span>
         </div>
         <input type="range" id="panelSlider" style="width:100%;accent-color:var(--accent)">
-        <p style="font-size:11px;color:var(--muted);margin-top:6px">Ajustez pour voir les panneaux sur la carte</p>
+        <p style="font-size:11px;color:var(--muted);margin-top:6px">Contour jaune = retrait de sécurité 0,5 m. Ajustez pour voir le calepinage réel.</p>
       </div>
 
       <div class="card chart-card" id="chartCard">
@@ -999,7 +999,10 @@ window.gm_authFailure = function(){
 const state = {
   lat: null, lng: null,
   address: '',
+  baseResults: null,
   results: null,
+  drawResults: null,
+  panelLayout: null,
   currentStep: 1,
 };
 
@@ -1058,6 +1061,10 @@ function showToast(msg, isError = false){
 
 // ── Number formatting ─────────────────────────────────────────────
 const fmt = n => Math.round(n).toLocaleString('fr-FR');
+const fmt1 = n => Number(n || 0).toLocaleString('fr-FR', {minimumFractionDigits:1, maximumFractionDigits:1});
+const PANEL_POWER_KWC = 0.425;
+const PANEL_GAP_METERS = 0.02;
+const SAFETY_SETBACK_METERS = 0.5;
 
 // ── Update metrics in right panel ────────────────────────────────
 const azimuthToLabel = az => {
@@ -1070,10 +1077,47 @@ const azimuthToLabel = az => {
 
 // ── Panneaux solaires en grille dans le polygone dessiné ──────────
 let solarPanelOverlays = [];
+let solarSafetyBandOverlay = null;
+let solarSafetyOutline = null;
 
 function clearSolarPanels(){
   solarPanelOverlays.forEach(p => p.setMap(null));
   solarPanelOverlays = [];
+}
+
+function clearSafetyZone(){
+  [solarSafetyBandOverlay, solarSafetyOutline].forEach(overlay => overlay?.setMap(null));
+  solarSafetyBandOverlay = null;
+  solarSafetyOutline = null;
+}
+
+function clearPanelLayout(){
+  clearSolarPanels();
+  clearSafetyZone();
+  state.panelLayout = null;
+}
+
+function hidePanelSlider(){
+  const wrap = $('panelSliderWrap');
+  const slider = $('panelSlider');
+  if(slider){
+    slider.oninput = null;
+    slider.min = 0;
+    slider.max = 0;
+    slider.value = 0;
+  }
+  if(wrap) wrap.style.display = 'none';
+  if($('sliderVal')) $('sliderVal').textContent = '';
+}
+
+function closePolylinePath(points){
+  if(!points?.length) return [];
+  return [...points, points[0]];
+}
+
+function pointInsideOrOnEdge(point, polygon){
+  return google.maps.geometry.poly.containsLocation(point, polygon)
+    || google.maps.geometry.poly.isLocationOnEdge(point, polygon, 1e-9);
 }
 
 // ── Intersection de deux droites (en mètres) ─────────────────────
@@ -1139,19 +1183,14 @@ function insetPolygonM(polyPoints, insetM){
  * - Alignement sur l'angle du bord le plus long (orientation du toit)
  * - Taille réelle des panneaux (panelH × panelW en mètres)
  */
-function generatePanelsInPolygon(polyPoints, panelH, panelW, gap){
-  if(!polyPoints || polyPoints.length < 3) return [];
-
-  // 1. Appliquer le retrait de sécurité 0.5 m
-  const insetPts = insetPolygonM(polyPoints, 0.5);
-  if(!insetPts || insetPts.length < 3) return [];
-
+function computePanelLayoutVariant(insetPts, panelH, panelW, gap, orientationMode){
   const centLat = insetPts.reduce((s,p) => s+p.lat(),0)/insetPts.length;
   const centLng = insetPts.reduce((s,p) => s+p.lng(),0)/insetPts.length;
   const mPerLat = 111320;
   const mPerLng = 111320 * Math.cos(centLat * Math.PI/180);
+  const insetPoly = new google.maps.Polygon({ paths: insetPts });
 
-  // 2. Angle du bord le plus long (orientation du toit)
+  // Angle du bord le plus long pour aligner les panneaux sur le pan sélectionné
   let maxLen = 0, angle = 0;
   for(let i=0;i<insetPts.length;i++){
     const p1 = insetPts[i], p2 = insetPts[(i+1)%insetPts.length];
@@ -1175,41 +1214,99 @@ function generatePanelsInPolygon(polyPoints, panelH, panelW, gap){
   const minLng  = Math.min(...rotPoly.map(p=>p.lng));
   const maxLng  = Math.max(...rotPoly.map(p=>p.lng));
 
-  const gPoly  = new google.maps.Polygon({ paths: rotPoly.map(p=>({lat:p.lat,lng:p.lng})) });
   const hDeg   = panelH/mPerLat,  wDeg  = panelW/mPerLng;
   const gapLat = gap/mPerLat,     gapLng = gap/mPerLng;
   const stepH  = hDeg+gapLat,     stepW  = wDeg+gapLng;
 
-  // 4. Générer la grille et filtrer dans le polygone inset
+  // Générer la grille et s'assurer que chaque panneau rentre entièrement dans la zone utile
   const panels = [];
   for(let lat=minLat+hDeg/2; lat+hDeg/2 <= maxLat; lat+=stepH){
     for(let lng=minLng+wDeg/2; lng+wDeg/2 <= maxLng; lng+=stepW){
-      if(!google.maps.geometry.poly.containsLocation(
-          new google.maps.LatLng(lat,lng), gPoly)) continue;
       const corners = [
         rot(lat-hDeg/2, lng-wDeg/2, angle),
         rot(lat-hDeg/2, lng+wDeg/2, angle),
         rot(lat+hDeg/2, lng+wDeg/2, angle),
         rot(lat+hDeg/2, lng-wDeg/2, angle),
       ];
+      const cornerPoints = corners.map(c => new google.maps.LatLng(c.lat, c.lng));
+      if(!cornerPoints.every(point => pointInsideOrOnEdge(point, insetPoly))) continue;
       panels.push(corners);
     }
   }
-  return panels;
+
+  return {
+    panels,
+    panelHeightMeters: panelH,
+    panelWidthMeters: panelW,
+    orientationMode,
+  };
 }
 
-function drawSolarPanelsOnMap(polyPoints, panelH, panelW){
+function generatePanelsInPolygon(polyPoints, panelH, panelW, gap = PANEL_GAP_METERS, setbackM = SAFETY_SETBACK_METERS){
+  if(!polyPoints || polyPoints.length < 3) return { panels: [], insetPoints: [] };
+
+  const insetPts = insetPolygonM(polyPoints, setbackM);
+  if(!insetPts || insetPts.length < 3) return { panels: [], insetPoints: [] };
+
+  const variants = [
+    computePanelLayoutVariant(insetPts, panelH, panelW, gap, 'portrait'),
+    computePanelLayoutVariant(insetPts, panelW, panelH, gap, 'landscape'),
+  ].sort((a, b) => b.panels.length - a.panels.length);
+
+  return {
+    ...(variants[0] || {
+      panels: [],
+      panelHeightMeters: panelH,
+      panelWidthMeters: panelW,
+      orientationMode: 'portrait',
+    }),
+    insetPoints: insetPts,
+    safetyInsetMeters: setbackM,
+  };
+}
+
+function drawSafetyZone(layout){
+  clearSafetyZone();
+  if(!map || !layout?.insetPoints?.length || !draw.points?.length) return;
+
+  solarSafetyBandOverlay = new google.maps.Polygon({
+    paths: [draw.points, [...layout.insetPoints].reverse()],
+    strokeOpacity: 0,
+    fillColor: '#f5c400',
+    fillOpacity: 0.15,
+    map,
+    clickable: false,
+    zIndex: 2,
+  });
+
+  solarSafetyOutline = new google.maps.Polyline({
+    path: closePolylinePath(layout.insetPoints),
+    strokeColor: '#f5c400',
+    strokeOpacity: 0,
+    strokeWeight: 2,
+    icons: [{
+      icon: {
+        path: 'M 0,-1 0,1',
+        strokeColor: '#f5c400',
+        strokeOpacity: 1,
+        scale: 4,
+      },
+      offset: '0',
+      repeat: '12px',
+    }],
+    map,
+    clickable: false,
+    zIndex: 3,
+  });
+}
+
+function drawSolarPanelsOnMap(layout, limitCount = layout?.panels?.length ?? 0){
   clearSolarPanels();
-  if(!map || !polyPoints || polyPoints.length < 3) return 0;
+  drawSafetyZone(layout);
+  if(!map || !layout?.panels?.length) return 0;
 
-  // Dimensions réelles issues de l'API Solar (défaut standard si non dispo)
-  const h = panelH || 1.722;  // hauteur panneau standard 425Wc
-  const w = panelW || 1.134;  // largeur panneau standard 425Wc
-  const gap = 0.02;            // 2 cm espace entre panneaux
-
-  const panels = generatePanelsInPolygon(polyPoints, h, w, gap);
-
-  panels.forEach(corners => {
+  const visibleCount = Math.max(0, Math.min(limitCount, layout.panels.length));
+  layout.panels.slice(0, visibleCount).forEach(corners => {
     const poly = new google.maps.Polygon({
       paths: corners,
       strokeColor:   '#0d2b52',
@@ -1222,7 +1319,7 @@ function drawSolarPanelsOnMap(polyPoints, panelH, panelW){
     solarPanelOverlays.push(poly);
   });
 
-  return panels.length;
+  return visibleCount;
 }
 
 function displayResults(r){
@@ -1251,6 +1348,11 @@ function displayResults(r){
         <div class="ri-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 12 2 21 11"/><path d="M3 11v10h5v-7h8v7h5V11"/></svg></div>
         <div><div class="ri-label">Surface utilisable</div><div class="ri-val">${fmt(r.areaM2)} m²</div></div>
       </div>
+      ${Number.isFinite(r.usableAreaM2) ? `
+      <div class="roof-info-row">
+        <div class="ri-icon">🟨</div>
+        <div><div class="ri-label">Zone utile panneaux</div><div class="ri-val">${fmt(r.usableAreaM2)} m² · retrait ${fmt1(r.panelSetbackMeters || SAFETY_SETBACK_METERS)} m</div></div>
+      </div>` : ''}
       <div class="roof-info-row">
         <div class="ri-icon">🧭</div>
         <div><div class="ri-label">Meilleure orientation</div><div class="ri-val">${azimuthToLabel(seg.azimuthDeg)} — ${seg.sunshineAvg} h/an</div></div>
@@ -1268,30 +1370,7 @@ function displayResults(r){
   // Panneaux solaires stockés — affichés après validation de la zone
   // (voir validateZone())
 
-  // Slider de panneaux si configs disponibles
-  if(r.configSlider && r.configSlider.length && $('panelSliderWrap')){
-    const slider = $('panelSlider');
-    slider.min   = 1;
-    slider.max   = r.configSlider.length - 1;
-    slider.value = r.configSlider.length - 1;
-    $('panelSliderWrap').style.display = 'block';
-    slider.oninput = function(){
-      const cfg = r.configSlider[+this.value];
-      if(!cfg) return;
-      const cnt    = cfg.count;
-      const kwc2   = (cnt * 0.425).toFixed(2);
-      const kwh2   = cfg.yearlyKwh;
-      const sav2   = Math.round(kwh2 * 0.35 * 0.2276 + kwh2 * 0.65 * 0.1269);
-      $('valPanels').innerHTML  = `${cnt} <small>panneaux</small>`;
-      $('valKwc').innerHTML     = `${kwc2.replace('.',',')} <small>kWc</small>`;
-      $('valKwh').innerHTML     = `${fmt(kwh2)} <small>kWh/an</small>`;
-      $('valSavings').innerHTML = `${fmt(sav2)} <small>€/an</small>`;
-      $('sliderVal').textContent = cnt + ' panneaux / ' + r.maxPanels + ' max';
-      // Re-dessiner les N premiers panneaux
-      drawSolarPanelsOnMap(r.solarPanels.slice(0, cnt), r.panelHeightMeters, r.panelWidthMeters);
-    };
-    $('sliderVal').textContent = r.panelCount + ' panneaux / ' + r.maxPanels + ' max';
-  }
+  if(!state.panelLayout) hidePanelSlider();
 }
 
 // ── Monthly chart ─────────────────────────────────────────────────
@@ -1330,7 +1409,10 @@ async function fetchSolarData(){
       throw new Error(data.error || 'Erreur serveur');
     }
 
+    state.baseResults = data;
     state.results = data;
+    state.drawResults = null;
+    state.panelLayout = null;
     displayResults(data);
 
     // Afficher étape dessin de zone
@@ -1475,7 +1557,11 @@ function clearDrawing(keepValidated = false){
   draw.markers.forEach(m => m.setMap(null));
   draw.markers = [];
   draw.points  = [];
-  if(!keepValidated) draw.validated = false;
+  clearSafetyZone();
+  if(!keepValidated){
+    draw.validated = false;
+    state.panelLayout = null;
+  }
   updateDrawUI();
 }
 
@@ -1635,107 +1721,127 @@ function stopDrawMode(){
   if(draw.clickListener){ google.maps.event.removeListener(draw.clickListener); draw.clickListener = null; }
 }
 
+function computeMonthlyKwhBreakdown(yearlyKwh){
+  return [.045,.06,.085,.10,.115,.125,.13,.12,.095,.07,.045,.035].map(weight => Math.round(yearlyKwh * weight));
+}
+
+function computeSimulationResults(panelCount, areaM2, usableAreaM2){
+  const base = state.baseResults || state.results;
+  const baseRatio = base ? base.yearlyKwh / Math.max(base.kwc, 0.1) : 1180;
+  const orientCoeff = {Sud:1.0,'Sud-Est':.95,'Sud-Ouest':.95,'Est':.85,'Ouest':.85,'Nord':.65};
+  const inclCoeff   = {0:.85,15:.92,30:1.0,45:.97,60:.90};
+  const orient = $('orientSelect')?.value || 'Sud';
+  const incl   = $('inclSelect')?.value   || '30';
+  const gardenBonus = draw.zoneType === 'garden' ? 1.05 : 1;
+  const kwc = +(panelCount * PANEL_POWER_KWC).toFixed(2);
+  const yearlyKwh = panelCount > 0
+    ? Math.round(kwc * baseRatio * (orientCoeff[orient] || 1) * (inclCoeff[incl] || 1) * gardenBonus)
+    : 0;
+  const annualSavings = Math.round(yearlyKwh * 0.35 * 0.2276 + yearlyKwh * 0.65 * 0.1269);
+  const budgetFactorMin = draw.zoneType === 'garden' ? 1800 : 2000;
+  const budgetFactorMax = draw.zoneType === 'garden' ? 2400 : 2800;
+
+  return {
+    panelCount,
+    kwc,
+    yearlyKwh,
+    annualSavings,
+    budgetMin: panelCount > 0 ? Math.round(kwc * budgetFactorMin / 100) * 100 : 0,
+    budgetMax: panelCount > 0 ? Math.round(kwc * budgetFactorMax / 100) * 100 : 0,
+    monthlyKwh: computeMonthlyKwhBreakdown(yearlyKwh),
+    areaM2: Math.round(areaM2),
+    usableAreaM2: Math.round(usableAreaM2),
+    panelSetbackMeters: state.panelLayout?.safetyInsetMeters || SAFETY_SETBACK_METERS,
+  };
+}
+
+function refreshValidatedZoneUi(results){
+  const layout = state.panelLayout;
+  const currentCount = layout?.activeCount ?? results.panelCount ?? 0;
+  $('surfaceVal').textContent = Math.round(layout?.totalAreaM2 || results.areaM2 || 0);
+  $('zoneValidatedArea').textContent = Math.round(layout?.totalAreaM2 || results.areaM2 || 0);
+
+  if(currentCount > 0){
+    $('surfaceSub').textContent = `${currentCount} panneaux à l'échelle · retrait sécurité ${fmt1(layout?.safetyInsetMeters || SAFETY_SETBACK_METERS)} m`;
+    mapInfoText.innerHTML = `<b>Zone utile :</b> ${fmt(layout?.usableAreaM2 || results.usableAreaM2 || 0)} m² après retrait de sécurité de ${fmt1(layout?.safetyInsetMeters || SAFETY_SETBACK_METERS)} m. Les panneaux bleus sont dessinés à l'échelle réelle.`;
+  } else {
+    $('surfaceSub').textContent = `Zone utile ${fmt(layout?.usableAreaM2 || results.usableAreaM2 || 0)} m² · aucun panneau ne rentre`;
+    mapInfoText.innerHTML = `<b>Zone validée :</b> ${fmt(layout?.totalAreaM2 || results.areaM2 || 0)} m². La zone utile après retrait de sécurité de ${fmt1(layout?.safetyInsetMeters || SAFETY_SETBACK_METERS)} m est trop petite pour accueillir un panneau.`;
+  }
+}
+
+function applyValidatedLayout(panelCount = state.panelLayout?.activeCount ?? 0){
+  const layout = state.panelLayout;
+  if(!layout) return;
+
+  const safeCount = Math.max(0, Math.min(panelCount, layout.maxPanels));
+  layout.activeCount = safeCount;
+
+  const nextResults = {
+    ...(state.baseResults || state.results || {}),
+    ...computeSimulationResults(safeCount, layout.totalAreaM2, layout.usableAreaM2),
+  };
+
+  state.results = nextResults;
+  state.drawResults = nextResults;
+
+  displayResults(nextResults);
+  drawSolarPanelsOnMap(layout, safeCount);
+  refreshValidatedZoneUi(nextResults);
+}
+
+function setupPanelSlider(){
+  const wrap = $('panelSliderWrap');
+  const slider = $('panelSlider');
+  if(!wrap || !slider) return;
+
+  const layout = state.panelLayout;
+  if(!layout || layout.maxPanels < 1){
+    hidePanelSlider();
+    return;
+  }
+
+  slider.min = 1;
+  slider.max = layout.maxPanels;
+  slider.value = layout.activeCount;
+  $('sliderVal').textContent = `${layout.activeCount} panneau${layout.activeCount > 1 ? 'x' : ''}`;
+  wrap.style.display = 'block';
+
+  slider.oninput = function(){
+    const nextCount = Number(this.value);
+    $('sliderVal').textContent = `${nextCount} panneau${nextCount > 1 ? 'x' : ''}`;
+    applyValidatedLayout(nextCount);
+  };
+}
+
 function validateZone(){
   if(draw.points.length < 3) return;
   draw.validated = true;
   stopDrawMode();
   drawPolygon();
 
-  const m2      = computeAreaM2(draw.points);
-  const panels  = panelsFromArea(m2, draw.zoneType);
-  const kwc     = +(panels * 0.425).toFixed(2);
+  const totalAreaM2 = computeAreaM2(draw.points);
+  const base = state.baseResults || state.results;
+  const panelHeightMeters = base?.panelHeightMeters || 1.722;
+  const panelWidthMeters  = base?.panelWidthMeters  || 1.134;
+  const fullLayout = generatePanelsInPolygon(draw.points, panelHeightMeters, panelWidthMeters, PANEL_GAP_METERS, SAFETY_SETBACK_METERS);
+  const usableAreaM2 = fullLayout.insetPoints?.length >= 3 ? computeAreaM2(fullLayout.insetPoints) : totalAreaM2;
+  const solarApiMax = base?.maxPanels || 0;
+  const maxPanels = solarApiMax > 0 ? Math.min(fullLayout.panels.length, solarApiMax) : fullLayout.panels.length;
 
-  // Production basée sur les données Solar API ou ratio standard France
-  const baseRatio = state.results
-    ? state.results.yearlyKwh / Math.max(state.results.kwc, 0.1)
-    : 1180; // kWh/kWc/an
-  const orientCoeff = {Sud:1.0,'Sud-Est':.95,'Sud-Ouest':.95,'Est':.85,'Ouest':.85,'Nord':.65};
-  const inclCoeff   = {0:.85,15:.92,30:1.0,45:.97,60:.90};
-  const orient = $('orientSelect')?.value || 'Sud';
-  const incl   = $('inclSelect')?.value   || '30';
-  const gardenBonus = draw.zoneType === 'garden' ? 1.05 : 1; // au sol légèrement + exposé
-  const yearlyKwh   = Math.round(kwc * baseRatio * (orientCoeff[orient]||1) * (inclCoeff[incl]||1) * gardenBonus);
-
-  const electricityPrice = 0.2276, selfRate = 0.35, resalePrice = 0.1269;
-  const annualSavings    = Math.round(yearlyKwh * selfRate * electricityPrice + yearlyKwh * (1-selfRate) * resalePrice);
-
-  // Calcul budget (toiture vs sol)
-  const budgetFactorMin = draw.zoneType === 'garden' ? 1800 : 2000;
-  const budgetFactorMax = draw.zoneType === 'garden' ? 2400 : 2800;
-
-  // Update right panel
-  const r = {
-    panelCount: panels, kwc, yearlyKwh, annualSavings,
-    budgetMin: Math.round(kwc * budgetFactorMin / 100) * 100,
-    budgetMax: Math.round(kwc * budgetFactorMax / 100) * 100,
-    monthlyKwh: [.045,.06,.085,.10,.115,.125,.13,.12,.095,.07,.045,.035].map(w => Math.round(yearlyKwh * w)),
-    areaM2: Math.round(m2),
+  state.panelLayout = {
+    ...fullLayout,
+    totalAreaM2,
+    usableAreaM2,
+    maxPanels,
+    activeCount: maxPanels,
+    fullPanelCount: fullLayout.panels.length,
   };
-  state.drawResults = r;
-  displayResults(r);
 
-  // ── Dessiner les panneaux en grille dans la zone dessinée ──────────
-  const sr = state.results;
-  const pH = sr?.panelHeightMeters || 1.65;
-  const pW = sr?.panelWidthMeters  || 1.0;
-
-  // Générer et afficher les panneaux dans le polygone
-  const drawnCount = drawSolarPanelsOnMap(draw.points, pH, pW);
-
-  // Mettre à jour le comptage réel avec les panneaux qui tiennent dans la zone
-  const realPanels = drawnCount > 0 ? drawnCount : panels;
-  const realKwc    = +(realPanels * 0.425).toFixed(2);
-  const baseRatio2 = sr ? sr.yearlyKwh / Math.max(sr.kwc, 0.1) : 1180;
-  const realKwh    = Math.round(realKwc * baseRatio2 * (orientCoeff[orient]||1) * (inclCoeff[incl]||1) * gardenBonus);
-  const realSav    = Math.round(realKwh * 0.35 * 0.2276 + realKwh * 0.65 * 0.1269);
-
-  $('valPanels').innerHTML  = `${realPanels} <small>panneaux</small>`;
-  $('valKwc').innerHTML     = `${realKwc.toFixed(2).replace('.',',')} <small>kWc</small>`;
-  $('valKwh').innerHTML     = `${fmt(realKwh)} <small>kWh/an</small>`;
-  $('valSavings').innerHTML = `${fmt(realSav)} <small>€/an</small>`;
-  $('surfaceSub').textContent = `${realPanels} panneaux · ${realKwc} kWc`;
-
-  // Slider pour ajuster le nombre de panneaux visibles
-  if($('panelSliderWrap')){
-    const slider = $('panelSlider');
-    slider.min   = 1;
-    slider.max   = realPanels;
-    slider.value = realPanels;
-    $('sliderVal').textContent = realPanels + ' panneaux';
-    $('panelSliderWrap').style.display = 'block';
-    let sliderTimer;
-    slider.oninput = function(){
-      clearTimeout(sliderTimer);
-      sliderTimer = setTimeout(() => {
-        // Réduire les panneaux visibles en rognant le polygone progressivement
-        // On redessine avec un sous-ensemble des lignes de la grille
-        const ratio = +this.value / realPanels;
-        // Méthode simple : recalculer avec une surface réduite
-        const subPts = draw.points; // même zone, on limite via le nombre
-        clearSolarPanels();
-        const allCorners = generatePanelsInPolygon(subPts, pH, pW, 0.025);
-        const keepN = Math.round(allCorners.length * ratio);
-        allCorners.slice(0, keepN).forEach(corners => {
-          const p = new google.maps.Polygon({
-            paths: corners,
-            strokeColor:'#1a4a7a', strokeOpacity:.9, strokeWeight:1.2,
-            fillColor:'#1e5fa8', fillOpacity:.80,
-            map, clickable:false, zIndex:4,
-          });
-          solarPanelOverlays.push(p);
-        });
-        $('sliderVal').textContent = keepN + ' panneaux';
-        $('valPanels').innerHTML   = `${keepN} <small>panneaux</small>`;
-        const kwc2 = (keepN * 0.425).toFixed(2);
-        $('valKwc').innerHTML      = `${kwc2.replace('.',',')} <small>kWc</small>`;
-      }, 80);
-    };
-  }
+  applyValidatedLayout(maxPanels);
+  setupPanelSlider();
 
   // UI updates
-  $('surfaceVal').textContent = Math.round(m2);
-  $('surfaceSub').textContent = `${panels} panneaux · ${kwc} kWc`;
-  $('zoneValidatedArea').textContent = Math.round(m2);
   $('zoneValidatedRow').style.display = 'flex';
   $('validateZoneBtn').style.display  = 'none';
   $('clearZoneBtn').style.display     = 'none';
@@ -1744,8 +1850,11 @@ function validateZone(){
   $('cardRoof').style.display = 'block';
   $('cardRoof').scrollIntoView({behavior:'smooth', block:'nearest'});
   setStep(3);
-  showToast(`Zone validée — ${Math.round(m2)} m² · ${panels} panneaux ✓`);
-  mapInfoText.innerHTML = `<b>Zone validée :</b> ${Math.round(m2)} m² · ${panels} panneaux · ${fmt(yearlyKwh)} kWh/an.`;
+  showToast(
+    maxPanels > 0
+      ? `Zone validée — ${Math.round(totalAreaM2)} m² · ${maxPanels} panneaux à l'échelle ✓`
+      : `Zone validée — ${Math.round(totalAreaM2)} m² · zone trop petite pour un panneau`
+  );
 }
 
 // ── Zone type toggle ──────────────────────────────────────────────
@@ -1764,10 +1873,16 @@ function validateZone(){
 
 // ── Validate / Clear / Edit buttons ─────────────────────────────
 $('validateZoneBtn')?.addEventListener('click', validateZone);
-$('clearZoneBtn')?.addEventListener('click', () => { clearDrawing(); updateDrawUI(); });
+$('clearZoneBtn')?.addEventListener('click', () => {
+  clearPanelLayout();
+  hidePanelSlider();
+  clearDrawing();
+  updateDrawUI();
+});
 $('editZoneBtn')?.addEventListener('click', () => {
   draw.validated = false;
-  clearSolarPanels();
+  clearPanelLayout();
+  hidePanelSlider();
   $('zoneValidatedRow').style.display = 'none';
   $('validateZoneBtn').style.display  = '';
   $('clearZoneBtn').style.display     = '';
@@ -1784,7 +1899,19 @@ $('undoPointBtn')?.addEventListener('click', () => {
   drawPolygon();
   updateDrawUI();
 });
-$('clearDrawBtn')?.addEventListener('click', () => { clearDrawing(); updateDrawUI(); });
+$('clearDrawBtn')?.addEventListener('click', () => {
+  clearPanelLayout();
+  hidePanelSlider();
+  clearDrawing();
+  updateDrawUI();
+});
+
+['orientSelect', 'inclSelect'].forEach(id => {
+  $(id)?.addEventListener('change', () => {
+    if(!draw.validated || !state.panelLayout) return;
+    applyValidatedLayout(state.panelLayout.activeCount);
+  });
+});
 
 // ── Autocomplétion custom via Nominatim (backend) ────────────────
 const autocompleteList = $('autocompleteList');
@@ -1794,6 +1921,18 @@ function openAddress(item){
   state.lat     = item.lat;
   state.lng     = item.lng;
   state.address = item.label;
+  state.baseResults = null;
+  state.results = null;
+  state.drawResults = null;
+  draw.validated = false;
+  clearPanelLayout();
+  hidePanelSlider();
+  clearDrawing();
+  stopDrawMode();
+  $('zoneValidatedRow').style.display = 'none';
+  $('validateZoneBtn').style.display  = '';
+  $('clearZoneBtn').style.display     = '';
+  $('cardRoof').style.display         = 'none';
   closeAutocomplete();
   addressInput.value = item.label;
   addrPillText.textContent = item.label;
@@ -1816,7 +1955,6 @@ function openAddress(item){
     });
 
     if(marker){ marker.setPosition({lat: item.lat, lng: item.lng}); marker.setVisible(true); }
-  clearSolarPanels();
   }
   fAdresse.value = item.label;
   fetchSolarData();
@@ -1968,7 +2106,7 @@ changeAddrBtn.addEventListener('click', () => {
   cardRoof.style.display = 'none';
   $('cardDraw').style.display = 'none';
   // Reset dessin
-  if(typeof clearDrawing === 'function'){ clearDrawing(); stopDrawMode(); }
+  if(typeof clearDrawing === 'function'){ clearPanelLayout(); hidePanelSlider(); clearDrawing(); stopDrawMode(); }
   // Reset métriques
   ['metricPanels','metricKwc','metricKwh','metricSavings','budgetCard'].forEach(id => {
     const el = $(id); if(el) el.classList.add('skeleton');
@@ -1978,7 +2116,11 @@ changeAddrBtn.addEventListener('click', () => {
   $('valKwh').innerHTML    = '— <small>kWh/an</small>';
   $('valSavings').innerHTML= '— <small>€/an</small>';
   $('valBudget').innerHTML = '— <small>€</small>';
-  state.results = null; state.lat = null; state.lng = null;
+  state.baseResults = null;
+  state.results = null;
+  state.drawResults = null;
+  state.lat = null;
+  state.lng = null;
   setStep(1);
 });
 
