@@ -308,16 +308,31 @@ class HomePageService
             array_unshift($normalized, $identitySlide);
         }
 
-        $solarIndex = collect($normalized)->search(function ($slide) {
-            $type = trim((string) data_get($slide, 'type', ''));
+        $isSolarContent = static function ($slide): bool {
             $image = trim((string) data_get($slide, 'image', ''));
             $title = mb_strtolower(trim((string) data_get($slide, 'title', '')));
+            $subtitle = mb_strtolower(trim((string) data_get($slide, 'subtitle', '')));
 
-            return $type === 'solar-kit'
-                || str_contains($image, 'solaire')
+            return str_contains($image, 'solaire')
                 || str_contains($title, 'solaire')
-                || str_contains($title, 'photovolta');
-        });
+                || str_contains($title, 'photovolta')
+                || str_contains($subtitle, 'solaire')
+                || str_contains($subtitle, 'photovolta');
+        };
+
+        $solarContentIndex = collect($normalized)->search(fn ($slide) => $isSolarContent($slide));
+        $solarTypedIndex = collect($normalized)->search(fn ($slide) => trim((string) data_get($slide, 'type', '')) === 'solar-kit');
+        $solarIndex = $solarContentIndex !== false ? $solarContentIndex : $solarTypedIndex;
+
+        $normalized = array_map(function ($slide) use ($solarIndex, $isSolarContent) {
+            if (! is_array($slide)) {
+                return $slide;
+            }
+
+            $slide['type'] = $isSolarContent($slide) ? 'solar-kit' : '';
+
+            return $slide;
+        }, $normalized);
 
         if ($solarIndex !== false && $solarIndex !== 1) {
             $solarSlide = $normalized[$solarIndex];
