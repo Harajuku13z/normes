@@ -3,16 +3,25 @@
     $slides = data_get($h, 'hero.slides', []);
     $first = $slides[0] ?? [];
     $isIdentity = !empty($first['identity']);
-    $firstBg = \App\Support\HomeView::url(data_get($first, 'image', 'slide/toiture.png'));
+    $firstBgPath = $isIdentity ? 'slide/hero-groupe-1.png' : (string) data_get($first, 'image', 'slide/toiture.png');
+    $firstBg = \App\Support\HomeView::url($firstBgPath);
     $firstBgFull = $isIdentity
         ? "url('".$firstBg."')"
         : "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('".$firstBg."')";
+    $identityStats = [
+        ['value' => '+5 000', 'label' => 'Chantiers', 'accent' => 'text-brand-blue'],
+        ['value' => '99.9%', 'label' => 'Satisfaction', 'accent' => 'text-brand-yellow'],
+        ['value' => 'RGE', 'label' => 'Certifie', 'accent' => 'text-brand-blue'],
+        ['value' => '24 h', 'label' => 'Reponse', 'accent' => 'text-brand-yellow'],
+    ];
 @endphp
 
-<section id="top" class="relative overflow-hidden {{ $isIdentity ? 'min-h-[680px] sm:min-h-[780px]' : 'min-h-[580px] sm:min-h-[660px]' }}">
+<section id="top" class="relative overflow-hidden {{ $isIdentity ? 'min-h-[720px] sm:min-h-[800px] lg:min-h-[860px]' : 'min-h-[580px] sm:min-h-[660px]' }}">
 
     {{-- Fond image --}}
-    <div id="heroBg" class="absolute inset-0 bg-cover bg-center transition-all duration-700" style="background-image:{{ $firstBgFull }}"></div>
+    <div id="heroBg"
+         class="absolute inset-0 bg-cover transition-all duration-700"
+         style="background-image:{{ $firstBgFull }};background-position:center center;background-repeat:no-repeat"></div>
 
     {{-- ===================================================
          SLIDE 1 — IDENTITÉ : style PPF blanc + couleurs marque
@@ -20,65 +29,60 @@
     <div id="heroIdentityBlock"
          class="{{ $isIdentity ? 'flex' : 'hidden' }} absolute inset-0 z-10 items-center">
 
-        {{-- Voile sombre léger — image plus claire, texte blanc lisible --}}
-        <div class="pointer-events-none absolute inset-0 bg-gradient-to-r from-brand-dark/65 via-brand-dark/40 to-brand-dark/10"></div>
+        <div class="pointer-events-none absolute inset-0 md:hidden bg-[linear-gradient(180deg,rgba(255,255,255,.88)_0%,rgba(255,255,255,.8)_30%,rgba(255,255,255,.5)_58%,rgba(255,255,255,.08)_100%)]"></div>
 
-        {{-- Contenu --}}
-        <div class="relative z-10 w-full max-w-xl px-6 pb-28 pt-10 sm:pb-12 sm:pl-10 lg:pl-16">
+        <div class="relative z-10 mx-auto flex w-full max-w-[1720px] items-center px-5 pb-28 pt-10 sm:px-8 sm:pb-32 lg:px-16 xl:px-20"
+             style="min-height:inherit">
+            <div class="w-full max-w-[940px]">
+                <h1 style="font-family:'Anton',sans-serif;font-size:clamp(4.1rem,8vw,7.7rem);line-height:.86;letter-spacing:-0.05em"
+                    class="max-w-[900px] text-brand-dark drop-shadow-[0_14px_22px_rgba(255,255,255,.26)]">
+                    <span>Oui</span>
+                    <span class="text-brand-blue"> c'est </span>
+                    <span>nous!</span>
+                </h1>
 
-            {{-- Grand titre --}}
-            <h1 class="mb-4 leading-none">
-                <span style="font-family:'Anton',sans-serif;font-size:clamp(3.8rem,9vw,7.5rem);letter-spacing:0.01em"
-                      class="block text-white drop-shadow-lg">OUI,</span>
-                <span style="font-family:'Anton',sans-serif;font-size:clamp(2.2rem,5.5vw,4.5rem);letter-spacing:0.01em"
-                      class="block text-brand-blue drop-shadow-lg">c'est nous&nbsp;!</span>
-            </h1>
+                <p style="font-family:'Anton',sans-serif;font-size:clamp(1.55rem,3vw,3.45rem);line-height:.94;letter-spacing:-0.03em"
+                   class="mt-7 max-w-[820px] text-brand-dark/95">
+                    L'expert en renovation energetique<br class="hidden lg:block">
+                    et entretien de la maison en Bourgogne.
+                </p>
 
-            <p class="mb-8 text-base font-semibold leading-relaxed text-white/90 sm:text-lg">
-                L'expert en rénovation énergétique<br class="hidden sm:block">
-                et entretien de la maison en Bourgogne.
-            </p>
-
-            {{-- Stats cercles jaunes --}}
-            @php
-            $heroStats = [
-                ['+5 000','Chantiers','M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z'],
-                ['98 %','Satisfaction','M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z'],
-                ['RGE','Certifié','M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z'],
-                ['24 h','Réponse','M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z'],
-            ];
-            @endphp
-            <div class="mb-8 grid grid-cols-4 gap-3 border-t border-white/20 pt-6">
-                @foreach($heroStats as [$val, $lbl, $path])
-                <div class="flex flex-col items-center gap-2 text-center">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-blue shadow-md">
-                        <svg class="h-5 w-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="{{ $path }}"/>
-                        </svg>
+                <div class="mt-8 w-full max-w-[780px] overflow-hidden rounded-[28px] border border-white/70 bg-white/70 px-3 py-4 shadow-[0_22px_48px_rgba(47,66,81,.12)] backdrop-blur-[2px] sm:px-4 sm:py-4">
+                    <div class="grid grid-cols-4 gap-0">
+                        @foreach ($identityStats as $index => $stat)
+                            <div class="flex flex-col items-center justify-center px-2 text-center {{ $index > 0 ? 'border-l border-brand-dark/12' : '' }}">
+                                <span style="font-family:'Anton',sans-serif;font-size:clamp(1.45rem,2.45vw,2.55rem);line-height:.9;letter-spacing:-0.03em"
+                                      class="{{ $stat['accent'] }}">
+                                    {{ $stat['value'] }}
+                                </span>
+                                <span style="font-family:'Anton',sans-serif;font-size:clamp(.8rem,1.05vw,1.18rem);line-height:.95;letter-spacing:-0.03em"
+                                      class="mt-1 text-brand-dark">
+                                    {{ $stat['label'] }}
+                                </span>
+                            </div>
+                        @endforeach
                     </div>
-                    <span class="text-sm font-black leading-none text-white sm:text-base">{{ $val }}</span>
-                    <span class="text-[9px] font-bold uppercase tracking-widest text-white/60">{{ $lbl }}</span>
                 </div>
-                @endforeach
-            </div>
 
-            {{-- CTAs --}}
-            <div class="flex flex-wrap gap-3">
-                <a href="#devis"
-                   class="inline-flex items-center gap-2 rounded-xl bg-brand-blue px-6 py-3 text-sm font-extrabold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-sky-400">
-                    Devis gratuit →
-                </a>
-                <a href="#services"
-                   class="inline-flex items-center gap-2 rounded-xl bg-brand-yellow px-6 py-3 text-sm font-extrabold text-brand-dark shadow-sm transition hover:-translate-y-0.5 hover:bg-yellow-300">
-                    Nos services
-                </a>
-                <a href="tel:+33385419886"
-                   class="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-extrabold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/20">
-                    <svg class="h-4 w-4 text-brand-blue" fill="currentColor" viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
-                    03 85 41 98 86
-                </a>
+                <div class="mt-8 flex w-full max-w-[820px] flex-col gap-3 sm:gap-4">
+                    <a href="#devis"
+                       class="inline-flex min-h-[64px] w-full items-center justify-center gap-2 rounded-[24px] bg-brand-blue px-6 py-4 text-[1rem] font-extrabold text-white shadow-[0_16px_30px_rgba(96,180,249,.34)] transition hover:-translate-y-0.5 hover:bg-sky-400 sm:min-h-[72px] sm:text-[1.18rem] lg:text-[1.28rem]">
+                        <span>Je demande un devis</span>
+                        <span aria-hidden="true">→</span>
+                    </a>
+                    <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+                        <a href="#services"
+                           class="inline-flex min-h-[58px] items-center justify-center gap-2 rounded-[20px] border border-[#d4b13f] bg-brand-yellow px-5 py-3.5 text-[0.95rem] font-extrabold text-brand-dark shadow-[0_12px_22px_rgba(250,223,112,.22)] transition hover:-translate-y-0.5 hover:bg-yellow-300 sm:min-h-[64px] sm:text-[1.05rem]">
+                            <span class="truncate">Découvrir nos services</span>
+                        </a>
+                        <a href="tel:+33385419886"
+                           class="inline-flex min-h-[58px] items-center justify-center gap-2 rounded-[20px] border border-white/60 bg-[#56697f] px-5 py-3.5 text-[0.9rem] font-extrabold tracking-tight text-white shadow-[0_12px_22px_rgba(47,66,81,.22)] transition hover:-translate-y-0.5 hover:bg-[#4e6074] sm:min-h-[64px] sm:text-[1.05rem]">
+                            <svg class="h-4 w-4 shrink-0 text-brand-blue sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
+                            <span class="truncate">03 85 41 98 86</span>
+                        </a>
+                    </div>
+                </div>
             </div>
-
         </div>
     </div>
 
@@ -116,7 +120,9 @@
         @foreach ($slides as $idx => $slide)
             @php
                 $n   = $idx + 1;
-                $u   = \App\Support\HomeView::url(data_get($slide, 'image'));
+                $u   = ! empty($slide['identity'])
+                    ? \App\Support\HomeView::url('slide/hero-groupe-1.png')
+                    : \App\Support\HomeView::url(data_get($slide, 'image'));
                 $act = $n === 1 ? 'border-brand-yellow' : 'border-white/40';
             @endphp
             <button type="button"
