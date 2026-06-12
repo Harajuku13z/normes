@@ -180,25 +180,25 @@ html,body{
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes fadeOut{from{opacity:1}to{opacity:0}}
 .demo-box{
-  background:#fff;border-radius:20px;max-width:820px;width:100%;
-  box-shadow:0 32px 80px rgba(15,34,49,.3);overflow:hidden;
+  background:#fff;border-radius:18px;max-width:680px;width:100%;
+  box-shadow:0 24px 56px rgba(15,34,49,.24);overflow:hidden;
   animation:slideUp .3s cubic-bezier(.34,1.56,.64,1);
 }
 @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
 .demo-head{
   display:flex;align-items:center;justify-content:space-between;
-  padding:18px 24px;border-bottom:1px solid var(--line);
+  padding:14px 18px;border-bottom:1px solid var(--line);
 }
-.demo-head h3{font-size:17px;font-weight:800;color:var(--ink)}
-.demo-head p{font-size:13px;color:var(--slate);margin-top:2px}
+.demo-head h3{font-size:15px;font-weight:800;color:var(--ink)}
+.demo-head p{font-size:12px;color:var(--slate);margin-top:2px}
 .demo-close{
-  width:36px;height:36px;border-radius:10px;border:1.5px solid var(--line);
+  width:32px;height:32px;border-radius:9px;border:1.5px solid var(--line);
   background:#fff;cursor:pointer;display:grid;place-items:center;
   flex-shrink:0;transition:.15s;color:var(--ink);
 }
 .demo-close:hover{background:var(--line-2);border-color:#cdd6dd}
 .demo-img-wrap{position:relative;overflow:hidden;background:#1a2a35;line-height:0}
-.demo-img-wrap img{width:100%;height:auto;display:block;max-height:none}
+.demo-img-wrap img{width:100%;height:auto;display:block;max-height:300px;object-fit:cover}
 .demo-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 /* SVG animation */
 /* ── Animation SVG en boucle ── */
@@ -248,23 +248,23 @@ html,body{
 .demo-anim-running .dp-labels  {animation:fadeInOut 5s ease infinite}
 /* type badge in demo */
 .demo-type-badge{
-  position:absolute;top:12px;left:12px;
+  position:absolute;top:10px;left:10px;
   background:rgba(15,34,49,.85);color:#fff;
-  padding:5px 12px;border-radius:8px;font:700 12px 'Inter',sans-serif;
+  padding:4px 10px;border-radius:8px;font:700 11px 'Inter',sans-serif;
   backdrop-filter:blur(4px);
 }
 .demo-steps{display:flex;gap:0;border-top:1px solid var(--line)}
-.demo-step{flex:1;padding:14px 16px;border-right:1px solid var(--line);text-align:center}
+.demo-step{flex:1;padding:10px 12px;border-right:1px solid var(--line);text-align:center}
 .demo-step:last-child{border-right:0}
-.demo-step .ds-num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;
-  font:800 12px 'Inter',sans-serif;display:grid;place-items:center;margin:0 auto 6px}
-.demo-step .ds-label{font-size:12px;font-weight:600;color:var(--ink);line-height:1.4}
-.demo-step .ds-sub{font-size:11px;color:var(--muted);margin-top:2px}
-.demo-foot{padding:16px 24px;display:flex;gap:12px;align-items:center;border-top:1px solid var(--line);background:#f8fafc}
-.demo-foot p{font-size:12.5px;color:var(--slate);flex:1}
+.demo-step .ds-num{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;
+  font:800 11px 'Inter',sans-serif;display:grid;place-items:center;margin:0 auto 5px}
+.demo-step .ds-label{font-size:11px;font-weight:600;color:var(--ink);line-height:1.35}
+.demo-step .ds-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.demo-foot{padding:12px 18px;display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);background:#f8fafc}
+.demo-foot p{font-size:11.5px;color:var(--slate);flex:1}
 .demo-start-btn{
-  border:0;background:var(--ink);color:#fff;padding:12px 22px;
-  border-radius:11px;font:700 14px 'Inter',sans-serif;cursor:pointer;
+  border:0;background:var(--ink);color:#fff;padding:10px 16px;
+  border-radius:10px;font:700 12px 'Inter',sans-serif;cursor:pointer;
   display:flex;align-items:center;gap:8px;transition:.15s ease;white-space:nowrap;
 }
 .demo-start-btn:hover{background:#0a1a26;transform:translateY(-1px)}
@@ -1910,7 +1910,7 @@ function clearDrawing(keepValidated = false){
 // ── Popup démo ───────────────────────────────────────────────────
 const demoPopup  = $('demoPopup');
 const demoImg    = $('demoImg');
-let   demoSvgAnimStarted = false;
+const demoSeenSessionKey = 'solarSimulatorDemoSeen';
 
 function calibrateDemoSvg(){
   // Recalcule le viewBox SVG pour coller exactement à l'image affichée.
@@ -1942,6 +1942,10 @@ function calibrateDemoSvg(){
 
 function openDemoPopup(){
   if(!demoPopup) return;
+  try {
+    if(window.sessionStorage.getItem(demoSeenSessionKey) === '1') return;
+    window.sessionStorage.setItem(demoSeenSessionKey, '1');
+  } catch(_error) {}
 
   const isGarden = draw.zoneType === 'garden';
   demoImg.src = isGarden ? '/slide/demo-jardin-aerien.jpg' : '/slide/demo-toiture-crop.jpg';
