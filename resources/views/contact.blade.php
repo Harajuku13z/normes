@@ -3,6 +3,7 @@
 
     $h = $home ?? [];
     $f = data_get($h, 'footer', []);
+    $contactEmail = 'bourgogne-agence@normesrenovation.fr';
     $d = data_get($h, 'devis', []);
     $cp = data_get($h, 'contact_page', []);
     $siteName = (string) data_get($h, 'meta.site_name', 'Normes & Rénovation');
@@ -136,8 +137,8 @@
                             {{ data_get($f, 'phone') }}
                         </a>
                         <p class="text-xs font-extrabold uppercase tracking-wider text-slate-500">{{ $labelEmail !== '' ? $labelEmail : 'E-mail' }}</p>
-                        <a href="mailto:{{ data_get($f, 'email') }}" class="break-all text-sm font-semibold text-brand-dark underline-offset-2 hover:text-brand-blue hover:underline">
-                            {{ data_get($f, 'email') }}
+                        <a href="mailto:{{ $contactEmail }}" class="break-all text-sm font-semibold text-brand-dark underline-offset-2 hover:text-brand-blue hover:underline">
+                            {{ $contactEmail }}
                         </a>
                     </div>
                     @if ($agenciesContact !== [])

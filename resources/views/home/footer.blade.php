@@ -1,6 +1,7 @@
 @php
     $h = $home ?? [];
     $f = data_get($h, 'footer', []);
+    $contactEmail = 'bourgogne-agence@normesrenovation.fr';
     $logo = \App\Support\HomeView::url(data_get($f, 'logo'));
     $quickLinks = collect((array) data_get($f, 'quick_links', []))
         ->filter(fn ($item) => is_array($item))
@@ -64,7 +65,7 @@
                 <p class="mt-4 text-sm text-white">Téléphone</p>
                 <a href="tel:{{ data_get($f, 'phone_href') }}" class="text-base font-bold text-brand-blue transition hover:text-white">{{ data_get($f, 'phone') }}</a>
                 <p class="mt-4 text-sm text-white">E-mail</p>
-                <a href="mailto:{{ data_get($f, 'email') }}" class="break-all text-sm text-white underline-offset-2 transition hover:text-brand-yellow hover:underline">{{ data_get($f, 'email') }}</a>
+                <a href="mailto:{{ $contactEmail }}" class="break-all text-sm text-white underline-offset-2 transition hover:text-brand-yellow hover:underline">{{ $contactEmail }}</a>
             </div>
             <div class="lg:col-span-2">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-brand-yellow">Liens rapides</h3>
