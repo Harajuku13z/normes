@@ -1242,6 +1242,21 @@ function getRidgeEdgePoints(points, ridgeEdgeIndex){
   return [points[safeIndex], points[(safeIndex + 1) % points.length]];
 }
 
+function getDefaultRidgeEdgeIndex(points){
+  if(!Array.isArray(points) || points.length < 2) return null;
+  let bestIndex = 0;
+  let bestLat = -Infinity;
+  points.forEach((point, index) => {
+    const nextPoint = points[(index + 1) % points.length];
+    const avgLat = (point.lat() + nextPoint.lat()) / 2;
+    if(avgLat > bestLat){
+      bestLat = avgLat;
+      bestIndex = index;
+    }
+  });
+  return bestIndex;
+}
+
 // ── Intersection de deux droites (en mètres) ─────────────────────
 function lineIntersectM(p1, p2, p3, p4){
   const d1x = p2.x-p1.x, d1y = p2.y-p1.y;
@@ -1726,6 +1741,8 @@ function updateDrawUI(){
     draw.ridgeEdgeIndex = null;
   } else if(Number.isInteger(draw.ridgeEdgeIndex) && draw.ridgeEdgeIndex >= draw.points.length){
     draw.ridgeEdgeIndex = null;
+  } else if(draw.zoneType === 'roof' && draw.ridgeEdgeIndex === null){
+    draw.ridgeEdgeIndex = getDefaultRidgeEdgeIndex(draw.points);
   }
 
   const currentAreaM2 = computeAreaM2(draw.points);
@@ -1745,13 +1762,8 @@ function updateDrawUI(){
   } else {
     const panels = panelsFromArea(totalAreaM2, draw.zoneType);
     const kwc    = (panels * 0.425).toFixed(2);
-    if(draw.zoneType === 'roof' && draw.ridgeEdgeIndex === null){
-      $('surfaceSub').textContent = 'Cliquez sur la ligne la plus haute du toit pour indiquer le faîtage';
-      $('validateZoneBtn').disabled = true;
-    } else {
-      $('surfaceSub').textContent = `≈ ${formatPanelCountLabel(panels)} · ${kwc} kWc`;
-      $('validateZoneBtn').disabled = false;
-    }
+    $('surfaceSub').textContent = `≈ ${formatPanelCountLabel(panels)} · ${kwc} kWc`;
+    $('validateZoneBtn').disabled = false;
   }
 
   // Toolbar visibility
@@ -2159,10 +2171,6 @@ function resetZoneSelection(startFresh = true){
 
 function validateZone(){
   if(draw.points.length < 3) return;
-  if(draw.zoneType === 'roof' && draw.ridgeEdgeIndex === null){
-    showToast('Sélectionnez d’abord la ligne la plus haute du toit', true);
-    return;
-  }
   const zonePolygon = draw.polygon;
   const zoneMarkers = [...draw.markers];
   const zonePoints = [...draw.points];
