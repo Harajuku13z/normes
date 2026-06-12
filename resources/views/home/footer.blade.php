@@ -1,7 +1,7 @@
 @php
     $h = $home ?? [];
     $f = data_get($h, 'footer', []);
-    $contactEmail = 'bourgogne-agence@normesrenovation.fr';
+    $contactEmail = 'administratif@normesrenovation.fr';
     $logo = \App\Support\HomeView::url(data_get($f, 'logo'));
     $quickLinks = collect((array) data_get($f, 'quick_links', []))
         ->filter(fn ($item) => is_array($item))

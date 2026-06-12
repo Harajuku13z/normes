@@ -3,7 +3,7 @@
 
     $h = $home ?? [];
     $f = data_get($h, 'footer', []);
-    $contactEmail = 'bourgogne-agence@normesrenovation.fr';
+    $contactEmail = 'administratif@normesrenovation.fr';
     $d = data_get($h, 'devis', []);
     $cp = data_get($h, 'contact_page', []);
     $siteName = (string) data_get($h, 'meta.site_name', 'Normes & Rénovation');
