@@ -1010,7 +1010,7 @@ const PANEL_POWER_KWC = 0.425;
 const KIT_POWER_KWC = 3;
 const PANELS_PER_KIT = Math.max(1, Math.round(KIT_POWER_KWC / PANEL_POWER_KWC));
 const PANEL_GAP_METERS = 0.02;
-const SAFETY_SETBACK_METERS = 1;
+const SAFETY_SETBACK_METERS = 0.5;
 const PANEL_INNER_CLEARANCE_METERS = 0.08;
 const PRICING = {
   roofMinPerKwc: Number(window.__pricingSettings?.roof_min_per_kwc || 2000),
