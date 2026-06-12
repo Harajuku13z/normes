@@ -98,6 +98,8 @@ class HomePageService
      */
     protected function withDerived(array $data): array
     {
+        $data = $this->normalizeHeroSlides($data);
+
         $activeServicePages = [];
         try {
             $activeServicePages = ServicePage::query()
@@ -228,19 +230,25 @@ class HomePageService
                     continue;
                 }
                 $n = $i + 1;
-                $img = (string) ($slide['image'] ?? '');
+                $isIdentity = ! empty($slide['identity']);
+                $img = $isIdentity ? 'slide/hero-groupe-1.png' : (string) ($slide['image'] ?? '');
                 $url = $this->publicUrl($img);
-                $a1 = ! empty($slide['identity']) ? '.80' : '.74';
-                $a2 = ! empty($slide['identity']) ? '.40' : '.32';
+                $a1 = $isIdentity ? '.80' : '.74';
+                $a2 = $isIdentity ? '.40' : '.32';
                 $slidesJs[$n] = [
-                    'bg' => "linear-gradient(110deg, rgba(47,66,81,{$a1}), rgba(47,66,81,{$a2})), url('{$url}')",
-                    'identity' => ! empty($slide['identity']),
+                    'bg' => $isIdentity
+                        ? "url('{$url}')"
+                        : "linear-gradient(110deg, rgba(47,66,81,{$a1}), rgba(47,66,81,{$a2})), url('{$url}')",
+                    'identity' => $isIdentity,
+                    'type' => (string) ($slide['type'] ?? ''),
+                    'eyebrow' => (string) ($slide['eyebrow'] ?? ''),
                     'title' => (string) ($slide['title'] ?? ''),
                     'subtitle' => (string) ($slide['subtitle'] ?? ''),
                     'primaryText' => (string) ($slide['primary_text'] ?? ''),
                     'primaryHref' => (string) ($slide['primary_href'] ?? '#devis'),
                     'secondaryText' => (string) ($slide['secondary_text'] ?? ''),
                     'secondaryHref' => (string) ($slide['secondary_href'] ?? '#devis'),
+                    'imageUrl' => $url,
                 ];
             }
             data_set($data, 'hero.slides_js', $slidesJs);
@@ -263,6 +271,54 @@ class HomePageService
             }
             data_set($data, 'realisations.cases_js', $casesJs);
         }
+
+        return $data;
+    }
+
+    /**
+     * Keep the identity slide first and the solar kit slide second even when
+     * homepage overrides were saved in another order.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected function normalizeHeroSlides(array $data): array
+    {
+        $slides = data_get($data, 'hero.slides');
+        if (! is_array($slides) || $slides === []) {
+            return $data;
+        }
+
+        $normalized = array_values(array_filter($slides, fn ($slide) => is_array($slide)));
+        if ($normalized === []) {
+            return $data;
+        }
+
+        $identityIndex = collect($normalized)->search(fn ($slide) => ! empty($slide['identity']));
+        if ($identityIndex !== false && $identityIndex !== 0) {
+            $identitySlide = $normalized[$identityIndex];
+            array_splice($normalized, $identityIndex, 1);
+            array_unshift($normalized, $identitySlide);
+        }
+
+        $solarIndex = collect($normalized)->search(function ($slide) {
+            $type = trim((string) data_get($slide, 'type', ''));
+            $image = trim((string) data_get($slide, 'image', ''));
+            $title = mb_strtolower(trim((string) data_get($slide, 'title', '')));
+
+            return $type === 'solar-kit'
+                || str_contains($image, 'solaire')
+                || str_contains($title, 'solaire')
+                || str_contains($title, 'photovolta');
+        });
+
+        if ($solarIndex !== false && $solarIndex !== 1) {
+            $solarSlide = $normalized[$solarIndex];
+            array_splice($normalized, $solarIndex, 1);
+            array_splice($normalized, min(1, count($normalized)), 0, [$solarSlide]);
+        }
+
+        data_set($data, 'hero.slides', $normalized);
 
         return $data;
     }

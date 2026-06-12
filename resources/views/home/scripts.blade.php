@@ -237,6 +237,11 @@
         const heroLearnMoreCta = document.getElementById('heroLearnMoreCta');
         const heroIdentityBlock = document.getElementById('heroIdentityBlock');
         const heroRegularBlock = document.getElementById('heroRegularBlock');
+        const heroSolarBlock = document.getElementById('heroSolarBlock');
+        const heroSolarEyebrow = document.getElementById('heroSolarEyebrow');
+        const heroSolarTitle = document.getElementById('heroSolarTitle');
+        const heroSolarSubtitle = document.getElementById('heroSolarSubtitle');
+        const heroSolarImage = document.getElementById('heroSolarImage');
         const heroSection = document.getElementById('top');
         const thumbs = Array.from(document.querySelectorAll('.hero-thumb'));
         const slides = @json($slidesJs);
@@ -249,15 +254,22 @@
             if (!slide || !hero) return;
 
             const isIdentity = identitySlideId && Number(slideId) === identitySlideId;
+            const isSolar = slide.type === 'solar-kit';
 
             // Toggle layout blocks
             if (heroIdentityBlock) { heroIdentityBlock.classList.toggle('hidden', !isIdentity); heroIdentityBlock.classList.toggle('flex', isIdentity); }
-            if (heroRegularBlock) { heroRegularBlock.classList.toggle('hidden', isIdentity); heroRegularBlock.classList.toggle('flex', !isIdentity); }
+            if (heroRegularBlock) { heroRegularBlock.classList.toggle('hidden', isIdentity || isSolar); heroRegularBlock.classList.toggle('flex', !isIdentity && !isSolar); }
+            if (heroSolarBlock) { heroSolarBlock.classList.toggle('hidden', !isSolar); heroSolarBlock.classList.toggle('flex', isSolar); }
 
 
             hero.style.backgroundImage = slide.bg;
 
-            if (!isIdentity) {
+            if (isSolar) {
+                if (heroSolarEyebrow) heroSolarEyebrow.textContent = slide.eyebrow || '';
+                if (heroSolarTitle) heroSolarTitle.textContent = slide.title;
+                if (heroSolarSubtitle) heroSolarSubtitle.textContent = slide.subtitle;
+                if (heroSolarImage && slide.imageUrl) heroSolarImage.style.backgroundImage = `url('${slide.imageUrl}')`;
+            } else if (!isIdentity) {
                 if (heroTitle) heroTitle.textContent = slide.title;
                 if (heroSubtitle) heroSubtitle.textContent = slide.subtitle;
                 if (heroPrimaryCta) { heroPrimaryCta.textContent = slide.primaryText; heroPrimaryCta.setAttribute('href', slide.primaryHref); }
@@ -307,6 +319,39 @@
         }
         setHeroSlide(slideIds[0] || 1);
         startHeroAutoplay();
+
+        const heroSolarKitInput = document.getElementById('heroSolarKitInput');
+        const heroSolarAddressInput = document.getElementById('heroSolarAddressInput');
+        const heroSolarForm = document.getElementById('heroSolarForm');
+        const heroSolarKitButtons = Array.from(document.querySelectorAll('.hero-solar-kit-option'));
+
+        const setActiveHeroSolarKit = (kwc) => {
+            if (heroSolarKitInput) {
+                heroSolarKitInput.value = String(kwc || '3');
+            }
+            heroSolarKitButtons.forEach((btn) => {
+                const active = String(btn.dataset.kwc) === String(kwc);
+                btn.classList.toggle('border-orange-300', active);
+                btn.classList.toggle('bg-orange-50', active);
+                btn.classList.toggle('shadow-[0_10px_28px_rgba(249,115,22,.14)]', active);
+                btn.classList.toggle('border-slate-200', !active);
+                btn.classList.toggle('bg-white', !active);
+            });
+        };
+
+        heroSolarKitButtons.forEach((btn) => {
+            btn.addEventListener('click', () => setActiveHeroSolarKit(btn.dataset.kwc));
+        });
+        if (heroSolarKitButtons.length) {
+            setActiveHeroSolarKit(heroSolarKitInput?.value || heroSolarKitButtons[0].dataset.kwc || '3');
+        }
+
+        heroSolarForm?.addEventListener('submit', (event) => {
+            if (!heroSolarAddressInput || heroSolarAddressInput.value.trim().length < 5) {
+                event.preventDefault();
+                heroSolarAddressInput?.focus();
+            }
+        });
 
         const initBeforeAfterComparators = () => {
             // Nouveau format (grille) : plusieurs comparateurs sur la même page.

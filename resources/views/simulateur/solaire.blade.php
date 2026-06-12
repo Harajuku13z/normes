@@ -939,6 +939,10 @@ const state = {
   panelLayout: null,
   currentStep: 1,
 };
+const initialSolarParams = new URLSearchParams(window.location.search);
+const initialSolarAddress = (initialSolarParams.get('address') || '').trim();
+const initialSolarKitKwc = Number(initialSolarParams.get('kit') || 0);
+let preferredInitialPanelCount = initialSolarKitKwc > 0 ? panelCountFromKwc(initialSolarKitKwc) : 0;
 
 // ── DOM refs ────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -2209,17 +2213,22 @@ function validateZone(){
   const defaultPanelCount = draw.zoneType === 'roof'
     ? getRoofDefaultPanelCount(maxPanels)
     : selectableMaxPanels;
+  const requestedPanelCount = preferredInitialPanelCount > 0
+    ? Math.min(selectableMaxPanels, preferredInitialPanelCount)
+    : 0;
+  const initialPanelCount = requestedPanelCount > 0 ? requestedPanelCount : defaultPanelCount;
 
   state.panelLayout = {
     ...combinedLayout,
     maxPanels,
     selectableMaxPanels,
-    activeCount: defaultPanelCount,
+    activeCount: initialPanelCount,
     fullPanelCount: combinedLayout.panels.length,
     solarApiSuggestedPanels: solarApiMax,
   };
 
-  applyValidatedLayout(defaultPanelCount);
+  applyValidatedLayout(initialPanelCount);
+  preferredInitialPanelCount = 0;
   setupPanelSlider();
 
   // UI updates
@@ -2232,8 +2241,8 @@ function validateZone(){
   setStep(3);
   $('cardRoof').scrollIntoView({behavior:'smooth', block:'nearest'});
   showToast(
-    defaultPanelCount > 0
-      ? `${draw.zones.length} zone${draw.zones.length > 1 ? 's' : ''} validée${draw.zones.length > 1 ? 's' : ''} — ${Math.round(combinedLayout.totalAreaM2)} m² · ${draw.zoneType === 'roof' ? formatRoofKitLabel(defaultPanelCount) : formatPanelCountLabel(defaultPanelCount)} ✓`
+    initialPanelCount > 0
+      ? `${draw.zones.length} zone${draw.zones.length > 1 ? 's' : ''} validée${draw.zones.length > 1 ? 's' : ''} — ${Math.round(combinedLayout.totalAreaM2)} m² · ${draw.zoneType === 'roof' ? formatRoofKitLabel(initialPanelCount) : formatPanelCountLabel(initialPanelCount)} ✓`
       : `${draw.zones.length} zone${draw.zones.length > 1 ? 's' : ''} validée${draw.zones.length > 1 ? 's' : ''} — ${Math.round(combinedLayout.totalAreaM2)} m² · zone trop petite pour un panneau`
   );
 }
@@ -2478,6 +2487,14 @@ function initMap(){
 
   dbg('INFO', 'Carte initialisée ✓');
   mapLoading.classList.add('hidden');
+
+  if(initialSolarAddress){
+    addressInput.value = initialSolarAddress;
+    analyzeBtn.disabled = initialSolarAddress.length < 5;
+    if(initialSolarAddress.length >= 5){
+      geocodeAddress(initialSolarAddress);
+    }
+  }
 }
 
 // ── Change address ────────────────────────────────────────────────

@@ -2,12 +2,33 @@
     $h = $home ?? [];
     $slides = data_get($h, 'hero.slides', []);
     $first = $slides[0] ?? [];
+    $solarSlide = collect($slides)->first(function ($slide) {
+        if (! is_array($slide) || ! empty($slide['identity'])) {
+            return false;
+        }
+
+        $type = trim((string) data_get($slide, 'type', ''));
+        $image = trim((string) data_get($slide, 'image', ''));
+        $title = mb_strtolower(trim((string) data_get($slide, 'title', '')));
+
+        return $type === 'solar-kit'
+            || str_contains($image, 'solaire')
+            || str_contains($title, 'solaire')
+            || str_contains($title, 'photovolta');
+    }) ?? [];
     $isIdentity = !empty($first['identity']);
     $firstBgPath = $isIdentity ? 'slide/hero-groupe-1.png' : (string) data_get($first, 'image', 'slide/toiture.png');
     $firstBg = \App\Support\HomeView::url($firstBgPath);
     $firstBgFull = $isIdentity
         ? "url('".$firstBg."')"
         : "linear-gradient(110deg, rgba(47,66,81,.74), rgba(47,66,81,.32)), url('".$firstBg."')";
+    $solarImage = \App\Support\HomeView::url((string) data_get($solarSlide, 'image', 'slide/solaire.png'));
+    $solarKitOptions = data_get($solarSlide, 'kit_options', [
+        ['kwc' => '3', 'label' => '3 kWc', 'description' => 'Maison 2-3 personnes', 'badge' => 'Le plus choisi'],
+        ['kwc' => '4', 'label' => '4 kWc', 'description' => 'Maison 3-4 personnes'],
+        ['kwc' => '6', 'label' => '6 kWc', 'description' => 'Maison familiale'],
+        ['kwc' => '9', 'label' => '9 kWc', 'description' => 'Grande maison'],
+    ]);
     $identityStats = [
         ['value' => '+5 000', 'label' => 'Chantiers', 'accent' => 'text-brand-blue'],
         ['value' => '99.9%', 'label' => 'Satisfaction', 'accent' => 'text-brand-yellow'],
@@ -110,6 +131,80 @@
             </div>
         </div>
         <div class="hidden lg:block lg:w-[280px]"></div>
+    </div>
+
+    <div id="heroSolarBlock"
+         class="hidden relative z-10 mx-auto w-[95%] max-w-[1380px] flex-col justify-center px-4 pb-28 pt-8 sm:px-6 sm:py-10 lg:px-8"
+         style="min-height:inherit">
+        <div class="grid items-center gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(380px,.9fr)]">
+            <div class="max-w-3xl text-white">
+                <p id="heroSolarEyebrow" class="mb-4 text-xs font-extrabold uppercase tracking-[0.28em] text-orange-300 sm:text-sm">
+                    {{ data_get($solarSlide, 'eyebrow', 'Spécialiste du kit solaire en Bourgogne') }}
+                </p>
+                <h2 id="heroSolarTitle" class="max-w-[720px] text-4xl font-black leading-[1] tracking-tight sm:text-5xl lg:text-6xl">
+                    {{ data_get($solarSlide, 'title', 'Votre kit solaire, prêt à simuler chez vous') }}
+                </h2>
+                <p id="heroSolarSubtitle" class="mt-5 max-w-[620px] text-base font-medium leading-relaxed text-slate-100/92 sm:text-lg">
+                    {{ data_get($solarSlide, 'subtitle', 'Choisissez votre puissance, entrez votre adresse et visualisez rapidement votre projet solaire.') }}
+                </p>
+            </div>
+
+            <div class="overflow-hidden rounded-[30px] border border-white/20 bg-white/10 p-2 shadow-[0_22px_48px_rgba(10,20,30,.28)] backdrop-blur-sm">
+                <div id="heroSolarImage" class="aspect-[4/3] w-full rounded-[24px] bg-cover bg-center" style="background-image:url('{{ $solarImage }}')"></div>
+            </div>
+        </div>
+
+        <div class="mt-6 rounded-[32px] border border-white/70 bg-white/95 p-4 text-brand-dark shadow-[0_26px_60px_rgba(20,30,40,.18)] sm:p-6">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                    <p class="text-sm font-extrabold uppercase tracking-[0.18em] text-brand-blue">Simulation solaire</p>
+                    <h3 class="mt-1 text-2xl font-black tracking-tight sm:text-3xl">Choisissez votre kit puis entrez votre adresse</h3>
+                </div>
+                <p class="text-sm font-medium text-slate-500">Vous arrivez directement sur la carte pour lancer la simulation.</p>
+            </div>
+
+            <form id="heroSolarForm" action="{{ route('simulateur.solaire') }}" method="GET" class="mt-5 flex flex-col gap-4">
+                <input type="hidden" name="kit" id="heroSolarKitInput" value="{{ data_get($solarKitOptions, '0.kwc', '3') }}">
+
+                <div id="heroSolarKitOptions" class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                    @foreach ($solarKitOptions as $index => $option)
+                        @php
+                            $isActive = $index === 0;
+                        @endphp
+                        <button type="button"
+                                class="hero-solar-kit-option group rounded-[22px] border px-4 py-4 text-left transition {{ $isActive ? 'border-orange-300 bg-orange-50 shadow-[0_10px_28px_rgba(249,115,22,.14)]' : 'border-slate-200 bg-white hover:border-brand-blue/30 hover:bg-slate-50' }}"
+                                data-kwc="{{ data_get($option, 'kwc') }}">
+                            <div class="flex items-start justify-between gap-3">
+                                <div>
+                                    <div class="text-[1.65rem] font-black leading-none text-brand-dark">{{ data_get($option, 'label') }}</div>
+                                    <div class="mt-2 text-sm font-medium text-slate-500">{{ data_get($option, 'description') }}</div>
+                                </div>
+                                @if (trim((string) data_get($option, 'badge', '')) !== '')
+                                    <span class="rounded-full bg-orange-100 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-orange-600">{{ data_get($option, 'badge') }}</span>
+                                @endif
+                            </div>
+                        </button>
+                    @endforeach
+                </div>
+
+                <div class="grid gap-3 lg:grid-cols-[minmax(0,1fr)_240px]">
+                    <label class="block">
+                        <span class="mb-2 block text-sm font-extrabold uppercase tracking-[0.14em] text-slate-500">Adresse du projet</span>
+                        <input type="text"
+                               name="address"
+                               id="heroSolarAddressInput"
+                               required
+                               placeholder="Ex. : 12 rue de la Paix, Chalon-sur-Saône"
+                               class="w-full rounded-[22px] border border-slate-200 bg-white px-5 py-4 text-base font-medium text-brand-dark outline-none transition focus:border-brand-blue focus:ring-4 focus:ring-sky-100">
+                    </label>
+                    <button type="submit"
+                            class="inline-flex min-h-[64px] items-center justify-center gap-2 self-end rounded-[22px] bg-[#f97316] px-6 py-4 text-base font-extrabold text-white shadow-[0_16px_32px_rgba(249,115,22,.28)] transition hover:-translate-y-0.5 hover:bg-[#ea580c]">
+                        <span>Faire la simulation</span>
+                        <span aria-hidden="true">→</span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     {{-- ===================================================
