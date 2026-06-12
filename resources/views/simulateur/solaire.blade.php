@@ -2195,13 +2195,13 @@ function resetZoneSelection(startFresh = true){
 
 function validateZone(){
   if(draw.points.length < 3) return;
-  const zonePolygon = draw.polygon;
-  const zoneMarkers = [...draw.markers];
   const zonePoints = [...draw.points];
   const ridgeEdgeIndex = draw.ridgeEdgeIndex;
   draw.validated = true;
   stopDrawMode();
   drawPolygon();
+  const zonePolygon = draw.polygon;
+  const zoneMarkers = [...draw.markers];
 
   if(zonePolygon){
     zonePolygon.setOptions({
