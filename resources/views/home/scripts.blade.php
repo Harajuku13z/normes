@@ -254,7 +254,7 @@
             if (!slide || !hero) return;
 
             const isIdentity = identitySlideId && Number(slideId) === identitySlideId;
-            const isSolar = slide.type === 'solar-kit';
+            const isSolar = Number(slideId) === 2 && !!slide.isSolar;
 
             // Toggle layout blocks
             if (heroIdentityBlock) { heroIdentityBlock.classList.toggle('hidden', !isIdentity); heroIdentityBlock.classList.toggle('flex', isIdentity); }

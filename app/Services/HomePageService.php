@@ -231,6 +231,12 @@ class HomePageService
                 }
                 $n = $i + 1;
                 $isIdentity = ! empty($slide['identity']);
+                $title = mb_strtolower(trim((string) ($slide['title'] ?? '')));
+                $imagePath = trim((string) ($slide['image'] ?? ''));
+                $isSolar = (string) ($slide['type'] ?? '') === 'solar-kit'
+                    || str_contains($imagePath, 'solaire')
+                    || str_contains($title, 'solaire')
+                    || str_contains($title, 'photovolta');
                 $img = $isIdentity ? 'slide/hero-groupe-1.png' : (string) ($slide['image'] ?? '');
                 $url = $this->publicUrl($img);
                 $a1 = $isIdentity ? '.80' : '.74';
@@ -240,6 +246,7 @@ class HomePageService
                         ? "url('{$url}')"
                         : "linear-gradient(110deg, rgba(47,66,81,{$a1}), rgba(47,66,81,{$a2})), url('{$url}')",
                     'identity' => $isIdentity,
+                    'isSolar' => $isSolar,
                     'type' => (string) ($slide['type'] ?? ''),
                     'eyebrow' => (string) ($slide['eyebrow'] ?? ''),
                     'title' => (string) ($slide['title'] ?? ''),
