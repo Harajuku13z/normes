@@ -2647,6 +2647,13 @@ function loadMaps(){
   const mapsScript = document.createElement('script');
   mapsScript.src = src;
   // PAS de async/defer ici : le paramètre callback= suffit
+  mapsScript.onload = function(){
+    dbg('INFO', 'Script Google Maps chargé (onload)');
+    if(!map && window.google?.maps && typeof window.initMapCallback === 'function'){
+      dbg('WARN', 'Callback Maps non déclenché automatiquement — tentative manuelle');
+      window.initMapCallback();
+    }
+  };
   mapsScript.onerror = function(e){
     dbg('ERROR', 'Échec chargement script Maps (onerror)', 'API Maps JavaScript non activée ou réseau indisponible.');
     showMapError('Impossible de charger le script Google Maps. Vérifiez la connexion.');
@@ -2656,7 +2663,19 @@ function loadMaps(){
   // Watchdog : si après 10 s la carte n'est toujours pas chargée
   setTimeout(() => {
     if(!map){
-      dbg('WARN', 'Timeout 10s — Maps n\'a pas appelé le callback. Probablement gm_authFailure silencieux.');
+      if(window.google?.maps && typeof initMap === 'function'){
+        dbg('WARN', 'Timeout 10s — callback absent mais API présente, tentative initMap() manuelle');
+        try {
+          initMap();
+          dbg('INFO', 'Carte initialisée via watchdog ✓');
+          return;
+        } catch(e){
+          dbg('ERROR', 'Échec initMap() via watchdog', e.message);
+        }
+      } else {
+        dbg('WARN', 'Timeout 10s — Maps n\'a pas appelé le callback. Probablement gm_authFailure silencieux.');
+      }
+      showMapError('La carte met trop de temps à se charger. Rechargez la page ou revenez depuis l’accueil.');
     }
   }, 10000);
 }
