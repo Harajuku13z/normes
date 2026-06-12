@@ -65,22 +65,22 @@
                 </div>
 
                 <div class="mt-8 flex w-full max-w-[820px] flex-col gap-3 sm:gap-4">
-                    <a href="#devis"
-                       class="inline-flex min-h-[64px] w-full items-center justify-center gap-2 rounded-[24px] bg-brand-blue px-6 py-4 text-[1rem] font-extrabold text-white shadow-[0_16px_30px_rgba(96,180,249,.34)] transition hover:-translate-y-0.5 hover:bg-sky-400 sm:min-h-[72px] sm:text-[1.18rem] lg:text-[1.28rem]">
-                        <span>Je demande un devis</span>
-                        <span aria-hidden="true">→</span>
-                    </a>
                     <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
                         <a href="#services"
-                           class="inline-flex min-h-[58px] items-center justify-center gap-2 rounded-[20px] border border-[#d4b13f] bg-brand-yellow px-5 py-3.5 text-[0.95rem] font-extrabold text-brand-dark shadow-[0_12px_22px_rgba(250,223,112,.22)] transition hover:-translate-y-0.5 hover:bg-yellow-300 sm:min-h-[64px] sm:text-[1.05rem]">
+                           class="inline-flex min-h-[64px] items-center justify-center gap-2 rounded-[22px] border border-[#d4b13f] bg-brand-yellow px-6 py-4 text-[0.95rem] font-extrabold text-brand-dark shadow-[0_12px_22px_rgba(250,223,112,.22)] transition hover:-translate-y-0.5 hover:bg-yellow-300 sm:min-h-[72px] sm:text-[1.05rem] lg:text-[1.1rem]">
                             <span class="truncate">Découvrir nos services</span>
                         </a>
                         <a href="tel:+33385419886"
-                           class="inline-flex min-h-[58px] items-center justify-center gap-2 rounded-[20px] border border-white/60 bg-[#56697f] px-5 py-3.5 text-[0.9rem] font-extrabold tracking-tight text-white shadow-[0_12px_22px_rgba(47,66,81,.22)] transition hover:-translate-y-0.5 hover:bg-[#4e6074] sm:min-h-[64px] sm:text-[1.05rem]">
+                           class="inline-flex min-h-[64px] items-center justify-center gap-3 rounded-[22px] border border-white/60 bg-[#56697f] px-6 py-4 text-[0.95rem] font-extrabold text-white shadow-[0_12px_22px_rgba(47,66,81,.22)] transition hover:-translate-y-0.5 hover:bg-[#4e6074] sm:min-h-[72px] sm:text-[1.05rem] lg:text-[1.1rem]">
                             <svg class="h-4 w-4 shrink-0 text-brand-blue sm:h-5 sm:w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>
-                            <span class="truncate">03 85 41 98 86</span>
+                            <span class="tabular-nums tracking-[0.08em]">03 85 41 98 86</span>
                         </a>
                     </div>
+                    <a href="#devis"
+                       class="inline-flex min-h-[64px] w-full items-center justify-center gap-2 rounded-[22px] bg-brand-blue px-6 py-4 text-[1rem] font-extrabold text-white shadow-[0_16px_30px_rgba(96,180,249,.34)] transition hover:-translate-y-0.5 hover:bg-sky-400 sm:min-h-[72px] sm:text-[1.18rem] lg:text-[1.22rem]">
+                        <span>Je demande un devis</span>
+                        <span aria-hidden="true">→</span>
+                    </a>
                 </div>
             </div>
         </div>
