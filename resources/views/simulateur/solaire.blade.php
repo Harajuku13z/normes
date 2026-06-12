@@ -1652,10 +1652,19 @@ function drawChart(monthly){
 }
 
 // ── Call Solar API (backend) ───────────────────────────────────────
-async function fetchSolarData(){
-  mapLoading.classList.remove('hidden');
-  mapLoadingText.textContent = 'Analyse du potentiel solaire…';
+async function fetchSolarData(options = {}){
+  const background = !!options.background;
+  const requestTimeoutMs = Number(options.timeoutMs || 8000);
+  if(!background){
+    mapLoading.classList.remove('hidden');
+    mapLoadingText.textContent = 'Analyse du potentiel solaire…';
+  }
   setStep(2);
+  mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
+  if(typeof startDrawMode === 'function') startDrawMode();
+
+  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const timeoutId = controller ? window.setTimeout(() => controller.abort(), requestTimeoutMs) : null;
 
   try {
     const resp = await fetch(window.__estimateUrl, {
@@ -1665,6 +1674,7 @@ async function fetchSolarData(){
         'X-CSRF-TOKEN': window.__csrfToken,
         'Accept': 'application/json',
       },
+      signal: controller?.signal,
       body: JSON.stringify({ lat: state.lat, lng: state.lng }),
     });
 
@@ -1680,24 +1690,25 @@ async function fetchSolarData(){
     state.panelLayout = null;
     displayResults(data);
 
-    // Afficher étape dessin de zone
-    mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
-    setStep(2);
-    showToast('Adresse analysée — tracez votre zone ✓');
-
-    // Démarrer le mode dessin automatiquement
-    if(typeof startDrawMode === 'function') startDrawMode();
+    if(!background){
+      showToast('Adresse analysée — tracez votre zone ✓');
+    }
 
   } catch(e){
-    // Solar API indisponible MAIS l'adresse est valide → on affiche quand même l'étape dessin
-    // avec des valeurs estimatives (sans données Solar API)
-    mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
-    setStep(2);
-    if(typeof startDrawMode === 'function') startDrawMode();
-    // Afficher une note discrète (pas une erreur bloquante)
-    dbg('WARN', 'Solar API indisponible — mode estimation locale', e.message);
+    const message = e?.name === 'AbortError'
+      ? 'Temps de réponse dépassé — mode dessin direct'
+      : e.message;
+    dbg('WARN', 'Solar API indisponible — mode estimation locale', message);
+    if(!background){
+      showToast('Adresse chargée — tracez directement votre zone', false);
+    }
   } finally {
-    mapLoading.classList.add('hidden');
+    if(timeoutId){
+      window.clearTimeout(timeoutId);
+    }
+    if(!background){
+      mapLoading.classList.add('hidden');
+    }
   }
 }
 
@@ -2306,7 +2317,7 @@ $('clearDrawBtn')?.addEventListener('click', () => {
 const autocompleteList = $('autocompleteList');
 let acItems = [], acFocused = -1, acDebounce;
 
-function openAddress(item){
+function openAddress(item, options = {}){
   state.lat     = item.lat;
   state.lng     = item.lng;
   state.address = item.label;
@@ -2349,7 +2360,7 @@ function openAddress(item){
       marker.setZIndex(6);
     }
   }
-  fetchSolarData();
+  fetchSolarData(options.fetchOptions || {});
 }
 
 function renderAutocomplete(items){
@@ -2513,7 +2524,13 @@ function initMap(){
       preferredInitialPanelCount = Number(heroSelection?.kit || initialSolarKitKwc || 0) > 0
         ? panelCountFromKwc(Number(heroSelection?.kit || initialSolarKitKwc || 0))
         : preferredInitialPanelCount;
-      openAddress({ lat: bootLat, lng: bootLng, label: bootLabel || bootAddress });
+      setStep(2);
+      mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
+      if(typeof startDrawMode === 'function') startDrawMode();
+      openAddress(
+        { lat: bootLat, lng: bootLng, label: bootLabel || bootAddress },
+        { fetchOptions: { background: true, timeoutMs: 8000 } }
+      );
       try { window.sessionStorage.removeItem('solarHeroSelection'); } catch(_error) {}
     } else if(bootAddress.length >= 5){
       geocodeAddress(bootAddress);
