@@ -188,7 +188,7 @@
                 </div>
 
                 <div class="grid gap-3 lg:grid-cols-[minmax(0,1fr)_210px]">
-                    <label class="block">
+                    <label class="relative block">
                         <span class="mb-2 block text-[11px] font-extrabold uppercase tracking-[0.14em] text-slate-500">Adresse du projet</span>
                         <input type="text"
                                name="address"
@@ -196,6 +196,10 @@
                                required
                                placeholder="Ex. : 12 rue de la Paix, Chalon-sur-Saône"
                                class="w-full rounded-[18px] border border-slate-200 bg-white px-4 py-3.5 text-sm font-medium text-brand-dark outline-none transition focus:border-brand-blue focus:ring-4 focus:ring-sky-100 sm:text-[15px]">
+                        <input type="hidden" name="lat" id="heroSolarLatInput">
+                        <input type="hidden" name="lng" id="heroSolarLngInput">
+                        <input type="hidden" name="label" id="heroSolarLabelInput">
+                        <div id="heroSolarAutocompleteList" class="absolute left-0 right-0 top-full z-30 mt-2 hidden overflow-hidden rounded-[18px] border border-slate-200 bg-white shadow-[0_18px_40px_rgba(15,34,49,.16)]"></div>
                     </label>
                     <button type="submit"
                             class="inline-flex min-h-[56px] items-center justify-center gap-2 self-end rounded-[18px] bg-[#f97316] px-5 py-3.5 text-sm font-extrabold text-white shadow-[0_14px_26px_rgba(249,115,22,.22)] transition hover:-translate-y-0.5 hover:bg-[#ea580c] sm:text-[15px]">

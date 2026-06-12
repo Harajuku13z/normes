@@ -246,6 +246,7 @@
         const thumbs = Array.from(document.querySelectorAll('.hero-thumb'));
         const slides = @json($slidesJs);
         const identitySlideId = @json(data_get($home, 'hero.slides.0.identity') ? 1 : 0);
+        const solarAutocompleteUrl = @json(route('api.solar.autocomplete'));
 
         const slideIds = Object.keys(slides).map((k) => Number(k)).filter((n) => !Number.isNaN(n)).sort((a, b) => a - b);
 
@@ -322,8 +323,15 @@
 
         const heroSolarKitInput = document.getElementById('heroSolarKitInput');
         const heroSolarAddressInput = document.getElementById('heroSolarAddressInput');
+        const heroSolarLatInput = document.getElementById('heroSolarLatInput');
+        const heroSolarLngInput = document.getElementById('heroSolarLngInput');
+        const heroSolarLabelInput = document.getElementById('heroSolarLabelInput');
+        const heroSolarAutocompleteList = document.getElementById('heroSolarAutocompleteList');
         const heroSolarForm = document.getElementById('heroSolarForm');
         const heroSolarKitButtons = Array.from(document.querySelectorAll('.hero-solar-kit-option'));
+        let heroSolarAutocompleteItems = [];
+        let heroSolarAutocompleteFocused = -1;
+        let heroSolarAutocompleteDebounce = null;
 
         const setActiveHeroSolarKit = (kwc) => {
             if (heroSolarKitInput) {
@@ -346,10 +354,149 @@
             setActiveHeroSolarKit(heroSolarKitInput?.value || heroSolarKitButtons[0].dataset.kwc || '3');
         }
 
+        const closeHeroSolarAutocomplete = () => {
+            if (!heroSolarAutocompleteList) {
+                return;
+            }
+            heroSolarAutocompleteList.classList.add('hidden');
+            heroSolarAutocompleteList.innerHTML = '';
+            heroSolarAutocompleteItems = [];
+            heroSolarAutocompleteFocused = -1;
+        };
+
+        const syncHeroSolarSelectedAddress = (item) => {
+            if (!item) {
+                if (heroSolarLatInput) heroSolarLatInput.value = '';
+                if (heroSolarLngInput) heroSolarLngInput.value = '';
+                if (heroSolarLabelInput) heroSolarLabelInput.value = '';
+                return;
+            }
+            if (heroSolarLatInput) heroSolarLatInput.value = String(item.lat ?? '');
+            if (heroSolarLngInput) heroSolarLngInput.value = String(item.lng ?? '');
+            if (heroSolarLabelInput) heroSolarLabelInput.value = String(item.label || item.full || '');
+        };
+
+        const selectHeroSolarAutocompleteItem = (item) => {
+            if (!heroSolarAddressInput) {
+                return;
+            }
+            heroSolarAddressInput.value = item.label || item.full || '';
+            syncHeroSolarSelectedAddress(item);
+            closeHeroSolarAutocomplete();
+        };
+
+        const renderHeroSolarAutocomplete = (items) => {
+            if (!heroSolarAutocompleteList) {
+                return;
+            }
+            heroSolarAutocompleteItems = items;
+            heroSolarAutocompleteFocused = -1;
+            if (!items.length) {
+                closeHeroSolarAutocomplete();
+                return;
+            }
+            heroSolarAutocompleteList.innerHTML = items.map((item, index) => {
+                const main = item.label || item.full || '';
+                const sub = item.full && item.full !== main ? item.full.split(',').slice(1, 3).join(',').trim() : '';
+                return `
+                    <button type="button" class="hero-solar-autocomplete-item flex w-full items-start gap-3 border-b border-slate-100 px-4 py-3 text-left last:border-b-0 hover:bg-sky-50" data-index="${index}">
+                        <span class="mt-0.5 text-brand-blue">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        </span>
+                        <span class="block">
+                            <span class="block text-sm font-semibold text-brand-dark">${main}</span>
+                            ${sub ? `<span class="mt-0.5 block text-xs text-slate-500">${sub}</span>` : ''}
+                        </span>
+                    </button>
+                `;
+            }).join('');
+            heroSolarAutocompleteList.classList.remove('hidden');
+            heroSolarAutocompleteList.querySelectorAll('.hero-solar-autocomplete-item').forEach((button) => {
+                button.addEventListener('mousedown', (event) => {
+                    event.preventDefault();
+                    selectHeroSolarAutocompleteItem(heroSolarAutocompleteItems[Number(button.dataset.index)]);
+                });
+            });
+        };
+
+        const focusHeroSolarAutocompleteItem = (nextIndex) => {
+            if (!heroSolarAutocompleteList) {
+                return;
+            }
+            const buttons = Array.from(heroSolarAutocompleteList.querySelectorAll('.hero-solar-autocomplete-item'));
+            buttons.forEach((button) => button.classList.remove('bg-sky-50'));
+            if (nextIndex < 0 || nextIndex >= buttons.length) {
+                heroSolarAutocompleteFocused = -1;
+                return;
+            }
+            buttons[nextIndex].classList.add('bg-sky-50');
+            heroSolarAutocompleteFocused = nextIndex;
+        };
+
+        const queryHeroSolarAutocomplete = async (query) => {
+            if (!solarAutocompleteUrl || query.length < 3) {
+                closeHeroSolarAutocomplete();
+                return;
+            }
+            try {
+                const response = await fetch(`${solarAutocompleteUrl}?q=${encodeURIComponent(query)}`, {
+                    headers: { 'Accept': 'application/json' },
+                });
+                const data = await response.json();
+                renderHeroSolarAutocomplete(Array.isArray(data) ? data : []);
+            } catch (_error) {
+                closeHeroSolarAutocomplete();
+            }
+        };
+
+        heroSolarAddressInput?.addEventListener('input', () => {
+            syncHeroSolarSelectedAddress(null);
+            const value = heroSolarAddressInput.value.trim();
+            clearTimeout(heroSolarAutocompleteDebounce);
+            heroSolarAutocompleteDebounce = setTimeout(() => queryHeroSolarAutocomplete(value), 220);
+        });
+
+        heroSolarAddressInput?.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                focusHeroSolarAutocompleteItem(Math.min(heroSolarAutocompleteFocused + 1, heroSolarAutocompleteItems.length - 1));
+                return;
+            }
+            if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                focusHeroSolarAutocompleteItem(Math.max(heroSolarAutocompleteFocused - 1, 0));
+                return;
+            }
+            if (event.key === 'Enter' && heroSolarAutocompleteFocused >= 0 && heroSolarAutocompleteItems[heroSolarAutocompleteFocused]) {
+                event.preventDefault();
+                selectHeroSolarAutocompleteItem(heroSolarAutocompleteItems[heroSolarAutocompleteFocused]);
+                return;
+            }
+            if (event.key === 'Escape') {
+                closeHeroSolarAutocomplete();
+            }
+        });
+
+        heroSolarAddressInput?.addEventListener('blur', () => {
+            window.setTimeout(closeHeroSolarAutocomplete, 120);
+        });
+
         heroSolarForm?.addEventListener('submit', (event) => {
             if (!heroSolarAddressInput || heroSolarAddressInput.value.trim().length < 5) {
                 event.preventDefault();
                 heroSolarAddressInput?.focus();
+                return;
+            }
+            if (heroSolarKitInput && heroSolarAddressInput) {
+                try {
+                    window.sessionStorage.setItem('solarHeroSelection', JSON.stringify({
+                        address: heroSolarAddressInput.value.trim(),
+                        label: heroSolarLabelInput?.value || heroSolarAddressInput.value.trim(),
+                        lat: heroSolarLatInput?.value || '',
+                        lng: heroSolarLngInput?.value || '',
+                        kit: heroSolarKitInput.value || '3',
+                    }));
+                } catch (_error) {}
             }
         });
 

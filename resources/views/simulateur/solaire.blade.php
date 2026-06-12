@@ -941,8 +941,17 @@ const state = {
 };
 const initialSolarParams = new URLSearchParams(window.location.search);
 const initialSolarAddress = (initialSolarParams.get('address') || '').trim();
+const initialSolarLabel = (initialSolarParams.get('label') || initialSolarAddress).trim();
+const initialSolarLat = Number(initialSolarParams.get('lat'));
+const initialSolarLng = Number(initialSolarParams.get('lng'));
 const initialSolarKitKwc = Number(initialSolarParams.get('kit') || 0);
 let preferredInitialPanelCount = initialSolarKitKwc > 0 ? panelCountFromKwc(initialSolarKitKwc) : 0;
+let initialHeroSelection = null;
+try {
+  initialHeroSelection = JSON.parse(window.sessionStorage.getItem('solarHeroSelection') || 'null');
+} catch(_error) {
+  initialHeroSelection = null;
+}
 
 // ── DOM refs ────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -2488,11 +2497,26 @@ function initMap(){
   dbg('INFO', 'Carte initialisée ✓');
   mapLoading.classList.add('hidden');
 
-  if(initialSolarAddress){
-    addressInput.value = initialSolarAddress;
-    analyzeBtn.disabled = initialSolarAddress.length < 5;
-    if(initialSolarAddress.length >= 5){
-      geocodeAddress(initialSolarAddress);
+  const heroSelection = initialHeroSelection
+    && String(initialHeroSelection.address || '').trim() !== ''
+    ? initialHeroSelection
+    : null;
+  const bootAddress = heroSelection?.address || initialSolarAddress;
+  const bootLabel = heroSelection?.label || initialSolarLabel || bootAddress;
+  const bootLat = Number(heroSelection?.lat || initialSolarLat);
+  const bootLng = Number(heroSelection?.lng || initialSolarLng);
+
+  if(bootAddress){
+    addressInput.value = bootAddress;
+    analyzeBtn.disabled = bootAddress.length < 5;
+    if(Number.isFinite(bootLat) && Number.isFinite(bootLng) && bootAddress.length >= 5){
+      preferredInitialPanelCount = Number(heroSelection?.kit || initialSolarKitKwc || 0) > 0
+        ? panelCountFromKwc(Number(heroSelection?.kit || initialSolarKitKwc || 0))
+        : preferredInitialPanelCount;
+      openAddress({ lat: bootLat, lng: bootLng, label: bootLabel || bootAddress });
+      try { window.sessionStorage.removeItem('solarHeroSelection'); } catch(_error) {}
+    } else if(bootAddress.length >= 5){
+      geocodeAddress(bootAddress);
     }
   }
 }
