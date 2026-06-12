@@ -85,7 +85,7 @@
                     </div>
                 </div>
 
-                <div class="mt-8 flex w-full max-w-[820px] flex-col gap-3 sm:gap-4">
+                <div class="mt-8 flex w-full max-w-[780px] flex-col gap-3 sm:gap-4">
                     <div class="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
                         <a href="#services"
                            class="inline-flex min-h-[64px] items-center justify-center gap-2 rounded-[22px] border border-[#d4b13f] bg-brand-yellow px-6 py-4 text-[0.95rem] font-extrabold text-brand-dark shadow-[0_12px_22px_rgba(250,223,112,.22)] transition hover:-translate-y-0.5 hover:bg-yellow-300 sm:min-h-[72px] sm:text-[1.05rem] lg:text-[1.1rem]">
