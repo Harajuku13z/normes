@@ -1029,6 +1029,15 @@ function getAutoRoofSettings(){
     return { orientation: 'Sud', hasPitch: false, pitchDeg: null, pitchBucket: null };
   }
 
+  if(state.panelLayout?.orientationLabel){
+    return {
+      orientation: state.panelLayout.orientationLabel,
+      hasPitch: false,
+      pitchDeg: null,
+      pitchBucket: null,
+    };
+  }
+
   const seg = state.baseResults?.roofSegments?.[0] || null;
   const orientation = seg ? azimuthToLabel(seg.azimuthDeg) : 'Sud';
   const hasPitch = Number.isFinite(seg?.pitchDeg);
@@ -1092,10 +1101,16 @@ let solarSafetyBandOverlay = null;
 let solarSafetyOutline = null;
 let solarUsableAreaOverlay = null;
 let solarUsableAreaOutline = null;
+let ridgeSelectionOverlays = [];
 
 function clearSolarPanels(){
   solarPanelOverlays.forEach(p => p.setMap(null));
   solarPanelOverlays = [];
+}
+
+function clearRidgeSelection(){
+  ridgeSelectionOverlays.forEach(overlay => overlay.setMap(null));
+  ridgeSelectionOverlays = [];
 }
 
 function clearOverlayEntry(entry){
@@ -1187,6 +1202,46 @@ function pointInsideOrOnEdge(point, polygon){
     || google.maps.geometry.poly.isLocationOnEdge(point, polygon, 1e-9);
 }
 
+function normalizeAngleRad(angle){
+  let next = angle;
+  while(next <= -Math.PI) next += Math.PI * 2;
+  while(next > Math.PI) next -= Math.PI * 2;
+  return next;
+}
+
+function angleDiffRad(a, b){
+  return Math.abs(normalizeAngleRad(a - b));
+}
+
+function orientationLabelFromAzimuth(azimuth){
+  return azimuthToLabel((azimuth + 360) % 360);
+}
+
+function ridgeOrientationFromEdge(edgePoints, polygonPoints){
+  if(!edgePoints?.length || edgePoints.length < 2 || !polygonPoints?.length) return 'Sud';
+  const p1 = edgePoints[0];
+  const p2 = edgePoints[1];
+  const center = polygonPoints.reduce((acc, point) => ({
+    lat: acc.lat + point.lat(),
+    lng: acc.lng + point.lng(),
+  }), { lat: 0, lng: 0 });
+  center.lat /= polygonPoints.length;
+  center.lng /= polygonPoints.length;
+
+  const midLat = (p1.lat() + p2.lat()) / 2;
+  const midLng = (p1.lng() + p2.lng()) / 2;
+  const latDiff = center.lat - midLat;
+  const lngDiff = center.lng - midLng;
+  const azimuth = (Math.atan2(lngDiff, latDiff) * 180 / Math.PI + 360) % 360;
+  return orientationLabelFromAzimuth(azimuth);
+}
+
+function getRidgeEdgePoints(points, ridgeEdgeIndex){
+  if(!Array.isArray(points) || points.length < 2 || !Number.isInteger(ridgeEdgeIndex)) return null;
+  const safeIndex = ((ridgeEdgeIndex % points.length) + points.length) % points.length;
+  return [points[safeIndex], points[(safeIndex + 1) % points.length]];
+}
+
 // ── Intersection de deux droites (en mètres) ─────────────────────
 function lineIntersectM(p1, p2, p3, p4){
   const d1x = p2.x-p1.x, d1y = p2.y-p1.y;
@@ -1247,10 +1302,10 @@ function insetPolygonM(polyPoints, insetM){
 /**
  * Génère une grille de panneaux à l'intérieur du polygone dessiné.
  * - Retrait de sécurité de 0.5 m sur tous les bords
- * - Alignement sur l'angle du bord le plus long (orientation du toit)
+ * - Alignement sur la ligne de faîtage sélectionnée si disponible
  * - Taille réelle des panneaux (panelH × panelW en mètres)
  */
-function computePanelLayoutVariant(insetPts, panelH, panelW, gap, orientationMode, outerPts){
+function computePanelLayoutVariant(insetPts, panelH, panelW, gap, orientationMode, outerPts, preferredAngle = null){
   const centLat = insetPts.reduce((s,p) => s+p.lat(),0)/insetPts.length;
   const centLng = insetPts.reduce((s,p) => s+p.lng(),0)/insetPts.length;
   const mPerLat = 111320;
@@ -1258,14 +1313,17 @@ function computePanelLayoutVariant(insetPts, panelH, panelW, gap, orientationMod
   const insetPoly = new google.maps.Polygon({ paths: insetPts });
   const outerPoly = outerPts?.length >= 3 ? new google.maps.Polygon({ paths: outerPts }) : null;
 
-  // Angle du bord le plus long pour aligner les panneaux sur le pan sélectionné
-  let maxLen = 0, angle = 0;
-  for(let i=0;i<insetPts.length;i++){
-    const p1 = insetPts[i], p2 = insetPts[(i+1)%insetPts.length];
-    const dlat = (p2.lat()-p1.lat())*mPerLat;
-    const dlng = (p2.lng()-p1.lng())*mPerLng;
-    const len  = Math.sqrt(dlat*dlat+dlng*dlng);
-    if(len > maxLen){ maxLen = len; angle = Math.atan2(dlng, dlat); }
+  let angle = preferredAngle;
+  if(angle === null){
+    let maxLen = 0;
+    angle = 0;
+    for(let i=0;i<insetPts.length;i++){
+      const p1 = insetPts[i], p2 = insetPts[(i+1)%insetPts.length];
+      const dlat = (p2.lat()-p1.lat())*mPerLat;
+      const dlng = (p2.lng()-p1.lng())*mPerLng;
+      const len  = Math.sqrt(dlat*dlat+dlng*dlng);
+      if(len > maxLen){ maxLen = len; angle = Math.atan2(dlng, dlat); }
+    }
   }
 
   // Rotation locale autour du centroïde
@@ -1334,7 +1392,7 @@ function computePanelLayoutVariant(insetPts, panelH, panelW, gap, orientationMod
   };
 }
 
-function generatePanelsInPolygon(polyPoints, panelH, panelW, gap = PANEL_GAP_METERS, setbackM = SAFETY_SETBACK_METERS){
+function generatePanelsInPolygon(polyPoints, panelH, panelW, gap = PANEL_GAP_METERS, setbackM = SAFETY_SETBACK_METERS, ridgeEdgeIndex = null){
   if(!polyPoints || polyPoints.length < 3) return { panels: [], insetPoints: [] };
 
   const insetPts = insetPolygonM(polyPoints, setbackM);
@@ -1342,27 +1400,40 @@ function generatePanelsInPolygon(polyPoints, panelH, panelW, gap = PANEL_GAP_MET
   const panelPlacementPts = insetPolygonM(polyPoints, setbackM + PANEL_INNER_CLEARANCE_METERS);
   const panelAreaPts = panelPlacementPts?.length >= 3 ? panelPlacementPts : insetPts;
 
+  const ridgeEdgePoints = getRidgeEdgePoints(polyPoints, ridgeEdgeIndex);
+  const preferredAngle = ridgeEdgePoints
+    ? Math.atan2(
+        (ridgeEdgePoints[1].lng() - ridgeEdgePoints[0].lng()) * Math.cos(((ridgeEdgePoints[1].lat() + ridgeEdgePoints[0].lat()) / 2) * Math.PI / 180),
+        ridgeEdgePoints[1].lat() - ridgeEdgePoints[0].lat()
+      )
+    : null;
   const variants = [
-    computePanelLayoutVariant(panelAreaPts, panelH, panelW, gap, 'portrait', polyPoints),
-    computePanelLayoutVariant(panelAreaPts, panelW, panelH, gap, 'landscape', polyPoints),
-  ].sort((a, b) => b.panels.length - a.panels.length);
+    computePanelLayoutVariant(panelAreaPts, panelW, panelH, gap, 'landscape', polyPoints, preferredAngle),
+    computePanelLayoutVariant(panelAreaPts, panelH, panelW, gap, 'portrait', polyPoints, preferredAngle),
+  ];
+  const bestVariant = variants.find(variant => variant.panels.length > 0) || variants[0];
 
   return {
-    ...(variants[0] || {
+    ...(bestVariant || {
       panels: [],
       panelHeightMeters: panelH,
       panelWidthMeters: panelW,
-      orientationMode: 'portrait',
+      orientationMode: 'landscape',
     }),
     insetPoints: insetPts,
     panelPlacementPoints: panelAreaPts,
     safetyInsetMeters: setbackM,
     panelInnerClearanceMeters: PANEL_INNER_CLEARANCE_METERS,
+    ridgeEdgeIndex,
+    ridgeEdgePoints,
+    orientationLabel: ridgeOrientationFromEdge(ridgeEdgePoints, polyPoints),
   };
 }
 
-function buildLayoutForZone(zonePoints, panelHeightMeters, panelWidthMeters){
-  const zoneLayout = generatePanelsInPolygon(zonePoints, panelHeightMeters, panelWidthMeters, PANEL_GAP_METERS, SAFETY_SETBACK_METERS);
+function buildLayoutForZone(zoneDefinition, panelHeightMeters, panelWidthMeters){
+  const zonePoints = Array.isArray(zoneDefinition) ? zoneDefinition : zoneDefinition?.points;
+  const ridgeEdgeIndex = Array.isArray(zoneDefinition) ? null : zoneDefinition?.ridgeEdgeIndex ?? null;
+  const zoneLayout = generatePanelsInPolygon(zonePoints, panelHeightMeters, panelWidthMeters, PANEL_GAP_METERS, SAFETY_SETBACK_METERS, ridgeEdgeIndex);
   return {
     ...zoneLayout,
     originalPoints: zonePoints,
@@ -1371,10 +1442,21 @@ function buildLayoutForZone(zonePoints, panelHeightMeters, panelWidthMeters){
   };
 }
 
-function buildCombinedPanelLayout(zonePointSets, panelHeightMeters, panelWidthMeters){
-  const zoneLayouts = zonePointSets
-    .filter(points => Array.isArray(points) && points.length >= 3)
-    .map(points => buildLayoutForZone(points, panelHeightMeters, panelWidthMeters));
+function buildCombinedPanelLayout(zoneDefinitions, panelHeightMeters, panelWidthMeters){
+  const zoneLayouts = zoneDefinitions
+    .filter(zone => {
+      const points = Array.isArray(zone) ? zone : zone?.points;
+      return Array.isArray(points) && points.length >= 3;
+    })
+    .map(zone => buildLayoutForZone(zone, panelHeightMeters, panelWidthMeters));
+  const orientationCounts = zoneLayouts.reduce((acc, zone) => {
+    const key = zone.orientationLabel || '';
+    if(!key) return acc;
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+  const orientationLabel = Object.entries(orientationCounts)
+    .sort((a, b) => b[1] - a[1])[0]?.[0] || null;
 
   return {
     zoneLayouts,
@@ -1383,6 +1465,7 @@ function buildCombinedPanelLayout(zonePointSets, panelHeightMeters, panelWidthMe
     usableAreaM2: zoneLayouts.reduce((sum, zone) => sum + (zone.usableAreaM2 || 0), 0),
     safetyInsetMeters: SAFETY_SETBACK_METERS,
     panelInnerClearanceMeters: PANEL_INNER_CLEARANCE_METERS,
+    orientationLabel,
   };
 }
 
@@ -1488,6 +1571,9 @@ function displayResults(r){
     ? null
     : (r.roofSegments?.[0] || state.baseResults?.roofSegments?.[0] || null);
   const autoRoof = getAutoRoofSettings();
+  const orientationText = state.panelLayout?.orientationLabel
+    ? state.panelLayout.orientationLabel
+    : (seg ? azimuthToLabel(seg.azimuthDeg) : null);
   const surfaceLabel = Number.isFinite(r.usableAreaM2) ? 'Surface disponible' : 'Surface sélectionnée';
   const surfaceValue = Number.isFinite(r.usableAreaM2)
     ? `${fmt(r.usableAreaM2)} m²`
@@ -1502,10 +1588,10 @@ function displayResults(r){
       <div class="ri-icon">🔷</div>
       <div><div class="ri-label">Calepinage</div><div class="ri-val">${draw.zoneType === 'roof' ? formatRoofKitLabel(r.panelCount || 0) : formatPanelCountLabel(r.panelCount || 0)} disposés dans la zone utile</div></div>
     </div>
-    ${seg ? `
+    ${orientationText ? `
     <div class="roof-info-row">
       <div class="ri-icon">🧭</div>
-      <div><div class="ri-label">Orientation détectée</div><div class="ri-val">${azimuthToLabel(seg.azimuthDeg)}${seg.sunshineAvg ? ` · ${seg.sunshineAvg} h/an` : ''}</div></div>
+      <div><div class="ri-label">Orientation détectée</div><div class="ri-val">${orientationText}${seg?.sunshineAvg ? ` · ${seg.sunshineAvg} h/an` : ''}</div></div>
     </div>` : ''}
     ${r.sunshineHoursPerYear ? `
     <div class="roof-info-row">
@@ -1593,6 +1679,7 @@ const draw = {
   validated: false,    // zone validée
   zoneType: 'roof',   // 'roof' | 'garden'
   points: [],          // google.maps.LatLng[]
+  ridgeEdgeIndex: null,
   polygon: null,       // google.maps.Polygon
   markers: [],         // vertex markers
   zones: [],           // zones validées [{ points, polygon, markers }]
@@ -1619,7 +1706,11 @@ function getValidatedZonesAreaM2(){
 }
 
 function getAllZonePoints(){
-  return draw.zones.map(zone => zone.points);
+  return draw.zones.map(zone => ({
+    points: zone.points,
+    ridgeEdgeIndex: zone.ridgeEdgeIndex ?? null,
+    zoneType: zone.zoneType ?? draw.zoneType,
+  }));
 }
 
 // Calcul panneaux depuis surface tracée
@@ -1631,6 +1722,12 @@ function panelsFromArea(m2, zoneType){
 }
 
 function updateDrawUI(){
+  if(draw.points.length < 3){
+    draw.ridgeEdgeIndex = null;
+  } else if(Number.isInteger(draw.ridgeEdgeIndex) && draw.ridgeEdgeIndex >= draw.points.length){
+    draw.ridgeEdgeIndex = null;
+  }
+
   const currentAreaM2 = computeAreaM2(draw.points);
   const totalAreaM2 = getValidatedZonesAreaM2() + currentAreaM2;
   const rounded = Math.round(totalAreaM2);
@@ -1648,8 +1745,13 @@ function updateDrawUI(){
   } else {
     const panels = panelsFromArea(totalAreaM2, draw.zoneType);
     const kwc    = (panels * 0.425).toFixed(2);
-    $('surfaceSub').textContent = `≈ ${formatPanelCountLabel(panels)} · ${kwc} kWc`;
-    $('validateZoneBtn').disabled = false;
+    if(draw.zoneType === 'roof' && draw.ridgeEdgeIndex === null){
+      $('surfaceSub').textContent = 'Cliquez sur la ligne la plus haute du toit pour indiquer le faîtage';
+      $('validateZoneBtn').disabled = true;
+    } else {
+      $('surfaceSub').textContent = `≈ ${formatPanelCountLabel(panels)} · ${kwc} kWc`;
+      $('validateZoneBtn').disabled = false;
+    }
   }
 
   // Toolbar visibility
@@ -1675,6 +1777,7 @@ function updateDrawUI(){
 
 function drawPolygon(){
   if(draw.polygon){ draw.polygon.setMap(null); draw.polygon = null; }
+  clearRidgeSelection();
 
   if(draw.points.length >= 2){
     draw.polygon = new google.maps.Polygon({
@@ -1696,6 +1799,28 @@ function drawPolygon(){
         fillOpacity: 0,
       });
     }
+  }
+
+  if(draw.zoneType === 'roof' && !draw.validated && draw.points.length >= 3){
+    draw.points.forEach((point, index) => {
+      const nextPoint = draw.points[(index + 1) % draw.points.length];
+      const isSelected = draw.ridgeEdgeIndex === index;
+      const edge = new google.maps.Polyline({
+        path: [point, nextPoint],
+        strokeColor: isSelected ? '#ff3b30' : '#ffffff',
+        strokeOpacity: isSelected ? 1 : 0.92,
+        strokeWeight: isSelected ? 7 : 5,
+        zIndex: 12,
+        clickable: true,
+        map,
+      });
+      edge.addListener('click', () => {
+        draw.ridgeEdgeIndex = index;
+        drawPolygon();
+        updateDrawUI();
+      });
+      ridgeSelectionOverlays.push(edge);
+    });
   }
 }
 
@@ -1719,10 +1844,12 @@ function addVertexMarker(latlng, idx){
 }
 
 function clearCurrentDrawing(){
+  clearRidgeSelection();
   if(draw.polygon){ draw.polygon.setMap(null); draw.polygon = null; }
   draw.markers.forEach(m => m.setMap(null));
   draw.markers = [];
   draw.points  = [];
+  draw.ridgeEdgeIndex = null;
 }
 
 function clearValidatedZones(){
@@ -2032,9 +2159,14 @@ function resetZoneSelection(startFresh = true){
 
 function validateZone(){
   if(draw.points.length < 3) return;
+  if(draw.zoneType === 'roof' && draw.ridgeEdgeIndex === null){
+    showToast('Sélectionnez d’abord la ligne la plus haute du toit', true);
+    return;
+  }
   const zonePolygon = draw.polygon;
   const zoneMarkers = [...draw.markers];
   const zonePoints = [...draw.points];
+  const ridgeEdgeIndex = draw.ridgeEdgeIndex;
   draw.validated = true;
   stopDrawMode();
   drawPolygon();
@@ -2047,10 +2179,17 @@ function validateZone(){
       fillOpacity: 0,
     });
   }
-  draw.zones.push({ points: zonePoints, polygon: zonePolygon, markers: zoneMarkers });
+  draw.zones.push({
+    points: zonePoints,
+    polygon: zonePolygon,
+    markers: zoneMarkers,
+    ridgeEdgeIndex,
+    zoneType: draw.zoneType,
+  });
   draw.polygon = null;
   draw.markers = [];
   draw.points = [];
+  draw.ridgeEdgeIndex = null;
 
   const base = state.baseResults || state.results;
   const panelHeightMeters = base?.panelHeightMeters || 1.722;
