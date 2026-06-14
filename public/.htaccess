@@ -9,10 +9,6 @@
     # "public/services" directory exists for static assets.
     RewriteRule ^services/?$ index.php [L,QSA]
 
-    # Force /simulateur-photovoltaique through Laravel even though
-    # public/simulateur-photovoltaique/ exists as a physical directory.
-    RewriteRule ^simulateur-photovoltaique/?$ index.php [L,QSA]
-
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
