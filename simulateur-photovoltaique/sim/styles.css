@@ -739,19 +739,15 @@ button{font-family:inherit}
   font:400 13px/1.55 var(--font-body);
   color:var(--fg-muted);
 }
-.result-config-head{
+.result-adjust-row1{
   display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:12px;
-  padding-bottom:16px;
-  border-bottom:1px solid var(--nr-stone-100);
-}
-.result-adjust-body{
-  display:flex;
-  gap:20px;
   align-items:center;
+  gap:20px;
+  padding-bottom:18px;
+  border-bottom:1px solid var(--nr-stone-100);
+  flex-wrap:wrap;
 }
+.result-title-block{ flex:1; min-width:200px; }
 .result-kicker{
   font:700 11px/1 var(--font-body);
   text-transform:uppercase;
@@ -802,9 +798,8 @@ button{font-family:inherit}
   flex:1 1 0;
 }
 .kit-grid{
-  flex:1;
   display:grid;
-  grid-template-columns:repeat(2, 1fr);
+  grid-template-columns:repeat(4, 1fr);
   gap:12px;
   margin-top:0;
 }
@@ -1186,10 +1181,8 @@ body.is-mobile .res-hero .stat .v{ font-size:24px; }
 body.is-mobile .results-layout{ grid-template-columns:1fr; }
 .frame.mobilewidth .kit-grid,
 body.is-mobile .kit-grid{ grid-template-columns:repeat(2,1fr); }
-.frame.mobilewidth .result-adjust-body,
-body.is-mobile .result-adjust-body{ flex-direction:column; }
-.frame.mobilewidth .result-config-head,
-body.is-mobile .result-config-head{ flex-direction:column; }
+.frame.mobilewidth .result-adjust-row1,
+body.is-mobile .result-adjust-row1{ flex-direction:column; align-items:flex-start; }
 .frame.mobilewidth .result-adjust-foot,
 body.is-mobile .result-adjust-foot{ flex-direction:column; }
 
@@ -1224,8 +1217,7 @@ body.is-mobile .result-adjust-foot{ flex-direction:column; }
   .tutorial-card{ width:min(520px, calc(100vw - 32px)); padding:18px 18px 18px; }
   .results-layout{ grid-template-columns:1fr; }
   .kit-grid{ grid-template-columns:repeat(2,1fr); }
-  .result-adjust-body{ flex-direction:column; }
-  .result-config-head{ flex-direction:column; }
+  .result-adjust-row1{ flex-direction:column; align-items:flex-start; }
   .result-adjust-foot{ flex-direction:column; }
 
   .lp-hero{ grid-template-columns:1fr; gap:30px; padding:26px 18px 34px; }

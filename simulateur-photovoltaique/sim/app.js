@@ -280,23 +280,39 @@
 
   function computePanelSlotsForAxis(projectedPolygon, uAxis, vAxis, origin, panelSize) {
     const gap = 0.12;
-    const margin = 0.5;
-    const minX = Math.min(...projectedPolygon.map((point) => point.x));
-    const maxX = Math.max(...projectedPolygon.map((point) => point.x));
-    const minY = Math.min(...projectedPolygon.map((point) => point.y));
-    const maxY = Math.max(...projectedPolygon.map((point) => point.y));
+    const safetyInset = 0.5;
+    const minX = Math.min(...projectedPolygon.map((p) => p.x));
+    const maxX = Math.max(...projectedPolygon.map((p) => p.x));
+    const minY = Math.min(...projectedPolygon.map((p) => p.y));
+    const maxY = Math.max(...projectedPolygon.map((p) => p.y));
     const slots = [];
 
+    const cornerValid = (corner) => {
+      if (!pointInPolygon2D(corner, projectedPolygon)) return false;
+      for (let i = 0; i < projectedPolygon.length; i++) {
+        const a = projectedPolygon[i];
+        const b = projectedPolygon[(i + 1) % projectedPolygon.length];
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const lenSq = dx * dx + dy * dy;
+        if (lenSq < 1e-9) continue;
+        const t = Math.max(0, Math.min(1, ((corner.x - a.x) * dx + (corner.y - a.y) * dy) / lenSq));
+        const dist = Math.hypot(corner.x - (a.x + t * dx), corner.y - (a.y + t * dy));
+        if (dist < safetyInset) return false;
+      }
+      return true;
+    };
+
     // Fill from the top side downward so panels align to the highest edge of the zone
-    for (let y = maxY - margin - panelSize.height; y >= minY + margin; y -= panelSize.height + gap) {
-      for (let x = minX + margin; x + panelSize.width <= maxX - margin; x += panelSize.width + gap) {
+    for (let y = maxY - safetyInset - panelSize.height; y >= minY + safetyInset; y -= panelSize.height + gap) {
+      for (let x = minX + safetyInset; x + panelSize.width <= maxX - safetyInset; x += panelSize.width + gap) {
         const corners = [
           { x, y },
           { x: x + panelSize.width, y },
           { x: x + panelSize.width, y: y + panelSize.height },
           { x, y: y + panelSize.height },
         ];
-        if (!corners.every((corner) => pointInPolygon2D(corner, projectedPolygon))) continue;
+        if (!corners.every(cornerValid)) continue;
 
         slots.push({
           orientation: panelSize === PANEL_DIMENSIONS.landscape ? 'landscape' : 'portrait',
@@ -930,15 +946,12 @@
 
     return `
       <section class="result-adjust-card">
-        <div class="result-config-head">
-          <div>
+
+        <div class="result-adjust-row1">
+          <div class="result-title-block">
             <div class="result-kicker">Ajustement instantané</div>
             <h2 class="result-config-title">Ajoutez, retirez ou choisissez un kit prêt à poser</h2>
           </div>
-          <div class="result-status-pill">${selectedKit ? `${selectedKit.key} kWc` : 'Sur mesure'}</div>
-        </div>
-
-        <div class="result-adjust-body">
           <div class="counter result-counter">
             <button type="button" data-act="panel-minus" ${r.panels <= 1 ? 'disabled' : ''} aria-label="Retirer un panneau">−</button>
             <div class="disp">
@@ -947,27 +960,28 @@
             </div>
             <button type="button" data-act="panel-plus" ${r.panels >= r.panelCapacity ? 'disabled' : ''} aria-label="Ajouter un panneau">+</button>
           </div>
+          <div class="result-status-pill">${selectedKit ? `${selectedKit.key} kWc` : 'Sur mesure'}</div>
+        </div>
 
-          <div class="kit-grid">
-            ${PRESET_KITS.map((kit) => {
-              const disabled = kit.panels > r.panelCapacity;
-              const selected = !disabled && kit.panels === r.panels;
-              const approxKwc = ((kit.panels * PANEL_WC) / 1000).toFixed(1).replace('.', ',');
-              return `
-                <button
-                  type="button"
-                  class="kit-card ${selected ? 'sel' : ''}"
-                  data-act="panel-kit"
-                  data-panels="${kit.panels}"
-                  ${disabled ? 'disabled' : ''}
-                >
-                  <span class="kit-card-badge">${escapeHtml(kit.badge || 'Kit prêt à poser')}</span>
-                  <span class="kit-card-kwc">${escapeHtml(kit.key)} kWc</span>
-                  <span class="kit-card-home">${escapeHtml(kit.home)}</span>
-                  <span class="kit-card-meta">${kit.panels} panneaux · env. ${approxKwc} kWc</span>
-                </button>`;
-            }).join('')}
-          </div>
+        <div class="kit-grid">
+          ${PRESET_KITS.map((kit) => {
+            const disabled = kit.panels > r.panelCapacity;
+            const selected = !disabled && kit.panels === r.panels;
+            const approxKwc = ((kit.panels * PANEL_WC) / 1000).toFixed(1).replace('.', ',');
+            return `
+              <button
+                type="button"
+                class="kit-card ${selected ? 'sel' : ''}"
+                data-act="panel-kit"
+                data-panels="${kit.panels}"
+                ${disabled ? 'disabled' : ''}
+              >
+                <span class="kit-card-badge">${escapeHtml(kit.badge || 'Kit prêt à poser')}</span>
+                <span class="kit-card-kwc">${escapeHtml(kit.key)} kWc</span>
+                <span class="kit-card-home">${escapeHtml(kit.home)}</span>
+                <span class="kit-card-meta">${kit.panels} panneaux · env. ${approxKwc} kWc</span>
+              </button>`;
+          }).join('')}
         </div>
 
         <div class="result-adjust-foot">
