@@ -626,10 +626,8 @@
             </div>
           </div>
 
-          <div class="lp-hero-aides">
-            <div class="lp-aides-kicker">${gift} Prime 2026</div>
-            <h2 class="lp-aides-title">JUSQU'À <span class="y">11 000 €</span><br>D'AIDES POUR<br>PASSER AU SOLAIRE</h2>
-            <p class="lp-aides-body">MaPrimeRénov', prime à l'autoconsommation, TVA réduite : notre simulateur intègre toutes les aides auxquelles votre projet est éligible.</p>
+          <div class="lp-hero-promo">
+            <img src="assets/promo-solaire.jpg" alt="Normes Rénovation — Offre panneaux solaires photovoltaïques en Saône-et-Loire">
           </div>
         </section>
 
@@ -649,7 +647,7 @@
         <section class="lp-band teal">
           <div class="lp-inner">
             <div class="stats4">
-              <div class="stat4"><div class="v">+250</div><div class="k">chantiers livrés en Île-de-France</div></div>
+              <div class="stat4"><div class="v">+250</div><div class="k">chantiers livrés en Saône-et-Loire</div></div>
               <div class="stat4"><div class="v"><span class="y">11 000€</span></div><div class="k">d'aides possibles en 2026</div></div>
               <div class="stat4"><div class="v">−70%</div><div class="k">sur la facture d'électricité</div></div>
               <div class="stat4"><div class="v">4,8<span class="y">/5</span></div><div class="k">note moyenne de nos clients</div></div>
