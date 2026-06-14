@@ -5,6 +5,8 @@
     $siteName = (string) data_get($h, 'meta.site_name', 'Normes Rénovation');
     $mapsKey = $googleMapsKey ?? '';
     $pricing = $pricingSettings ?? [];
+    $restartUrl = route('simulateur.photovoltaique');
+    $step4Url = route('simulateur.photovoltaique.confirmation');
 @endphp
 <!DOCTYPE html>
 <html lang="fr">
@@ -16,6 +18,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -44,57 +47,306 @@ html,body{
   font-family:'Inter',system-ui,-apple-system,Segoe UI,sans-serif;
   color:var(--ink);
   background:
-    radial-gradient(1200px 600px at 80% -10%,#eaf4fb 0%,transparent 60%),
-    radial-gradient(900px 500px at -10% 110%,#eef4f8 0%,transparent 60%),
+    radial-gradient(1200px 600px at 80% -10%, #eaf4fb 0%, transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, #eef4f8 0%, transparent 60%),
     var(--bg);
   min-height:100vh;
   -webkit-font-smoothing:antialiased;
 }
-.app{max-width:1440px;margin:0 auto;padding:20px 24px 40px}
+.app{max-width:1440px;margin:0 auto;padding:24px 28px 40px}
 
 /* ── Topbar ── */
 .topbar{
-  background:var(--card);border:1px solid var(--line);border-radius:18px;
-  padding:14px 22px;display:flex;align-items:center;gap:20px;box-shadow:var(--shadow);
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:14px 22px;
+  display:flex;
+  align-items:center;
+  gap:24px;
+  box-shadow:var(--shadow);
 }
-.brand{display:flex;align-items:center;min-width:200px}
-.brand img{height:44px;width:auto;display:block}
+.brand{display:flex;align-items:center;min-width:220px}
+.brand img{height:46px;width:auto;display:block}
 .stepper{flex:1;display:flex;align-items:center;justify-content:center;gap:10px}
-.step{display:flex;align-items:center;gap:9px;color:var(--muted);font-weight:500;font-size:14px}
+.step{display:flex;align-items:center;gap:10px;color:var(--muted);font-weight:500;font-size:14.5px}
 .step .num{
-  width:28px;height:28px;border-radius:50%;background:#eef2f5;color:#8a96a0;
-  display:grid;place-items:center;font-weight:700;font-size:12px;flex-shrink:0;transition:.2s
+  width:30px;height:30px;border-radius:50%;
+  background:#eef2f5;color:#8a96a0;
+  display:grid;place-items:center;font-weight:700;font-size:13px;flex-shrink:0;transition:.2s
 }
+.step.done .num{background:var(--ok);color:#fff}
 .step.active .num{background:var(--ink);color:#fff}
 .step.active{color:var(--ink);font-weight:600}
-.step.done .num{background:var(--ok);color:#fff}
 .step.done{color:var(--ink-2)}
-.step-sep{width:40px;height:2px;background:linear-gradient(90deg,#dfe5ea,#eef2f5);border-radius:2px;flex-shrink:0}
-.step-sep.done{background:var(--ok);opacity:.45}
+.step-sep{width:48px;height:2px;background:linear-gradient(90deg,#dfe5ea, #eef2f5);border-radius:2px;flex-shrink:0}
+.step-sep.done{background:var(--ok);opacity:.4}
 .help-btn{
-  border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 15px;
-  display:flex;align-items:center;gap:9px;font:600 13.5px/1 'Inter',sans-serif;
-  color:var(--ink);cursor:pointer;transition:.15s ease;white-space:nowrap;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:12px;
+  padding:10px 16px;
+  display:flex;align-items:center;gap:10px;
+  font:600 14px/1 'Inter',sans-serif;
+  color:var(--ink);
   text-decoration:none;
+  transition:.15s ease;
 }
 .help-btn:hover{border-color:#cdd6dd;box-shadow:var(--shadow)}
 .help-btn .q{
-  width:18px;height:18px;border-radius:50%;border:1.5px solid #b9c4cc;color:#8a96a0;
-  display:grid;place-items:center;font-weight:700;font-size:10px;flex-shrink:0;
+  width:20px;height:20px;border-radius:50%;border:1.5px solid #b9c4cc;color:#8a96a0;
+  display:grid;place-items:center;font-weight:700;font-size:11px;
 }
 
 /* ── Layout grid ── */
-.grid{display:grid;grid-template-columns:300px 1fr 320px;gap:20px;margin-top:20px}
+.grid{display:block;margin-top:22px}
+#leftCol{display:block}
 
 /* ── Card ── */
 .card{
-  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:20px;box-shadow:var(--shadow);
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:22px;
+  box-shadow:var(--shadow);
 }
 .card+.card{margin-top:16px}
-.card h2{margin:0 0 6px;font-size:17px;font-weight:700;color:var(--ink);line-height:1.25;letter-spacing:-.01em}
-.card p.lede{margin:0 0 16px;color:var(--slate);font-size:13px;line-height:1.55}
+.card h2{margin:0 0 6px;font-size:18px;font-weight:700;color:var(--ink);line-height:1.25;letter-spacing:-.01em}
+.card p.lede{margin:0 0 16px;color:var(--slate);font-size:13.5px;line-height:1.55}
 .meta-label{text-transform:uppercase;letter-spacing:.12em;font-size:10px;font-weight:600;color:var(--muted);margin-bottom:5px}
+
+#cardAddr{max-width:1040px;margin:0 auto 18px}
+#cardDraw,#cardRoof{
+  max-width:1240px;
+  margin:0 auto 20px;
+  padding:34px 40px 32px;
+}
+#cardDraw h2,#cardRoof h2{
+  font-family:'Anton','Arial Narrow',sans-serif;
+  font-size:clamp(34px,4vw,54px)!important;
+  line-height:1.04;
+  letter-spacing:-.01em;
+  text-transform:uppercase;
+  text-align:center;
+  color:#294352;
+  margin:0 0 12px;
+}
+#drawCardLead,#roofStageLead{
+  max-width:760px;
+  margin:0 auto 16px!important;
+  text-align:center;
+  font-size:16px!important;
+  line-height:1.55!important;
+  color:#5a6b78!important;
+}
+#drawModeBadge,
+#surfaceMetaLabel,
+.surface-display,
+#surfaceSub,
+#ridgeHelper,
+#rightCol,
+#roofInfoRows,
+#panelAdjustWrap{
+  display:none!important;
+}
+#drawCardNote{
+  display:none;
+  max-width:860px;
+  margin:0 auto 18px;
+  padding:0;
+  border:0;
+  background:transparent;
+  text-align:center;
+  font-size:15px;
+  line-height:1.55;
+  color:#2c2f66;
+  font-style:italic;
+}
+#drawCardNote strong{display:none}
+#journeyMapWrap{margin-top:16px}
+#cardDraw .btn,#cardRoof .btn{
+  width:100%;
+  min-height:86px;
+  border-radius:18px;
+  font-size:28px;
+  font-weight:800;
+  box-shadow:none;
+}
+#cardDraw .btn-primary,
+#cardRoof .btn-yellow{
+  background:#1b97ea;
+  color:#fff;
+}
+#cardDraw .btn-primary:hover,
+#cardRoof .btn-yellow:hover{
+  background:#1188d7;
+  transform:translateY(-1px);
+  box-shadow:0 10px 22px rgba(17,136,215,.24);
+}
+#clearZoneBtn{display:none!important}
+#drawBackLink,#roofBackBtn{
+  display:block;
+  margin-top:24px;
+  text-align:center;
+  color:#24285b;
+  font-size:18px;
+  text-decoration:none;
+}
+#drawBackLink:hover,#roofBackBtn:hover{text-decoration:underline}
+#pitchGrid{
+  max-width:760px;
+  margin:28px auto 0;
+  gap:18px;
+}
+#pitchGrid .pitch-btn{
+  min-height:136px;
+  border-radius:18px;
+  font-size:46px;
+}
+#cardRoof .pitch-help{
+  max-width:860px;
+  margin:26px auto 0;
+  font-size:18px;
+  line-height:1.5;
+}
+#cardRoof .inclination-illustration{
+  max-width:760px;
+  margin:10px auto 0;
+}
+#journeyMapWrap .map-info-bar,
+#journeyMapWrap .layer-switch{
+  display:none!important;
+}
+
+#cardDraw.stage-locate{
+  max-width:1780px;
+  padding:22px;
+  display:flex;
+  flex-direction:column;
+  gap:24px;
+  align-items:stretch;
+  background:
+    radial-gradient(circle at top right,rgba(27,151,234,.10),transparent 24%),
+    linear-gradient(180deg,rgba(19,166,232,.04) 0%,rgba(19,166,232,0) 24%),
+    #ffffff;
+}
+#cardDraw.stage-locate #journeyMapWrap{
+  order:-1;
+  margin-top:0;
+  min-height:520px;
+  border-radius:30px;
+  overflow:hidden;
+  border:1px solid #dce8f3;
+  box-shadow:0 18px 44px rgba(20,40,80,.12), inset 0 0 0 1px rgba(255,255,255,.78);
+  background:#eef3f7;
+  position:relative;
+}
+#cardDraw.stage-locate #journeyMapWrap::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 14% 10%,rgba(255,255,255,.85),transparent 18%),
+    radial-gradient(circle at 90% 6%,rgba(255,255,255,.42),transparent 22%);
+  z-index:1;
+}
+#cardDraw.stage-locate > div:first-child{
+  margin:0;
+}
+#cardDraw.stage-locate h2{
+  font-size:27px!important;
+  text-align:left;
+  line-height:1.08;
+  letter-spacing:-.03em;
+  color:#1a2433;
+  margin:0!important;
+}
+#cardDraw.stage-locate #drawCardLead{
+  margin:2px 0 10px!important;
+  max-width:none;
+  text-align:left;
+  font-size:18px!important;
+  line-height:1.45!important;
+  color:#6a7689!important;
+}
+#cardDraw.stage-locate #drawModeBadge{
+  display:inline-flex!important;
+  align-items:center;
+  justify-content:center;
+  padding:10px 16px!important;
+  border-radius:999px;
+  background:#eaf6fe!important;
+  color:#4999d8!important;
+  font-size:15px!important;
+  font-weight:800;
+  letter-spacing:.04em;
+}
+#cardDraw.stage-locate .surface-display,
+#cardDraw.stage-locate #surfaceMetaLabel,
+#cardDraw.stage-locate #surfaceSub,
+#cardDraw.stage-locate #validateZoneBtn{
+  max-width:100%;
+}
+#cardDraw.stage-locate .locate-stage-demo{
+  display:block!important;
+}
+#cardDraw.stage-locate #drawCardNote,
+#cardDraw.stage-locate #drawBackLink,
+#cardDraw.stage-locate #clearZoneBtn,
+#cardDraw.stage-locate #drawResultBox,
+#cardDraw.stage-locate #drawToolbar,
+#cardDraw.stage-locate #drawHint{
+  display:none!important;
+}
+#cardDraw.stage-locate #surfaceMetaLabel{
+  display:block!important;
+  margin-top:10px;
+  font-size:12px;
+  color:#9aa7b6;
+}
+#cardDraw.stage-locate .surface-display{
+  display:flex!important;
+  align-items:flex-end;
+  gap:8px;
+  margin:4px 0 4px;
+}
+#cardDraw.stage-locate .surface-display .s-val{
+  font-size:78px;
+  line-height:.9;
+  color:#182230;
+}
+#cardDraw.stage-locate .surface-display .s-unit{
+  font-size:22px;
+  line-height:1.2;
+  color:#4e6175;
+  margin-bottom:12px;
+}
+#cardDraw.stage-locate #surfaceSub{
+  display:block!important;
+  margin-bottom:20px;
+  font-size:16px;
+  line-height:1.55;
+  color:#8a96a7;
+}
+#cardDraw.stage-locate #validateZoneBtn{
+  min-height:72px;
+  border-radius:18px;
+  background:#162434;
+  font-size:20px;
+  font-weight:800;
+  margin-top:10px;
+  box-shadow:0 14px 30px rgba(22,36,52,.20);
+}
+#cardDraw.stage-locate #validateZoneBtn:hover:not(:disabled){
+  background:#0f1a28;
+}
+#cardDraw.stage-locate #journeyMapWrap .layer-switch{
+  display:flex!important;
+}
+#cardDraw.stage-locate #journeyMapWrap .map-info-bar{
+  display:flex!important;
+}
 
 /* Address input */
 .addr-wrap{position:relative;margin-bottom:12px}
@@ -118,6 +370,7 @@ html,body{
 .zone-btn .zb-label{font-size:12.5px;font-weight:700;color:var(--ink);display:block}
 .zone-btn .zb-sub{font-size:11px;color:var(--muted);display:block;margin-top:2px}
 .zone-btn.active .zb-label{color:var(--accent-deep)}
+.zone-toggle{display:none}
 
 /* Surface display */
 .surface-display{display:flex;align-items:baseline;gap:6px;margin:10px 0 4px}
@@ -161,12 +414,32 @@ html,body{
   display:flex;align-items:center;gap:12px;
   pointer-events:none;backdrop-filter:blur(6px);
   box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:8;
-  transition:opacity .3s ease;
+  transition:opacity .3s ease, transform .3s ease, background .2s ease;
+  max-width:min(92%,420px);
+  justify-content:center;
+  text-align:center;
 }
 .draw-hint.hidden{opacity:0;pointer-events:none}
 .draw-hint .dot{
   width:10px;height:10px;border-radius:50%;background:var(--accent);flex-shrink:0;
   box-shadow:0 0 0 4px rgba(19,166,232,.35);animation:pulse 1.6s infinite;
+}
+.draw-hint.attention{
+  background:rgba(18,32,48,.94);
+  border:1px solid rgba(73,213,61,.35);
+  transform:translateX(-50%) translateY(-4px);
+}
+.draw-hint.attention .dot{
+  background:#49d53d;
+  box-shadow:0 0 0 4px rgba(73,213,61,.22);
+}
+.draw-hint.success{
+  background:rgba(19,100,63,.92);
+  border:1px solid rgba(255,255,255,.14);
+}
+.draw-hint.success .dot{
+  background:#fff;
+  box-shadow:0 0 0 4px rgba(255,255,255,.18);
 }
 @keyframes pulse{0%,100%{box-shadow:0 0 0 4px rgba(19,166,232,.35)}50%{box-shadow:0 0 0 10px rgba(19,166,232,0)}}
 
@@ -187,36 +460,123 @@ html,body{
 @keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
 .demo-head{
   display:flex;align-items:center;justify-content:space-between;
-  padding:14px 18px;border-bottom:1px solid var(--line);
+  padding:16px 18px 14px;border-bottom:1px solid #e6eef5;
+  background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%);
 }
-.demo-head h3{font-size:15px;font-weight:800;color:var(--ink)}
-.demo-head p{font-size:12px;color:var(--slate);margin-top:2px}
+.demo-head h3{font-size:15px;font-weight:800;color:#18263a}
+.demo-head p{font-size:12px;color:#738194;margin-top:2px}
 .demo-close{
   width:32px;height:32px;border-radius:9px;border:1.5px solid var(--line);
   background:#fff;cursor:pointer;display:grid;place-items:center;
   flex-shrink:0;transition:.15s;color:var(--ink);
 }
 .demo-close:hover{background:var(--line-2);border-color:#cdd6dd}
-.demo-img-wrap{position:relative;overflow:hidden;background:#1a2a35;line-height:0}
-.demo-img-wrap img{width:100%;height:auto;display:block;max-height:300px;object-fit:cover}
+.demo-img-wrap{
+  position:relative;overflow:hidden;background:linear-gradient(180deg,#eef6fe 0%,#e5f1fb 100%);line-height:0;
+  aspect-ratio:4 / 3;min-height:340px;
+}
 .demo-svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-/* SVG animation */
-/* ── Animation SVG en boucle ── */
-/* Durée totale du cycle : 5s */
 .dp-dot{
-  fill:#13a6e8;stroke:#fff;stroke-width:2.5;
+  fill:#fff;stroke:#52e33f;stroke-width:4;
   vector-effect:non-scaling-stroke;
   transform-origin:center;
 }
 .dp-line{
-  stroke:#13a6e8;stroke-width:3;fill:none;
+  stroke:#52e33f;stroke-width:4;fill:none;
   stroke-linecap:round;stroke-linejoin:round;
   vector-effect:non-scaling-stroke;
   stroke-dasharray:1200;stroke-dashoffset:1200;
 }
-.dp-fill{fill:rgba(19,166,232,.22);stroke:none;opacity:0}
+.dp-fill{fill:url(#demoShapeFill);stroke:none;opacity:0}
+.dp-selected-edge{
+  stroke:#ff3b30;stroke-width:7;fill:none;stroke-linecap:round;stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;opacity:0;
+}
 .dp-badge{opacity:0}
-.dp-labels{opacity:0}
+.dp-badge rect{
+  fill:rgba(15,34,49,.78);
+  stroke:rgba(255,255,255,.16);
+  stroke-width:1.5;
+}
+.dp-badge text{
+  fill:#fff;
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:20px;
+  font-weight:800;
+  text-anchor:middle;
+}
+.dp-caption{opacity:0}
+.dp-caption text{
+  fill:#fff;
+  font-family:'Inter',system-ui,sans-serif;
+  font-weight:800;
+  text-anchor:middle;
+}
+.dp-caption .main{font-size:34px}
+.dp-caption .sub{font-size:34px}
+.dp-scene-band{fill:rgba(23,37,54,.08)}
+.dp-scene-band.alt{fill:rgba(23,37,54,.05)}
+.dp-scene-guide{
+  stroke:rgba(23,37,54,.18);
+  stroke-width:2;
+  stroke-dasharray:3 10;
+}
+.dp-scene-grid{
+  stroke:rgba(23,37,54,.08);
+  stroke-width:1.5;
+}
+.dp-scene-lawn{fill:#1a6c4c}
+.dp-scene-lawn-patch{fill:rgba(255,255,255,.08)}
+.dp-scene-sky-glow{fill:rgba(19,166,232,.12)}
+.dp-roof-shadow{fill:rgba(15,34,49,.12)}
+.dp-roof-wall{fill:#dbe8f3}
+.dp-roof-plane{
+  fill:#ffffff;
+  stroke:#d8e6f3;
+  stroke-width:3;
+  stroke-linejoin:round;
+}
+.dp-roof-plane.alt{fill:#f4f9fd}
+.dp-roof-outline{
+  stroke:#d8e6f3;
+  stroke-width:2.5;
+  stroke-linejoin:round;
+  fill:none;
+}
+.dp-roof-ridge{
+  stroke:#87c8ef;
+  stroke-width:4;
+  stroke-linecap:round;
+}
+.dp-roof-tile{
+  stroke:rgba(59,168,233,.42);
+  stroke-width:3;
+  stroke-linecap:round;
+}
+.dp-roof-highlight{
+  fill:rgba(255,255,255,.56);
+}
+.dp-scene-zone{fill:rgba(255,255,255,.92);stroke:#52e33f;stroke-width:5}
+.dp-scene-zone.shadow{fill:rgba(0,0,0,.14);stroke:none}
+.dp-ghost-zone{
+  fill:rgba(255,255,255,.16);
+  stroke:rgba(23,37,54,.2);
+  stroke-width:3;
+  stroke-dasharray:10 12;
+}
+.dp-cursor{
+  opacity:0;
+  transform-origin:center;
+}
+.dp-cursor-shadow{fill:rgba(0,0,0,.18)}
+.dp-cursor-shape{fill:#1fa8ff}
+.dp-cursor-tip{fill:#ffffff}
+.dp-cursor-pulse{
+  fill:none;
+  stroke:rgba(31,168,255,.55);
+  stroke-width:3;
+  opacity:0;
+}
 
 /* Keyframes points */
 @keyframes dotPop{
@@ -236,6 +596,28 @@ html,body{
   65%,80%  {opacity:1}
   92%,100% {opacity:0}
 }
+@keyframes edgeReveal{
+  0%,54%   {opacity:0}
+  66%,84%  {opacity:1}
+  92%,100% {opacity:0}
+}
+@keyframes cursorPulse{
+  0%,8%    {opacity:0;transform:translate(0,0) scale(.72)}
+  14%,18%  {opacity:1;transform:translate(0,0) scale(1)}
+  24%,28%  {opacity:1;transform:translate(194px,52px) scale(1)}
+  34%,38%  {opacity:1;transform:translate(148px,184px) scale(1)}
+  44%,48%  {opacity:1;transform:translate(-44px,132px) scale(1)}
+  52%,82%  {opacity:0;transform:translate(-44px,132px) scale(.88)}
+  100%     {opacity:0;transform:translate(0,0) scale(.72)}
+}
+@keyframes cursorRing{
+  0%,12%   {opacity:0;transform:scale(.4)}
+  18%,20%  {opacity:1;transform:scale(1)}
+  26%,30%  {opacity:1;transform:scale(1)}
+  36%,40%  {opacity:1;transform:scale(1)}
+  46%,50%  {opacity:1;transform:scale(1)}
+  58%,100% {opacity:0;transform:scale(1.85)}
+}
 
 /* Application des animations (cycle 5s en boucle) */
 .demo-anim-running .dp-dot#dp1{animation:dotPop 5s ease infinite;animation-delay:0s}
@@ -245,13 +627,16 @@ html,body{
 .demo-anim-running .dp-line    {animation:lineTrace 5s ease infinite}
 .demo-anim-running .dp-fill    {animation:fadeInOut 5s ease infinite}
 .demo-anim-running .dp-badge   {animation:fadeInOut 5s ease infinite}
-.demo-anim-running .dp-labels  {animation:fadeInOut 5s ease infinite}
+.demo-anim-running .dp-selected-edge{animation:edgeReveal 5s ease infinite}
+.demo-anim-running .dp-caption {animation:fadeInOut 5s ease infinite}
+.demo-anim-running .dp-cursor {animation:cursorPulse 5s ease infinite}
+.demo-anim-running .dp-cursor-pulse {animation:cursorRing 5s ease infinite}
 /* type badge in demo */
 .demo-type-badge{
   position:absolute;top:10px;left:10px;
-  background:rgba(15,34,49,.85);color:#fff;
+  background:#eef6fe;color:#4596d7;
   padding:4px 10px;border-radius:8px;font:700 11px 'Inter',sans-serif;
-  backdrop-filter:blur(4px);
+  border:1px solid rgba(69,150,215,.18);
 }
 .demo-steps{display:flex;gap:0;border-top:1px solid var(--line)}
 .demo-step{flex:1;padding:10px 12px;border-right:1px solid var(--line);text-align:center}
@@ -260,14 +645,76 @@ html,body{
   font:800 11px 'Inter',sans-serif;display:grid;place-items:center;margin:0 auto 5px}
 .demo-step .ds-label{font-size:11px;font-weight:600;color:var(--ink);line-height:1.35}
 .demo-step .ds-sub{font-size:10px;color:var(--muted);margin-top:2px}
-.demo-foot{padding:12px 18px;display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);background:#f8fafc}
-.demo-foot p{font-size:11.5px;color:var(--slate);flex:1}
+.demo-foot{padding:14px 18px;display:flex;gap:10px;align-items:center;border-top:1px solid #e6eef5;background:#f7fbff}
+.demo-foot p{font-size:11.5px;color:#6f7d90;flex:1}
 .demo-start-btn{
   border:0;background:var(--ink);color:#fff;padding:10px 16px;
   border-radius:10px;font:700 12px 'Inter',sans-serif;cursor:pointer;
   display:flex;align-items:center;gap:8px;transition:.15s ease;white-space:nowrap;
 }
 .demo-start-btn:hover{background:#0a1a26;transform:translateY(-1px)}
+
+.locate-tutorial-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:520;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px 20px 40px;
+  background:rgba(10,19,31,.38);
+  backdrop-filter:blur(10px);
+}
+
+.locate-tutorial-box{
+  width:min(100%, 1240px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+.locate-tutorial-close{
+  border:0;
+  background:transparent;
+  color:#1b97ea;
+  font:700 18px/1.2 'Inter',sans-serif;
+  cursor:pointer;
+  margin-bottom:14px;
+  padding:6px 14px;
+  border-radius:999px;
+}
+
+.locate-tutorial-close:hover{background:rgba(255,255,255,.74)}
+
+.locate-tutorial-card{
+  width:100%;
+  background:rgba(255,255,255,.92);
+  border-radius:32px;
+  overflow:hidden;
+  box-shadow:0 32px 72px rgba(17,32,54,.18);
+  display:grid;
+  grid-template-columns:1fr;
+  justify-items:center;
+  padding:26px 0 34px;
+}
+
+.locate-tutorial-caption{
+  padding:18px 20px 8px;
+  color:#fff;
+  text-align:center;
+  font-size:22px;
+  font-weight:800;
+  line-height:1.3;
+}
+
+.locate-tutorial-card .locate-demo-copy{display:none}
+.locate-tutorial-card .locate-demo-layout{display:block}
+.locate-tutorial-card .locate-demo-stage{
+  width:min(100%, 430px);
+  margin:0 auto;
+  padding:0;
+  background:transparent;
+}
 
 /* Map cursor override during drawing */
 .map-wrap.drawing #mapDiv{cursor:crosshair!important}
@@ -281,6 +728,368 @@ html,body{
 }
 .zone-validated .check{width:18px;height:18px;border-radius:50%;background:var(--ok);color:#fff;display:grid;place-items:center;flex-shrink:0}
 .zone-validated button{margin-left:auto;background:transparent;border:0;color:#13643f;font-weight:700;font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.ridge-helper{
+  display:none;align-items:flex-start;gap:10px;padding:12px 13px;
+  margin-top:12px;border-radius:12px;border:1px solid #d9edf9;background:#f7fbff;
+  font-size:12.5px;line-height:1.45;color:var(--ink-2);
+}
+.ridge-helper .rh-swatches{display:flex;flex-direction:column;gap:5px;padding-top:4px;flex-shrink:0}
+.ridge-helper .rh-swatches span{
+  display:block;width:18px;height:4px;border-radius:999px;
+}
+.ridge-helper .rh-swatches span:first-child{background:#52e33f}
+.ridge-helper .rh-swatches span:last-child{background:#ff3b30}
+.ridge-helper strong{display:block;color:var(--ink);margin-bottom:2px}
+.ridge-helper.is-selected{
+  background:var(--ok-soft);
+  border-color:#c9ead6;
+  color:#13643f;
+}
+.ridge-helper.is-selected strong{color:#13643f}
+
+.sim-note{
+  margin-top:12px;
+  padding:12px 14px;
+  border-radius:12px;
+  background:#f6fbff;
+  border:1px solid #d9edf9;
+  color:var(--ink-2);
+  font-size:12.5px;
+  line-height:1.55;
+}
+
+.sim-note strong{
+  color:var(--ink);
+  display:block;
+  margin-bottom:3px;
+}
+
+.selection-summary{
+  display:none;
+  margin-top:18px;
+  padding:24px 20px;
+  border-radius:18px;
+  border:2px solid rgba(19,166,232,.9);
+  background:#fff;
+  text-align:center;
+}
+
+.selection-summary .selection-label{
+  font-size:18px;
+  color:var(--ink-2);
+  margin-bottom:8px;
+}
+
+.selection-summary .selection-value{
+  font-size:54px;
+  font-weight:800;
+  color:var(--ink);
+  letter-spacing:-.02em;
+}
+
+.locate-stage-demo{
+  display:none!important;
+  margin:14px 0 16px;
+  padding:18px;
+  border-radius:30px;
+  background:
+    linear-gradient(180deg,rgba(19,166,232,.06) 0%,rgba(19,166,232,.015) 100%),
+    #ffffff;
+  border:1px solid #dcebf8;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.82), 0 14px 30px rgba(20,40,80,.06);
+}
+
+.locate-stage-demo__panel{
+  width:100%;
+  margin:0 auto;
+  border-radius:26px;
+  overflow:hidden;
+  border:1px solid rgba(19,166,232,.14);
+  box-shadow:0 20px 44px rgba(17,32,54,.10);
+  background:linear-gradient(180deg,#2b2c68 0%,#25265d 100%);
+}
+
+.locate-stage-demo__caption{
+  margin-top:18px;
+  text-align:center;
+  color:#18263a;
+  font-size:18px;
+  font-weight:800;
+  line-height:1.35;
+}
+
+.locate-stage-demo__sub{
+  margin-top:10px;
+  text-align:center;
+  color:#728095;
+  font-size:14px;
+  line-height:1.55;
+}
+
+.locate-demo-layout{
+  display:grid;
+  grid-template-columns:320px minmax(0,1fr);
+  align-items:stretch;
+}
+
+.locate-demo-copy{
+  padding:34px 30px 30px;
+  background:linear-gradient(180deg,#ffffff 0%,#f7fbff 100%);
+  border-right:1px solid #e5eef6;
+}
+
+.locate-demo-kicker{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:#eef6fe;
+  color:#4e96d9;
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+.locate-demo-copy h3{
+  margin:16px 0 10px;
+  color:#172536;
+  font-size:34px;
+  line-height:1.05;
+  letter-spacing:-.04em;
+}
+
+.locate-demo-copy p{
+  margin:0;
+  color:#627084;
+  font-size:16px;
+  line-height:1.6;
+}
+
+.locate-demo-steps{
+  display:grid;
+  gap:12px;
+  margin-top:20px;
+}
+
+.locate-demo-step{
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  padding:14px 14px 13px;
+  border-radius:18px;
+  background:#fff;
+  border:1px solid #dbe8f5;
+}
+
+.locate-demo-step strong{
+  display:grid;
+  place-items:center;
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  background:#ffeded;
+  color:#e84c4f;
+  font-size:13px;
+  font-weight:800;
+  flex-shrink:0;
+}
+
+.locate-demo-step span{
+  color:#334054;
+  font-size:14px;
+  line-height:1.5;
+}
+
+.locate-demo-stage{
+  padding:24px;
+  background:
+    radial-gradient(circle at top right,rgba(19,166,232,.12),transparent 28%),
+    linear-gradient(180deg,#f1f8fe 0%,#e8f2fb 100%);
+}
+
+.locate-demo-svg{
+  display:block;
+  width:100%;
+  height:auto;
+}
+
+.loc-stage-glow{fill:rgba(19,166,232,.12)}
+.loc-stage-band{fill:rgba(255,255,255,.20)}
+.loc-stage-guide{
+  stroke:rgba(255,255,255,.22);
+  stroke-width:3;
+  stroke-dasharray:4 11;
+}
+.loc-roof-shadow{fill:rgba(15,34,49,.12)}
+.loc-roof-wall{fill:#dfeaf4}
+.loc-roof-plane{
+  fill:#ffffff;
+  stroke:#d9e8f6;
+  stroke-width:2;
+}
+.loc-roof-plane.alt{fill:#f5f9fd}
+.loc-roof-ridge{
+  stroke:#8cc8ee;
+  stroke-width:3;
+  stroke-linecap:round;
+}
+.loc-roof-tile{
+  stroke:rgba(59,168,233,.42);
+  stroke-width:2.5;
+  stroke-linecap:round;
+}
+.loc-roof-outline{
+  stroke:#d6e5f3;
+  stroke-width:2;
+  fill:none;
+}
+.loc-pin-shadow{fill:rgba(0,0,0,.16)}
+.loc-pin-body{fill:#ff4d4f}
+.loc-pin-core{fill:#fff}
+.loc-cursor{
+  transform-origin:222px 228px;
+  animation:locCursorFlash 3.8s ease-in-out infinite;
+}
+.loc-pin-ring{
+  fill:none;
+  stroke:rgba(255,77,79,.42);
+  stroke-width:3;
+  transform-origin:144px 154px;
+  animation:locPinRing 2.4s ease-out infinite;
+}
+.loc-roof-group{
+  transform-origin:140px 236px;
+  animation:locHouseDrift 3.8s ease-in-out infinite;
+}
+
+@keyframes locHouseDrift{
+  0%,100%{transform:translate(0px,0px) rotate(0deg)}
+  22%{transform:translate(12px,-10px) rotate(5deg)}
+  52%{transform:translate(22px,-2px) rotate(5deg)}
+  74%{transform:translate(8px,8px) rotate(0deg)}
+}
+
+@keyframes locCursorFlash{
+  0%,14%,100%{opacity:0;transform:translate(0,0) scale(.88)}
+  20%,34%{opacity:1;transform:translate(0,0) scale(1)}
+  48%,60%{opacity:1;transform:translate(-18px,8px) scale(1)}
+  72%{opacity:0;transform:translate(-18px,8px) scale(.9)}
+}
+
+@keyframes locPinRing{
+  0%{transform:scale(.55);opacity:.72}
+  70%{transform:scale(1.75);opacity:0}
+  100%{transform:scale(1.75);opacity:0}
+}
+
+@media (max-width: 1100px){
+  .locate-tutorial-card,
+  .locate-demo-layout{
+    grid-template-columns:1fr;
+  }
+  .locate-demo-copy{
+    border-right:0;
+    border-bottom:1px solid #e5eef6;
+  }
+}
+
+.stage-link{
+  display:block;
+  margin-top:14px;
+  text-align:center;
+  font-size:13px;
+  color:var(--ink-2);
+  text-decoration:none;
+}
+
+.stage-link:hover{text-decoration:underline}
+
+.pitch-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:18px;
+}
+
+.pitch-btn{
+  min-height:84px;
+  border-radius:14px;
+  border:1.5px solid var(--line);
+  background:#fff;
+  color:var(--ink-2);
+  font:800 20px/1 'Inter',sans-serif;
+  cursor:pointer;
+  transition:.15s ease;
+}
+
+.pitch-btn:hover{
+  border-color:var(--accent);
+  background:var(--accent-soft);
+  color:var(--accent-deep);
+}
+
+.pitch-btn.active{
+  background:#27285d;
+  border-color:#27285d;
+  color:#fff;
+}
+
+.pitch-help{
+  margin-top:18px;
+  text-align:center;
+  color:var(--ink-2);
+  font-size:13px;
+  line-height:1.6;
+}
+
+.inclination-illustration{
+  width:100%;
+  max-width:320px;
+  margin:4px auto 0;
+  display:block;
+}
+
+.center-locator{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-100%);
+  z-index:12;
+  pointer-events:none;
+  display:none;
+}
+
+.center-locator svg{
+  width:66px;
+  height:88px;
+  display:block;
+  filter:drop-shadow(0 10px 18px rgba(15,34,49,.22));
+}
+
+.center-locator.visible{display:block}
+
+.center-locator::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:30px;
+  width:24px;
+  height:24px;
+  border-radius:50%;
+  border:2px solid rgba(255,77,79,.35);
+  transform:translate(-50%,-50%);
+  animation:locatorPulse 1.8s ease infinite;
+}
+
+@keyframes locatorPulse{
+  0%{transform:translate(-50%,-50%) scale(.65);opacity:.85}
+  70%{transform:translate(-50%,-50%) scale(2.2);opacity:0}
+  100%{transform:translate(-50%,-50%) scale(2.2);opacity:0}
+}
+
+.wizard-hidden{display:none!important}
 
 /* Undo / clear map toolbar */
 .map-draw-toolbar{
@@ -355,9 +1164,9 @@ html,body{
 
 /* ── Map ── */
 .map-wrap{
-  position:relative;border-radius:var(--radius);overflow:hidden;
-  box-shadow:var(--shadow-lg);background:#1a1a2e;border:1px solid var(--line);
-  min-height:500px;
+  position:relative;border-radius:18px;overflow:hidden;
+  box-shadow:none;background:#1a1a2e;border:0;
+  min-height:620px;
 }
 #mapDiv{position:absolute;inset:0}
 .map-overlay-search{
@@ -375,13 +1184,13 @@ html,body{
   height:100%;border-left:1px solid var(--line-2);flex-shrink:0;
 }
 .layer-switch{
-  position:absolute;top:16px;right:16px;z-index:10;
-  display:flex;background:#fff;border-radius:10px;padding:4px;
-  box-shadow:0 4px 14px rgba(0,0,0,.18);height:44px;align-items:center;
+  position:absolute;top:26px;right:26px;z-index:10;
+  display:flex;background:#fff;border-radius:18px;padding:10px;
+  box-shadow:0 16px 32px rgba(17,32,54,.16);height:auto;align-items:center;gap:8px;
 }
 .layer-switch button{
-  border:0;background:transparent;padding:7px 14px;border-radius:7px;
-  font:600 12.5px 'Inter',sans-serif;color:var(--slate);cursor:pointer;
+  border:0;background:transparent;padding:14px 22px;border-radius:14px;
+  font:700 16px 'Inter',sans-serif;color:var(--slate);cursor:pointer;
 }
 .layer-switch button.active{background:var(--ink);color:#fff}
 .map-info-bar{
@@ -535,22 +1344,44 @@ html,body{
 /* ── Responsive ── */
 @media(max-width:1180px){.grid{grid-template-columns:280px 1fr 280px}}
 @media(max-width:960px){
-  .grid{grid-template-columns:1fr;grid-template-rows:auto 420px auto}
-  .stepper{display:none}
-  #leftCol{display:contents}
-  #cardAddr{order:1}
-  .map-wrap{order:2}
-  #cardDraw{order:3}
-  #cardRoof{order:4}
-  #rightCol{order:5}
+  .stepper{gap:10px}
+  .step{font-size:12px}
+  .step .num{width:56px;height:56px;font-size:24px}
+  .step-sep{width:32px}
   .map-wrap{min-height:420px}
+  #cardDraw.stage-locate{
+    grid-template-columns:1fr;
+    max-width:980px;
+    padding:22px 18px;
+  }
+  #cardDraw.stage-locate #journeyMapWrap{
+    grid-column:1;
+    grid-row:auto;
+    min-height:440px;
+  }
+  #cardDraw.stage-locate > div:first-child{
+    align-items:center!important;
+  }
+  #cardDraw.stage-locate h2,
+  #cardDraw.stage-locate #drawCardLead{
+    text-align:center;
+  }
+  #cardDraw.stage-locate #drawCardLead{
+    font-size:17px!important;
+  }
+  #cardDraw.stage-locate .surface-display,
+  #cardDraw.stage-locate #surfaceMetaLabel,
+  #cardDraw.stage-locate #surfaceSub{
+    justify-content:center;
+    text-align:center;
+  }
 }
 @media(max-width:600px){
-  .app{padding:12px 14px 32px}
-  .topbar{border-radius:14px;padding:12px 16px}
+  .app{padding:16px 10px 32px}
   .form-row,.project-type-grid{grid-template-columns:1fr}
   .modal-summary{grid-template-columns:1fr 1fr}
   .modal-head,.modal-body{padding-left:20px;padding-right:20px}
+  .pitch-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 </style>
 </head>
@@ -565,13 +1396,11 @@ html,body{
       </a>
     </div>
     <nav class="stepper" aria-label="Progression">
-      <div class="step active" id="step1-nav"><div class="num">1</div><span>Adresse</span></div>
-      <div class="step-sep" id="sep1"></div>
-      <div class="step" id="step2-nav"><div class="num">2</div><span>Zone</span></div>
-      <div class="step-sep" id="sep2"></div>
-      <div class="step" id="step3-nav"><div class="num">3</div><span>Résultats</span></div>
-      <div class="step-sep" id="sep3"></div>
-      <div class="step" id="step4-nav"><div class="num">4</div><span>Devis</span></div>
+      <div class="step active" id="journeyStep1"><div class="num">1</div><span>Votre toiture</span></div>
+      <div class="step-sep" id="journeySep1"></div>
+      <div class="step" id="journeyStep2"><div class="num">2</div><span>Votre consommation</span></div>
+      <div class="step-sep" id="journeySep2"></div>
+      <div class="step" id="journeyStep3"><div class="num">3</div><span>Votre résultat</span></div>
     </nav>
     <a href="{{ route('home') }}" class="help-btn">
       Retour au site <span class="q">←</span>
@@ -587,7 +1416,7 @@ html,body{
       {{-- Address card ── --}}
       <section class="card" id="cardAddr">
         <h2>Votre adresse</h2>
-        <p class="lede">Saisissez votre adresse pour analyser le potentiel solaire de votre toiture.</p>
+        <p class="lede">Saisissez votre adresse pour lancer le repérage de votre toiture.</p>
 
         {{-- Pill quand adresse validée --}}
         <div class="addr-pill" id="addrPill" style="display:none">
@@ -616,10 +1445,85 @@ html,body{
       {{-- ── Étape 2 : Dessiner la zone ── --}}
       <section class="card" id="cardDraw" style="display:none">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-          <h2 style="font-size:16px">Votre zone d'installation</h2>
-          <span style="background:var(--accent-soft);color:var(--accent-deep);padding:3px 10px;border-radius:999px;font-weight:700;font-size:11px;letter-spacing:.04em" id="drawModeBadge">TOITURE</span>
+          <h2 style="font-size:16px" id="drawCardTitle">Repérons votre toiture</h2>
+          <span style="background:var(--accent-soft);color:var(--accent-deep);padding:3px 10px;border-radius:999px;font-weight:700;font-size:11px;letter-spacing:.04em" id="drawModeBadge">ÉTAPE 1</span>
         </div>
-        <p class="lede" style="margin-bottom:12px">Choisissez le type d'installation, puis cliquez sur la carte pour tracer votre zone.</p>
+        <p class="lede" style="margin-bottom:12px" id="drawCardLead">Faites glisser la carte pour placer le repère rouge sur votre toiture.</p>
+        <div class="sim-note wizard-hidden" id="drawCardNote">
+          <strong>Conseil</strong>
+          Si votre toiture comporte plusieurs pans, faites une simulation par pan de toiture.
+        </div>
+        <div class="locate-stage-demo" id="locateStageDemo">
+          <div class="locate-stage-demo__panel" aria-hidden="true">
+            <svg class="locate-demo-svg" viewBox="0 0 280 420" xmlns="http://www.w3.org/2000/svg">
+              <rect width="280" height="420" fill="#eef6fe"/>
+              <circle class="loc-stage-glow" cx="226" cy="78" r="104"/>
+              <rect class="loc-stage-band" x="-32" y="38" width="350" height="34" rx="6" transform="rotate(24 140 210)"/>
+              <rect class="loc-stage-band" x="138" y="286" width="168" height="26" rx="6" transform="rotate(-18 220 300)"/>
+              <line class="loc-stage-guide" x1="50" y1="182" x2="28" y2="282"/>
+              <line class="loc-stage-guide" x1="238" y1="224" x2="220" y2="316"/>
+              <g class="loc-roof-group">
+                <polygon class="loc-roof-shadow" points="64,214 116,226 104,286 52,272"/>
+                <polygon class="loc-roof-wall" points="118,206 166,220 154,278 104,286"/>
+                <polygon class="loc-roof-plane alt" points="68,198 122,212 108,270 56,254"/>
+                <polygon class="loc-roof-plane" points="122,212 170,226 156,282 108,270"/>
+                <polyline class="loc-roof-outline" points="56,254 108,270 156,282"/>
+                <line class="loc-roof-ridge" x1="122" y1="212" x2="108" y2="270"/>
+                <line class="loc-roof-tile" x1="82" y1="210" x2="116" y2="218"/>
+                <line class="loc-roof-tile" x1="76" y1="228" x2="112" y2="238"/>
+                <line class="loc-roof-tile" x1="70" y1="246" x2="106" y2="256"/>
+                <line class="loc-roof-tile" x1="132" y1="224" x2="162" y2="232"/>
+                <line class="loc-roof-tile" x1="126" y1="242" x2="156" y2="250"/>
+                <line class="loc-roof-tile" x1="120" y1="260" x2="150" y2="268"/>
+              </g>
+              <circle class="loc-pin-ring" cx="144" cy="154" r="16"/>
+              <ellipse class="loc-pin-shadow" cx="144" cy="206" rx="18" ry="10"/>
+              <path class="loc-pin-body" d="M144 118C128 118 115 131 115 147c0 20.5 29 54 29 54s29-33.5 29-54c0-16-13-29-29-29Z"/>
+              <circle class="loc-pin-core" cx="144" cy="148" r="11"/>
+              <path class="loc-cursor" d="M214 220L196 238L202 238L196 258L222 232L212 232L214 220Z" fill="#1FA8FF"/>
+            </svg>
+          </div>
+          <div class="locate-stage-demo__caption">Glissez votre maison sous la punaise rouge</div>
+          <div class="locate-stage-demo__sub">Placez le repère rouge sur votre toiture, puis validez l’emplacement avant de passer au tracé.</div>
+        </div>
+
+        <section class="map-wrap" id="journeyMapWrap" style="position:relative">
+          <div id="mapDiv"></div>
+          <div class="center-locator" id="centerLocator" aria-hidden="true">
+            <svg viewBox="0 0 48 66" xmlns="http://www.w3.org/2000/svg">
+              <path d="M24 0C12.4 0 3 9.4 3 21c0 15 21 45 21 45s21-30 21-45C45 9.4 35.6 0 24 0Z" fill="#ff4d4f"/>
+              <circle cx="24" cy="21" r="9" fill="#fff"/>
+            </svg>
+          </div>
+
+          <div class="map-loading" id="mapLoading">
+            <div class="spinner"></div>
+            <p id="mapLoadingText">Chargement de la carte…</p>
+          </div>
+
+          <div class="draw-hint hidden" id="drawHint">
+            <span class="dot"></span>
+            <span id="drawHintText">Cliquez sur la carte pour placer les premiers points</span>
+          </div>
+
+          <div class="map-draw-toolbar hidden" id="drawToolbar">
+            <button class="mdt-btn" id="undoPointBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
+              Annuler point
+            </button>
+            <button class="mdt-btn danger" id="clearDrawBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+              Tout effacer
+            </button>
+          </div>
+
+          <div class="map-info-bar" id="mapInfoBar">
+            <div class="ico">i</div>
+            <div id="mapInfoText">
+              Saisissez votre adresse pour afficher votre toiture et analyser son potentiel solaire.
+            </div>
+          </div>
+        </section>
 
         {{-- Toggle type --}}
         <div class="zone-toggle">
@@ -636,21 +1540,31 @@ html,body{
         </div>
 
         {{-- Surface --}}
-        <div class="meta-label">Surface tracée</div>
+        <div class="meta-label" id="surfaceMetaLabel">Surface tracée</div>
         <div class="surface-display">
           <span class="s-val" id="surfaceVal">0</span>
           <span class="s-unit">m²</span>
         </div>
         <div class="surface-sub" id="surfaceSub">Tracez votre zone sur la carte satellite</div>
+        <div class="ridge-helper" id="ridgeHelper">
+          <div class="rh-swatches" aria-hidden="true">
+            <span></span>
+            <span></span>
+          </div>
+          <div id="ridgeHelperTextWrap">
+            <strong id="ridgeHelperTitle">Déterminons l'orientation de votre toiture</strong>
+            <span id="ridgeHelperText">Après le tracé, cliquez sur le côté le plus haut pour orienter la toiture et placer automatiquement les panneaux dans la meilleure position.</span>
+          </div>
+        </div>
 
         {{-- Actions --}}
         <button class="btn btn-primary" id="validateZoneBtn" disabled>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Valider cette zone
+          <span id="validateZoneBtnText">Valider mon emplacement</span>
         </button>
         <button class="btn btn-outline" id="clearZoneBtn" style="margin-top:8px">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
-          Effacer et recommencer
+          <span id="clearZoneBtnLabel">Recommencer la simulation</span>
         </button>
 
         <div class="zone-validated" id="zoneValidatedRow" style="display:none">
@@ -661,15 +1575,43 @@ html,body{
         <button class="btn btn-outline" id="addZoneBtn" style="display:none;margin-top:8px">
           Ajouter une autre zone
         </button>
+        <div class="selection-summary" id="drawResultBox">
+          <div class="selection-label" id="drawResultLabel">Votre toiture est exposée :</div>
+          <div class="selection-value" id="drawResultValue">Sud</div>
+        </div>
+        <a href="{{ $restartUrl }}" class="stage-link" id="drawBackLink" style="display:none">&lt; Recommencer la simulation</a>
       </section>
 
       {{-- Roof recap (appears after zone validated) --}}
       <section class="card" id="cardRoof" style="display:none">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:4px">
-          <h2 style="font-size:16px">Votre installation solaire</h2>
-          <span style="background:var(--accent-soft);color:var(--accent-deep);padding:3px 10px;border-radius:999px;font-weight:700;font-size:11px;letter-spacing:.04em">SOLAIRE</span>
+          <h2 style="font-size:16px" id="roofStageTitle">Quelle est l'inclinaison de votre toiture ?</h2>
+          <span style="background:var(--accent-soft);color:var(--accent-deep);padding:3px 10px;border-radius:999px;font-weight:700;font-size:11px;letter-spacing:.04em">ÉTAPE 1</span>
         </div>
-        <p class="lede" style="margin-bottom:12px">Nous utilisons les données détectées automatiquement sur votre toiture quand elles sont disponibles.</p>
+        <p class="lede" style="margin-bottom:12px" id="roofStageLead">Si vous ne connaissez pas l'inclinaison exacte, choisissez 30°. C'est la configuration la plus courante.</p>
+
+        <svg class="inclination-illustration" viewBox="0 0 340 180" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M56 128L150 50H268L198 128H56Z" stroke="#3BA8E9" stroke-width="6" stroke-linejoin="round"/>
+          <path d="M56 128V152" stroke="#3BA8E9" stroke-width="6" stroke-linecap="round"/>
+          <path d="M198 128V152" stroke="#3BA8E9" stroke-width="6" stroke-linecap="round"/>
+          <path d="M268 50L314 120V152" stroke="#3BA8E9" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M150 50L98 92" stroke="#3BA8E9" stroke-width="6" stroke-linecap="round"/>
+          <path d="M198 128L146 92" stroke="#3BA8E9" stroke-width="6" stroke-linecap="round"/>
+          <path d="M218 70H118" stroke="#9BD6F6" stroke-width="3"/>
+          <path d="M232 88H132" stroke="#9BD6F6" stroke-width="3"/>
+          <path d="M246 106H146" stroke="#9BD6F6" stroke-width="3"/>
+          <path d="M110 70V116" stroke="#9BD6F6" stroke-width="3"/>
+          <path d="M154 70V126" stroke="#9BD6F6" stroke-width="3"/>
+          <path d="M198 70V126" stroke="#9BD6F6" stroke-width="3"/>
+        </svg>
+
+        <div class="pitch-grid" id="pitchGrid">
+          <button type="button" class="pitch-btn" data-pitch="0">0°</button>
+          <button type="button" class="pitch-btn" data-pitch="15">15°</button>
+          <button type="button" class="pitch-btn active" data-pitch="30">30°</button>
+          <button type="button" class="pitch-btn" data-pitch="45">45°</button>
+        </div>
+        <div class="pitch-help">Si vous ne connaissez pas l’inclinaison de votre toiture, choisissez 30°.</div>
 
         <div id="roofInfoRows"></div>
 
@@ -697,49 +1639,15 @@ html,body{
 
         <button class="btn btn-yellow" id="quoteBtn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-          Obtenir mon devis gratuit
+          Valider l'inclinaison de ma toiture
         </button>
+        <a href="#" class="stage-link" id="roofBackBtn">&lt; Revenir à l'étape précédente</a>
       </section>
 
     </aside>
 
-    {{-- ── MAP CENTER ── --}}
-    <section class="map-wrap" style="position:relative">
-      <div id="mapDiv"></div>
-
-      <div class="map-loading" id="mapLoading">
-        <div class="spinner"></div>
-        <p id="mapLoadingText">Chargement de la carte…</p>
-      </div>
-
-      {{-- Draw hint --}}
-      <div class="draw-hint hidden" id="drawHint">
-        <span class="dot"></span>
-        <span id="drawHintText">Cliquez sur la carte pour placer les premiers points</span>
-      </div>
-
-      {{-- Draw toolbar (undo / clear) --}}
-      <div class="map-draw-toolbar hidden" id="drawToolbar">
-        <button class="mdt-btn" id="undoPointBtn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>
-          Annuler point
-        </button>
-        <button class="mdt-btn danger" id="clearDrawBtn">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
-          Tout effacer
-        </button>
-      </div>
-
-      <div class="map-info-bar" id="mapInfoBar">
-        <div class="ico">i</div>
-        <div id="mapInfoText">
-          Saisissez votre adresse pour afficher votre toiture et analyser son potentiel solaire.
-        </div>
-      </div>
-    </section>
-
     {{-- ── RIGHT: results ── --}}
-    <aside id="rightCol">
+    <aside id="rightCol" style="display:none">
       <p class="estim-header">Estimation de votre installation</p>
 
       {{-- Metrics --}}
@@ -802,46 +1710,155 @@ html,body{
   </div>
 </div>
 
+<div class="locate-tutorial-backdrop" id="locateTutorialOverlay" aria-hidden="true">
+  <div class="locate-tutorial-box">
+    <button type="button" class="locate-tutorial-close" id="locateTutorialClose">→ fermer le tutoriel</button>
+    <div class="locate-tutorial-card">
+      <div class="locate-demo-layout">
+        <div class="locate-demo-copy">
+          <div class="locate-demo-kicker">Tutoriel repérage</div>
+          <h3>Placez votre toiture sous le repère rouge</h3>
+          <p>Faites glisser la carte pour amener votre maison sous la punaise rouge. Une fois bien centrée, vous pourrez valider l’emplacement et commencer le tracé.</p>
+          <div class="locate-demo-steps">
+            <div class="locate-demo-step">
+              <strong>1</strong>
+              <span>Gardez le repère rouge fixe au centre de l’écran.</span>
+            </div>
+            <div class="locate-demo-step">
+              <strong>2</strong>
+              <span>Déplacez la carte jusqu’à voir votre toiture sous la punaise.</span>
+            </div>
+            <div class="locate-demo-step">
+              <strong>3</strong>
+              <span>Quand la toiture est bien calée, validez l’emplacement.</span>
+            </div>
+          </div>
+        </div>
+        <div class="locate-demo-stage" aria-hidden="true">
+          <svg class="locate-demo-svg" viewBox="0 0 280 420" xmlns="http://www.w3.org/2000/svg">
+            <rect width="280" height="420" fill="#eef6fe"/>
+            <circle class="loc-stage-glow" cx="224" cy="80" r="108"/>
+            <rect class="loc-stage-band" x="-28" y="40" width="344" height="34" rx="6" transform="rotate(24 140 210)"/>
+            <rect class="loc-stage-band" x="136" y="286" width="170" height="26" rx="6" transform="rotate(-18 220 300)"/>
+            <line class="loc-stage-guide" x1="48" y1="184" x2="24" y2="284"/>
+            <line class="loc-stage-guide" x1="236" y1="224" x2="218" y2="314"/>
+            <g class="loc-roof-group">
+              <polygon class="loc-roof-shadow" points="64,214 116,226 104,286 52,272"/>
+              <polygon class="loc-roof-wall" points="118,206 166,220 154,278 104,286"/>
+              <polygon class="loc-roof-plane alt" points="68,198 122,212 108,270 56,254"/>
+              <polygon class="loc-roof-plane" points="122,212 170,226 156,282 108,270"/>
+              <polyline class="loc-roof-outline" points="56,254 108,270 156,282"/>
+              <line class="loc-roof-ridge" x1="122" y1="212" x2="108" y2="270"/>
+              <line class="loc-roof-tile" x1="82" y1="210" x2="116" y2="218"/>
+              <line class="loc-roof-tile" x1="76" y1="228" x2="112" y2="238"/>
+              <line class="loc-roof-tile" x1="70" y1="246" x2="106" y2="256"/>
+              <line class="loc-roof-tile" x1="132" y1="224" x2="162" y2="232"/>
+              <line class="loc-roof-tile" x1="126" y1="242" x2="156" y2="250"/>
+              <line class="loc-roof-tile" x1="120" y1="260" x2="150" y2="268"/>
+            </g>
+            <circle class="loc-pin-ring" cx="144" cy="154" r="16"/>
+            <ellipse class="loc-pin-shadow" cx="144" cy="206" rx="18" ry="10"/>
+            <path class="loc-pin-body" d="M144 118C128 118 115 131 115 147c0 20.5 29 54 29 54s29-33.5 29-54c0-16-13-29-29-29Z"/>
+            <circle class="loc-pin-core" cx="144" cy="148" r="11"/>
+            <path class="loc-cursor" d="M214 220L196 238L202 238L196 258L222 232L212 232L214 220Z" fill="#1FA8FF"/>
+          </svg>
+          <div class="locate-tutorial-caption">Glissez votre maison<br>sous la punaise rouge</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 {{-- ── Popup démo ── --}}
 <div class="demo-backdrop" id="demoPopup" style="display:none" role="dialog" aria-modal="true" aria-label="Comment tracer votre zone">
   <div class="demo-box">
     <div class="demo-head">
       <div>
-        <h3 id="demoTitle">Comment tracer votre zone d'installation</h3>
-        <p>Regardez l'exemple ci-dessous, puis fermez pour commencer à tracer sur votre toiture.</p>
+        <h3 id="demoTitle">Comment tracer votre zone de toiture</h3>
+        <p id="demoIntro">Regardez l'exemple ci-dessous, puis fermez pour commencer à tracer sur votre toiture.</p>
       </div>
       <button class="demo-close" id="demoCloseBtn" aria-label="Fermer">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
 
-    {{-- Image satellite + animation SVG --}}
+    {{-- Démo SVG --}}
     <div class="demo-img-wrap" id="demoImgWrap">
-      <img id="demoImg" src="" alt="Vue satellite de la toiture" loading="lazy">
-      <div class="demo-type-badge" id="demoTypeBadge">🏠 Toiture</div>
+      <div class="demo-type-badge" id="demoTypeBadge">Toiture</div>
 
-      {{-- SVG animé — viewBox dynamique calé sur l'image via JS (coords espace image 1536×1024) --}}
-      <svg class="demo-svg" id="demoSvg" viewBox="0 0 720 540" preserveAspectRatio="none">
-        {{-- Pan W de la toiture (triangle gauche) : P1=haut, P2=gauche, P3=bas, P4=intérieur --}}
-        <polygon class="dp-fill" id="dpFill" points="241,92 518,92 518,378 241,378"/>
-        <polyline class="dp-line" id="dpLine" points="241,92 518,92 518,378 241,378 241,92"/>
-        <circle class="dp-dot" id="dp1" cx="241" cy="92" r="18"/>
-        <circle class="dp-dot" id="dp2" cx="518" cy="92" r="18"/>
-        <circle class="dp-dot" id="dp3" cx="518" cy="378" r="18"/>
-        <circle class="dp-dot" id="dp4" cx="241" cy="378" r="18"/>
-        <g class="dp-labels" id="dpLabels">
-          <circle cx="241" cy="92" r="28" fill="rgba(19,166,232,.9)"/>
-          <text x="241" y="101" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">1</text>
-          <circle cx="518" cy="92" r="28" fill="rgba(19,166,232,.9)"/>
-          <text x="518" y="101" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">2</text>
-          <circle cx="518" cy="378" r="28" fill="rgba(19,166,232,.9)"/>
-          <text x="518" y="387" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">3</text>
-          <circle cx="241" cy="378" r="28" fill="rgba(19,166,232,.9)"/>
-          <text x="241" y="387" fill="#fff" font-family="Inter,sans-serif" font-size="30" font-weight="800" text-anchor="middle">4</text>
+      <svg class="demo-svg" id="demoSvg" viewBox="0 0 720 540" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="demoShapeFill" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#e8eef1"/>
+          </linearGradient>
+          <linearGradient id="demoSceneSky" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#f2f8fe"/>
+            <stop offset="100%" stop-color="#e6f1fb"/>
+          </linearGradient>
+        </defs>
+
+        <g id="demoRoofDecor">
+          <rect width="720" height="540" fill="url(#demoSceneSky)"/>
+          <circle class="dp-scene-sky-glow" cx="576" cy="86" r="150"/>
+          <rect class="dp-scene-band" x="-88" y="66" width="900" height="66" rx="8" transform="rotate(22 360 270)"/>
+          <rect class="dp-scene-band alt" x="462" y="318" width="250" height="38" rx="8" transform="rotate(-18 586 338)"/>
+          <line class="dp-scene-guide" x1="124" y1="156" x2="54" y2="432"/>
+          <line class="dp-scene-guide" x1="604" y1="220" x2="560" y2="458"/>
+          <g id="demoRoofBase">
+            <polygon class="dp-roof-shadow" points="148,198 466,286 410,454 120,376"/>
+            <polygon class="dp-roof-wall" points="466,286 544,246 486,414 410,454"/>
+            <polygon class="dp-roof-plane alt" points="152,182 328,232 272,404 96,354"/>
+            <polygon class="dp-roof-plane" points="328,232 506,282 446,450 272,404"/>
+            <polygon class="dp-roof-highlight" points="196,202 286,226 256,320 166,294"/>
+            <polyline class="dp-roof-outline" points="96,354 272,404 446,450 486,414"/>
+            <line class="dp-roof-ridge" x1="328" y1="232" x2="272" y2="404"/>
+            <line class="dp-roof-tile" x1="188" y1="214" x2="302" y2="246"/>
+            <line class="dp-roof-tile" x1="172" y1="252" x2="286" y2="284"/>
+            <line class="dp-roof-tile" x1="158" y1="290" x2="272" y2="322"/>
+            <line class="dp-roof-tile" x1="144" y1="328" x2="258" y2="360"/>
+            <line class="dp-roof-tile" x1="356" y1="244" x2="468" y2="276"/>
+            <line class="dp-roof-tile" x1="342" y1="282" x2="454" y2="314"/>
+            <line class="dp-roof-tile" x1="328" y1="320" x2="440" y2="352"/>
+            <line class="dp-roof-tile" x1="314" y1="358" x2="426" y2="390"/>
+          </g>
         </g>
+
+        <g id="demoGardenDecor" style="display:none">
+          <rect class="dp-scene-lawn" x="0" y="0" width="720" height="540"/>
+          <rect class="dp-scene-lawn-patch" x="34" y="38" width="300" height="190" rx="28"/>
+          <rect class="dp-scene-lawn-patch" x="396" y="92" width="248" height="156" rx="24"/>
+          <rect class="dp-scene-lawn-patch" x="154" y="308" width="412" height="140" rx="30"/>
+          <path class="dp-scene-grid" d="M0 210 H720 M0 320 H720 M150 0 V540 M310 0 V540 M490 0 V540"/>
+        </g>
+
+        <g id="demoSceneShape">
+          <polygon class="dp-ghost-zone" id="dpGhostZone" points="0,0 0,0 0,0 0,0"/>
+          <polygon class="dp-scene-zone shadow" id="dpShadow" points="0,0 0,0 0,0 0,0"/>
+          <polygon class="dp-fill dp-scene-zone" id="dpFill" points="0,0 0,0 0,0 0,0"/>
+          <polyline class="dp-line" id="dpLine" points="0,0 0,0 0,0 0,0 0,0"/>
+          <polyline class="dp-selected-edge" id="dpSelectedEdge" points="0,0 0,0"/>
+          <circle class="dp-dot" id="dp1" cx="0" cy="0" r="12"/>
+          <circle class="dp-dot" id="dp2" cx="0" cy="0" r="12"/>
+          <circle class="dp-dot" id="dp3" cx="0" cy="0" r="12"/>
+          <circle class="dp-dot" id="dp4" cx="0" cy="0" r="12"/>
+        </g>
+
+        <g class="dp-cursor" id="dpCursorGroup" transform="translate(184 214)">
+          <circle class="dp-cursor-pulse" cx="0" cy="0" r="18"/>
+          <ellipse class="dp-cursor-shadow" cx="18" cy="28" rx="14" ry="8"/>
+          <path class="dp-cursor-shape" d="M0 0L0 42L12 31L20 52L28 48L20 28L40 28L0 0Z"/>
+          <circle class="dp-cursor-tip" cx="0" cy="0" r="4"/>
+        </g>
+
         <g class="dp-badge" id="dpBadge">
-          <rect x="310" y="210" width="200" height="60" rx="12" fill="rgba(15,34,49,.88)"/>
-          <text x="410" y="241" fill="#fff" font-family="Inter,sans-serif" font-size="34" font-weight="800" text-anchor="middle">≈ 35 m²</text>
+          <rect id="dpBadgeRect" x="270" y="106" width="180" height="48" rx="14"/>
+          <text id="dpBadgeText" x="360" y="136">4 coins à placer</text>
+        </g>
+
+        <g class="dp-caption" id="dpCaption">
+          <text class="main" id="dpCaptionLine1" x="360" y="420">Cliquez sur les 4 coins</text>
+          <text class="sub" id="dpCaptionLine2" x="360" y="462">du pan de toiture</text>
         </g>
       </svg>
     </div>
@@ -850,26 +1867,26 @@ html,body{
     <div class="demo-steps">
       <div class="demo-step">
         <div class="ds-num">1</div>
-        <div class="ds-label">Cliquez sur un coin</div>
-        <div class="ds-sub">de votre toiture ou terrain</div>
+        <div class="ds-label" id="demoStep1Label">Placez 4 points</div>
+        <div class="ds-sub" id="demoStep1Sub">sur les coins du pan</div>
       </div>
       <div class="demo-step">
         <div class="ds-num">2</div>
-        <div class="ds-label">Tracez le contour</div>
-        <div class="ds-sub">en cliquant point par point</div>
+        <div class="ds-label" id="demoStep2Label">Fermez le contour</div>
+        <div class="ds-sub" id="demoStep2Sub">la zone se dessine automatiquement</div>
       </div>
       <div class="demo-step">
         <div class="ds-num">3</div>
-        <div class="ds-label">Validez la zone</div>
-        <div class="ds-sub">dès 3 points — surface calculée</div>
+        <div class="ds-label" id="demoStep3Label">Validez la surface</div>
+        <div class="ds-sub" id="demoStep3Sub">puis passez à l’orientation</div>
       </div>
     </div>
 
     <div class="demo-foot">
-      <p>💡 Tracez uniquement la surface utile. Vous pouvez effacer et recommencer à tout moment.</p>
+      <p id="demoFootText">Tracez uniquement la surface utile du pan de toiture. Une fois la zone validée, vous pourrez choisir le côté le plus haut.</p>
       <button class="demo-start-btn" id="demoStartBtn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-        Commencer à tracer
+        <span id="demoStartText">Fermer et commencer</span>
       </button>
     </div>
   </div>
@@ -887,7 +1904,7 @@ window.__csrfToken = @json(csrf_token());
 window.__estimateUrl = @json(route('api.solar.estimate'));
 window.__geocodeUrl      = @json(route('api.solar.geocode'));
 window.__autocompleteUrl = @json(route('api.solar.autocomplete'));
-window.__step4Url = @json(route('simulateur.solaire.confirmation'));
+window.__step4Url = @json($step4Url);
 window.__solarStep4StorageKey = 'solarSimulatorStep4';
 window.__pricingSettings = @json($pricing);
 
@@ -937,7 +1954,8 @@ const state = {
   results: null,
   drawResults: null,
   panelLayout: null,
-  currentStep: 1,
+  roofStage: 'address',
+  selectedPitch: 30,
 };
 const initialSolarParams = new URLSearchParams(window.location.search);
 const initialSolarAddress = (initialSolarParams.get('address') || '').trim();
@@ -964,9 +1982,30 @@ const addrSearchWrap = $('addrSearchWrap');
 const cardAddr     = $('cardAddr');
 const cardDraw     = $('cardDraw');
 const cardRoof     = $('cardRoof');
+const rightCol     = $('rightCol');
 const mapLoading   = $('mapLoading');
 const mapLoadingText = $('mapLoadingText');
 const mapInfoText  = $('mapInfoText');
+const centerLocator = $('centerLocator');
+const locateTutorialOverlay = $('locateTutorialOverlay');
+const drawCardTitle = $('drawCardTitle');
+const drawCardLead = $('drawCardLead');
+const drawCardNote = $('drawCardNote');
+const locateStageDemo = $('locateStageDemo');
+const surfaceMetaLabel = $('surfaceMetaLabel');
+const clearZoneBtnLabel = $('clearZoneBtnLabel');
+const ridgeHelper = $('ridgeHelper');
+const ridgeHelperTitle = $('ridgeHelperTitle');
+const ridgeHelperText = $('ridgeHelperText');
+const validateZoneBtnText = $('validateZoneBtnText');
+const drawResultBox = $('drawResultBox');
+const drawResultLabel = $('drawResultLabel');
+const drawResultValue = $('drawResultValue');
+const drawBackLink = $('drawBackLink');
+const roofStageTitle = $('roofStageTitle');
+const roofStageLead = $('roofStageLead');
+const roofBackBtn = $('roofBackBtn');
+const pitchGrid = $('pitchGrid');
 const roofInfoRows = $('roofInfoRows');
 const panelAdjustWrap = $('panelAdjustWrap');
 const panelMinusBtn = $('panelMinusBtn');
@@ -978,27 +2017,165 @@ const panelAdjustSub = $('panelAdjustSub');
 const addZoneBtn = $('addZoneBtn');
 const quoteBtn     = $('quoteBtn');
 let map, marker;
+let satelliteRecoveryAttempts = 0;
+let satelliteRecoveryTimer = null;
 
-// ── Stepper ─────────────────────────────────────────────────────────
-function setStep(n){
-  state.currentStep = n;
-  [1,2,3,4].forEach(i => {
-    const s = $('step'+i+'-nav');
-    s.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
-    if(i < n) s.querySelector('.num').innerHTML = '✓';
-    else s.querySelector('.num').textContent = i;
-    if(i < 4){
-      const sep = $('sep'+i);
-      sep.className = 'step-sep' + (i < n ? ' done' : '');
-    }
-  });
-  updateLeftStepUI();
+function updateBodyScrollLock(){
+  const locateOpen = locateTutorialOverlay?.style.display === 'flex';
+  const demoOpen = demoPopup?.style.display === 'flex';
+  document.body.style.overflow = (locateOpen || demoOpen) ? 'hidden' : '';
 }
 
-function updateLeftStepUI(){
-  if(cardAddr) cardAddr.style.display = state.currentStep === 1 ? 'block' : 'none';
-  if(cardDraw) cardDraw.style.display = state.currentStep === 2 ? 'block' : 'none';
-  if(cardRoof) cardRoof.style.display = state.currentStep >= 3 ? 'block' : 'none';
+function openLocateTutorial(){
+  if(!locateTutorialOverlay) return;
+  locateTutorialOverlay.style.display = 'flex';
+  locateTutorialOverlay.setAttribute('aria-hidden', 'false');
+  updateBodyScrollLock();
+}
+
+function closeLocateTutorial(){
+  if(!locateTutorialOverlay) return;
+  locateTutorialOverlay.style.display = 'none';
+  locateTutorialOverlay.setAttribute('aria-hidden', 'true');
+  updateBodyScrollLock();
+}
+
+function syncLayerSwitch(activeType){
+  document.querySelectorAll('.layer-switch button').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.type === activeType);
+  });
+}
+
+function scheduleSatelliteRecovery(reset = false){
+  if(!map) return;
+  if(reset) satelliteRecoveryAttempts = 0;
+  window.clearTimeout(satelliteRecoveryTimer);
+  satelliteRecoveryTimer = window.setTimeout(() => {
+    if(!map || state.roofStage !== 'locate' || map.getMapTypeId() !== 'satellite') return;
+    const mapText = map.getDiv()?.innerText || '';
+    if(!/aucune image n'est disponible/i.test(mapText)) return;
+
+    const currentZoom = Number(map.getZoom()) || 19;
+    if(currentZoom > 18 && satelliteRecoveryAttempts < 4){
+      satelliteRecoveryAttempts += 1;
+      map.setZoom(currentZoom - 1);
+      return;
+    }
+
+    if(map.getMapTypeId() !== 'roadmap'){
+      map.setMapTypeId('roadmap');
+      syncLayerSwitch('roadmap');
+      showToast('Imagerie satellite indisponible ici — affichage du plan pour vous repérer.', true);
+    }
+  }, 1400);
+}
+
+// ── Journey + roof stages ───────────────────────────────────────────
+function setJourneyStep(n){
+  [1,2,3].forEach(i => {
+    const stepEl = $('journeyStep' + i);
+    if(!stepEl) return;
+    stepEl.className = 'step' + (i < n ? ' done' : i === n ? ' active' : '');
+    const numEl = stepEl.querySelector('.num');
+    if(numEl) numEl.textContent = i < n ? '✓' : String(i);
+    if(i < 3){
+      const sep = $('journeySep' + i);
+      if(sep) sep.className = 'step-sep' + (i < n ? ' done' : '');
+    }
+  });
+}
+
+function setPitchSelection(value){
+  const safeValue = Number(value) || 30;
+  state.selectedPitch = safeValue;
+  pitchGrid?.querySelectorAll('.pitch-btn').forEach(btn => {
+    btn.classList.toggle('active', Number(btn.dataset.pitch) === safeValue);
+  });
+}
+
+function setRoofStage(stage){
+  state.roofStage = stage;
+  if(cardDraw){
+    cardDraw.classList.remove('stage-address','stage-locate','stage-surface','stage-orientation','stage-inclination');
+    cardDraw.classList.add(`stage-${stage}`);
+  }
+  if(cardAddr) cardAddr.style.display = stage === 'address' ? 'block' : 'none';
+  if(cardDraw) cardDraw.style.display = stage === 'address' || stage === 'inclination' ? 'none' : 'block';
+  if(cardRoof) cardRoof.style.display = stage === 'inclination' ? 'block' : 'none';
+  if(rightCol) rightCol.style.display = 'none';
+  if(centerLocator) centerLocator.classList.toggle('visible', stage === 'locate');
+  if(drawBackLink) drawBackLink.style.display = stage !== 'address' ? 'block' : 'none';
+  if(stage !== 'locate') closeLocateTutorial();
+  if(stage !== 'locate') window.clearTimeout(satelliteRecoveryTimer);
+
+  if(drawCardNote){
+    drawCardNote.classList.add('wizard-hidden');
+    drawCardNote.style.display = 'none';
+  }
+  if(locateStageDemo) locateStageDemo.style.display = 'none';
+  if(drawResultBox) drawResultBox.style.display = 'none';
+  if(ridgeHelper) ridgeHelper.style.display = 'none';
+  if(panelAdjustWrap) panelAdjustWrap.style.display = 'none';
+
+  switch(stage){
+    case 'address':
+      if(mapInfoText) mapInfoText.innerHTML = 'Saisissez votre adresse pour afficher votre toiture et analyser son potentiel solaire.';
+      break;
+    case 'locate':
+      if(drawCardTitle) drawCardTitle.textContent = 'Repérons votre toiture';
+      if(drawCardLead) drawCardLead.textContent = 'Faites glisser la carte pour placer le repère rouge sur votre toiture.';
+      if(surfaceMetaLabel) surfaceMetaLabel.textContent = 'Emplacement';
+      $('surfaceVal').textContent = '1';
+      $('surfaceSub').textContent = 'Placez le repère rouge sur votre toiture avant de valider.';
+      if(validateZoneBtnText) validateZoneBtnText.textContent = 'Valider mon emplacement';
+      if($('validateZoneBtn')) $('validateZoneBtn').disabled = false;
+      if($('clearZoneBtn')) $('clearZoneBtn').style.display = 'none';
+      if(clearZoneBtnLabel) clearZoneBtnLabel.textContent = 'Recommencer la simulation';
+      if(mapInfoText) mapInfoText.innerHTML = '<b>Faites glisser la carte</b> pour placer le repère rouge sur votre toiture.';
+      if(locateStageDemo) locateStageDemo.style.display = 'block';
+      if(map) syncLayerSwitch(map.getMapTypeId() || 'satellite');
+      break;
+    case 'surface':
+      if(drawCardTitle) drawCardTitle.textContent = 'Calculons la surface de votre toiture';
+      if(drawCardLead) drawCardLead.textContent = 'Sélectionnez les 4 coins du pan de votre toiture pouvant accueillir des panneaux photovoltaïques.';
+      if(drawCardNote){
+        drawCardNote.classList.remove('wizard-hidden');
+        drawCardNote.style.display = 'block';
+        drawCardNote.innerHTML = '<strong>Astuce</strong> Vous souhaitez une installation sur plusieurs pans ? Faites une simulation par pan de toiture.';
+      }
+      if(surfaceMetaLabel) surfaceMetaLabel.textContent = 'Surface estimée';
+      if(validateZoneBtnText) validateZoneBtnText.textContent = 'Valider la surface de ma toiture';
+      if($('clearZoneBtn')) $('clearZoneBtn').style.display = '';
+      if(clearZoneBtnLabel) clearZoneBtnLabel.textContent = 'Effacer et recommencer';
+      if(mapInfoText) mapInfoText.innerHTML = '<b>Cliquez sur les 4 coins</b> du pan de toiture à équiper.';
+      break;
+    case 'orientation':
+      if(drawCardTitle) drawCardTitle.textContent = 'Déterminons l\'orientation de votre toiture';
+      if(drawCardLead) drawCardLead.textContent = 'Cliquez sur le côté le plus haut de votre toiture';
+      if(surfaceMetaLabel) surfaceMetaLabel.textContent = 'Orientation';
+      if(validateZoneBtnText) validateZoneBtnText.textContent = 'Valider l\'orientation de ma toiture';
+      if($('clearZoneBtn')) $('clearZoneBtn').style.display = 'none';
+      break;
+    case 'inclination':
+      if(roofStageTitle) roofStageTitle.textContent = 'Quelle est l\'inclinaison de votre toiture ?';
+      if(roofStageLead) roofStageLead.textContent = 'Si vous ne connaissez pas l\'inclinaison exacte, choisissez 30°. C\'est la configuration la plus courante.';
+      if(quoteBtn) quoteBtn.disabled = false;
+      break;
+  }
+}
+
+function beginLocateStage(options = {}){
+  setJourneyStep(1);
+  setRoofStage('locate');
+  if(mapLoading) mapLoading.classList.add('hidden');
+  if(cardDraw && window.innerWidth < 960){
+    cardDraw.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  if(options.showDemo === false) return;
+  window.clearTimeout(beginLocateStage._demoTimer);
+  beginLocateStage._demoTimer = window.setTimeout(() => {
+    openLocateTutorial();
+  }, Number.isFinite(options.demoDelay) ? options.demoDelay : 180);
 }
 
 // ── Toast ────────────────────────────────────────────────────────────
@@ -1039,15 +2216,17 @@ const azimuthToLabel = az => {
 
 function getAutoRoofSettings(){
   if(draw.zoneType === 'garden'){
-    return { orientation: 'Sud', hasPitch: false, pitchDeg: null, pitchBucket: null };
+    return { orientation: 'Sud', hasPitch: true, pitchDeg: 30, pitchBucket: 30 };
   }
+
+  const manualPitch = Number.isFinite(state.selectedPitch) ? Number(state.selectedPitch) : null;
 
   if(state.panelLayout?.orientationLabel){
     return {
       orientation: state.panelLayout.orientationLabel,
-      hasPitch: false,
-      pitchDeg: null,
-      pitchBucket: null,
+      hasPitch: true,
+      pitchDeg: manualPitch ?? 30,
+      pitchBucket: manualPitch ?? 30,
     };
   }
 
@@ -1061,9 +2240,9 @@ function getAutoRoofSettings(){
 
   return {
     orientation,
-    hasPitch,
-    pitchDeg: pitchSource,
-    pitchBucket: hasPitch ? nearestPitch : null,
+    hasPitch: true,
+    pitchDeg: manualPitch ?? pitchSource ?? 30,
+    pitchBucket: manualPitch ?? (hasPitch ? nearestPitch : 30),
   };
 }
 
@@ -1654,14 +2833,12 @@ function drawChart(monthly){
 // ── Call Solar API (backend) ───────────────────────────────────────
 async function fetchSolarData(options = {}){
   const background = !!options.background;
+  const skipLocateStage = !!options.skipLocateStage;
   const requestTimeoutMs = Number(options.timeoutMs || 8000);
   if(!background){
     mapLoading.classList.remove('hidden');
     mapLoadingText.textContent = 'Analyse du potentiel solaire…';
   }
-  setStep(2);
-  mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
-  if(typeof startDrawMode === 'function') startDrawMode();
 
   const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
   const timeoutId = controller ? window.setTimeout(() => controller.abort(), requestTimeoutMs) : null;
@@ -1691,7 +2868,10 @@ async function fetchSolarData(options = {}){
     displayResults(data);
 
     if(!background){
-      showToast('Adresse analysée — tracez votre zone ✓');
+      showToast('Adresse analysée — positionnez votre toiture sous le repère rouge.');
+    }
+    if(!skipLocateStage){
+      beginLocateStage({ forceDemo: true, demoDelay: 250 });
     }
 
   } catch(e){
@@ -1700,7 +2880,10 @@ async function fetchSolarData(options = {}){
       : e.message;
     dbg('WARN', 'Solar API indisponible — mode estimation locale', message);
     if(!background){
-      showToast('Adresse chargée — tracez directement votre zone', false);
+      showToast('Adresse chargée — positionnez votre toiture sur la carte', false);
+    }
+    if(!skipLocateStage){
+      beginLocateStage({ forceDemo: true, demoDelay: 250 });
     }
   } finally {
     if(timeoutId){
@@ -1752,6 +2935,10 @@ function getAllZonePoints(){
   }));
 }
 
+function requiresRidgeSelection(){
+  return state.roofStage === 'orientation' && draw.zoneType === 'roof' && draw.points.length >= 3;
+}
+
 // Calcul panneaux depuis surface tracée
 function panelsFromArea(m2, zoneType){
   // Roof: 1.7m² / panneau (1.722m × 1.013m standard)
@@ -1761,33 +2948,66 @@ function panelsFromArea(m2, zoneType){
 }
 
 function updateDrawUI(){
+  if(state.roofStage === 'locate'){
+    $('surfaceVal').textContent = '1';
+    $('surfaceSub').textContent = 'Validez la position avant de tracer votre pan de toiture.';
+    $('validateZoneBtn').disabled = false;
+    if(validateZoneBtnText) validateZoneBtnText.textContent = 'Valider mon emplacement';
+    $('drawToolbar')?.classList.add('hidden');
+    $('drawHint')?.classList.add('hidden');
+    if(ridgeHelper){
+      ridgeHelper.style.display = 'none';
+      ridgeHelper.classList.remove('is-selected');
+    }
+    return;
+  }
+
   if(draw.points.length < 3){
     draw.ridgeEdgeIndex = null;
   } else if(Number.isInteger(draw.ridgeEdgeIndex) && draw.ridgeEdgeIndex >= draw.points.length){
     draw.ridgeEdgeIndex = null;
-  } else if(draw.zoneType === 'roof' && draw.ridgeEdgeIndex === null){
-    draw.ridgeEdgeIndex = getDefaultRidgeEdgeIndex(draw.points);
   }
 
   const currentAreaM2 = computeAreaM2(draw.points);
   const totalAreaM2 = getValidatedZonesAreaM2() + currentAreaM2;
   const rounded = Math.round(totalAreaM2);
   $('surfaceVal').textContent = rounded;
+  const needsRidgeSelection = requiresRidgeSelection();
+  const ridgeSelected = Number.isInteger(draw.ridgeEdgeIndex);
+  const requiresFourCorners = state.roofStage === 'surface';
+  const enoughCorners = requiresFourCorners ? draw.points.length >= 4 : draw.points.length >= 3;
+  const selectedOrientation = ridgeSelected
+    ? ridgeOrientationFromEdge(getRidgeEdgePoints(draw.points, draw.ridgeEdgeIndex), draw.points)
+    : null;
 
-  if(draw.points.length < 3){
+  if(!enoughCorners){
     $('surfaceSub').textContent = draw.points.length === 0
-      ? draw.zones.length
-        ? 'Ajoutez une autre zone ou validez votre sélection'
-        : 'Tracez votre zone sur la carte satellite'
+      ? 'Tracez votre zone sur la carte satellite'
       : draw.points.length === 1
-      ? 'Continuez à cliquer pour former la zone…'
-      : 'Encore un point pour fermer la zone…';
+      ? 'Cliquez sur un deuxième coin de toiture…'
+      : draw.points.length === 2
+      ? 'Encore deux coins pour dessiner la surface…'
+      : 'Encore un coin pour terminer la surface…';
     $('validateZoneBtn').disabled = true;
+    if(validateZoneBtnText) validateZoneBtnText.textContent = state.roofStage === 'orientation'
+      ? 'Valider l\'orientation de ma toiture'
+      : 'Valider la surface de ma toiture';
+  } else if(needsRidgeSelection && !ridgeSelected){
+    $('surfaceSub').textContent = 'Cliquez sur le côté le plus haut pour orienter la toiture et placer les panneaux dans le meilleur sens.';
+    $('validateZoneBtn').disabled = true;
+    if(validateZoneBtnText) validateZoneBtnText.textContent = 'Sélectionnez le côté le plus haut';
   } else {
-    const panels = panelsFromArea(totalAreaM2, draw.zoneType);
-    const kwc    = (panels * 0.425).toFixed(2);
-    $('surfaceSub').textContent = `≈ ${formatPanelCountLabel(panels)} · ${kwc} kWc`;
+    if(state.roofStage === 'orientation'){
+      $('surfaceSub').textContent = 'Le côté haut est sélectionné. Vous pouvez confirmer l’orientation.';
+    } else {
+      const panels = panelsFromArea(totalAreaM2, draw.zoneType);
+      const kwc    = (panels * 0.425).toFixed(2);
+      $('surfaceSub').textContent = `≈ ${formatPanelCountLabel(panels)} · ${kwc} kWc`;
+    }
     $('validateZoneBtn').disabled = false;
+    if(validateZoneBtnText) validateZoneBtnText.textContent = state.roofStage === 'orientation'
+      ? 'Valider l\'orientation de ma toiture'
+      : 'Valider la surface de ma toiture';
   }
 
   // Toolbar visibility
@@ -1797,17 +3017,72 @@ function updateDrawUI(){
 
   // Draw hint
   const hint = $('drawHint');
-  if(!draw.validated && draw.points.length === 0 && draw.zones.length === 0){
+  hint.classList.remove('attention', 'success');
+  if(state.roofStage === 'surface' && !draw.validated && draw.points.length === 0){
     hint.classList.remove('hidden');
-    $('drawHintText').textContent = draw.zoneType === 'garden'
-      ? 'Cliquez sur votre jardin/terrain pour délimiter la zone'
-      : 'Cliquez sur votre toiture pour délimiter la zone';
+    $('drawHintText').textContent = 'Cliquez sur les 4 coins du pan de toiture';
+  } else if(!draw.validated && needsRidgeSelection && !ridgeSelected){
+    hint.classList.remove('hidden');
+    hint.classList.add('attention');
+    $('drawHintText').textContent = 'Cliquez sur le côté le plus haut pour bien orienter les panneaux';
+  } else if(!draw.validated && needsRidgeSelection && ridgeSelected){
+    hint.classList.remove('hidden');
+    hint.classList.add('success');
+    $('drawHintText').textContent = 'Côté haut sélectionné — vous pouvez valider';
   } else {
     hint.classList.add('hidden');
   }
 
+  if(mapInfoText && !draw.validated){
+    if(state.roofStage === 'surface' && draw.points.length === 0){
+      mapInfoText.innerHTML = '<b>Cliquez sur les 4 coins</b> du pan de toiture à équiper.';
+    } else if(needsRidgeSelection && !ridgeSelected){
+      mapInfoText.innerHTML = '<b>Cliquez sur le côté le plus haut</b> pour définir l’orientation de la toiture et positionner vos panneaux au mieux.';
+    } else if(needsRidgeSelection && ridgeSelected){
+      mapInfoText.innerHTML = '<b>Côté haut sélectionné</b> — validez l’orientation de votre toiture.';
+    } else if(!enoughCorners){
+      mapInfoText.innerHTML = '<b>Continuez le tracé</b> en cliquant point par point sur la zone utile.';
+    } else {
+      mapInfoText.innerHTML = state.roofStage === 'orientation'
+        ? '<b>Choisissez le côté haut</b> pour calculer l’exposition et placer les panneaux.'
+        : '<b>Vérifiez votre contour</b> puis validez la surface de toiture.';
+    }
+  }
+
+  if(ridgeHelper){
+    if(needsRidgeSelection && !draw.validated){
+      ridgeHelper.style.display = 'flex';
+      ridgeHelper.classList.toggle('is-selected', ridgeSelected);
+      if(ridgeHelperTitle){
+        ridgeHelperTitle.textContent = ridgeSelected ? 'Orientation de toiture définie' : 'Déterminons l\'orientation de votre toiture';
+      }
+      if(ridgeHelperText){
+        ridgeHelperText.textContent = ridgeSelected
+          ? 'L’orientation de la toiture est prise en compte. Les panneaux seront positionnés automatiquement dans le meilleur sens.'
+          : 'Après le tracé, cliquez sur le côté le plus haut pour orienter la toiture et placer automatiquement les panneaux dans la meilleure position.';
+      }
+    } else {
+      ridgeHelper.style.display = 'none';
+      ridgeHelper.classList.remove('is-selected');
+    }
+  }
+
   if(addZoneBtn){
     addZoneBtn.style.display = draw.validated && draw.zones.length > 0 ? '' : 'none';
+  }
+
+  if(drawResultBox){
+    if(state.roofStage === 'surface' && draw.points.length >= 4){
+      drawResultBox.style.display = 'block';
+      if(drawResultLabel) drawResultLabel.textContent = 'Nous estimons que la surface de votre toiture est de :';
+      if(drawResultValue) drawResultValue.textContent = `${rounded} m2`;
+    } else if(state.roofStage === 'orientation' && selectedOrientation){
+      drawResultBox.style.display = 'block';
+      if(drawResultLabel) drawResultLabel.textContent = 'Votre toiture est exposée :';
+      if(drawResultValue) drawResultValue.textContent = selectedOrientation;
+    } else {
+      drawResultBox.style.display = 'none';
+    }
   }
 }
 
@@ -1838,23 +3113,39 @@ function drawPolygon(){
   }
 
   if(draw.zoneType === 'roof' && !draw.validated && draw.points.length >= 3){
+    const canSelectEdge = state.roofStage === 'orientation';
     draw.points.forEach((point, index) => {
       const nextPoint = draw.points[(index + 1) % draw.points.length];
       const isSelected = draw.ridgeEdgeIndex === index;
-      const edge = new google.maps.Polyline({
-        path: [point, nextPoint],
-        strokeColor: isSelected ? '#ff3b30' : '#ffffff',
-        strokeOpacity: isSelected ? 1 : 0.92,
-        strokeWeight: isSelected ? 7 : 5,
-        zIndex: 12,
-        clickable: true,
-        map,
-      });
-      edge.addListener('click', () => {
+      const selectEdge = () => {
+        if(!canSelectEdge) return;
         draw.ridgeEdgeIndex = index;
         drawPolygon();
         updateDrawUI();
+      };
+      const target = new google.maps.Polyline({
+        path: [point, nextPoint],
+        strokeColor: '#000000',
+        strokeOpacity: canSelectEdge ? 0.01 : 0,
+        strokeWeight: canSelectEdge ? 18 : 0,
+        zIndex: 11,
+        clickable: canSelectEdge,
+        map,
       });
+      const edge = new google.maps.Polyline({
+        path: [point, nextPoint],
+        strokeColor: isSelected ? '#ff3b30' : '#52e33f',
+        strokeOpacity: isSelected ? 1 : 0.96,
+        strokeWeight: isSelected ? 7 : 5,
+        zIndex: 12,
+        clickable: canSelectEdge,
+        map,
+      });
+      if(canSelectEdge){
+        edge.addListener('click', selectEdge);
+        target.addListener('click', selectEdge);
+      }
+      ridgeSelectionOverlays.push(target);
       ridgeSelectionOverlays.push(edge);
     });
   }
@@ -1867,10 +3158,10 @@ function addVertexMarker(latlng, idx){
     icon: {
       path: google.maps.SymbolPath.CIRCLE,
       scale: idx === 0 ? 9 : 7,
-      fillColor: '#13a6e8',
+      fillColor: '#ffffff',
       fillOpacity: 1,
-      strokeColor: '#fff',
-      strokeWeight: 2.5,
+      strokeColor: draw.zoneType === 'roof' ? '#52e33f' : '#13a6e8',
+      strokeWeight: draw.zoneType === 'roof' ? 3 : 2.5,
     },
     title: `Point ${idx+1}`,
     clickable: !draw.validated,
@@ -1909,118 +3200,214 @@ function clearDrawing(keepValidated = false){
 
 // ── Popup démo ───────────────────────────────────────────────────
 const demoPopup  = $('demoPopup');
-const demoImg    = $('demoImg');
-const demoSeenSessionKey = 'solarSimulatorDemoSeen';
+const demoSeenSessionPrefix = 'solarSimulatorDemoSeen';
 
-function calibrateDemoSvg(){
-  // Recalcule le viewBox SVG pour coller exactement à l'image affichée.
-  // L'image (1536×1024) est affichée via object-fit:cover dans le conteneur.
-  // Le SVG (inset:0) doit utiliser les mêmes coordonnées image.
-  const svg  = $('demoSvg');
-  const img  = demoImg;
-  const wrap = img.parentElement;
-  if(!svg || !wrap) return;
+function setDemoPolygon(points){
+  if(!Array.isArray(points) || points.length < 4) return;
+  const polygonPoints = points.map(([x, y]) => `${x},${y}`).join(' ');
+  $('dpGhostZone')?.setAttribute('points', polygonPoints);
+  $('dpFill')?.setAttribute('points', polygonPoints);
+  $('dpLine')?.setAttribute('points', `${polygonPoints} ${points[0][0]},${points[0][1]}`);
 
-  const W = wrap.clientWidth  || 720;
-  const H = wrap.clientHeight || 360;
-  const imgW = 1536, imgH = 1024;
+  const shadowPoints = points.map(([x, y]) => `${x + 14},${y + 12}`).join(' ');
+  $('dpShadow')?.setAttribute('points', shadowPoints);
 
-  // object-fit:cover : scale = le plus grand des deux ratios
-  const scale = Math.max(W / imgW, H / imgH);
-  const rendW = imgW * scale, rendH = imgH * scale;
-
-  // Crop (en px image originale) pour centrer
-  const cropX = (rendW - W) / 2 / scale;  // px originaux rognés à gauche
-  const cropY = (rendH - H) / 2 / scale;  // px originaux rognés en haut
-
-  const visW  = W / scale;  // largeur visible en px image
-  const visH  = H / scale;  // hauteur visible en px image
-
-  // viewBox fixed — xMidYMid slice aligne automatiquement avec object-fit:cover
-  // preserveAspectRatio=none → le viewBox remplit exactement le conteneur
+  [$('dp1'), $('dp2'), $('dp3'), $('dp4')].forEach((node, index) => {
+    if(!node || !points[index]) return;
+    node.setAttribute('cx', points[index][0]);
+    node.setAttribute('cy', points[index][1]);
+  });
 }
 
-function openDemoPopup(){
+function setDemoSelectedEdge(points, isVisible = true){
+  const edge = $('dpSelectedEdge');
+  if(!edge) return;
+  if(!Array.isArray(points) || points.length < 2 || !isVisible){
+    edge.style.display = 'none';
+    edge.setAttribute('points', '0,0 0,0');
+    return;
+  }
+  edge.style.display = '';
+  edge.setAttribute('points', points.map(([x, y]) => `${x},${y}`).join(' '));
+}
+
+function setDemoBadge({ text, x = 360, y = 136, width = 180, height = 48 } = {}){
+  const rect = $('dpBadgeRect');
+  const label = $('dpBadgeText');
+  if(rect){
+    rect.setAttribute('x', x - (width / 2));
+    rect.setAttribute('y', y - 30);
+    rect.setAttribute('width', width);
+    rect.setAttribute('height', height);
+  }
+  if(label){
+    label.setAttribute('x', x);
+    label.setAttribute('y', y);
+    label.textContent = text || '';
+  }
+}
+
+function setDemoCaption(line1, line2){
+  const caption1 = $('dpCaptionLine1');
+  const caption2 = $('dpCaptionLine2');
+  if(caption1) caption1.textContent = line1 || '';
+  if(caption2) caption2.textContent = line2 || '';
+}
+
+function setDemoStartText(text){
+  const label = $('demoStartText');
+  if(label) label.textContent = text || 'Fermer le tutoriel';
+}
+
+function setDemoCursorVisibility(isVisible = false){
+  const cursor = $('dpCursorGroup');
+  if(!cursor) return;
+  cursor.style.display = isVisible ? '' : 'none';
+}
+
+function configureRoofTraceDemo(){
+  $('demoRoofDecor').style.display = '';
+  $('demoGardenDecor').style.display = 'none';
+  $('demoTypeBadge').textContent = 'Toiture';
+  $('demoTitle').textContent = 'Comment tracer votre zone de toiture';
+  $('demoIntro').textContent = 'Regardez l\'exemple ci-dessous, puis fermez pour commencer à tracer sur votre toiture.';
+  $('demoStep1Label').textContent = 'Placez 4 points';
+  $('demoStep1Sub').textContent = 'sur les coins du pan';
+  $('demoStep2Label').textContent = 'Fermez le contour';
+  $('demoStep2Sub').textContent = 'la zone se dessine automatiquement';
+  $('demoStep3Label').textContent = 'Validez la surface';
+  $('demoStep3Sub').textContent = 'puis passez à l’orientation';
+  $('demoFootText').textContent = 'Tracez uniquement la surface utile du pan de toiture. Une fois la zone validée, vous pourrez choisir le côté le plus haut.';
+  setDemoStartText('Fermer et commencer');
+
+  const roofPoints = [
+    [182, 222],
+    [380, 276],
+    [334, 408],
+    [138, 354],
+  ];
+  setDemoPolygon(roofPoints);
+  setDemoSelectedEdge(null, false);
+  setDemoBadge({ text: '4 coins à placer', x: 360, y: 144, width: 204, height: 46 });
+  setDemoCaption('Cliquez sur les 4 coins', 'du pan de toiture');
+  setDemoCursorVisibility(true);
+}
+
+function configureOrientationDemo(){
+  $('demoRoofDecor').style.display = '';
+  $('demoGardenDecor').style.display = 'none';
+  $('demoTypeBadge').textContent = 'Orientation';
+  $('demoTitle').textContent = 'Déterminons l\'orientation de votre toiture';
+  $('demoIntro').textContent = 'Cliquez sur le côté le plus haut pour définir l’orientation du toit et positionner les panneaux dans le meilleur sens.';
+  $('demoStep1Label').textContent = 'Surface tracée';
+  $('demoStep1Sub').textContent = 'le contour est déjà validé';
+  $('demoStep2Label').textContent = 'Cliquez sur le côté le plus haut';
+  $('demoStep2Sub').textContent = 'il devient rouge';
+  $('demoStep3Label').textContent = 'Validez l’orientation';
+  $('demoStep3Sub').textContent = 'les panneaux seront placés au mieux';
+  $('demoFootText').textContent = 'Le côté haut permet de déterminer l’orientation de la toiture et d’optimiser automatiquement le sens de pose des panneaux.';
+  setDemoStartText('Fermer le tutoriel');
+
+  const roofPoints = [
+    [182, 222],
+    [380, 276],
+    [334, 408],
+    [138, 354],
+  ];
+  setDemoPolygon(roofPoints);
+  setDemoSelectedEdge([roofPoints[0], roofPoints[1]], true);
+  setDemoBadge({ text: '≈ 35 m²', x: 360, y: 144, width: 170, height: 46 });
+  setDemoCaption('Cliquez sur le côté', 'le plus haut');
+  setDemoCursorVisibility(false);
+}
+
+function configureLocateDemo(){
+  $('demoRoofDecor').style.display = '';
+  $('demoGardenDecor').style.display = 'none';
+  $('demoTypeBadge').textContent = 'Repérage';
+  $('demoTitle').textContent = 'Repérons votre toiture';
+  $('demoIntro').textContent = 'Faites glisser la carte pour placer la punaise rouge sur votre toiture avant de valider.';
+  $('demoStep1Label').textContent = 'Affichez votre maison';
+  $('demoStep1Sub').textContent = 'à l’écran';
+  $('demoStep2Label').textContent = 'Glissez la carte';
+  $('demoStep2Sub').textContent = 'jusqu’à la punaise rouge';
+  $('demoStep3Label').textContent = 'Validez l’emplacement';
+  $('demoStep3Sub').textContent = 'puis passez au tracé';
+  $('demoFootText').textContent = 'La punaise rouge vous aide à placer précisément votre toiture avant de sélectionner sa surface utile.';
+  setDemoStartText('Fermer le tutoriel');
+
+  const locatePoints = [
+    [232, 240],
+    [382, 278],
+    [334, 394],
+    [186, 356],
+  ];
+  setDemoPolygon(locatePoints);
+  setDemoSelectedEdge(null, false);
+  setDemoBadge({ text: 'Repère rouge', x: 360, y: 126, width: 184, height: 46 });
+  setDemoCaption('Glissez votre maison', 'sous la punaise rouge');
+  setDemoCursorVisibility(false);
+}
+
+function configureGardenDemo(){
+  $('demoRoofDecor').style.display = 'none';
+  $('demoGardenDecor').style.display = '';
+  $('demoTypeBadge').textContent = 'Sol / jardin';
+  $('demoTitle').textContent = 'Comment tracer votre zone au sol';
+  $('demoIntro').textContent = 'Délimitez la surface utile au sol en posant simplement vos points tout autour de la zone.';
+  $('demoStep1Label').textContent = 'Placez vos points';
+  $('demoStep1Sub').textContent = 'sur le terrain à équiper';
+  $('demoStep2Label').textContent = 'Fermez le contour';
+  $('demoStep2Sub').textContent = 'point par point';
+  $('demoStep3Label').textContent = 'Validez la zone';
+  $('demoStep3Sub').textContent = 'surface prête pour l’estimation';
+  $('demoFootText').textContent = 'Gardez un contour simple et propre. Vous pouvez effacer et recommencer à tout moment.';
+  setDemoStartText('Fermer et commencer');
+
+  const gardenPoints = [
+    [168, 182],
+    [516, 182],
+    [548, 362],
+    [196, 392],
+  ];
+  setDemoPolygon(gardenPoints);
+  setDemoSelectedEdge(null, false);
+  setDemoBadge({ text: '≈ 48 m²', x: 360, y: 122, width: 170, height: 46 });
+  setDemoCaption('Tracez la zone utile', 'sur le sol ou le jardin');
+  setDemoCursorVisibility(false);
+}
+
+function openDemoPopup(mode = 'auto', options = {}){
   if(!demoPopup) return;
+  let resolvedMode = mode;
+  if(mode === 'auto'){
+    if(state.roofStage === 'locate') resolvedMode = 'locate';
+    else if(draw.zoneType === 'garden') resolvedMode = 'garden';
+    else if(state.roofStage === 'orientation') resolvedMode = 'orientation';
+    else resolvedMode = 'surface';
+  }
+  const force = !!options.force;
+  const seenKey = `${demoSeenSessionPrefix}:${resolvedMode}`;
   try {
-    if(window.sessionStorage.getItem(demoSeenSessionKey) === '1') return;
-    window.sessionStorage.setItem(demoSeenSessionKey, '1');
+    if(!force && window.sessionStorage.getItem(seenKey) === '1') return;
+    window.sessionStorage.setItem(seenKey, '1');
   } catch(_error) {}
 
-  const isGarden = draw.zoneType === 'garden';
-  demoImg.src = isGarden ? '/slide/demo-jardin-aerien.jpg' : '/slide/demo-toiture-crop.jpg';
+  if(resolvedMode === 'locate') configureLocateDemo();
+  else if(resolvedMode === 'garden') configureGardenDemo();
+  else if(resolvedMode === 'orientation') configureOrientationDemo();
+  else configureRoofTraceDemo();
 
-  $('demoTypeBadge').textContent = isGarden ? '🌿 Sol / Jardin' : '🏠 Toiture';
-  $('demoTitle').textContent = isGarden
-    ? 'Comment tracer votre zone au sol / jardin'
-    : 'Comment tracer votre zone de toiture';
-
-  // Adapter les coords en espace image original selon le type
-  const svg = $('demoSvg');
-  if(isGarden){
-    // Jardin : image 1024×820 (jardin-aerien) — grand rectangle sur la pelouse centrale
-    // points en espace image 800×500
-    svg.setAttribute('viewBox','0 0 800 500');
-    const pts = '150,100 150,400 550,400 550,100';
-    $('dpFill').setAttribute('points', pts);
-    $('dpLine').setAttribute('points', pts + ' ' + pts.split(' ')[0]);
-    $('dp1').setAttribute('cx','150'); $('dp1').setAttribute('cy','100');
-    $('dp2').setAttribute('cx','150'); $('dp2').setAttribute('cy','400');
-    $('dp3').setAttribute('cx','550'); $('dp3').setAttribute('cy','400');
-    $('dp4').setAttribute('cx','550'); $('dp4').setAttribute('cy','100');
-    // Labels
-    const circles = $('dpLabels').querySelectorAll('circle');
-    const texts   = $('dpLabels').querySelectorAll('text');
-    const lc = [[150,100],[150,400],[550,400],[550,100]];
-    lc.forEach(([x,y],i) => {
-      if(circles[i]){ circles[i].setAttribute('cx',x); circles[i].setAttribute('cy',y); }
-      if(texts[i])  { texts[i].setAttribute('x',x);   texts[i].setAttribute('y',y+9); }
-    });
-    // Badge
-    const bg = $('dpBadge')?.querySelector('rect');
-    const bt = $('dpBadge')?.querySelector('text');
-    if(bg){ bg.setAttribute('x','270'); bg.setAttribute('y','228'); }
-    if(bt){ bt.setAttribute('x','380'); bt.setAttribute('y','268'); bt.textContent='≈ 120 m²'; }
-  } else {
-    // Toiture : image aerial.png 1536×1024
-    // Pan W (gauche) : P1=haut-gauche, P2=max-gauche, P3=bas-gauche, P4=intérieur
-    // Coords en espace image original (1536×1024)
-    const pts = '241,92 518,92 518,378 241,378';  // P1=NW P3=SW P4=centre
-    $('dpFill').setAttribute('points', pts);
-    $('dpLine').setAttribute('points', pts + ' ' + pts.split(' ')[0]);
-    $('dp1').setAttribute('cx','241'); $('dp1').setAttribute('cy','92');
-    $('dp2').setAttribute('cx','518'); $('dp2').setAttribute('cy','92'); $('dp2').setAttribute('r','18'); $('dp2').style.display='';
-    $('dp3').setAttribute('cx','518'); $('dp3').setAttribute('cy','378');
-    $('dp4').setAttribute('cx','241'); $('dp4').setAttribute('cy','378');
-    const circles = $('dpLabels').querySelectorAll('circle');
-    const texts   = $('dpLabels').querySelectorAll('text');
-    const lc = [[241,92],[518,92],[518,378],[241,378]];
-    lc.forEach(([x,y],i) => {
-      if(circles[i]){ circles[i].setAttribute('cx',x); circles[i].setAttribute('cy',y); }
-      if(texts[i])  { texts[i].setAttribute('x',x);   texts[i].setAttribute('y',y+9); }
-    });
-    const bg = $('dpBadge')?.querySelector('rect');
-    const bt = $('dpBadge')?.querySelector('text');
-    if(bg){ bg.setAttribute('x','310'); bg.setAttribute('y','210'); }
-    if(bt){ bt.setAttribute('x','410'); bt.setAttribute('y','241'); bt.textContent='≈ 35 m²'; }
-  }
-
+  window.clearTimeout(closeDemoPopup._timer);
+  demoPopup.classList.remove('closing');
   demoPopup.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
+  updateBodyScrollLock();
 
-  // Calibrer le viewBox après que l'image soit chargée et affichée
-  const doCalibrate = () => {
-    if(!isGarden) calibrateDemoSvg(); // pour la toiture seulement (coords en espace image)
-    // Lancer l'animation CSS infinie
-    const svgEl = $('demoSvg');
-    if(svgEl){ svgEl.classList.remove('demo-anim-running'); void svgEl.offsetWidth; svgEl.classList.add('demo-anim-running'); }
-  };
-
-  if(demoImg.complete && demoImg.naturalWidth > 0) {
-    setTimeout(doCalibrate, 50);
-  } else {
-    demoImg.onload = () => setTimeout(doCalibrate, 50);
-    setTimeout(doCalibrate, 400); // fallback
+  const svgEl = $('demoSvg');
+  if(svgEl){
+    svgEl.classList.remove('demo-anim-running');
+    void svgEl.offsetWidth;
+    svgEl.classList.add('demo-anim-running');
   }
 }
 
@@ -2028,19 +3415,21 @@ function closeDemoPopup(){
   const svgEl = $("demoSvg");
   if(svgEl) svgEl.classList.remove("demo-anim-running");
   demoPopup.classList.add('closing');
-  setTimeout(() => {
+  window.clearTimeout(closeDemoPopup._timer);
+  closeDemoPopup._timer = setTimeout(() => {
     demoPopup.style.display = 'none';
     demoPopup.classList.remove('closing');
-    document.body.style.overflow = '';
+    updateBodyScrollLock();
   }, 240);
 }
 
+$('locateTutorialClose')?.addEventListener('click', closeLocateTutorial);
 $('demoCloseBtn')?.addEventListener('click', closeDemoPopup);
 $('demoStartBtn')?.addEventListener('click', closeDemoPopup);
 demoPopup?.addEventListener('click', e => { if(e.target === demoPopup) closeDemoPopup(); });
 
 function startDrawMode(options = {}){
-  const { preserveZones = false, skipDemoPopup = false } = options;
+  const { preserveZones = false, skipDemoPopup = true, demoMode = 'auto', forceDemo = false } = options;
   draw.active    = true;
   draw.validated = false;
   clearDrawing(preserveZones);
@@ -2054,6 +3443,10 @@ function startDrawMode(options = {}){
   if(draw.clickListener) google.maps.event.removeListener(draw.clickListener);
   draw.clickListener = map.addListener('click', e => {
     if(draw.validated) return;
+    if(state.roofStage === 'surface' && draw.points.length >= 4){
+      showToast('Le contour de toiture se fait en 4 points sur ce parcours.', true);
+      return;
+    }
     draw.points.push(e.latLng);
     addVertexMarker(e.latLng, draw.points.length - 1);
     drawPolygon();
@@ -2062,7 +3455,7 @@ function startDrawMode(options = {}){
 
   updateDrawUI();
   // Ouvrir le popup démo
-  if(!skipDemoPopup) setTimeout(openDemoPopup, 500);
+  if(!skipDemoPopup) setTimeout(() => openDemoPopup(demoMode, { force: forceDemo }), 500);
 }
 
 function stopDrawMode(){
@@ -2188,49 +3581,64 @@ function resetZoneSelection(startFresh = true){
   clearPanelLayout();
   hidePanelSlider();
   clearDrawing();
+  state.results = state.baseResults;
+  state.drawResults = null;
+  state.selectedPitch = 30;
+  setPitchSelection(30);
   $('zoneValidatedRow').style.display = 'none';
   $('validateZoneBtn').style.display  = '';
   $('clearZoneBtn').style.display     = '';
   if(addZoneBtn) addZoneBtn.style.display = 'none';
-  setStep(2);
-  mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
-  if(startFresh) startDrawMode();
+  if(drawResultBox) drawResultBox.style.display = 'none';
+  setRoofStage('surface');
+  if(mapInfoText) mapInfoText.innerHTML = `<b>Cliquez sur les 4 coins</b> du pan de toiture à équiper.`;
+  if(startFresh) startDrawMode({ skipDemoPopup: false, demoMode: draw.zoneType === 'garden' ? 'garden' : 'surface', forceDemo: true });
 }
 
-function validateZone(){
-  if(draw.points.length < 3) return;
+function validatePlacementStage(){
+  if(!map) return;
+  const center = map.getCenter();
+  if(!center) return;
+  state.lat = center.lat();
+  state.lng = center.lng();
+  closeLocateTutorial();
+  clearCurrentDrawing();
+  setRoofStage('surface');
+  startDrawMode({ skipDemoPopup: false, demoMode: draw.zoneType === 'garden' ? 'garden' : 'surface', forceDemo: true });
+  showToast('Emplacement validé — sélectionnez maintenant la surface utile.');
+}
+
+function validateSurfaceStage(){
+  if(draw.points.length < 4){
+    showToast('Sélectionnez les 4 coins du pan de toiture.', true);
+    return;
+  }
+  stopDrawMode();
+  draw.validated = false;
+  draw.ridgeEdgeIndex = null;
+  drawPolygon();
+  setRoofStage('orientation');
+  if(drawResultBox) drawResultBox.style.display = 'none';
+  updateDrawUI();
+  setTimeout(() => openDemoPopup('orientation', { force: true }), 250);
+  showToast('Surface validée — choisissez maintenant le côté le plus haut.');
+}
+
+function validateOrientationStage(){
+  if(!Number.isInteger(draw.ridgeEdgeIndex)){
+    showToast('Cliquez d’abord sur le côté le plus haut de la toiture.', true);
+    return;
+  }
   const zonePoints = [...draw.points];
   const ridgeEdgeIndex = draw.ridgeEdgeIndex;
-  draw.validated = true;
-  stopDrawMode();
-  drawPolygon();
-  const zonePolygon = draw.polygon;
-  const zoneMarkers = [...draw.markers];
-
-  if(zonePolygon){
-    zonePolygon.setOptions({
-      strokeColor:'#13a6e8',
-      strokeOpacity: 0.9,
-      strokeWeight: 2,
-      fillOpacity: 0,
-    });
-  }
-  draw.zones.push({
-    points: zonePoints,
-    polygon: zonePolygon,
-    markers: zoneMarkers,
-    ridgeEdgeIndex,
-    zoneType: draw.zoneType,
-  });
-  draw.polygon = null;
-  draw.markers = [];
-  draw.points = [];
-  draw.ridgeEdgeIndex = null;
-
   const base = state.baseResults || state.results;
   const panelHeightMeters = base?.panelHeightMeters || 1.722;
   const panelWidthMeters  = base?.panelWidthMeters  || 1.134;
-  const combinedLayout = buildCombinedPanelLayout(getAllZonePoints(), panelHeightMeters, panelWidthMeters);
+  const combinedLayout = buildCombinedPanelLayout([{
+    points: zonePoints,
+    ridgeEdgeIndex,
+    zoneType: draw.zoneType,
+  }], panelHeightMeters, panelWidthMeters);
   const solarApiMax = base?.maxPanels || 0;
   const maxPanels = combinedLayout.panels.length;
   const selectableMaxPanels = maxPanels;
@@ -2251,24 +3659,33 @@ function validateZone(){
     solarApiSuggestedPanels: solarApiMax,
   };
 
+  draw.validated = true;
+  clearRidgeSelection();
+  drawPolygon();
+  setPitchSelection(getAutoRoofSettings().pitchBucket || 30);
   applyValidatedLayout(initialPanelCount);
   preferredInitialPanelCount = 0;
   setupPanelSlider();
 
-  // UI updates
-  $('zoneValidatedRow').style.display = 'flex';
-  $('validateZoneBtn').style.display  = 'none';
-  $('clearZoneBtn').style.display     = 'none';
-  if(addZoneBtn) addZoneBtn.style.display = '';
-
-  // Afficher config toiture
-  setStep(3);
+  if(drawResultValue) drawResultValue.textContent = state.panelLayout?.orientationLabel || 'Sud';
+  if(drawResultBox) drawResultBox.style.display = 'block';
+  setRoofStage('inclination');
   $('cardRoof').scrollIntoView({behavior:'smooth', block:'nearest'});
-  showToast(
-    initialPanelCount > 0
-      ? `${draw.zones.length} zone${draw.zones.length > 1 ? 's' : ''} validée${draw.zones.length > 1 ? 's' : ''} — ${Math.round(combinedLayout.totalAreaM2)} m² · ${draw.zoneType === 'roof' ? formatRoofKitLabel(initialPanelCount) : formatPanelCountLabel(initialPanelCount)} ✓`
-      : `${draw.zones.length} zone${draw.zones.length > 1 ? 's' : ''} validée${draw.zones.length > 1 ? 's' : ''} — ${Math.round(combinedLayout.totalAreaM2)} m² · zone trop petite pour un panneau`
-  );
+  showToast('Orientation validée — choisissez maintenant l’inclinaison.');
+}
+
+function validateZone(){
+  if(state.roofStage === 'locate'){
+    validatePlacementStage();
+    return;
+  }
+  if(state.roofStage === 'surface'){
+    validateSurfaceStage();
+    return;
+  }
+  if(state.roofStage === 'orientation'){
+    validateOrientationStage();
+  }
 }
 
 // ── Zone type toggle ──────────────────────────────────────────────
@@ -2277,7 +3694,11 @@ function validateZone(){
     [$('zoneBtnRoof'), $('zoneBtnGarden')].forEach(b => b?.classList.remove('active'));
     btn.classList.add('active');
     draw.zoneType = btn.dataset.zone;
+    if(draw.zoneType !== 'roof'){
+      draw.ridgeEdgeIndex = null;
+    }
     $('drawModeBadge').textContent = draw.zoneType === 'garden' ? 'SOL/JARDIN' : 'TOITURE';
+    if(draw.points.length >= 2) drawPolygon();
     updateDrawUI();
     // Rouvrir le popup démo si aucun point tracé
     if(draw.points.length === 0 && draw.active && typeof openDemoPopup === 'function') openDemoPopup();
@@ -2296,14 +3717,18 @@ panelQuickPicks?.querySelectorAll('.panel-quick-btn').forEach(btn => {
   });
 });
 $('clearZoneBtn')?.addEventListener('click', () => {
+  if(state.roofStage === 'locate'){
+    changeAddrBtn?.click();
+    return;
+  }
   resetZoneSelection(true);
 });
 $('editZoneBtn')?.addEventListener('click', () => {
   resetZoneSelection(true);
 });
 $('addZoneBtn')?.addEventListener('click', () => {
-  setStep(2);
-  startDrawMode({ preserveZones: true });
+  setRoofStage('surface');
+  startDrawMode({ preserveZones: true, skipDemoPopup: true });
 });
 $('undoPointBtn')?.addEventListener('click', () => {
   if(!draw.points.length) return;
@@ -2315,6 +3740,22 @@ $('undoPointBtn')?.addEventListener('click', () => {
 });
 $('clearDrawBtn')?.addEventListener('click', () => {
   resetZoneSelection(true);
+});
+roofBackBtn?.addEventListener('click', event => {
+  event.preventDefault();
+  draw.validated = false;
+  clearPanelLayout();
+  setRoofStage('orientation');
+  drawPolygon();
+  updateDrawUI();
+});
+pitchGrid?.querySelectorAll('.pitch-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    setPitchSelection(Number(btn.dataset.pitch) || 30);
+    if(state.panelLayout){
+      applyValidatedLayout(state.panelLayout.activeCount ?? state.results?.panelCount ?? 0);
+    }
+  });
 });
 
 // ── Autocomplétion custom via Nominatim (backend) ────────────────
@@ -2341,30 +3782,38 @@ function openAddress(item, options = {}){
   addrPillText.textContent = item.label;
   addrPill.style.display   = 'flex';
   addrSearchWrap.style.display = 'none';
+  if(mapLoading) mapLoading.classList.add('hidden');
   if(map){
     map.setMapTypeId('satellite');
+    syncLayerSwitch('satellite');
     map.setTilt(0);
     map.setCenter({lat: item.lat, lng: item.lng});
 
-    // Zoom maximum : on demande 25 (Google cap automatiquement au max dispo pour la zone)
-    // On attend que les tuiles soient chargées pour appliquer le zoom
     map.setZoom(19);
-    // MaxZoom - 1 : un cran en arrière du zoom maximum disponible
     const _mzs = new google.maps.MaxZoomService();
     _mzs.getMaxZoomAtLatLng({lat: item.lat, lng: item.lng}, function(r){
-      const z = (r.status === google.maps.MaxZoomStatus.OK ? r.zoom : 21);  // zoom max dispo
-      map.setZoom(Math.max(18, z));
+      const maxZoom = (r.status === google.maps.MaxZoomStatus.OK ? r.zoom : 20);
+      const safeZoom = Math.max(18, Math.min(20, maxZoom - 1));
+      map.setZoom(safeZoom);
       map.setTilt(0);
+      scheduleSatelliteRecovery(true);
     });
 
     if(marker){
       marker.setPosition({lat: item.lat, lng: item.lng});
-      marker.setVisible(true);
-      marker.setOpacity(1);
+      marker.setVisible(false);
+      marker.setOpacity(0);
       marker.setZIndex(6);
     }
+    scheduleSatelliteRecovery(true);
   }
-  fetchSolarData(options.fetchOptions || {});
+  beginLocateStage({ forceDemo: true });
+  fetchSolarData({
+    background: true,
+    timeoutMs: 8000,
+    skipLocateStage: true,
+    ...(options.fetchOptions || {}),
+  });
 }
 
 function renderAutocomplete(items){
@@ -2441,6 +3890,7 @@ function initMap(){
     zoom: 5,
     mapTypeId: 'satellite',
     tilt: 0,
+    backgroundColor: '#eef4f9',
     disableDefaultUI: true,
     zoomControl: true,
     zoomControlOptions: {position: google.maps.ControlPosition.RIGHT_CENTER},
@@ -2468,21 +3918,23 @@ function initMap(){
   });
 
   map.addListener('click', e => {
-    if(draw.active || !draw.validated || !draw.zones.length) return;
-    setStep(2);
-    startDrawMode({ preserveZones: true, skipDemoPopup: true });
-    draw.points.push(e.latLng);
-    addVertexMarker(e.latLng, draw.points.length - 1);
-    drawPolygon();
-    updateDrawUI();
+    if(!draw.active) return;
   });
 
   // Layer switch
   const lsBtns = document.querySelectorAll('.layer-switch button');
   lsBtns.forEach(b => b.addEventListener('click', () => {
     map.setMapTypeId(b.dataset.type);
-    lsBtns.forEach(x => x.classList.toggle('active', x === b));
+    syncLayerSwitch(b.dataset.type);
+    if(b.dataset.type === 'satellite') scheduleSatelliteRecovery(true);
   }));
+  syncLayerSwitch('satellite');
+
+  map.addListener('tilesloaded', () => {
+    if(state.roofStage === 'locate' && map.getMapTypeId() === 'satellite'){
+      scheduleSatelliteRecovery(false);
+    }
+  });
 
   // Input listeners avec autocomplétion
   addressInput.addEventListener('input', () => {
@@ -2528,9 +3980,6 @@ function initMap(){
       preferredInitialPanelCount = Number(heroSelection?.kit || initialSolarKitKwc || 0) > 0
         ? panelCountFromKwc(Number(heroSelection?.kit || initialSolarKitKwc || 0))
         : preferredInitialPanelCount;
-      setStep(2);
-      mapInfoText.innerHTML = `<b>Cliquez sur votre toiture</b> pour délimiter la zone d'installation.`;
-      if(typeof startDrawMode === 'function') startDrawMode();
       openAddress(
         { lat: bootLat, lng: bootLng, label: bootLabel || bootAddress },
         { fetchOptions: { background: true, timeoutMs: 8000 } }
@@ -2565,12 +4014,16 @@ changeAddrBtn.addEventListener('click', () => {
   state.drawResults = null;
   state.lat = null;
   state.lng = null;
-  setStep(1);
+  setJourneyStep(1);
+  setRoofStage('address');
 });
 
 // ── Step 4 page ───────────────────────────────────────────────────
 quoteBtn.addEventListener('click', () => {
-  if(!state.results){ showToast('Veuillez d\'abord analyser votre adresse', true); return; }
+  if(!state.results || state.roofStage !== 'inclination'){
+    showToast('Validez d’abord l’orientation et l’inclinaison de votre toiture.', true);
+    return;
+  }
 
   const payload = {
     address: state.address || '',
@@ -2584,6 +4037,8 @@ quoteBtn.addEventListener('click', () => {
     budgetMin: state.results.budgetMin || 0,
     budgetMax: state.results.budgetMax || 0,
     surfaceM2: state.results.usableAreaM2 || state.results.areaM2 || 0,
+    orientation: state.panelLayout?.orientationLabel || getAutoRoofSettings().orientation || 'Sud',
+    inclination: state.selectedPitch || 30,
     snapshotPayload: buildSnapshotPayload(),
     selectedAt: new Date().toISOString(),
   };
@@ -2701,6 +4156,9 @@ function showMapError(msg){
 dbg('INFO', 'Page chargée — démarrage');
 dbg('INFO', 'URL de la page', window.location.href);
 dbg('INFO', 'User-Agent', navigator.userAgent.slice(0,80));
+setJourneyStep(1);
+setPitchSelection(30);
+setRoofStage('address');
 loadMaps();
 
 })();
