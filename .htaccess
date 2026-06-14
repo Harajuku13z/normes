@@ -10,6 +10,11 @@ RewriteCond %{REQUEST_URI} !^/public/
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)/+$ /$1 [R=301,L]
 
+# 1.5 Serve the static solar simulator directly from the project root
+#     so the public URL stays /simulateur-photovoltaique without exposing /public/.
+RewriteCond %{REQUEST_URI} ^/(simulateur-photovoltaique|simulateur-photovoltaique-assets)(/.*)?$ [NC]
+RewriteRule ^ - [L]
+
 # 2. Internal rewrite to public/ subfolder (no trailing slash at this point)
 RewriteCond %{REQUEST_URI} !^/public/
 RewriteRule ^(.*)$ public/$1 [L,QSA]
