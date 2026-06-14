@@ -950,15 +950,15 @@
 
     return `
       <section class="result-adjust-card">
-        <div class="result-adjust-row">
-          <div class="result-config-head">
-            <div>
-              <div class="result-kicker">Ajustement instantané</div>
-              <h2 class="result-config-title">Ajoutez, retirez ou choisissez un kit prêt à poser</h2>
-            </div>
-            <div class="result-status-pill">${selectedKit ? `${selectedKit.key} kWc` : 'Sur mesure'}</div>
+        <div class="result-config-head">
+          <div>
+            <div class="result-kicker">Ajustement instantané</div>
+            <h2 class="result-config-title">Ajoutez, retirez ou choisissez un kit prêt à poser</h2>
           </div>
+          <div class="result-status-pill">${selectedKit ? `${selectedKit.key} kWc` : 'Sur mesure'}</div>
+        </div>
 
+        <div class="result-adjust-body">
           <div class="counter result-counter">
             <button type="button" data-act="panel-minus" ${r.panels <= 1 ? 'disabled' : ''} aria-label="Retirer un panneau">−</button>
             <div class="disp">
@@ -989,6 +989,7 @@
             }).join('')}
           </div>
         </div>
+
         <div class="result-adjust-foot">
           <p class="result-counter-note">${escapeHtml(counterNote)}</p>
           <p class="result-kit-note">Les chiffres ci-dessous se mettent à jour automatiquement selon la configuration choisie.</p>
@@ -1071,7 +1072,6 @@
       map = new google.maps.Map(container, baseMapOptions(S.location));
       RUNTIME.resultMapInstance = map;
     } else {
-      map.setOptions(baseMapOptions(S.location));
       map.setMapTypeId(S.mapType);
     }
     RUNTIME.activeMap = map;
