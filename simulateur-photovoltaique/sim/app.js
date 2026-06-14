@@ -382,18 +382,82 @@
       y: dot2D(point, vAxis),
     }));
 
-    const portraitSlots = computePanelSlotsForAxis(projectedPolygon, uAxis, vAxis, originLatLng, PANEL_DIMENSIONS.portrait);
     const landscapeSlots = computePanelSlotsForAxis(projectedPolygon, uAxis, vAxis, originLatLng, PANEL_DIMENSIONS.landscape);
-    const slots = landscapeSlots.length > 0 ? landscapeSlots : portraitSlots;
+    const portraitSlots = computePanelSlotsForAxis(projectedPolygon, uAxis, vAxis, originLatLng, PANEL_DIMENSIONS.portrait);
+    const useLandscape = landscapeSlots.length > 0;
+    const slots = useLandscape ? landscapeSlots : portraitSlots;
     const layout = {
       slots,
       capacity: Math.max(1, slots.length || fallbackCapacity),
-      orientation: landscapeSlots.length > 0 ? 'landscape' : 'portrait',
+      orientation: useLandscape ? 'landscape' : 'portrait',
+      projectedPolygon,
+      panelSize: useLandscape ? PANEL_DIMENSIONS.landscape : PANEL_DIMENSIONS.portrait,
+      uAxis,
+      vAxis,
+      origin: originLatLng,
     };
 
     RUNTIME.panelLayoutCacheKey = cacheKey;
     RUNTIME.panelLayoutCache = layout;
     return layout;
+  }
+
+  function buildCenteredDisplay(panelLayout, N) {
+    const { projectedPolygon, uAxis, vAxis, origin, panelSize, orientation } = panelLayout;
+    if (!projectedPolygon || N <= 0) return [];
+
+    const gap = 0.12;
+    const centroid = polygonCentroid2D(projectedPolygon);
+
+    // Usable width along u axis (bounding box minus 0.5m each side)
+    const minX = Math.min(...projectedPolygon.map((p) => p.x));
+    const maxX = Math.max(...projectedPolygon.map((p) => p.x));
+    const minY = Math.min(...projectedPolygon.map((p) => p.y));
+    const maxY = Math.max(...projectedPolygon.map((p) => p.y));
+    const safeW = Math.max(0, maxX - minX - 1.0);
+    const roofAspect = safeW / Math.max(0.1, maxY - minY - 1.0);
+
+    // Optimal number of columns: match roof aspect ratio, capped by what fits
+    const maxCols = Math.max(1, Math.floor((safeW + gap) / (panelSize.width + gap)));
+    const idealCols = Math.max(1, Math.round(Math.sqrt(N * roofAspect)));
+    const cols = Math.min(maxCols, idealCols, N);
+    const rows = Math.ceil(N / cols);
+
+    const totalW = cols * panelSize.width + (cols - 1) * gap;
+    const totalH = rows * panelSize.height + (rows - 1) * gap;
+
+    // Top of the panel block, centered on centroid
+    const blockTop = centroid.y + totalH / 2;
+
+    const placed = [];
+
+    for (let r = 0; r < rows && placed.length < N; r++) {
+      const remaining = N - placed.length;
+      const panelsInRow = Math.min(cols, remaining);
+      const rowW = panelsInRow * panelSize.width + (panelsInRow - 1) * gap;
+      const rowStartX = centroid.x - rowW / 2;
+      const y = blockTop - (r + 1) * panelSize.height - r * gap;
+
+      for (let c = 0; c < panelsInRow && placed.length < N; c++) {
+        const x = rowStartX + c * (panelSize.width + gap);
+        const corners = [
+          { x, y },
+          { x: x + panelSize.width, y },
+          { x: x + panelSize.width, y: y + panelSize.height },
+          { x, y: y + panelSize.height },
+        ];
+        if (!corners.every((corner) => pointInPolygon2D(corner, projectedPolygon))) continue;
+        placed.push({
+          orientation,
+          corners: corners.map((corner) => localMetersToLatLng(origin, {
+            x: (uAxis.x * corner.x) + (vAxis.x * corner.y),
+            y: (uAxis.y * corner.x) + (vAxis.y * corner.y),
+          })),
+        });
+      }
+    }
+
+    return placed;
   }
 
   function recommendedPanelCount() {
@@ -1103,7 +1167,7 @@
 
     const lerp = (a, b, t) => ({ lat: a.lat + (b.lat - a.lat) * t, lng: a.lng + (b.lng - a.lng) * t });
 
-    panelLayout.slots.slice(0, result.panels).forEach((slot) => {
+    buildCenteredDisplay(panelLayout, result.panels).forEach((slot) => {
       // Main panel body — dark navy monocrystalline with metallic frame
       const panel = new google.maps.Polygon({
         map,
