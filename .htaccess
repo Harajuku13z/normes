@@ -3,6 +3,9 @@ RewriteEngine On
 # Redirect the legacy solar URL to the kept photovoltaic simulator URL.
 RewriteRule ^simulateur-solaire/?$ /simulateur-photovoltaique [R=301,L]
 
+# Redirect /public/simulateur-photovoltaique/... back to the clean URL.
+RewriteRule ^public/simulateur-photovoltaique(/.*)?$ /simulateur-photovoltaique$1 [R=301,L]
+
 # 1. Strip trailing slash FIRST (visible 301) before rewriting to public/
 #    Without this, public/.htaccess fires its own trailing-slash redirect AFTER
 #    the internal rewrite, which exposes /public/ in the browser URL.
