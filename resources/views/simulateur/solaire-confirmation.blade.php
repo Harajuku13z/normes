@@ -3,383 +3,472 @@
     $h = $home ?? [];
     $logo = HomeView::url((string) data_get($h, 'header.logo', '/logo.png'));
     $siteName = (string) data_get($h, 'meta.site_name', 'Normes Renovation');
-    $defaultProjectType = old('type_projet', 'autoconsommation');
+    $backUrl = route('simulateur.photovoltaique');
+    $successUrl = route('simulateur.photovoltaique.success');
 @endphp
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Confirmation du projet solaire - {{ $siteName }}</title>
-<meta name="csrf-token" content="{{ csrf_token() }}">
+<title>Votre consommation - {{ $siteName }}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --ink:#0f2231;
-  --ink-2:#1a3346;
-  --slate:#5a6b78;
-  --muted:#8a96a0;
-  --line:#e6ebef;
-  --line-2:#eef2f5;
-  --bg:#f4f6f8;
+  --ink-soft:#5a6b78;
+  --muted:#8ca2b7;
+  --line:#dbe6f0;
   --card:#ffffff;
-  --accent:#13a6e8;
-  --accent-deep:#0f8fc9;
-  --accent-soft:#e7f6fd;
-  --yellow:#f5c400;
-  --danger:#e23a3a;
-  --danger-soft:#fdecec;
-  --shadow:0 1px 2px rgba(15,34,49,.04),0 8px 24px rgba(15,34,49,.06);
-  --radius:16px;
+  --bg:#f4f6f8;
+  --blue:#13a6e8;
+  --blue-soft:#e7f6fd;
+  --navy:#0f2231;
+  --shadow:0 4px 12px rgba(15,34,49,.06),0 24px 48px rgba(15,34,49,.10);
 }
 *{box-sizing:border-box}
 html,body{
   margin:0;
   min-height:100vh;
-  background:
-    radial-gradient(1200px 600px at 80% -10%,#eaf4fb 0%,transparent 60%),
-    radial-gradient(900px 500px at -10% 110%,#eef4f8 0%,transparent 60%),
-    var(--bg);
-  color:var(--ink);
   font-family:'Inter',system-ui,-apple-system,Segoe UI,sans-serif;
-  -webkit-font-smoothing:antialiased;
+  color:var(--ink);
+  background:
+    linear-gradient(180deg,var(--blue) 0 240px,#fff 240px 100%),
+    var(--bg);
 }
-.page{max-width:1240px;margin:0 auto;padding:20px 24px 40px}
-.topbar{
-  background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 22px;
-  display:flex;align-items:center;gap:20px;box-shadow:var(--shadow);
+body{padding:24px 18px 40px}
+.shell{max-width:1240px;margin:0 auto}
+.header{
+  display:flex;align-items:center;justify-content:center;gap:24px;
+  margin-bottom:28px;color:#fff;flex-wrap:wrap;
+  padding-top:4px;
 }
-.brand img{height:44px;width:auto;display:block}
-.stepper{flex:1;display:flex;align-items:center;justify-content:center;gap:10px}
-.step{display:flex;align-items:center;gap:9px;color:var(--muted);font-weight:500;font-size:14px}
+.brand{display:none}
+.brand img{height:42px;width:auto;display:block}
+.steps{display:flex;align-items:center;justify-content:center;gap:56px;flex-wrap:wrap}
+.step{display:flex;flex-direction:column;align-items:center;gap:10px;color:rgba(255,255,255,.6)}
 .step .num{
-  width:28px;height:28px;border-radius:50%;background:#eef2f5;color:#8a96a0;
-  display:grid;place-items:center;font-weight:700;font-size:12px;flex-shrink:0;
+  width:68px;height:68px;border-radius:50%;border:2px solid rgba(255,255,255,.45);
+  display:grid;place-items:center;font-size:28px;font-weight:700;
 }
-.step.done .num{background:#1f8a5b;color:#fff}
-.step.done{color:var(--ink-2)}
-.step.active .num{background:var(--ink);color:#fff}
-.step.active{color:var(--ink);font-weight:700}
-.step-sep{width:40px;height:2px;background:linear-gradient(90deg,#dfe5ea,#eef2f5);border-radius:999px}
-.step-sep.done{background:#1f8a5b;opacity:.45}
-.help-link{
-  border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 14px;
-  color:var(--ink);font-size:13px;font-weight:700;text-decoration:none;
-}
-.shell{display:grid;grid-template-columns:1.05fr .95fr;gap:20px;margin-top:20px}
+.step.active{color:#fff}
+.step.active .num{background:#fff;color:#111;border-color:#fff}
 .card{
-  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-  padding:24px;box-shadow:var(--shadow);
+  background:var(--card);border-radius:28px;padding:42px 44px 34px;
+  box-shadow:var(--shadow);
+  border:1px solid #e6ebef;
 }
 .eyebrow{
-  display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;
-  background:var(--accent-soft);color:var(--accent-deep);font-size:11px;font-weight:800;
+  display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;
+  background:var(--blue-soft);color:var(--blue);font-size:11px;font-weight:800;
   letter-spacing:.08em;text-transform:uppercase;
 }
-h1{margin:14px 0 8px;font-size:34px;line-height:1.05;letter-spacing:-.03em}
-.lede{margin:0 0 22px;color:var(--slate);font-size:15px;line-height:1.6}
-.summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.summary-card{
-  border:1px solid var(--line);border-radius:14px;padding:16px;background:#fbfdff;
+.eyebrow{display:none}
+h1{
+  margin:18px 0 12px;
+  font-family:'Anton','Arial Narrow',sans-serif;
+  font-size:clamp(38px,5vw,62px);
+  line-height:1.02;
+  letter-spacing:-.02em;
+  color:var(--blue);
+  text-align:center;
+  text-transform:uppercase;
 }
-.summary-label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.summary-value{font-size:28px;font-weight:800;letter-spacing:-.03em}
-.summary-sub{font-size:13px;color:var(--slate);margin-top:6px}
+.lede{
+  margin:0 auto 18px;
+  max-width:760px;
+  text-align:center;
+  font-size:16px;
+  line-height:1.6;
+  color:var(--ink-soft);
+}
+.address-pill{
+  max-width:720px;
+  margin:0 auto 26px;
+  padding:14px 18px;
+  border-radius:16px;
+  background:#f7fbff;
+  border:1px solid var(--line);
+  text-align:center;
+  font-size:14px;
+  color:var(--ink-soft);
+}
+.address-pill strong{color:var(--ink)}
+.stack{max-width:520px;margin:0 auto}
+.field-block{margin-bottom:24px}
+.field-title{
+  margin:0 0 14px;
+  text-align:center;
+  font-size:16px;
+  color:var(--ink);
+}
+.unit-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 116px 132px;
+  gap:0;
+  border-radius:16px;
+  overflow:hidden;
+  border:1.5px solid var(--line);
+  background:#fff;
+}
+.unit-row input,
+.unit-row select{
+  border:0;outline:0;background:#fff;font:500 18px 'Inter',sans-serif;color:var(--ink);
+  min-height:72px;
+}
+.unit-row input{padding:0 20px}
+.unit-row select{padding:0 22px;appearance:none;color:var(--ink)}
+.unit-row .unit{
+  display:flex;align-items:center;justify-content:center;
+  background:var(--blue);color:#fff;font-size:24px;font-weight:700;
+}
+.unit-row .period{
+  position:relative;
+  background:#d7ecfb;
+  border-left:1px solid #c5e0f5;
+}
+.unit-row .period::after{
+  content:"";
+  position:absolute;right:18px;top:50%;
+  width:10px;height:10px;
+  border-right:2px solid #6d7d95;border-bottom:2px solid #6d7d95;
+  transform:translateY(-65%) rotate(45deg);
+  pointer-events:none;
+}
+.separator{
+  margin:18px 0 24px;
+  text-align:center;
+  font-size:28px;
+  color:var(--blue);
+}
+.vehicle-wrap{margin-top:28px}
+.vehicle-wrap h2{
+  margin:0 0 18px;
+  text-align:center;
+  font-family:'Anton','Arial Narrow',sans-serif;
+  font-size:clamp(30px,4vw,46px);
+  line-height:1.12;
+  letter-spacing:-.02em;
+  color:var(--blue);
+  text-transform:uppercase;
+}
+.vehicle-choices{
+  display:flex;justify-content:center;gap:18px;flex-wrap:wrap;
+}
+.vehicle-btn{
+  width:74px;height:74px;border-radius:50%;
+  border:2px solid #2c2f66;background:#fff;color:#2c2f66;
+  font:800 22px/1 'Inter',sans-serif;cursor:pointer;transition:.15s ease;
+}
+.vehicle-btn.active{
+  background:#2c2f66;color:#fff;border-color:#2c2f66;
+}
+.heating-wrap{margin-top:30px}
+.heating-wrap h2{
+  margin:0 0 18px;
+  text-align:center;
+  font-family:'Anton','Arial Narrow',sans-serif;
+  font-size:clamp(28px,4vw,42px);
+  line-height:1.12;
+  letter-spacing:-.02em;
+  color:var(--blue);
+  text-transform:uppercase;
+}
+.heating-choices{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+.heating-btn{
+  min-height:74px;
+  border-radius:18px;
+  border:1.5px solid var(--line);
+  background:#fff;
+  color:#2c2f66;
+  padding:12px 10px;
+  font:700 15px/1.2 'Inter',sans-serif;
+  cursor:pointer;
+  transition:.15s ease;
+}
+.heating-btn:hover{border-color:var(--blue);background:var(--blue-soft)}
+.heating-btn.active{
+  background:var(--navy);
+  border-color:var(--navy);
+  color:#fff;
+}
+.error{
+  display:none;
+  margin:18px auto 0;
+  max-width:520px;
+  padding:12px 14px;
+  border-radius:12px;
+  background:#fff1f1;
+  border:1px solid #f1c1c1;
+  color:#a12626;
+  font-size:14px;
+  line-height:1.5;
+}
 .notice{
-  margin-top:16px;border:1px solid #d9edf8;background:#f4fbff;color:#28526d;
-  border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.5;
+  display:none;
+  margin:18px auto 0;
+  max-width:720px;
+  padding:14px 16px;
+  border-radius:14px;
+  background:#fff1f1;
+  border:1px solid #f1c1c1;
+  color:#a12626;
+  font-size:14px;
+  line-height:1.6;
 }
-.warning{
-  margin-top:16px;border:1px solid #f0c4c4;background:var(--danger-soft);color:#8d1f1f;
-  border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.5;
-}
-.field{margin-bottom:16px}
-.field label{display:block;margin-bottom:7px;font-size:13px;font-weight:700;color:var(--ink)}
-.field input{
-  width:100%;border:1.5px solid var(--line);border-radius:12px;padding:13px 14px;
-  font:500 14px 'Inter',sans-serif;color:var(--ink);outline:none;background:#fff;
-}
-.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.field input.error{border-color:var(--danger);background:#fff7f7}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.project-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px}
-.project-btn{
-  border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:14px 12px;cursor:pointer;
-  text-align:left;transition:.15s ease;color:var(--ink);
-}
-.project-btn strong{display:block;font-size:14px;margin-bottom:3px}
-.project-btn span{font-size:12px;color:var(--slate)}
-.project-btn.active{border-color:var(--accent);background:var(--accent-soft);box-shadow:inset 0 0 0 1px rgba(19,166,232,.08)}
-.actions{display:flex;align-items:center;gap:12px;margin-top:22px}
+.actions{max-width:520px;margin:30px auto 0}
 .btn{
-  appearance:none;border:none;border-radius:14px;padding:15px 18px;cursor:pointer;
-  font:800 14px/1 'Inter',sans-serif;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;min-height:78px;border:0;border-radius:18px;cursor:pointer;
+  font:800 22px/1 'Inter',sans-serif;transition:.15s ease;
 }
-.btn-primary{background:var(--yellow);color:#0f2231;box-shadow:0 10px 22px rgba(245,196,0,.24)}
-.btn-secondary{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
-.btn:disabled{opacity:.55;cursor:not-allowed}
-.fine{margin-top:14px;font-size:12px;color:var(--muted);line-height:1.55}
-.error-box{
-  margin-bottom:16px;border:1px solid #f0c4c4;background:var(--danger-soft);color:#8d1f1f;
-  border-radius:12px;padding:12px 14px;font-size:14px;
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover:not(:disabled){transform:translateY(-1px);background:#1188d7}
+.btn-primary:disabled{opacity:.55;cursor:not-allowed}
+.back-link{
+  display:block;margin-top:24px;text-align:center;
+  color:var(--ink);font-size:15px;text-decoration:none;
 }
-.list-errors{margin:0;padding-left:18px}
-@media (max-width: 980px){
-  .shell{grid-template-columns:1fr}
-}
-@media (max-width: 720px){
-  .page{padding:14px 14px 32px}
-  .topbar{padding:14px;gap:12px;flex-wrap:wrap}
-  .stepper{order:3;width:100%;justify-content:flex-start;overflow:auto;padding-bottom:2px}
-  h1{font-size:28px}
-  .summary-grid,.row,.project-grid{grid-template-columns:1fr}
-  .actions{flex-direction:column;align-items:stretch}
+.back-link:hover{text-decoration:underline}
+@media (max-width: 760px){
+  body{padding:18px 12px 32px}
+  .card{padding:28px 18px 26px}
+  .steps{gap:22px}
+  .step .num{width:54px;height:54px;font-size:24px}
+  .unit-row{grid-template-columns:1fr}
+  .unit-row .unit,.unit-row .period{min-height:64px}
+  .unit-row .period{border-left:0;border-top:1px solid #c5e0f5}
+  .btn{font-size:18px;min-height:68px}
+  .heating-choices{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="topbar">
+<div class="shell">
+  <header class="header">
     <a class="brand" href="{{ route('home') }}" aria-label="{{ $siteName }}">
       <img src="{{ $logo }}" alt="{{ $siteName }}">
     </a>
-    <div class="stepper" aria-label="Progression">
-      <div class="step done"><span class="num">✓</span><span>Adresse</span></div>
-      <div class="step-sep done"></div>
-      <div class="step done"><span class="num">✓</span><span>Zone</span></div>
-      <div class="step-sep done"></div>
-      <div class="step done"><span class="num">✓</span><span>Simulation</span></div>
-      <div class="step-sep"></div>
-      <div class="step active"><span class="num">4</span><span>Confirmation</span></div>
+    <div class="steps" aria-label="Progression du simulateur">
+      <div class="step"><div class="num">1</div><div>Votre toiture</div></div>
+      <div class="step active"><div class="num">2</div><div>Votre consommation</div></div>
+      <div class="step"><div class="num">3</div><div>Votre résultat</div></div>
     </div>
-    <a class="help-link" href="{{ route('simulateur.solaire') }}">Retour au simulateur</a>
-  </div>
+  </header>
 
-  <div class="shell">
-    <section class="card">
-      <span class="eyebrow">Etape 4</span>
-      <h1>Confirmez votre projet solaire</h1>
-      <p class="lede">Vérifiez vos informations, choisissez votre besoin et validez votre demande. Dès confirmation, un e-mail part au client et un e-mail part à l'équipe.</p>
+  <main class="card">
+    <span class="eyebrow">Étape 2</span>
+    <h1>Quelle est votre consommation d'électricité ?</h1>
+    <p class="lede">Renseignez votre consommation annuelle en kWh ou le montant de votre facture pour affiner le résultat de votre projet solaire.</p>
+    <div class="address-pill" id="addressPill"><strong>Adresse du projet :</strong> <span id="addressText">Chargement…</span></div>
 
-      @if ($errors->any())
-        <div class="error-box">
-          <ul class="list-errors">
-            @foreach ($errors->all() as $error)
-              <li>{{ $error }}</li>
-            @endforeach
-          </ul>
-        </div>
-      @endif
-
-      <form method="post" action="{{ route('simulateur.solaire.confirmation.store') }}" id="solarLeadForm" novalidate>
-        @csrf
-        <input type="hidden" name="type_projet" id="typeProjetInput" value="{{ $defaultProjectType }}">
-        <input type="hidden" name="kwc" id="kwcInput" value="{{ old('kwc') }}">
-        <input type="hidden" name="budget_min" id="budgetMinInput" value="{{ old('budget_min') }}">
-        <input type="hidden" name="budget_max" id="budgetMaxInput" value="{{ old('budget_max') }}">
-        <input type="hidden" name="yearly_kwh" id="yearlyKwhInput" value="{{ old('yearly_kwh') }}">
-        <input type="hidden" name="panel_count" id="panelCountInput" value="{{ old('panel_count') }}">
-        <input type="hidden" name="annual_savings" id="annualSavingsInput" value="{{ old('annual_savings') }}">
-        <input type="hidden" name="surface_m2" id="surfaceM2Input" value="{{ old('surface_m2') }}">
-        <input type="hidden" name="snapshot_payload" id="snapshotPayloadInput" value="{{ old('snapshot_payload') }}">
-
-        <div class="row">
-          <div class="field">
-            <label for="prenom">Prenom *</label>
-            <input type="text" id="prenom" name="prenom" value="{{ old('prenom') }}" autocomplete="given-name" required>
-          </div>
-          <div class="field">
-            <label for="nom">Nom *</label>
-            <input type="text" id="nom" name="nom" value="{{ old('nom') }}" autocomplete="family-name" required>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="field">
-            <label for="telephone">Telephone *</label>
-            <input type="tel" id="telephone" name="telephone" value="{{ old('telephone') }}" autocomplete="tel" required>
-          </div>
-          <div class="field">
-            <label for="email">Email *</label>
-            <input type="email" id="email" name="email" value="{{ old('email') }}" autocomplete="email" required>
-          </div>
-        </div>
-
-        <div class="field">
-          <label for="adresse">Adresse du projet *</label>
-          <input type="text" id="adresse" name="adresse" value="{{ old('adresse') }}" autocomplete="street-address" required>
-        </div>
-
-        <div class="field">
-          <label>Type de projet *</label>
-          <div class="project-grid" id="projectTypeGrid">
-            <button type="button" class="project-btn" data-type="autoconsommation">
-              <strong>Autoconsommation</strong>
-              <span>Je consomme l'electricite produite chez moi.</span>
-            </button>
-            <button type="button" class="project-btn" data-type="revente">
-              <strong>Revente totale</strong>
-              <span>Je souhaite surtout revendre ma production.</span>
-            </button>
-            <button type="button" class="project-btn" data-type="batterie">
-              <strong>Avec batterie</strong>
-              <span>Je veux ajouter du stockage a mon installation.</span>
-            </button>
-            <button type="button" class="project-btn" data-type="je-ne-sais-pas">
-              <strong>Je ne sais pas</strong>
-              <span>J'ai besoin d'etre conseille avant de choisir.</span>
-            </button>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn btn-primary" type="submit" id="submitBtn">Confirmer ma demande</button>
-          <a class="btn btn-secondary" href="{{ route('simulateur.solaire') }}">Modifier ma simulation</a>
-        </div>
-        <p class="fine">Vos informations restent confidentielles. Une fois validée, votre demande est envoyée au client et a l'equipe.</p>
-      </form>
-    </section>
-
-    <aside class="card">
-      <span class="eyebrow">Resume</span>
-      <h2 style="margin:14px 0 8px;font-size:28px;letter-spacing:-.03em">Votre installation estimee</h2>
-      <p class="lede" style="margin-bottom:18px">Nous reprenons automatiquement les informations choisies sur l'etape precedente.</p>
-
-      <div class="summary-grid">
-        <div class="summary-card">
-          <div class="summary-label">Panneaux</div>
-          <div class="summary-value" id="summaryPanels">-</div>
-          <div class="summary-sub">panneaux affiches</div>
-        </div>
-        <div class="summary-card">
-          <div class="summary-label">Puissance</div>
-          <div class="summary-value" id="summaryKwc">-</div>
-          <div class="summary-sub">kWc</div>
-        </div>
-        <div class="summary-card">
-          <div class="summary-label">Production annuelle</div>
-          <div class="summary-value" id="summaryKwh">-</div>
-          <div class="summary-sub">kWh / an</div>
-        </div>
-        <div class="summary-card">
-          <div class="summary-label">Economies annuelles</div>
-          <div class="summary-value" id="summarySavings">-</div>
-          <div class="summary-sub">euros / an</div>
+    <div class="stack">
+      <div class="field-block">
+        <p class="field-title">Je connais ma consommation en kWh</p>
+        <div class="unit-row">
+          <input id="consumptionKwh" type="number" min="0" step="1" inputmode="decimal" placeholder="en kWh">
+          <div class="unit">kWh</div>
+          <label class="period">
+            <select id="consumptionKwhPeriod" aria-label="Période de consommation en kWh">
+              <option value="year">An</option>
+              <option value="month">Mois</option>
+            </select>
+          </label>
         </div>
       </div>
 
-      <div class="notice">
-        <strong id="summaryBudget">Budget estime : -</strong><br>
-        <span id="summaryAddress">Adresse du projet a confirmer.</span><br>
-        <span id="summarySurface">Surface disponible : -</span>
+      <div class="separator">ou</div>
+
+      <div class="field-block">
+        <p class="field-title">Je connais le montant de ma facture</p>
+        <div class="unit-row">
+          <input id="billAmount" type="number" min="0" step="1" inputmode="decimal" placeholder="en €">
+          <div class="unit">€</div>
+          <label class="period">
+            <select id="billPeriod" aria-label="Période de facture">
+              <option value="year">An</option>
+              <option value="month">Mois</option>
+            </select>
+          </label>
+        </div>
       </div>
 
-      <div class="warning" id="missingDataNotice" style="display:none">
-        Impossible de retrouver la simulation de l'etape precedente. Revenez au simulateur pour refaire votre selection avant de confirmer.
+      <div class="vehicle-wrap">
+        <h2>Possédez-vous un ou plusieurs véhicules électriques ?</h2>
+        <div class="vehicle-choices" id="vehicleChoices">
+          <button type="button" class="vehicle-btn active" data-count="0">0</button>
+          <button type="button" class="vehicle-btn" data-count="1">1</button>
+          <button type="button" class="vehicle-btn" data-count="2">2</button>
+          <button type="button" class="vehicle-btn" data-count="3">3+</button>
+        </div>
       </div>
-    </aside>
-  </div>
+
+      <div class="heating-wrap">
+        <h2>Comment chauffez-vous votre logement ?</h2>
+        <div class="heating-choices" id="heatingChoices">
+          <button type="button" class="heating-btn active" data-heating="Gaz">Gaz</button>
+          <button type="button" class="heating-btn" data-heating="Électrique">Électrique</button>
+          <button type="button" class="heating-btn" data-heating="Pompe à chaleur">Pompe à chaleur</button>
+          <button type="button" class="heating-btn" data-heating="Fioul">Fioul</button>
+          <button type="button" class="heating-btn" data-heating="Bois">Bois</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="error" id="errorBox"></div>
+    <div class="notice" id="missingBox">Impossible de retrouver votre simulation toiture. Revenez à l’étape précédente pour repasser par le repérage de la toiture.</div>
+
+    <div class="actions">
+      <button type="button" class="btn btn-primary" id="continueBtn">Voir mon résultat</button>
+      <a class="back-link" href="{{ $backUrl }}">&lt; Revenir à l'étape précédente</a>
+    </div>
+  </main>
 </div>
 
 <script>
 window.__solarStep4StorageKey = 'solarSimulatorStep4';
+window.__successUrl = @json($successUrl);
 
-const projectTypeInput = document.getElementById('typeProjetInput');
-const submitBtn = document.getElementById('submitBtn');
-const form = document.getElementById('solarLeadForm');
-const missingDataNotice = document.getElementById('missingDataNotice');
-const fieldIds = ['prenom', 'nom', 'telephone', 'email', 'adresse'];
+(function(){
+  const storageKey = window.__solarStep4StorageKey;
+  const continueBtn = document.getElementById('continueBtn');
+  const missingBox = document.getElementById('missingBox');
+  const errorBox = document.getElementById('errorBox');
+  const addressText = document.getElementById('addressText');
+  const consumptionKwh = document.getElementById('consumptionKwh');
+  const consumptionKwhPeriod = document.getElementById('consumptionKwhPeriod');
+  const billAmount = document.getElementById('billAmount');
+  const billPeriod = document.getElementById('billPeriod');
+  const vehicleChoices = document.getElementById('vehicleChoices');
+  const heatingChoices = document.getElementById('heatingChoices');
 
-function fmtInt(value){
-  return new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 0 }).format(Number(value || 0));
-}
-
-function fmtDecimal(value){
-  return new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(Number(value || 0));
-}
-
-function selectProjectType(type){
-  projectTypeInput.value = type;
-  document.querySelectorAll('#projectTypeGrid .project-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.type === type);
-  });
-}
-
-document.querySelectorAll('#projectTypeGrid .project-btn').forEach(btn => {
-  btn.addEventListener('click', () => selectProjectType(btn.dataset.type));
-});
-selectProjectType(projectTypeInput.value || 'autoconsommation');
-
-function setValueIfEmpty(id, value){
-  const input = document.getElementById(id);
-  if(input && !input.value && value !== undefined && value !== null){
-    input.value = value;
-  }
-}
-
-function loadSimulation(){
-  try {
-    const raw = window.sessionStorage.getItem(window.__solarStep4StorageKey);
-    if(!raw) return null;
-    return JSON.parse(raw);
-  } catch (e) {
-    return null;
-  }
-}
-
-const simulation = loadSimulation();
-if(simulation){
-  document.getElementById('summaryPanels').textContent = fmtInt(simulation.panels);
-  document.getElementById('summaryKwc').textContent = fmtDecimal(simulation.kwc);
-  document.getElementById('summaryKwh').textContent = fmtInt(simulation.yearlyKwh);
-  document.getElementById('summarySavings').textContent = fmtInt(simulation.annualSavings);
-  document.getElementById('summaryBudget').textContent = `Budget estime : ${fmtInt(simulation.budgetMin)} € a ${fmtInt(simulation.budgetMax)} €`;
-  document.getElementById('summaryAddress').textContent = simulation.address || 'Adresse du projet a confirmer.';
-  document.getElementById('summarySurface').textContent = `Surface disponible : ${fmtInt(simulation.surfaceM2)} m²`;
-
-  setValueIfEmpty('adresse', simulation.address || '');
-  setValueIfEmpty('kwcInput', simulation.kwc || '');
-  setValueIfEmpty('budgetMinInput', simulation.budgetMin || '');
-  setValueIfEmpty('budgetMaxInput', simulation.budgetMax || '');
-  setValueIfEmpty('yearlyKwhInput', simulation.yearlyKwh || '');
-  setValueIfEmpty('panelCountInput', simulation.panels || '');
-  setValueIfEmpty('annualSavingsInput', simulation.annualSavings || '');
-  setValueIfEmpty('surfaceM2Input', simulation.surfaceM2 || '');
-  if(simulation.snapshotPayload && !document.getElementById('snapshotPayloadInput').value){
-    document.getElementById('snapshotPayloadInput').value = JSON.stringify(simulation.snapshotPayload);
-  }
-} else {
-  missingDataNotice.style.display = 'block';
-  submitBtn.disabled = true;
-}
-
-form.addEventListener('submit', event => {
-  let valid = true;
-  fieldIds.forEach(id => {
-    const input = document.getElementById(id);
-    input.classList.remove('error');
-    if(!input.value.trim()){
-      input.classList.add('error');
-      valid = false;
+  function loadSimulation(){
+    try {
+      const raw = window.sessionStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : null;
+    } catch (_error) {
+      return null;
     }
-  });
-
-  const email = document.getElementById('email');
-  if(email.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())){
-    email.classList.add('error');
-    valid = false;
   }
 
-  if(!valid){
-    event.preventDefault();
+  function showError(message){
+    errorBox.textContent = message;
+    errorBox.style.display = 'block';
+  }
+
+  function clearError(){
+    errorBox.style.display = 'none';
+    errorBox.textContent = '';
+  }
+
+  function parseNumber(value){
+    if(typeof value !== 'string' && typeof value !== 'number') return 0;
+    const normalized = String(value).replace(',', '.').trim();
+    return Number(normalized || 0);
+  }
+
+  function annualize(value, period){
+    const safeValue = Math.max(0, Number(value) || 0);
+    return Math.round(safeValue * (period === 'month' ? 12 : 1));
+  }
+
+  let vehicleCount = 0;
+  let heatingMode = 'Gaz';
+  function setVehicleCount(nextValue){
+    vehicleCount = Number(nextValue) || 0;
+    vehicleChoices.querySelectorAll('.vehicle-btn').forEach(btn => {
+      btn.classList.toggle('active', Number(btn.dataset.count) === vehicleCount);
+    });
+  }
+
+  function setHeatingMode(nextValue){
+    heatingMode = String(nextValue || 'Gaz');
+    heatingChoices.querySelectorAll('.heating-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.heating === heatingMode);
+    });
+  }
+
+  vehicleChoices.querySelectorAll('.vehicle-btn').forEach(btn => {
+    btn.addEventListener('click', () => setVehicleCount(btn.dataset.count));
+  });
+  heatingChoices.querySelectorAll('.heating-btn').forEach(btn => {
+    btn.addEventListener('click', () => setHeatingMode(btn.dataset.heating));
+  });
+
+  const simulation = loadSimulation();
+  if(!simulation){
+    missingBox.style.display = 'block';
+    continueBtn.disabled = true;
+    addressText.textContent = 'Simulation introuvable';
     return;
   }
 
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Envoi en cours...';
-});
+  addressText.textContent = simulation.address || 'Adresse non renseignée';
+
+  if(simulation.consumption){
+    const saved = simulation.consumption;
+    if(saved.inputKwh) consumptionKwh.value = saved.inputKwh;
+    if(saved.kwhPeriod) consumptionKwhPeriod.value = saved.kwhPeriod;
+    if(saved.billAmount) billAmount.value = saved.billAmount;
+    if(saved.billPeriod) billPeriod.value = saved.billPeriod;
+    setVehicleCount(saved.vehicleCount || 0);
+    setHeatingMode(saved.heatingMode || simulation.heatingMode || 'Gaz');
+  }
+
+  continueBtn.addEventListener('click', () => {
+    clearError();
+
+    const inputKwh = parseNumber(consumptionKwh.value);
+    const inputBill = parseNumber(billAmount.value);
+
+    let annualConsumptionKwh = 0;
+    let source = '';
+
+    if(inputKwh > 0){
+      annualConsumptionKwh = annualize(inputKwh, consumptionKwhPeriod.value);
+      source = 'kwh';
+    } else if(inputBill > 0){
+      const annualBill = annualize(inputBill, billPeriod.value);
+      annualConsumptionKwh = Math.round(annualBill / 0.2276);
+      source = 'bill';
+    }
+
+    if(annualConsumptionKwh <= 0){
+      showError('Renseignez votre consommation en kWh ou le montant de votre facture pour continuer.');
+      return;
+    }
+
+    const nextState = {
+      ...simulation,
+      consumption: {
+        source,
+        inputKwh: inputKwh > 0 ? inputKwh : null,
+        kwhPeriod: consumptionKwhPeriod.value,
+        billAmount: inputBill > 0 ? inputBill : null,
+        billPeriod: billPeriod.value,
+        vehicleCount,
+        annualConsumptionKwh,
+        heatingMode,
+      },
+      heatingMode,
+    };
+
+    try {
+      window.sessionStorage.setItem(storageKey, JSON.stringify(nextState));
+    } catch (_error) {
+      showError('Impossible de sauvegarder votre consommation pour le moment.');
+      return;
+    }
+
+    window.location.href = window.__successUrl;
+  });
+})();
 </script>
 </body>
 </html>

@@ -175,16 +175,19 @@ Route::get('/franchise/merci', [FranchiseController::class, 'success'])->name('f
 Route::get('/realisations', [RealisationsController::class, 'index'])->name('realisations.page');
 Route::get('/realisations/{portfolio_project}', [RealisationsController::class, 'show'])->name('realisations.show');
 
-// Simulateur solaire
-Route::get('/simulateur-solaire', [SolarSimulatorController::class, 'index'])->name('simulateur.solaire');
-Route::get('/simulateur-solaire/etape-4', [SolarSimulatorController::class, 'confirmation'])->name('simulateur.solaire.confirmation');
-Route::post('/simulateur-solaire/etape-4', [SolarSimulatorController::class, 'storeConfirmation'])
+// Simulateur photovoltaïque
+Route::get('/simulateur-photovoltaique', [SolarSimulatorController::class, 'index'])->name('simulateur.photovoltaique');
+Route::get('/simulateur-photovoltaique/etape-4', [SolarSimulatorController::class, 'confirmation'])->name('simulateur.photovoltaique.confirmation');
+Route::post('/simulateur-photovoltaique/etape-4', [SolarSimulatorController::class, 'storeConfirmation'])
     ->middleware('throttle:5,1')
-    ->name('simulateur.solaire.confirmation.store');
-Route::get('/simulateur-solaire/merci', [SolarSimulatorController::class, 'success'])->name('simulateur.solaire.success');
+    ->name('simulateur.photovoltaique.confirmation.store');
+Route::get('/simulateur-photovoltaique/merci', [SolarSimulatorController::class, 'success'])->name('simulateur.photovoltaique.success');
 Route::get('/api/solar-demo-image', [SolarSimulatorController::class, 'demoImage'])
     ->middleware('throttle:30,1')
     ->name('api.solar.demoImage');
+Route::get('/api/solar-public-config', [SolarSimulatorController::class, 'publicConfig'])
+    ->middleware('throttle:60,1')
+    ->name('api.solar.publicConfig');
 Route::get('/api/solar-autocomplete', [SolarSimulatorController::class, 'autocomplete'])
     ->middleware('throttle:60,1')
     ->name('api.solar.autocomplete');

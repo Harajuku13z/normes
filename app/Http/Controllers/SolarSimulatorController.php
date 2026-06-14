@@ -8,6 +8,7 @@ use App\Services\SolarLeadSnapshotService;
 use App\Services\SimulateurMailer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
@@ -36,6 +37,25 @@ class SolarSimulatorController extends Controller
     {
         return view('simulateur.solaire-success', [
             'home' => $homePage->merged(),
+        ]);
+    }
+
+    public function publicConfig(Request $request): JsonResponse
+    {
+        return response()->json([
+            'googleMapsKey' => (string) config('services.google.maps_browser_key', ''),
+            'csrfToken' => csrf_token(),
+            'endpoints' => [
+                'autocomplete' => route('api.solar.autocomplete'),
+                'geocode' => route('api.solar.geocode'),
+                'estimate' => route('api.solar.estimate'),
+                'lead' => route('api.solar.lead'),
+            ],
+            'defaults' => [
+                'country' => 'fr',
+                'language' => 'fr',
+                'address' => (string) $request->query('address', ''),
+            ],
         ]);
     }
 
@@ -511,7 +531,7 @@ class SolarSimulatorController extends Controller
                 ->withErrors(['form' => 'Impossible d\'envoyer votre demande pour le moment. Merci de réessayer.']);
         }
 
-        return redirect()->route('simulateur.solaire.success');
+        return redirect()->route('simulateur.photovoltaique.success');
     }
 
     public function saveLead(Request $request, SimulateurMailer $mailer, SolarLeadSnapshotService $snapshotService): JsonResponse
@@ -552,6 +572,17 @@ class SolarSimulatorController extends Controller
             'panel_count'    => ['nullable', 'integer'],
             'annual_savings' => ['nullable', 'numeric'],
             'surface_m2'     => ['nullable', 'numeric'],
+            'orientation'    => ['nullable', 'string', 'max:50'],
+            'inclination'    => ['nullable', 'numeric'],
+            'consumption_kwh'=> ['nullable', 'numeric'],
+            'bill_amount'    => ['nullable', 'numeric'],
+            'bill_period'    => ['nullable', 'string', 'in:month,year'],
+            'vehicle_count'  => ['nullable', 'integer', 'min:0', 'max:9'],
+            'heating_mode'   => ['nullable', 'string', 'max:80'],
+            'zone_type'      => ['nullable', 'string', 'in:roof,garden'],
+            'wants_battery'  => ['nullable', 'boolean'],
+            'wants_charger'  => ['nullable', 'boolean'],
+            'consumption_source' => ['nullable', 'string', 'in:kwh,bill'],
             'snapshot_payload' => ['nullable', 'string', 'max:120000'],
         ]);
     }
@@ -563,7 +594,7 @@ class SolarSimulatorController extends Controller
             'code_postal'           => $this->extractLeadPostcode((string) $data['adresse']),
             'surface_m2'            => $data['surface_m2'] ?? null,
             'address'               => $data['adresse'],
-            'source_page'           => '/simulateur-solaire',
+            'source_page'           => '/simulateur-photovoltaique',
             'telephone'             => $data['telephone'],
             'email'                 => $data['email'],
             'service_slug'          => 'photovoltaique',
@@ -622,6 +653,15 @@ class SolarSimulatorController extends Controller
             isset($data['kwc']) ? 'Puissance estimée : ' . $this->formatLeadNumber((float) $data['kwc']) . ' kWc' : null,
             isset($data['yearly_kwh']) ? 'Production annuelle estimée : ' . $this->formatLeadNumber((float) $data['yearly_kwh'], 0) . ' kWh/an' : null,
             isset($data['annual_savings']) ? 'Économies annuelles estimées : ' . $this->formatLeadNumber((float) $data['annual_savings'], 0) . ' euros / an' : null,
+            isset($data['orientation']) ? 'Orientation retenue : ' . (string) $data['orientation'] : null,
+            isset($data['inclination']) ? 'Inclinaison retenue : ' . $this->formatLeadNumber((float) $data['inclination'], 0) . '°' : null,
+            isset($data['consumption_kwh']) ? 'Consommation annuelle estimée : ' . $this->formatLeadNumber((float) $data['consumption_kwh'], 0) . ' kWh/an' : null,
+            isset($data['bill_amount']) ? 'Montant de facture renseigné : ' . $this->formatLeadNumber((float) $data['bill_amount'], 0) . ' euros / ' . ((string) ($data['bill_period'] ?? 'year') === 'month' ? 'mois' : 'an') : null,
+            isset($data['vehicle_count']) ? 'Véhicules électriques : ' . ((int) $data['vehicle_count']) : null,
+            isset($data['heating_mode']) ? 'Chauffage du logement : ' . (string) $data['heating_mode'] : null,
+            isset($data['zone_type']) ? 'Type d’installation : ' . ((string) $data['zone_type'] === 'garden' ? 'au sol / jardin' : 'sur toiture') : null,
+            ! empty($data['wants_battery']) ? 'Option demandée : batterie de stockage' : null,
+            ! empty($data['wants_charger']) ? 'Option demandée : borne de recharge' : null,
             (isset($data['budget_min']) || isset($data['budget_max']))
                 ? 'Budget indicatif : '
                     . $this->formatLeadNumber((float) ($data['budget_min'] ?? 0), 0)
@@ -643,6 +683,14 @@ class SolarSimulatorController extends Controller
             isset($data['kwc']) ? $this->formatLeadNumber((float) $data['kwc']) . ' kWc' : null,
             isset($data['yearly_kwh']) ? $this->formatLeadNumber((float) $data['yearly_kwh'], 0) . ' kWh/an' : null,
             isset($data['annual_savings']) ? $this->formatLeadNumber((float) $data['annual_savings'], 0) . ' €/an d\'économies' : null,
+            isset($data['orientation']) ? 'Orientation : ' . (string) $data['orientation'] : null,
+            isset($data['inclination']) ? 'Inclinaison : ' . $this->formatLeadNumber((float) $data['inclination'], 0) . '°' : null,
+            isset($data['consumption_kwh']) ? 'Conso : ' . $this->formatLeadNumber((float) $data['consumption_kwh'], 0) . ' kWh/an' : null,
+            isset($data['vehicle_count']) ? 'VE : ' . ((int) $data['vehicle_count']) : null,
+            isset($data['heating_mode']) ? 'Chauffage : ' . (string) $data['heating_mode'] : null,
+            isset($data['zone_type']) ? ((string) $data['zone_type'] === 'garden' ? 'Pose jardin' : 'Pose toiture') : null,
+            ! empty($data['wants_battery']) ? 'Option batterie' : null,
+            ! empty($data['wants_charger']) ? 'Option borne' : null,
             (isset($data['budget_min']) || isset($data['budget_max']))
                 ? 'Budget estimé : '
                     . ($this->formatLeadNumber((float) ($data['budget_min'] ?? 0), 0) ?: '0')
@@ -683,7 +731,11 @@ class SolarSimulatorController extends Controller
      */
     private function simulatorSettings(): array
     {
-        $saved = \App\Models\HomeSection::query()->where('key', 'simulateur_settings')->first();
+        try {
+            $saved = \App\Models\HomeSection::query()->where('key', 'simulateur_settings')->first();
+        } catch (QueryException) {
+            $saved = null;
+        }
         $payload = is_array($saved?->payload) ? $saved->payload : [];
 
         return [
