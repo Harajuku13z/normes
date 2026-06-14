@@ -280,14 +280,15 @@
 
   function computePanelSlotsForAxis(projectedPolygon, uAxis, vAxis, origin, panelSize) {
     const gap = 0.12;
-    const margin = 0.16;
+    const margin = 0.5;
     const minX = Math.min(...projectedPolygon.map((point) => point.x));
     const maxX = Math.max(...projectedPolygon.map((point) => point.x));
     const minY = Math.min(...projectedPolygon.map((point) => point.y));
     const maxY = Math.max(...projectedPolygon.map((point) => point.y));
     const slots = [];
 
-    for (let y = minY + margin; y + panelSize.height <= maxY - margin; y += panelSize.height + gap) {
+    // Fill from the top side downward so panels align to the highest edge of the zone
+    for (let y = maxY - margin - panelSize.height; y >= minY + margin; y -= panelSize.height + gap) {
       for (let x = minX + margin; x + panelSize.width <= maxX - margin; x += panelSize.width + gap) {
         const corners = [
           { x, y },
@@ -367,11 +368,11 @@
 
     const portraitSlots = computePanelSlotsForAxis(projectedPolygon, uAxis, vAxis, originLatLng, PANEL_DIMENSIONS.portrait);
     const landscapeSlots = computePanelSlotsForAxis(projectedPolygon, uAxis, vAxis, originLatLng, PANEL_DIMENSIONS.landscape);
-    const slots = landscapeSlots.length > portraitSlots.length ? landscapeSlots : portraitSlots;
+    const slots = landscapeSlots.length > 0 ? landscapeSlots : portraitSlots;
     const layout = {
       slots,
       capacity: Math.max(1, slots.length || fallbackCapacity),
-      orientation: landscapeSlots.length > portraitSlots.length ? 'landscape' : 'portrait',
+      orientation: landscapeSlots.length > 0 ? 'landscape' : 'portrait',
     };
 
     RUNTIME.panelLayoutCacheKey = cacheKey;
@@ -545,21 +546,10 @@
             </div>
           </div>
 
-          <div class="lp-hero-media">
-            <div class="panel"></div>
-            <div class="teaser">
-              <div class="tk">Votre étude personnalisée</div>
-              <div class="tbig">1 240 € <small>/ an</small></div>
-              <div class="tsub">d'économies estimées sur votre facture</div>
-              <div class="tbars">
-                <i style="height:30%"></i><i style="height:42%"></i><i style="height:58%"></i>
-                <i class="s" style="height:74%"></i><i class="s" style="height:88%"></i><i class="s" style="height:100%"></i>
-                <i class="s" style="height:96%"></i><i class="s" style="height:82%"></i><i style="height:64%"></i>
-                <i style="height:46%"></i><i style="height:32%"></i><i style="height:26%"></i>
-              </div>
-            </div>
-            <span class="float-pill gold">Jusqu'à −70% de facture</span>
-            <span class="float-pill glass">${ICON.bolt} 6 800 kWh / an</span>
+          <div class="lp-hero-aides">
+            <div class="lp-aides-kicker">${gift} Prime 2026</div>
+            <h2 class="lp-aides-title">JUSQU'À <span class="y">11 000 €</span><br>D'AIDES POUR<br>PASSER AU SOLAIRE</h2>
+            <p class="lp-aides-body">MaPrimeRénov', prime à l'autoconsommation, TVA réduite : notre simulateur intègre toutes les aides auxquelles votre projet est éligible.</p>
           </div>
         </section>
 
@@ -587,19 +577,9 @@
           </div>
         </section>
 
-        <section class="lp-aides">
-          <div class="aides-card">
-            <div>
-              <span class="pill">${gift} Prime 2026</span>
-              <h2>Jusqu'à <span class="y">11 000 €</span> d'aides pour passer au solaire</h2>
-              <p>MaPrimeRénov', prime à l'autoconsommation, TVA réduite : notre simulateur intègre toutes les aides auxquelles votre projet est éligible.</p>
-            </div>
-            <div>
-              <button class="btn btn--yellow" data-act="start2">Estimer mes aides<span class="arrow">→</span></button>
-            </div>
-          </div>
-          <p class="lp-footnote">Estimation indicative basée sur des données moyennes d'ensoleillement. Une étude technique sur place affinera les résultats. Vos données ne sont jamais revendues.</p>
-        </section>
+        <footer class="lp-footer">
+          Estimation indicative basée sur des données d'ensoleillement. Vos données sont confidentielles et ne sont jamais revendues.
+        </footer>
       </div>`;
 
     const form = app.querySelector('#startForm');
@@ -1107,18 +1087,54 @@
     RUNTIME.resultPanelOverlays.forEach((overlay) => overlay.setMap(null));
     RUNTIME.resultPanelOverlays = [];
 
+    const lerp = (a, b, t) => ({ lat: a.lat + (b.lat - a.lat) * t, lng: a.lng + (b.lng - a.lng) * t });
+
     panelLayout.slots.slice(0, result.panels).forEach((slot) => {
+      // Main panel body — dark navy monocrystalline with metallic frame
       const panel = new google.maps.Polygon({
         map,
         paths: slot.corners,
         clickable: false,
-        strokeColor: '#F4FBFF',
-        strokeOpacity: 0.92,
-        strokeWeight: 1.2,
-        fillColor: '#10222E',
-        fillOpacity: 0.82,
+        strokeColor: '#90B8D0',
+        strokeOpacity: 1,
+        strokeWeight: 1.8,
+        fillColor: '#0E1E32',
+        fillOpacity: 0.92,
       });
       RUNTIME.resultPanelOverlays.push(panel);
+
+      // Cell grid lines — corners: [bottom-left, bottom-right, top-right, top-left] in local projection
+      const [c0, c1, c2, c3] = slot.corners;
+      const isLandscape = slot.orientation === 'landscape';
+      // Long axis → 4 dividers (5 columns); short axis → 2 dividers (3 rows)
+      const hDivs = isLandscape ? 2 : 4;  // horizontal (divides short Y dimension)
+      const vDivs = isLandscape ? 4 : 2;  // vertical (divides long X dimension)
+
+      for (let r = 1; r <= hDivs; r++) {
+        const t = r / (hDivs + 1);
+        const line = new google.maps.Polyline({
+          map,
+          path: [lerp(c0, c3, t), lerp(c1, c2, t)],
+          clickable: false,
+          strokeColor: '#5A9ABF',
+          strokeOpacity: 0.6,
+          strokeWeight: 0.7,
+        });
+        RUNTIME.resultPanelOverlays.push(line);
+      }
+
+      for (let c = 1; c <= vDivs; c++) {
+        const t = c / (vDivs + 1);
+        const line = new google.maps.Polyline({
+          map,
+          path: [lerp(c0, c1, t), lerp(c3, c2, t)],
+          clickable: false,
+          strokeColor: '#5A9ABF',
+          strokeOpacity: 0.6,
+          strokeWeight: 0.7,
+        });
+        RUNTIME.resultPanelOverlays.push(line);
+      }
     });
 
     const chip = app.querySelector('.result-map-chip');
