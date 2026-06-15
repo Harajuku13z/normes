@@ -756,8 +756,8 @@ button{font-family:inherit}
 /* ===== Roof illustration ====================================== */
 .roof-illo{ display:grid; place-items:center; margin:6px 0 22px; }
 .roof-illo svg{ width:230px; height:auto; }
-.roof-ridge-svg{ width:260px; height:auto; display:block; }
-.ridge-path{ transition: d .28s cubic-bezier(.4,0,.2,1); }
+.roof-ridge-svg{ width:min(300px,90vw); height:auto; display:block; }
+.ridge-path{ transition: d .3s cubic-bezier(.4,0,.2,1); }
 
 /* ===== Step 2: panel counter ================================== */
 .counter{ display:grid; grid-template-columns:58px 1fr 58px; gap:10px; margin-top:8px; }

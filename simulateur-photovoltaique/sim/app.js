@@ -160,17 +160,19 @@
   };
 
   function ridgePathD(angle) {
-    const cx = 170, baseY = 155, halfW = 122;
+    const cx = 140, baseY = 172, halfW = 112;
     if (angle === 0) return `M${cx - halfW},${baseY} L${cx + halfW},${baseY}`;
     const peakY = Math.round(baseY - halfW * Math.tan(angle * Math.PI / 180));
     return `M${cx - halfW},${baseY} L${cx},${peakY} L${cx + halfW},${baseY}`;
   }
 
   function roofRidgeSVG(angle) {
-    return `<svg class="roof-ridge-svg" viewBox="0 0 340 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="170" y1="8" x2="170" y2="170" stroke="#9FE0FF" stroke-width="1.5" opacity="0.75"/>
+    const cx = 140, baseY = 172;
+    return `<svg class="roof-ridge-svg" viewBox="0 0 280 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="${cx}" y1="6" x2="${cx}" y2="198" stroke="#9FE0FF" stroke-width="1.5" opacity="0.85"/>
+      <line x1="20" y1="${baseY}" x2="260" y2="${baseY}" stroke="#e2e8f0" stroke-width="1" opacity="0.7"/>
       <path class="ridge-path" d="${ridgePathD(angle)}"
-        stroke="#1D3040" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+        stroke="#1D3040" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`;
   }
 
@@ -1084,6 +1086,7 @@
     ['prenom', 'nom', 'email', 'tel'].forEach((k) => {
       app.querySelector('#f_' + k)?.addEventListener('input', (e) => {
         S.contact[k] = e.target.value;
+        saveContactToStorage();
         clearTimeout(provisionalTimer);
         provisionalTimer = setTimeout(() => {
           const { prenom, nom, email, tel } = S.contact;
@@ -2156,12 +2159,34 @@
     }
   });
 
+  const CONTACT_KEY = 'nrSimContact';
+
+  function saveContactToStorage() {
+    try { localStorage.setItem(CONTACT_KEY, JSON.stringify(S.contact)); } catch (_) {}
+  }
+
+  function loadContactFromStorage() {
+    try {
+      const raw = localStorage.getItem(CONTACT_KEY);
+      if (!raw) return;
+      const saved = JSON.parse(raw);
+      if (saved && typeof saved === 'object') {
+        S.contact.prenom = saved.prenom || '';
+        S.contact.nom    = saved.nom    || '';
+        S.contact.email  = saved.email  || '';
+        S.contact.tel    = saved.tel    || '';
+      }
+    } catch (_) {}
+  }
+
   async function boot() {
     app.innerHTML = `<div class="loader">
       <div class="spinner"></div>
       <div class="lt">Chargement…</div>
       <div class="ls">Préparation du simulateur photovoltaïque.</div>
     </div>`;
+
+    loadContactFromStorage();
 
     try {
       await fetchPublicConfig();
