@@ -30,10 +30,12 @@
     consent: false,
     estimate: null,
     leadStatus: { cta: 'idle', callback: 'idle' },
+    successModal: null,
     projectType: 'autoconsommation',
     zoneType: 'roof',
     wantsBattery: false,
     wantsCharger: false,
+    prefillKitKey: '',
     resultPanelCount: null,
     locateTutorialDismissed: false,
     drawTutorialDismissed: false,
@@ -78,6 +80,32 @@
     ...kit,
     panels: Math.max(1, Math.round((kit.kwc * 1000) / PANEL_WC)),
   }));
+  const OFFER_CARDS = [
+    {
+      title: 'Kit 3 kWc photovoltaïque en toiture',
+      text: 'Solution idéale pour équiper votre maison et produire votre propre électricité directement depuis votre toiture.',
+      image: 'https://normesrenovation.fr/uploads/HJzrtQWQ4Nw1GSVOBfppf5k1.png',
+      doc: 'https://normesrenovation.fr/uploads/G3e5wxhTP5laraQLSxXySSFx.pdf',
+    },
+    {
+      title: 'Kit 3 kWc photovoltaïque au sol',
+      text: 'Parfait pour installer des panneaux sur votre terrain et optimiser la production d’énergie solaire selon l’exposition.',
+      image: 'https://normesrenovation.fr/uploads/iJ7DU20xxk5QTQiOmkvrrStA.png',
+      doc: 'https://normesrenovation.fr/uploads/G3e5wxhTP5laraQLSxXySSFx.pdf',
+    },
+    {
+      title: 'Kit 6 kWc photovoltaïque',
+      text: 'Système plus puissant conçu pour couvrir une grande partie des besoins énergétiques d’un foyer.',
+      image: 'https://normesrenovation.fr/uploads/CppiCFXLR8dJsg21G2b1KMCZ.png',
+      doc: 'https://normesrenovation.fr/uploads/G3e5wxhTP5laraQLSxXySSFx.pdf',
+    },
+    {
+      title: 'Batterie Solar Flow 2400',
+      text: 'Permet de stocker l’énergie produite pour l’utiliser plus tard et augmenter votre autonomie énergétique.',
+      image: 'https://normesrenovation.fr/uploads/juLppg84yggOw9iRy2dhMyfQ.png',
+      doc: 'https://normesrenovation.fr/uploads/G3e5wxhTP5laraQLSxXySSFx.pdf',
+    },
+  ];
 
   const ORIENT_FACTOR = {
     'Sud': 1.0,
@@ -131,45 +159,18 @@
     building: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M9 7h.01M15 7h.01M9 11h.01M15 11h.01M9 15h.01M15 15h.01"/></svg>',
   };
 
-  function roofSVG() {
-    return `<svg viewBox="0 0 340 210" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="roofPlane" x1="74" y1="76" x2="246" y2="164" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stop-color="#E7F6FF"/>
-          <stop offset="1" stop-color="#C7EBFF"/>
-        </linearGradient>
-        <linearGradient id="roofSide" x1="248" y1="88" x2="300" y2="172" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stop-color="#F6FBFF"/>
-          <stop offset="1" stop-color="#D8EEF9"/>
-        </linearGradient>
-      </defs>
+  function ridgePathD(angle) {
+    const cx = 170, baseY = 155, halfW = 122;
+    if (angle === 0) return `M${cx - halfW},${baseY} L${cx + halfW},${baseY}`;
+    const peakY = Math.round(baseY - halfW * Math.tan(angle * Math.PI / 180));
+    return `M${cx - halfW},${baseY} L${cx},${peakY} L${cx + halfW},${baseY}`;
+  }
 
-      <path d="M74 120L196 58L272 104L146 168Z" fill="url(#roofPlane)" stroke="#38B6FF" stroke-width="4" stroke-linejoin="round"/>
-      <path d="M272 104L272 162L146 162L146 168" stroke="#38B6FF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M196 58L272 104L272 162L196 116V58Z" fill="url(#roofSide)" stroke="#38B6FF" stroke-width="4" stroke-linejoin="round"/>
-      <path d="M74 120L74 176" stroke="#38B6FF" stroke-width="4" stroke-linecap="round"/>
-      <path d="M74 176H298" stroke="#38B6FF" stroke-width="4" stroke-linecap="round"/>
-
-      <g stroke="#7FD3FF" stroke-width="2.6" stroke-linecap="round" opacity="0.95">
-        <path d="M94 108L218 171"/>
-        <path d="M110 100L232 162"/>
-        <path d="M126 92L246 153"/>
-        <path d="M142 84L260 144"/>
-      </g>
-      <g stroke="#7FD3FF" stroke-width="2.4" stroke-linecap="round" opacity="0.85">
-        <path d="M116 120L152 102"/>
-        <path d="M144 134L182 115"/>
-        <path d="M172 148L212 128"/>
-        <path d="M200 161L240 141"/>
-      </g>
-
-      <g stroke="#38B6FF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M44 176H104"/>
-        <path d="M74 176L74 128"/>
-        <path d="M74 150A31 31 0 0 1 101 167"/>
-      </g>
-      <path d="M95 154L109 159L100 145" fill="#38B6FF"/>
-      <text x="118" y="163" fill="#294352" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Inclinaison</text>
+  function roofRidgeSVG(angle) {
+    return `<svg class="roof-ridge-svg" viewBox="0 0 340 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="170" y1="8" x2="170" y2="170" stroke="#9FE0FF" stroke-width="1.5" opacity="0.75"/>
+      <path class="ridge-path" d="${ridgePathD(angle)}"
+        stroke="#1D3040" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>`;
   }
 
@@ -333,7 +334,7 @@
       return {
         slots: [],
         capacity: fallbackCapacity,
-        orientation: 'portrait',
+        orientation: 'landscape',
       };
     }
 
@@ -359,7 +360,7 @@
       const fallback = {
         slots: [],
         capacity: fallbackCapacity,
-        orientation: 'portrait',
+        orientation: 'landscape',
       };
       RUNTIME.panelLayoutCacheKey = cacheKey;
       RUNTIME.panelLayoutCache = fallback;
@@ -382,16 +383,15 @@
       y: dot2D(point, vAxis),
     }));
 
+    // Keep the long side of every panel parallel to the selected top edge.
     const landscapeSlots = computePanelSlotsForAxis(projectedPolygon, uAxis, vAxis, originLatLng, PANEL_DIMENSIONS.landscape);
-    const portraitSlots = computePanelSlotsForAxis(projectedPolygon, uAxis, vAxis, originLatLng, PANEL_DIMENSIONS.portrait);
-    const useLandscape = landscapeSlots.length > 0;
-    const slots = useLandscape ? landscapeSlots : portraitSlots;
+    const slots = landscapeSlots;
     const layout = {
       slots,
       capacity: Math.max(1, slots.length || fallbackCapacity),
-      orientation: useLandscape ? 'landscape' : 'portrait',
+      orientation: 'landscape',
       projectedPolygon,
-      panelSize: useLandscape ? PANEL_DIMENSIONS.landscape : PANEL_DIMENSIONS.portrait,
+      panelSize: PANEL_DIMENSIONS.landscape,
       uAxis,
       vAxis,
       origin: originLatLng,
@@ -403,58 +403,121 @@
   }
 
   function buildCenteredDisplay(panelLayout, N) {
-    const { projectedPolygon, uAxis, vAxis, origin, panelSize, orientation } = panelLayout;
+    const { projectedPolygon, uAxis, vAxis, origin, panelSize, orientation, slots = [] } = panelLayout;
     if (!projectedPolygon || N <= 0) return [];
 
     const gap = 0.12;
-    const centroid = polygonCentroid2D(projectedPolygon);
+    const safetyInset = 0.5;
 
-    // Usable width along u axis (bounding box minus 0.5m each side)
     const minX = Math.min(...projectedPolygon.map((p) => p.x));
     const maxX = Math.max(...projectedPolygon.map((p) => p.x));
     const minY = Math.min(...projectedPolygon.map((p) => p.y));
     const maxY = Math.max(...projectedPolygon.map((p) => p.y));
-    const safeW = Math.max(0, maxX - minX - 1.0);
-    const roofAspect = safeW / Math.max(0.1, maxY - minY - 1.0);
+    const safeMinX = minX + safetyInset;
+    const safeMaxX = maxX - safetyInset;
+    const safeMinY = minY + safetyInset;
+    const safeMaxY = maxY - safetyInset;
+    const safeW = Math.max(0, safeMaxX - safeMinX);
+    const safeH = Math.max(0, safeMaxY - safeMinY);
+    const roofAspect = safeW / Math.max(0.1, safeH);
+    const centerX = (safeMinX + safeMaxX) / 2;
+    const topY = safeMaxY;
 
-    // Optimal number of columns: match roof aspect ratio, capped by what fits
     const maxCols = Math.max(1, Math.floor((safeW + gap) / (panelSize.width + gap)));
-    const idealCols = Math.max(1, Math.round(Math.sqrt(N * roofAspect)));
-    const cols = Math.min(maxCols, idealCols, N);
+    const cols = Math.min(maxCols, N);
     const rows = Math.ceil(N / cols);
-
-    const totalW = cols * panelSize.width + (cols - 1) * gap;
-    const totalH = rows * panelSize.height + (rows - 1) * gap;
-
-    // Top of the panel block, centered on centroid
-    const blockTop = centroid.y + totalH / 2;
-
     const placed = [];
+    const cornerValid = (corner) => {
+      if (!pointInPolygon2D(corner, projectedPolygon)) return false;
+      for (let i = 0; i < projectedPolygon.length; i++) {
+        const a = projectedPolygon[i];
+        const b = projectedPolygon[(i + 1) % projectedPolygon.length];
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const lenSq = dx * dx + dy * dy;
+        if (lenSq < 1e-9) continue;
+        const t = Math.max(0, Math.min(1, ((corner.x - a.x) * dx + (corner.y - a.y) * dy) / lenSq));
+        const dist = Math.hypot(corner.x - (a.x + t * dx), corner.y - (a.y + t * dy));
+        if (dist < safetyInset) return false;
+      }
+      return true;
+    };
 
     for (let r = 0; r < rows && placed.length < N; r++) {
       const remaining = N - placed.length;
       const panelsInRow = Math.min(cols, remaining);
       const rowW = panelsInRow * panelSize.width + (panelsInRow - 1) * gap;
-      const rowStartX = centroid.x - rowW / 2;
-      const y = blockTop - (r + 1) * panelSize.height - r * gap;
+      const preferredStartX = centerX - rowW / 2;
+      const minStartX = safeMinX;
+      const maxStartX = safeMaxX - rowW;
+      const clampedStartX = Math.max(minStartX, Math.min(maxStartX, preferredStartX));
+      const y = topY - panelSize.height - r * (panelSize.height + gap);
+      if (y < safeMinY) break;
 
-      for (let c = 0; c < panelsInRow && placed.length < N; c++) {
-        const x = rowStartX + c * (panelSize.width + gap);
-        const corners = [
-          { x, y },
-          { x: x + panelSize.width, y },
-          { x: x + panelSize.width, y: y + panelSize.height },
-          { x, y: y + panelSize.height },
-        ];
-        if (!corners.every((corner) => pointInPolygon2D(corner, projectedPolygon))) continue;
-        placed.push({
-          orientation,
-          corners: corners.map((corner) => localMetersToLatLng(origin, {
-            x: (uAxis.x * corner.x) + (vAxis.x * corner.y),
-            y: (uAxis.y * corner.x) + (vAxis.y * corner.y),
-          })),
-        });
+      const tryOffsets = [0, -0.2, 0.2, -0.4, 0.4, -0.6, 0.6, -0.8, 0.8, -1.0, 1.0];
+      let bestRow = null;
+
+      for (const offset of tryOffsets) {
+        const rowStartX = Math.max(minStartX, Math.min(maxStartX, clampedStartX + offset));
+        const candidate = [];
+        for (let c = 0; c < panelsInRow; c++) {
+          const x = rowStartX + c * (panelSize.width + gap);
+          const corners = [
+            { x, y },
+            { x: x + panelSize.width, y },
+            { x: x + panelSize.width, y: y + panelSize.height },
+            { x, y: y + panelSize.height },
+          ];
+          if (!corners.every(cornerValid)) {
+            candidate.length = 0;
+            break;
+          }
+          candidate.push({
+            orientation,
+            corners: corners.map((corner) => localMetersToLatLng(origin, {
+              x: (uAxis.x * corner.x) + (vAxis.x * corner.y),
+              y: (uAxis.y * corner.x) + (vAxis.y * corner.y),
+            })),
+          });
+        }
+        if (candidate.length === panelsInRow) {
+          bestRow = candidate;
+          break;
+        }
       }
+
+      if (!bestRow) {
+        for (let c = 0; c < panelsInRow && placed.length < N; c++) {
+          const x = clampedStartX + c * (panelSize.width + gap);
+          const corners = [
+            { x, y },
+            { x: x + panelSize.width, y },
+            { x: x + panelSize.width, y: y + panelSize.height },
+            { x, y: y + panelSize.height },
+          ];
+          if (!corners.every(cornerValid)) continue;
+          placed.push({
+            orientation,
+            corners: corners.map((corner) => localMetersToLatLng(origin, {
+              x: (uAxis.x * corner.x) + (vAxis.x * corner.y),
+              y: (uAxis.y * corner.x) + (vAxis.y * corner.y),
+            })),
+          });
+        }
+        continue;
+      }
+
+      placed.push(...bestRow);
+    }
+
+    if (placed.length >= N) {
+      return placed.slice(0, N);
+    }
+
+    // If the centered visual layout cannot fit every requested panel,
+    // fall back to the full technical placement to keep the count consistent.
+    if (slots.length >= N) {
+      return slots.slice(0, N);
     }
 
     return placed;
@@ -471,7 +534,8 @@
 
   function activePanelCount() {
     const capacity = currentPanelLayout().capacity;
-    const base = S.resultPanelCount ?? recommendedPanelCount();
+    const prefillPanels = PRESET_KITS.find((kit) => kit.key === S.prefillKitKey)?.panels ?? null;
+    const base = S.resultPanelCount ?? prefillPanels ?? recommendedPanelCount();
     return Math.max(1, Math.min(capacity, Number(base || 1)));
   }
 
@@ -593,15 +657,15 @@
       <div class="lp">
         <section class="lp-hero">
           <div class="lp-hero-text">
-            <div class="eyebrow">Simulateur solaire · 100% gratuit</div>
-            <h1>Votre toiture peut<br><span class="hl">vous rapporter</span><br>de l'argent.</h1>
-            <p class="lp-sub">Découvrez en <b>2 minutes</b> combien de panneaux installer, votre production, vos économies et les <b>aides 2026</b> auxquelles vous avez droit.</p>
+            <div class="eyebrow">Étude solaire personnalisée · 100% gratuite</div>
+            <h1>Estimez le <span class="hl">potentiel solaire</span><br>de votre toiture<br>en quelques clics.</h1>
+            <p class="lp-sub">Obtenez une première estimation <b>gratuite et immédiate</b> de votre projet photovoltaïque : production attendue, économies annuelles, rentabilité et <b>aides 2026</b> adaptées à votre logement.</p>
 
             <div class="suggest-wrap">
               <form class="addr-cta" id="startForm" autocomplete="off">
                 <span class="pin">${ICON.pin}</span>
-                <input id="addrLP" value="${escapeHtml(S.address)}" placeholder="Entrez l'adresse de votre maison…" aria-label="Adresse de votre maison">
-                <button type="submit">Démarrer ma simulation<span class="arrow">→</span></button>
+                <input id="addrLP" value="${escapeHtml(S.address)}" placeholder="Saisissez l'adresse de votre maison…" aria-label="Adresse de votre maison">
+                <button type="submit">Lancer mon étude solaire<span class="arrow">→</span></button>
               </form>
               <div class="suggest-list ${S.addressSuggestions.length ? 'open' : ''}" id="addrSuggestions">
                 ${S.addressSuggestions.map((item, index) => `
@@ -617,29 +681,106 @@
             <div class="cta-trust">
               <span><span class="ck">${ck}</span> Sans engagement</span>
               <span><span class="ck">${ck}</span> Résultat immédiat</span>
-              <span><span class="ck">${ck}</span> Aucune carte requise</span>
+              <span><span class="ck">${ck}</span> Simulation personnalisée</span>
             </div>
             <div class="badges">
               <span class="badge">${shield} RGE Certifié</span>
-              <span class="badge gold">${gift} MaPrimeRénov'</span>
-              <span class="badge">${home} +250 chantiers</span>
+              <span class="badge gold">${gift} Aides 2026 intégrées</span>
+              <span class="badge">${home} Étude sans engagement</span>
             </div>
           </div>
 
           <div class="lp-hero-promo">
-            <img src="assets/promo-solaire.jpg" alt="Normes Rénovation — Offre panneaux solaires photovoltaïques en Saône-et-Loire">
+            <img src="assets/hero-etape-1.png" alt="Maison équipée de panneaux solaires sur la toiture">
+          </div>
+        </section>
+
+        <section class="lp-band">
+          <div class="lp-inner lp-center">
+            <div class="eyebrow">Simulation solaire</div>
+            <div class="lp-h2">Obtenez une première étude solaire gratuite et 100 % personnalisée</div>
+            <div class="lp-benefits-grid">
+              <article class="lp-benefit-card">
+                <div class="lp-benefit-icon">${s3icons[0]}</div>
+                <h3>Potentiel solaire de votre toiture</h3>
+                <p>Nous analysons votre adresse, l’orientation et l’ensoleillement pour estimer rapidement la faisabilité de votre projet.</p>
+              </article>
+              <article class="lp-benefit-card">
+                <div class="lp-benefit-icon">${s3icons[2]}</div>
+                <h3>Économies et retour sur investissement</h3>
+                <p>Découvrez une première estimation de votre production, de vos économies annuelles et de la rentabilité de l’installation.</p>
+              </article>
+              <article class="lp-benefit-card">
+                <div class="lp-benefit-icon">${s3icons[1]}</div>
+                <h3>Configuration adaptée à votre foyer</h3>
+                <p>Le simulateur vous aide à visualiser une puissance cohérente avec votre logement et vos habitudes de consommation.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="lp-band lp-band--soft">
+          <div class="lp-inner">
+            <div class="lp-info-box">
+              <div class="eyebrow">Pourquoi utiliser notre simulateur</div>
+              <div class="lp-h2">Une première vision claire avant d’aller plus loin</div>
+              <p class="lp-info-intro">Notre simulateur photovoltaïque est conçu pour vous donner une première lecture simple, rapide et utile de votre projet solaire.</p>
+              <div class="lp-info-copy">
+                <p>À partir de votre adresse, nous croisons les données d’ensoleillement, la configuration de votre toiture et vos besoins pour vous proposer une estimation personnalisée.</p>
+                <p>Vous obtenez une base concrète pour visualiser la production potentielle, les économies annuelles possibles et l’intérêt d’une installation adaptée à votre maison.</p>
+                <p>À la fin de la simulation, vous pouvez recevoir une étude plus détaillée et être recontacté si vous souhaitez affiner le projet avec un conseiller.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="lp-band">
+          <div class="lp-inner">
+            <div class="lp-center">
+              <div class="eyebrow">Nos offres</div>
+              <div class="lp-h2">Retrouvez les solutions que nous proposons</div>
+            </div>
+            <div class="lp-offers-grid">
+              ${OFFER_CARDS.map((offer) => `
+                <article class="lp-offer-card">
+                  <div class="lp-offer-media">
+                    <img src="${escapeHtml(offer.image)}" alt="${escapeHtml(offer.title)}" loading="lazy" decoding="async">
+                    <div class="lp-offer-overlay"></div>
+                  </div>
+                  <div class="lp-offer-content">
+                    <h3>${escapeHtml(offer.title)}</h3>
+                    <p>${escapeHtml(offer.text)}</p>
+                    <div class="lp-offer-actions">
+                      <button type="button" class="lp-offer-btn" data-act="focus-address">Demander une étude <span aria-hidden="true">⟶</span></button>
+                      <a href="${escapeHtml(offer.doc)}" target="_blank" rel="noopener noreferrer" class="lp-offer-btn lp-offer-btn--ghost">Documentation <span aria-hidden="true">↗</span></a>
+                    </div>
+                  </div>
+                </article>`).join('')}
+            </div>
           </div>
         </section>
 
         <section class="lp-band">
           <div class="lp-inner lp-center">
             <div class="eyebrow">Comment ça marche</div>
-            <div class="lp-h2">Votre simulation en 3 phases</div>
-            <div class="steps3">
-              ${[['1', 'Votre adresse', 'On localise votre toiture sur une vue aérienne haute définition.'],
-                ['2', 'Votre toiture', 'Vous tracez la surface et précisez orientation, inclinaison et ombrage.'],
-                ['3', 'Votre résultat', 'Production, économies, aides et amortissement calculés instantanément.']]
-                  .map(([n, t, p], i) => `<div class="s3"><div class="s3n">${n}</div><div class="s3i">${s3icons[i]}</div><h3>${t}</h3><p>${p}</p></div>`).join('')}
+            <div class="lp-h2">Visualisez chaque étape du simulateur</div>
+            <div class="how-grid">
+              ${[
+                ['1', 'Placez votre toiture', 'Déplacez la carte pour centrer votre maison sous le repère avant de valider.', 'assets/how-step-1.gif'],
+                ['2', 'Tracez la zone utile', 'Cliquez sur les coins de votre pan de toiture pour dessiner la surface exploitable.', 'assets/how-step-2.gif'],
+                ['3', 'Choisissez le bord le plus haut', 'Sélectionnez l’orientation du pan pour que la pose simulée soit cohérente.', 'assets/how-step-3.gif'],
+                ['4', 'Visualisez la pose simulée', 'Le simulateur affiche automatiquement les panneaux sur votre toiture avec un résultat concret.', 'assets/how-step-4.gif'],
+              ].map(([n, t, p, gif]) => `
+                <article class="how-card">
+                  <div class="how-media">
+                    <img src="${gif}" alt="${escapeHtml(t)}" loading="lazy" decoding="async">
+                  </div>
+                  <div class="how-body">
+                    <div class="how-step">${n}</div>
+                    <h3>${escapeHtml(t)}</h3>
+                    <p>${escapeHtml(p)}</p>
+                  </div>
+                </article>`).join('')}
             </div>
           </div>
         </section>
@@ -647,16 +788,24 @@
         <section class="lp-band teal">
           <div class="lp-inner">
             <div class="stats4">
-              <div class="stat4"><div class="v">+250</div><div class="k">chantiers livrés en Saône-et-Loire</div></div>
-              <div class="stat4"><div class="v"><span class="y">11 000€</span></div><div class="k">d'aides possibles en 2026</div></div>
-              <div class="stat4"><div class="v">−70%</div><div class="k">sur la facture d'électricité</div></div>
-              <div class="stat4"><div class="v">4,8<span class="y">/5</span></div><div class="k">note moyenne de nos clients</div></div>
+              <div class="stat4"><div class="v">2 min</div><div class="k">pour obtenir une première estimation</div></div>
+              <div class="stat4"><div class="v">Jusqu’à 70%</div><div class="k">d’économies potentielles sur votre facture</div></div>
+              <div class="stat4"><div class="v">100%</div><div class="k">gratuit et sans engagement</div></div>
             </div>
           </div>
         </section>
 
+        <section class="lp-final-cta">
+          <div class="lp-final-cta-inner">
+            <div class="eyebrow">Prêt à estimer votre projet ?</div>
+            <div class="lp-h2">Lancez votre simulation personnalisée en quelques secondes</div>
+            <p>Revenez au formulaire du haut de page pour saisir votre adresse et démarrer l’étude solaire.</p>
+            <button type="button" class="lp-final-btn" data-act="focus-address">Démarrer ma simulation <span aria-hidden="true">↑</span></button>
+          </div>
+        </section>
+
         <footer class="lp-footer">
-          Estimation indicative basée sur des données d'ensoleillement. Vos données sont confidentielles et ne sont jamais revendues.
+          Cette estimation s’appuie sur des données d’ensoleillement, de toiture et de consommation. Vos données restent confidentielles et ne sont jamais revendues.
         </footer>
       </div>`;
 
@@ -694,6 +843,14 @@
       document.querySelector('.app-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
       window.scrollTo({ top: 0, behavior: 'smooth' });
       input?.focus();
+    });
+
+    app.querySelectorAll('[data-act="focus-address"]').forEach((button) => {
+      button.addEventListener('click', () => {
+        document.querySelector('.app-scroll')?.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        input?.focus();
+      });
     });
   };
 
@@ -807,14 +964,20 @@
 
   RENDER[4] = () => {
     const opts = [0, 15, 30, 45];
-    app.innerHTML = header(4, 'Quelle est l’inclinaison<br>de votre toiture ?', '') +
-      `<div class="roof-illo">${roofSVG()}</div>
+    app.innerHTML = header(4, ‘Quelle est l’inclinaison<br>de votre toiture ?’, ‘’) +
+      `<div class="roof-illo">${roofRidgeSVG(S.incline)}</div>
        <div class="opt-grid cols-4" id="incl">
-         ${opts.map((d) => `<button class="chip ${S.incline === d ? 'sel' : ''}" data-v="${d}"><span class="chip-val">${d}°</span></button>`).join('')}
+         ${opts.map((d) => `<button class="chip ${S.incline === d ? ‘sel’ : ‘’}" data-v="${d}"><span class="chip-val">${d}°</span></button>`).join(‘’)}
        </div>
        <p class="note" style="text-align:center">Vous ne savez pas ? Choisissez <b>30°</b>, l’inclinaison la plus courante en France.</p>` +
-      actions('Valider l’inclinaison');
-    app.querySelectorAll('#incl .chip').forEach((c) => c.addEventListener('click', () => { S.incline = Number(c.dataset.v); render(); }));
+      actions(‘Valider l’inclinaison’);
+    app.querySelectorAll(‘#incl .chip’).forEach((c) => c.addEventListener(‘click’, () => {
+      const angle = Number(c.dataset.v);
+      S.incline = angle;
+      app.querySelectorAll(‘#incl .chip’).forEach((ch) => ch.classList.toggle(‘sel’, ch === c));
+      const ridgePath = app.querySelector(‘.ridge-path’);
+      if (ridgePath) ridgePath.setAttribute(‘d’, ridgePathD(angle));
+    }));
   };
 
   RENDER[5] = () => {
@@ -907,9 +1070,10 @@
       `<div class="form-grid" style="margin-top:6px">
          <div class="field" style="margin:0"><label>Prénom</label><input class="input" id="f_prenom" value="${escapeHtml(S.contact.prenom)}" placeholder="Votre prénom"></div>
          <div class="field" style="margin:0"><label>Nom</label><input class="input" id="f_nom" value="${escapeHtml(S.contact.nom)}" placeholder="Votre nom"></div>
-         <div class="field full" style="margin:0"><label>Adresse e-mail</label><input class="input" id="f_email" type="email" value="${escapeHtml(S.contact.email)}" placeholder="vous@email.fr"></div>
-         <div class="field full" style="margin:0"><label>Téléphone</label><input class="input" id="f_tel" type="tel" value="${escapeHtml(S.contact.tel)}" placeholder="06 00 00 00 00"></div>
+         <div class="field full" style="margin:0"><label>Adresse e-mail</label><input class="input" id="f_email" type="email" inputmode="email" autocomplete="email" value="${escapeHtml(S.contact.email)}" placeholder="vous@email.fr" required></div>
+         <div class="field full" style="margin:0"><label>Téléphone</label><input class="input" id="f_tel" type="tel" inputmode="tel" autocomplete="tel-national" value="${escapeHtml(S.contact.tel)}" placeholder="06 00 00 00 00" required></div>
        </div>
+       <p class="note" style="margin-top:12px">Le téléphone doit être un <b>numéro français</b> et l’e-mail doit être valide.</p>
        <label class="consent"><input type="checkbox" id="f_cgu" ${S.consent ? 'checked' : ''}> J’accepte d’être recontacté par Normes Rénovation au sujet de mon projet photovoltaïque et j’ai lu la politique de confidentialité.</label>` +
       actions('Recevoir mon étude complète');
     ['prenom', 'nom', 'email', 'tel'].forEach((k) => {
@@ -1100,6 +1264,32 @@
       <div class="actions" style="margin-top:18px"><button class="backlink" data-act="restart">‹ Recommencer la simulation</button></div>`;
   }
 
+  function successModalMarkup() {
+    if (!S.successModal) return '';
+    const isCallback = S.successModal === 'callback';
+    const title = isCallback ? 'Votre demande de rappel a bien été envoyée' : 'Votre étude détaillée est en route';
+    const copy = isCallback
+      ? 'Un conseiller Normes Rénovation vous recontactera très bientôt pour valider votre projet photovoltaïque.'
+      : 'Nous avons bien enregistré votre demande. Votre étude personnalisée va être envoyée à vos coordonnées.';
+
+    return `
+      <div class="success-modal" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
+        <div class="success-backdrop" data-act="close-success-modal"></div>
+        <div class="success-card">
+          <button class="tutorial-icon-close" type="button" aria-label="Fermer la modale" data-act="close-success-modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+          <div class="success-badge">Demande confirmée</div>
+          <div class="success-mark">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <h3 class="success-title" id="successModalTitle">${title}</h3>
+          <p class="success-copy">${copy}</p>
+          <button class="btn btn--primary" type="button" data-act="close-success-modal">Fermer<span class="arrow">→</span></button>
+        </div>
+      </div>`;
+  }
+
   function renderResults() {
     const view = resultViewModel();
 
@@ -1114,6 +1304,8 @@
     if (hero) hero.innerHTML = resultHeroMarkup(view);
     if (adjust) adjust.innerHTML = resultAdjustMarkup(view);
     if (metrics) metrics.innerHTML = resultMetricsMarkup(view);
+    app.querySelector('.success-modal')?.remove();
+    app.insertAdjacentHTML('beforeend', successModalMarkup());
 
     setupResultMap(view.r, view.panelLayout);
   }
@@ -1704,7 +1896,11 @@
       })
       .finally(() => {
         RUNTIME.currentEstimatePromise = null;
-        render();
+        if (S.contact.email.trim() && S.contact.prenom.trim() && S.leadStatus.cta === 'idle') {
+          submitLead('cta');
+        } else {
+          render();
+        }
       });
   }
 
@@ -1712,6 +1908,20 @@
     const { prenom, nom, email, tel } = S.contact;
     if (!prenom.trim() || !nom.trim() || !email.trim() || !tel.trim()) {
       S.error = 'Merci de compléter vos coordonnées avant de continuer.';
+      render();
+      return false;
+    }
+    const emailValue = email.trim().toLowerCase();
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailValue);
+    if (!emailOk) {
+      S.error = 'Merci de renseigner une adresse e-mail valide.';
+      render();
+      return false;
+    }
+    const telDigits = tel.replace(/[^\d+]/g, '');
+    const frPhoneOk = /^(?:(?:\+33|0033)[1-9]\d{8}|0[1-9]\d{8})$/.test(telDigits);
+    if (!frPhoneOk) {
+      S.error = 'Merci de renseigner un numéro de téléphone français valide.';
       render();
       return false;
     }
@@ -1761,6 +1971,7 @@
     try {
       await apiPost(RUNTIME.config.endpoints.lead, leadPayload(actionType));
       S.leadStatus[actionType] = 'success';
+      S.successModal = actionType;
       S.error = '';
     } catch (error) {
       S.leadStatus[actionType] = 'idle';
@@ -1829,6 +2040,7 @@
     S.orientTutorialDismissed = false;
     S.error = '';
     S.leadStatus = { cta: 'idle', callback: 'idle' };
+    S.successModal = null;
     RUNTIME.panelLayoutCacheKey = '';
     RUNTIME.panelLayoutCache = null;
     render();
@@ -1872,6 +2084,9 @@
       } else if (action === 'close-orient-tutorial') {
         S.orientTutorialDismissed = true;
         render();
+      } else if (action === 'close-success-modal') {
+        S.successModal = null;
+        renderResults();
       }
       else if (action === 'undo-point') {
         S.polygon = S.polygon.slice(0, -1);
@@ -1926,6 +2141,33 @@
 
     try {
       await fetchPublicConfig();
+      const params = new URLSearchParams(window.location.search);
+      const queryKit = (params.get('kit') || '').trim();
+      const queryAddress = (params.get('address') || '').trim();
+      const queryLabel = (params.get('label') || '').trim();
+      const rawLat = params.get('lat');
+      const rawLng = params.get('lng');
+      const hasQueryCoords = rawLat !== null && rawLat !== '' && rawLng !== null && rawLng !== '';
+      const queryLat = hasQueryCoords ? Number(rawLat) : NaN;
+      const queryLng = hasQueryCoords ? Number(rawLng) : NaN;
+
+      if (queryAddress) {
+        S.address = queryAddress;
+      }
+
+      if (queryLabel || queryAddress) {
+        S.resolvedAddress = queryLabel || queryAddress;
+      }
+
+      if (PRESET_KITS.some((kit) => kit.key === queryKit)) {
+        S.prefillKitKey = queryKit;
+      }
+
+      if (hasQueryCoords && Number.isFinite(queryLat) && Number.isFinite(queryLng)) {
+        S.location = { lat: queryLat, lng: queryLng };
+        S.step = 1;
+      }
+
       await loadGoogleMaps();
       render();
     } catch (error) {
