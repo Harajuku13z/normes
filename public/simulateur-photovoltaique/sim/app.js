@@ -337,6 +337,7 @@
         slots: [],
         capacity: fallbackCapacity,
         orientation: 'landscape',
+        hasPolygon: false,
       };
     }
 
@@ -363,6 +364,7 @@
         slots: [],
         capacity: fallbackCapacity,
         orientation: 'landscape',
+        hasPolygon: true,
       };
       RUNTIME.panelLayoutCacheKey = cacheKey;
       RUNTIME.panelLayoutCache = fallback;
@@ -394,7 +396,8 @@
     const panelSize   = usePortrait ? PANEL_DIMENSIONS.portrait : PANEL_DIMENSIONS.landscape;
     const layout = {
       slots,
-      capacity: Math.max(1, slots.length || fallbackCapacity),
+      capacity: slots.length,
+      hasPolygon: true,
       orientation,
       projectedPolygon,
       panelSize,
@@ -530,16 +533,20 @@
   }
 
   function recommendedPanelCount() {
-    const capacity = currentPanelLayout().capacity;
+    const layout = currentPanelLayout();
+    const capacity = layout.capacity;
+    if (layout.hasPolygon && capacity === 0) return 0;
     const estimateCount = Number(S.estimate?.panelCount || 0);
     if (estimateCount > 0) {
       return Math.max(1, Math.min(capacity, estimateCount));
     }
-    return capacity;
+    return Math.max(1, capacity);
   }
 
   function activePanelCount() {
-    const capacity = currentPanelLayout().capacity;
+    const layout = currentPanelLayout();
+    const capacity = layout.capacity;
+    if (layout.hasPolygon && capacity === 0) return 0;
     const prefillPanels = PRESET_KITS.find((kit) => kit.key === S.prefillKitKey)?.panels ?? null;
     const base = S.resultPanelCount ?? prefillPanels ?? recommendedPanelCount();
     return Math.max(1, Math.min(capacity, Number(base || 1)));
@@ -1174,20 +1181,39 @@
   }
 
   function resultHeroMarkup(view) {
-    const { r } = view;
+    const { r, panelLayout } = view;
+    const noFit = panelLayout.hasPolygon && panelLayout.capacity === 0;
     return `
       <div class="res-hero">
         <div class="loc">${ICON.pin} ${escapeHtml(S.resolvedAddress || S.address)}</div>
         <div class="grid3">
           <div class="stat"><div class="v">${fr(S.surface, 1)}<small> m²</small></div><div class="k">Surface exploitable</div></div>
-          <div class="stat"><div class="v">${r.panels}</div><div class="k">Panneaux</div></div>
-          <div class="stat"><div class="v">${r.kwc.toFixed(1).replace('.', ',')}<small> kWc</small></div><div class="k">Puissance</div></div>
+          <div class="stat ${noFit ? 'stat--warn' : ''}"><div class="v">${noFit ? '—' : r.panels}</div><div class="k">Panneaux</div></div>
+          <div class="stat ${noFit ? 'stat--warn' : ''}"><div class="v">${noFit ? '—' : r.kwc.toFixed(1).replace('.', ',') + '<small> kWc</small>'}</div><div class="k">Puissance</div></div>
         </div>
       </div>`;
   }
 
   function resultAdjustMarkup(view) {
-    const { r, selectedKit, counterNote } = view;
+    const { r, selectedKit, counterNote, panelLayout } = view;
+
+    if (panelLayout.hasPolygon && panelLayout.capacity === 0) {
+      return `
+        <section class="result-adjust-card">
+          <div class="no-fit-alert">
+            <div class="no-fit-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <h3 class="no-fit-title">Espace trop étroit pour un panneau</h3>
+            <p class="no-fit-copy">La zone que vous avez tracée ne peut pas accueillir de panneau solaire avec la marge de sécurité obligatoire de 50 cm. Un panneau mesure au minimum <strong>1,76 × 1,15 m</strong>.</p>
+            <p class="no-fit-copy">Essayez de tracer une zone plus grande, ou contactez un conseiller pour étudier d'autres solutions.</p>
+            <div class="no-fit-actions">
+              <button class="btn btn--primary" data-act="back-to-map">← Modifier ma zone</button>
+              <button class="btn btn--yellow" data-act="callback">Être conseillé par un expert</button>
+            </div>
+          </div>
+        </section>`;
+    }
 
     return `
       <section class="result-adjust-card">
@@ -1432,7 +1458,15 @@
     });
 
     const chip = app.querySelector('.result-map-chip');
-    if (chip) chip.textContent = `${result.panels} panneaux simulés`;
+    if (chip) {
+      if (result.panels === 0) {
+        chip.textContent = 'Espace trop étroit — aucun panneau simulé';
+        chip.style.background = 'rgba(220,80,60,.85)';
+      } else {
+        chip.textContent = `${result.panels} panneau${result.panels > 1 ? 'x' : ''} simulé${result.panels > 1 ? 's' : ''}`;
+        chip.style.background = '';
+      }
+    }
     syncMapSwitchButtons();
   }
 
@@ -2114,6 +2148,9 @@
       } else if (action === 'success-back-results') {
         S.successModal = null;
         renderResults();
+      } else if (action === 'back-to-map') {
+        S.step = 2;
+        render();
       }
       else if (action === 'undo-point') {
         S.polygon = S.polygon.slice(0, -1);
