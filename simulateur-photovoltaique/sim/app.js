@@ -383,15 +383,19 @@
       y: dot2D(point, vAxis),
     }));
 
-    // Keep the long side of every panel parallel to the selected top edge.
+    // Try both orientations and keep the one that fits more panels.
     const landscapeSlots = computePanelSlotsForAxis(projectedPolygon, uAxis, vAxis, originLatLng, PANEL_DIMENSIONS.landscape);
-    const slots = landscapeSlots;
+    const portraitSlots  = computePanelSlotsForAxis(projectedPolygon, uAxis, vAxis, originLatLng, PANEL_DIMENSIONS.portrait);
+    const usePortrait = portraitSlots.length > landscapeSlots.length;
+    const slots       = usePortrait ? portraitSlots : landscapeSlots;
+    const orientation = usePortrait ? 'portrait' : 'landscape';
+    const panelSize   = usePortrait ? PANEL_DIMENSIONS.portrait : PANEL_DIMENSIONS.landscape;
     const layout = {
       slots,
       capacity: Math.max(1, slots.length || fallbackCapacity),
-      orientation: 'landscape',
+      orientation,
       projectedPolygon,
-      panelSize: PANEL_DIMENSIONS.landscape,
+      panelSize,
       uAxis,
       vAxis,
       origin: originLatLng,
