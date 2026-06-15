@@ -606,31 +606,23 @@ button{font-family:inherit}
   margin-top:10px; font:400 14px/1.55 var(--font-body); color:var(--fg-muted);
 }
 
-.success-modal{
-  position:absolute;
-  inset:0;
-  z-index:50;
+.success-page{
   display:flex;
+  flex-direction:column;
   align-items:center;
-  justify-content:center;
-  padding:28px;
-}
-.success-backdrop{
-  position:absolute;
-  inset:0;
-  background:rgba(20,32,42,.56);
-  backdrop-filter:blur(5px);
-}
-.success-card{
-  position:relative;
-  z-index:1;
-  width:min(560px, calc(100vw - 40px));
-  border-radius:28px;
-  background:rgba(255,255,255,.98);
-  box-shadow:0 24px 80px rgba(20,32,42,.24);
-  padding:28px 26px 24px;
   text-align:center;
+  padding:32px 20px 28px;
   animation:tutorialIn .28s var(--ease);
+}
+.success-mark{
+  width:80px;
+  height:80px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#E8F8EF 0%,#D7F4E3 100%);
+  color:#1F9D5C;
+  box-shadow:inset 0 0 0 1px rgba(31,157,92,.12), 0 8px 24px rgba(31,157,92,.14);
 }
 .success-badge{
   display:inline-flex;
@@ -645,31 +637,42 @@ button{font-family:inherit}
   text-transform:uppercase;
   letter-spacing:.12em;
 }
-.success-mark{
-  width:72px;
-  height:72px;
-  margin:18px auto 0;
-  border-radius:999px;
-  display:grid;
-  place-items:center;
-  background:linear-gradient(135deg, #E8F8EF 0%, #D7F4E3 100%);
-  color:#1F9D5C;
-  box-shadow:inset 0 0 0 1px rgba(31,157,92,.12);
-}
 .success-title{
-  margin:18px 0 0;
-  font:800 28px/1.08 var(--font-body);
+  margin:16px 0 0;
+  font:800 26px/1.1 var(--font-body);
   color:var(--nr-teal);
 }
 .success-copy{
   margin:12px auto 0;
-  max-width:420px;
+  max-width:400px;
   font:400 15px/1.6 var(--font-body);
   color:var(--fg-muted);
 }
-.success-card .btn{
-  margin-top:20px;
+.success-actions{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  width:100%;
+  max-width:420px;
+  margin-top:28px;
 }
+.btn--ghost{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:13px 18px;
+  border-radius:999px;
+  font:600 15px/1 var(--font-body);
+  background:transparent;
+  color:var(--fg-muted);
+  border:none;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  cursor:pointer;
+  transition:.18s var(--ease);
+}
+.btn--ghost:hover{ color:var(--nr-teal); }
 
 .suggest-wrap{ position:relative; }
 .suggest-list{

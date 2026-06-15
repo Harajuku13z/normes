@@ -1280,33 +1280,42 @@
       <div class="actions" style="margin-top:18px"><button class="backlink" data-act="restart">‹ Recommencer la simulation</button></div>`;
   }
 
-  function successModalMarkup() {
-    if (!S.successModal) return '';
+  function successPageMarkup() {
     const isCallback = S.successModal === 'callback';
-    const title = isCallback ? 'Votre demande de rappel a bien été envoyée' : 'Votre étude détaillée est en route';
+    const title = isCallback
+      ? 'Votre demande de rappel a bien été envoyée !'
+      : 'Votre étude détaillée est en route !';
     const copy = isCallback
-      ? 'Un conseiller Normes Rénovation vous recontactera très bientôt pour valider votre projet photovoltaïque.'
-      : 'Nous avons bien enregistré votre demande. Votre étude personnalisée va être envoyée à vos coordonnées.';
+      ? 'Un conseiller Normes Rénovation vous recontactera très prochainement pour valider votre projet photovoltaïque.'
+      : 'Votre étude personnalisée vous a été envoyée par e-mail. Vous y retrouverez toutes les estimations de votre simulation.';
 
     return `
-      <div class="success-modal" role="dialog" aria-modal="true" aria-labelledby="successModalTitle">
-        <div class="success-backdrop" data-act="close-success-modal"></div>
-        <div class="success-card">
-          <button class="tutorial-icon-close" type="button" aria-label="Fermer la modale" data-act="close-success-modal">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      <div class="success-page">
+        <div class="success-mark">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <div class="success-badge" style="margin-top:18px">Demande confirmée</div>
+        <h2 class="success-title">${title}</h2>
+        <p class="success-copy">${copy}</p>
+        <div class="success-actions">
+          ${!isCallback ? `<a class="btn btn--primary" href="/contact">Demander un devis<span class="arrow">→</span></a>` : ''}
+          <button class="btn ${isCallback ? 'btn--primary' : 'btn--outline'}" data-act="success-back-results">
+            ← Revenir à mes résultats
           </button>
-          <div class="success-badge">Demande confirmée</div>
-          <div class="success-mark">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-          </div>
-          <h3 class="success-title" id="successModalTitle">${title}</h3>
-          <p class="success-copy">${copy}</p>
-          <button class="btn btn--primary" type="button" data-act="close-success-modal">Fermer<span class="arrow">→</span></button>
+          <button class="btn btn--outline" data-act="restart">
+            Refaire une simulation de zéro
+          </button>
+          <a class="btn btn--ghost" href="/">Retourner à l'accueil du site</a>
         </div>
       </div>`;
   }
 
   function renderResults() {
+    if (S.successModal) {
+      app.innerHTML = successPageMarkup();
+      return;
+    }
+
     const view = resultViewModel();
 
     if (!app.querySelector('#resultStepLayout')) {
@@ -1320,8 +1329,6 @@
     if (hero) hero.innerHTML = resultHeroMarkup(view);
     if (adjust) adjust.innerHTML = resultAdjustMarkup(view);
     if (metrics) metrics.innerHTML = resultMetricsMarkup(view);
-    app.querySelector('.success-modal')?.remove();
-    app.insertAdjacentHTML('beforeend', successModalMarkup());
 
     setupResultMap(view.r, view.panelLayout);
   }
@@ -2101,7 +2108,7 @@
       } else if (action === 'close-orient-tutorial') {
         S.orientTutorialDismissed = true;
         render();
-      } else if (action === 'close-success-modal') {
+      } else if (action === 'success-back-results') {
         S.successModal = null;
         renderResults();
       }
