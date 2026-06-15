@@ -1080,8 +1080,20 @@
        <p class="note" style="margin-top:12px">Le téléphone doit être un <b>numéro français</b> et l’e-mail doit être valide.</p>
        <label class="consent"><input type="checkbox" id="f_cgu" ${S.consent ? 'checked' : ''}> J’accepte d’être recontacté par Normes Rénovation au sujet de mon projet photovoltaïque et j’ai lu la politique de confidentialité.</label>` +
       actions('Recevoir mon étude complète');
+    let provisionalTimer = null;
     ['prenom', 'nom', 'email', 'tel'].forEach((k) => {
-      app.querySelector('#f_' + k)?.addEventListener('input', (e) => { S.contact[k] = e.target.value; });
+      app.querySelector('#f_' + k)?.addEventListener('input', (e) => {
+        S.contact[k] = e.target.value;
+        clearTimeout(provisionalTimer);
+        provisionalTimer = setTimeout(() => {
+          const { prenom, nom, email, tel } = S.contact;
+          const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+          const telOk = /^(?:(?:\+33|0033)[1-9]\d{8}|0[1-9]\d{8})$/.test(tel.replace(/[^\d+]/g, ''));
+          if (prenom.trim() && nom.trim() && emailOk && telOk && S.leadStatus.cta === 'idle') {
+            submitLead('cta');
+          }
+        }, 1800);
+      });
     });
     app.querySelector('#f_cgu')?.addEventListener('change', (e) => { S.consent = Boolean(e.target.checked); });
   };
@@ -1940,6 +1952,7 @@
   function leadPayload(actionType) {
     const r = estimateResults();
     return {
+      action_type: actionType,
       prenom: S.contact.prenom.trim(),
       nom: S.contact.nom.trim(),
       telephone: S.contact.tel.trim(),

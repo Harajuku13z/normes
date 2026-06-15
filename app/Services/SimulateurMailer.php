@@ -85,6 +85,25 @@ class SimulateurMailer
         }
     }
 
+    public function sendCallback(SimulateurLead $lead): void
+    {
+        $settings = $this->settings();
+        $adminEmail = (string) data_get($settings, 'notifications.admin_email', '');
+        $sendAdmin  = (bool) data_get($settings, 'notifications.send_to_admin_on_completed', false);
+        $sendClient = (bool) data_get($settings, 'notifications.send_to_client', false);
+
+        if ($sendAdmin && $adminEmail !== '') {
+            $htmlAdmin = View::make('emails.simulateur_admin_completed', ['lead' => $lead])->render();
+            $this->sendHtml($settings, $adminEmail, 'Demande de contact simulateur — ' . $lead->nom_prenom, $htmlAdmin, $this->leadAttachmentPaths($lead));
+        }
+
+        $clientEmail = trim((string) ($lead->email ?? ''));
+        if ($sendClient && $clientEmail !== '') {
+            $htmlClient = View::make('emails.simulateur_client_contact', ['lead' => $lead])->render();
+            $this->sendHtml($settings, $clientEmail, 'Merci de nous avoir contacté — Normes Rénovation', $htmlClient);
+        }
+    }
+
     public function sendAdminManual(SimulateurLead $lead, string $recipientEmail): void
     {
         $to = trim($recipientEmail);

@@ -583,6 +583,7 @@ class SolarSimulatorController extends Controller
             'wants_battery'  => ['nullable', 'boolean'],
             'wants_charger'  => ['nullable', 'boolean'],
             'consumption_source' => ['nullable', 'string', 'in:kwh,bill'],
+            'action_type'        => ['nullable', 'string', 'in:cta,callback'],
             'snapshot_payload' => ['nullable', 'string', 'max:120000'],
         ]);
     }
@@ -617,8 +618,14 @@ class SolarSimulatorController extends Controller
             }
         }
 
+        $isCallback = ((string) ($data['action_type'] ?? 'cta')) === 'callback';
+
         try {
-            $mailer->sendCompleted($lead);
+            if ($isCallback) {
+                $mailer->sendCallback($lead);
+            } else {
+                $mailer->sendCompleted($lead);
+            }
 
             $settings = $mailer->settings();
             $updates = [];
